@@ -1,0 +1,77 @@
+body, td, TEXTAREA { font-size: 12pt}
+INPUT, select { font-size: 12pt; height:21pt}
+a 		{text-decoration:none; color:#000000; }
+a:hover 	{text-decoration:underline; color:7B90FA; }
+
+.en tr 		td.na		{ font-size: 12pt}
+.en tr 		td.img		{ font-size: 12pt;}
+.en tr 		td.img img	{ border:#7B90FA 1px solid;}
+.en tr 		td		{ font-size: 12pt}
+
+* {  box-sizing: border-box;}  
+.header2A {width:100%;  height:50px;  float: left;  border: 0px solid red;  padding: 0px;}  
+.menu1Area{width:100%;  height:60px;  float: left;  padding: 0px;  border: 0px solid #DEDEDE;  background-color:#FAFAFA;}  
+.menu2T{padding-top:3px; width:25%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FAFAFA;}  
+.menu2A {width:25%; height:30px; float:left; padding:0px; border:0px solid #DEDEDE; background-color:#FAFAFA;} 
+.data2A {width:25%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FFFFFF;}  
+.input1A { padding:0px;}  
+.mainA {width:100%;  float: left; padding:15px; border:1px solid red;}  
+.menu1T {padding-top:0px; width:<?=$menu1TWPer?>%; height:30px; float:left; padding:6px; border:1px solid #DEDEDE;background-color:#FAFAFA;}  
+.menu1A {width:<?=$menu1AWPer?>%;  height:30px;  float: left;  padding: 0px;}  
+.data1A {width:<?=$menu1AWPer?>%; height:30px; float:left;padding:6px;border:1px solid #DEDEDE; background-color:#FFFFFF;}  
+radio1A {width:<?=$menu1AWPer?>%;  height:30px;  float: left;  padding: 6px;  border: 1px solid #DEDEDE;background-color:#FFFFFF;}  
+.ListBox1A {width: <?=$menu1AWPer?>%;  height:30px;  float: left;  padding: 2px;  border: 1px solid #DEDEDE; background-color:#FFFFFF;}  
+.File1A {  width: <?=$menu1AWPer?>%;  height:30px;  float: left;  padding: 2px;  border: 1px solid #DEDEDE;background-color:#FFFFFF;}  
+.menu4T {padding-top:3px; width:10%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE;background-color:#FAFAFA;}  
+.input4A {width:15%;  height:30px;  float:left;  padding:0px; border:1px solid #DEDEDE;  background-color:#FFFFFF;}  
+.menu4B {width: 15%; height:30px; float:left; padding:0px; border:0px solid #DEDEDE;  background-color:#FAFAFA;}  
+.data4A {width:15%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FFFFFF;}  
+.main4A {width:100%;  float: left;  padding: 15px;  border: 1px solid #DEDEDE;}  
+.blankA {border-top:0px;	width: 100%;    float: left;	height: 1px;	padding: 0px;	border: 1px solid #FFFFFF;background-color:#FFFFFF;}  
+.blankB {width:100%;  height: 1px;  padding: 1px;  float: left;  border: 1px solid #FFFFFF;  background-color:#FFFFFF;}  
+.viewSubjX{margin-top:1px;	width:100%;height:35px;	line-height:32px;border-top:3px solid #d01c27;	text-align:center;background:#fafafa;border-bottom:1px solid #dedede;overflow:hidden;font-size:18px;color:#69604f;}  
+.viewSubjX span{font-size:22px;color:#171512; vertical-align:baseline; }  
+.HeadTitle02AX{display:inline-block;	margin:0 1px;	height:35px;	line-height:35px;	padding:0 20px;	font-size:25px;	background:#d01c27;	color:#ffffff;	border-radius:5px;}  
+.HeadTitle01AX{display:inline-block;margin:0 1px;height:40px;line-height:0px;padding:0 20px;font-size:22px;background:#d01c27;color:#fff;border-radius:5px;}  
+.HeadTitle01AX a.on{background:#d01c27;color:#fff;}  
+.HeadTitle01A{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  
+.HeadTitle02A a{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  
+.HeadTitle01A a{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;	font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  
+.HeadTitle01A a.on{background:#d01c27;color:#fff;}  
+.Btn_List01A{width:64px;height:33px;display:inline-block;line-height:33px;	text-align:center;color:#fff;font-size:14px;background:#d01d27;	margin-right: 10px;	}  
+.Btn_List02A{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  
+.Btn_List03A{width:104px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  
+.Btn_List04A{width:114px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  
+.viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:right;}  
+.viewHeader span{position:absolute;left:0;top:12px;font-size:14px;color:#686868;}  
+.boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  
+.boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  
+
+body {margin:0;padding:0;background-color:cyan;font-size:0.75em;font-family:dotum,helvetica}
+input, img, select, button {font-size:1em;vertical-align:middle}
+label {vertical-align:middle}
+
+#set_topbar {margin:0 0 50px;padding:20px 30px;background:#383838;color:#a1a4a7;font-family:tahoma,helvetica;font-size:1.500em;zoom:1}
+#set_topbar:after {display:block;visibility:hidden;clear:both;content:""}
+#set_topbar #set_topimg {float:left}
+#set_topbar #set_bartxt {float:right}
+
+h1 {margin:0 0 30px;text-align:center}
+
+.setup_inner {margin:0 30px 50px;padding:20px 30px;border-right:1px solid #dde4e9;border-bottom:1px solid #dde4e9;background:#fff}
+.setup_inner ul {margin:20px 0;padding:0 0 0 13px}
+.setup_inner ol {margin:20px 0;padding:0 0 0 18px}
+.setup_inner ol li {margin:0 0 5px}
+.setup_inner p strong {color:red}
+.setup_inner .setup_btn {margin:30px 0 0;text-align:right}
+.setup_inner .setup_btn a, .setup_inner .setup_btn input {display:inline-block;padding:10px 20px;background:#ff347d;color:#fff;text-decoration:none}
+.setup_inner .setup_btn input {border:0;cursor:pointer}
+
+.ins_frm {margin:0 0 30px;width:100%;border:0;border-collapse:collapse}
+.ins_frm caption {padding:10px 0;font-weight:bold;text-align:left}
+.ins_frm th, .ins_frm td {padding:5px 3px;border-top:1px solid #dde4e9;border-bottom:1px solid #dde4e9}
+.ins_frm th {width:25%;background:#f2f5f9}
+.ins_frm td span {display:block;margin:5px 0 0;font-size:0.917em;letter-spacing:-0.1em}
+
+#ins_ft {color:#a1a4a7;font-family:tahoma,helvetica;text-align:center}
+#ins_ft strong {font-size:1.500em;font-weight:normal}

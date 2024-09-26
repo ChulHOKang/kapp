@@ -1,0 +1,62 @@
+<HTML>
+<HEAD>
+  <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>color set</TITLE>
+<!-- treebom_index1_cranim.php 과 tree_remake.php .... 콜 -->
+<SCRIPT LANGUAGE="JavaScript">
+<!--  Begin
+	function makeArray(q){
+		for(i=1 ; i <= q ; i++){ this[i]=0 } 
+	}
+
+	Colors = new makeArray(7);
+	Colors[1] = "00";
+	Colors[2] = "33";
+	Colors[3] = "66";
+	Colors[4] = "99";
+	Colors[5] = "CC";
+	Colors[6] = "FF";
+	
+	function sel(color) {
+		parent.window.opener.document.sys_bom.fontcolor.value = "#" + color;
+		parent.window.opener.document.all.view_font.style.color= "#" + color;
+		parent.window.opener.document.all.view_font2.style.color= "#" + color;
+	//	parent.window.opener.document.sys_bom.view_font3.style.color= "#" + color;
+		window.close();
+		return;
+	}
+// End -->
+</SCRIPT>
+<STYLE TYPE="text/css">
+body, td, tr, a { font-size:5pt}
+a:hover, a:link, a:visited, a:active {text-decoration:no; font-size:5pt;color:white;}
+</STYLE>
+<BODY>
+<CENTER>
+<center>
+<table bgcolor="white">
+<tr><td><font color=black size=2>Color Code</font></td><!--  색상 코드 표-->
+</tr>
+</table>
+<table cellspacing = 0 cellpadding = 0>
+<script language="JavaScript">
+	for(i=1 ; i <= 6 ; i++){
+		for(j=1 ; j <= 6 ; j++){
+			document.writeln("<tr>");
+			for(k=1 ; k <= 6 ; k++){
+				var thiscolor = Colors[i] + Colors[j] + Colors[k];
+				document.writeln("<td height = 10 bgcolor = \"#" + thiscolor + "\" align = right><a href =\"javascript:sel('"+thiscolor+"');\" ");
+				document.writeln("\'\' onMouseOver = \"document.bgColor = \'" + thiscolor + "\'\">" + thiscolor + "</a></td>");
+			}
+			document.writeln("</tr>");
+		}
+	}
+</script>
+</table>
+<table bgcolor="white">
+<tr><td><font color=black size=2>Click the background color code to apply. </font></td><!-- <br>적용할 배경색 코드를 클릭하세요. -->
+</tr>
+</table>
+</CENTER>
+</BODY>
+</HTML>
