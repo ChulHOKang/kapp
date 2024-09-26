@@ -1,0 +1,21 @@
+BODY{FONT-SIZE: 9pt;COLOR: #666666;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;}
+TD{ FONT-SIZE: 9pt;COLOR: #666666;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;}
+TD A:visited{FONT-SIZE: 9pt;COLOR: #666666;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;}
+TD A:hover{FONT-SIZE: 9pt;COLOR: #000000;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: underline;}
+TD A:link{FONT-SIZE: 9pt;COLOR: #666666;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;}
+A{FONT-SIZE: 9pt;COLOR: #666666;FONT-FAMILY: "±¼¸²";TEXT-DECORATION: none;}
+A:hover{COLOR: #FF6633;TEXT-DECORATION: underline;}
+A:link{COLOR: #666666;TEXT-DECORATION: none;}
+A:visited{COLOR: #666666;TEXT-DECORATION: none;}
+.t{FONT-SIZE: 9pt;COLOR: #666666;FONT-FAMILY: "±¼¸²";}
+.t1{FONT-SIZE: 9pt;FONT-FAMILY: "±¼¸²";}
+.t1 A{COLOR: #000000;TEXT-DECORATION: none}
+.t1 A:link{COLOR: #000000;TEXT-DECORATION: none}
+.t1 A:visited{COLOR: #000000;TEXT-DECORATION: none}
+.t1 A:hover{COLOR: #FF6633;TEXT-DECORATION: none}
+.t2{COLOR: #FFFFFF;FONT-FAMILY: "verdana";}
+.txt-n{font-size:9pt;line-height:180%;color:#666666;}
+.txt-n-white{font-size:9pt;line-height:140%;color:#ffffff;}
+INPUT{FONT-SIZE: 9pt;COLOR: #000000;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;}
+textarea{FONT-SIZE: 9pt;COLOR: #000000;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;border:1 black solid;}
+select{FONT-SIZE: 9pt;COLOR: #000000;FONT-FAMILY: ±¼¸²;TEXT-DECORATION: none;border:1 black solid;}

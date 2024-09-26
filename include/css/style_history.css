@@ -1,0 +1,34 @@
+BODY,TD,SELECT,input,DIV,form,TEXTAREA,center,option,pre,blockquote {font-size:9pt;font-family:±¼¸²;color:#666666;line-height:120%}
+BODY{
+scrollbar-face-color: #ffffff;
+scrollbar-highlight-color: #bbbbbb;
+scrollbar-shadow-color: #bbbbbb;
+scrollbar-3dlight-color: #ffffff;
+scrollbar-arrow-color: #bbbbbb;
+scrollbar-track-color: #f4f4f4;
+scrollbar-darkshadow-color: #ffffff ;}
+
+.log {color: #666666; background-color:#; border-color:; border:;}
+.fil {color: #666666; background-color:#; border-color:; border:solid 1px #cccccc;}
+.form {color: #000000; background-color: #ffffff; border-color: #666666; border:solid 1px #cccccc;}
+
+A:link    	{color:#666666;text-decoration:none}
+A:visited 	{color:#666666;text-decoration:none}
+A:active  	{color:#666666;text-decoration:none}
+A:hover   	{color:#FF9900;text-decoration:none}
+A.how:hover	{color:#0099CC;text-decoration:none}
+A.pick:hover	{color:#C66100;text-decoration:none}
+A.shop:hover	{color:#6B71C7;text-decoration:none}
+A.my:hover	{color:#918535;text-decoration:none}
+A.com:hover	{color:#669141;text-decoration:none}
+A.sup:hover	{color:#D7448A;text-decoration:none}
+
+A.9:link    	{color:#999999;text-decoration:none}
+A.9:visited 	{color:#999999;text-decoration:none}
+A.9:active  	{color:#999999;text-decoration:none}
+A.9:hover   	{color:#FF9900;text-decoration:none}
+
+A.s:link    	{color:#999999;text-decoration:none}
+A.s:visited 	{color:#999999;text-decoration:none}
+A.s:active  	{color:#999999;text-decoration:none}
+A.s:hover   	{color:#D7448A;text-decoration:none}
