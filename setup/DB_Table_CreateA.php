@@ -32,7 +32,7 @@
 	} else {
 		$prefix = KAPP_TABLE_PREFIX; //"kapp_";
 		$_SESSION['table_prefix'] = KAPP_TABLE_PREFIX;
-		m_( KAPP_TABLE_PREFIX. ", SS pre: " . $_SESSION['table_prefix'] .", mode: ". $mode . ", P admin: " .			$_POST['admin'] . ", R admin: " . $_REQUEST['admin'] );
+		//m_( KAPP_TABLE_PREFIX. ", SS pre: " . $_SESSION['table_prefix'] .", mode: ". $mode . ", P admin: " .			$_POST['admin'] . ", R admin: " . $_REQUEST['admin'] );
 	}
 	//SS pre: kapp_, mode: list, P admin: modumoa, R admin: modumoa
 	//SS pre: kapp_, mode: list, P admin: modumoa, R admin: modumoa
