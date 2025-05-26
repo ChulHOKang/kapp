@@ -1,6 +1,10 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");	$ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
+	else $H_LEV = 0;
+	if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
+	else $H_EMAIL = '';
 
 	/* --------------------------------------------------------------------------
 	 *  *** 중요 - book 다중등록시에만 사용:
@@ -12,9 +16,13 @@
 			$url='contents_view_menu.php?num=' . $max_num;
 	 * treebom_insert2_new.php는 크라트리와 Board 만 같이 사용하고 북 BOOK은 이것을 사용함. 링크 정보가 달라...2018-04-07
 	 * tree_menu_updateM2.php : call 추가. 2021-05-30 : 모바일용 통합프로그램. 
+
+	 중요 : 게시판 테이블명으로 사용됨. query_ok_new.php 에서도 같은 방법 사용
+	 $uid = explode('@', $H_ID); // 2024-04-05
+	 $max_num = $uid[0] . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨. query_ok_new.php 에서도 같은 방법 사용
 	----------------------------------------------------------------------------- */
 	if (!$H_ID || $H_LEV < 1) {
-		my_msg(" Please login. ");
+		m_(" Please login. ");
 		$rungo = "/";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
@@ -29,7 +37,7 @@
 		$data		= $_POST['data'];		
 		$data1		= $_POST['data1'];
 		$target_my	= $_POST['target_my'];
-	} else {
+	} else if( isset($_REQUEST['make_type']) ) {
 		$sys_pg_root= $_REQUEST['sys_pg_root'];
 		$make_type	= $_REQUEST['make_type'];
 		$m_type		= $_REQUEST['m_type'];
@@ -37,6 +45,14 @@
 		$data		= $_REQUEST['data'];		
 		$data1		= $_REQUEST['data1'];
 		$target_my	= $_REQUEST['target_my'];
+	} else {
+		$sys_pg_root= '';
+		$make_type	= '';
+		$m_type		= '';
+		$mode		= '';
+		$data		= '';
+		$data1		= '';
+		$target_my	= '';
 	}
 	if( !$data1 || !$sys_pg_root ){
 		m_( "sys_pg_root: " . sys_pg_root . ", data1: " . $data1 . " - Error treebom_insert2_book_menu" ); exit;
@@ -51,8 +67,8 @@
 	$xsys_pg	= $rs['sys_pg'];
 
 	if ( $H_ID != $mid ) {
-		//my_msg(" You do not have permission to work. \\n 작업권한이 없습니다. mid:$mid, data:$data, data1:$data1");
-		my_msg(" You do not have permission to work.");
+		//m_(" You do not have permission to work. \\n 작업권한이 없습니다. mid:$mid, data:$data, data1:$data1");
+		m_(" You do not have permission to work.");
 		$rungo = "./" . $rs['sys_userid'] . "/". $xsys_pg . "_runf.html";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
@@ -77,7 +93,6 @@
 			alert('Error sys_pg:'+sys_pg+', data1:'+data1); return;
 		}
 		mode = document.sys_bom.mode.value;
-		//alert( mode + ', type:'+ mtype + ', sys_pg:'+sys_pg+', data1:'+data1);
 		data = document.sys_bom.data.value;
 		data1 = document.sys_bom.data1.value;//alert('mode:'+mode+', data:'+data+', data1:'+data1);
 		sys_pg_root = document.sys_bom.sys_pg_root.value; //alert('sys_pg_root:'+sys_pg_root);
@@ -93,7 +108,7 @@
 		if( !document.sys_bom.sys_pg_root.value ) {
 			alert('ERROR - data:'+data + ', sys_pg:' + document.sys_bom.sys_pg_root.value);
 			return;
-		} //alert('data:'+data + ', sys_pg:' + document.sys_bom.sys_pg_root.value);
+		}
 		document.sys_bom.data.value = document.sys_bom.sys_pg_root.value;	//sys_pg;
 		document.sys_bom.data1.value = document.sys_bom.sys_pg_root.value;	//sys_pg;
 		document.sys_bom.mode.value ="mroot";
@@ -106,18 +121,11 @@
 		window.open('./pg_list_select_menu.php?no2='+jjj,'','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');
 		return true;  
 	}
-	/*
-	function contents_sel_web( jjj ) {
-		var word = ''; 
-		window.open('./pg_list_select_web_menu.php?formName=frm&no2='+jjj+'&dong='+word,'pg_select','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');
-		return true;  
-	}*/
-	function jong_func( jong, j, num ) { //alert('jong:' + jong + ', j:' + j + ', num:' + num); //jong:note, j:1, num:dao1705646474
+	function jong_func( jong, j, num ) {
         if(jong=='link') pg_name = "";
         else if(jong=='note')  pg_name = "contents_view_menuD.php?num=" + num;
-		//else if(jong=='board') pg_name = "/contents/index.php?infor=" + num;
-        else if(jong=='board') pg_name = "index_bbs.php?infor=";// 등록 시점에서 알수없어서 비워두고 sys_bom_menu 등록할때 + infor 을 추가한다.; // 2024-01-18 /bbs/index5.php?infor=
-        else if(jong=='photo') pg_name = "index_bbs.php?infor=";// + num;
+        else if(jong=='board') pg_name = "index_bbs.php?infor=";
+        else if(jong=='photo') pg_name = "index_bbs.php?infor=";
 		else pg_name = "";
 		eval ( "document.sys_bom.sys_link_"+j+".value = pg_name" );
 		return true;  
@@ -134,9 +142,10 @@ if( $mode=='mroot' ) {
 	  $sql = " select * from {$tkher['sys_menu_bom_table']} where sys_userid='$H_ID' and sys_menu='$data' and sys_submenu = '$data1' ";
 }
 	  $result = sql_query( $sql);	
-	  $rs = sql_fetch_array($result);
-		//m_("mode: ".$mode . ", m_type: " .$m_type);//mode: mroot, m_type: booktreeupdateM2
-	  if ($rs != null) {
+	  $rs = sql_fetch_array($result);//m_("mode: ".$mode . ", m_type: " .$m_type);//mode: mroot, m_type: booktreeupdateM2
+		$xm1 = '';
+		$xm2 = '';
+	  if( $rs != null) {
 			$recordcount = sql_num_rows($result);	 
 			$xm1 = $rs['sys_menu'];
 			$xm2 = $rs['sys_submenu'];
@@ -145,8 +154,7 @@ if( $mode=='mroot' ) {
 			$cnt = $rs['sys_cnt'];
 			$tit = $rs['sys_subtit'];
 			$sys_pg = $rs['sys_pg'];
-			//if ( $mode == 'mroot' and $m_type == '' ) {
-			if ( $mode == 'mroot' ) {
+			if( $mode == 'mroot' ) {
 				$root_chk = 1;
 ?>
 				<center>
@@ -161,15 +169,14 @@ if( $mode=='mroot' ) {
 				<center><font size='4' color='green'>
 				<h3 title='treebom_insert2_book_menu'><b> Bottom level registration of <font color='yellow'><?=$tit?></font></b> </h3></font></center>
 <?php 
-			 }
+			}
 	   } else {
  ?>
 			<center><font size='4' color='green'><h3><b> [ ERROR - treebom_insert2_book_menu ] [data:<?=$data?>][data1:<?=$data1?>]</b></h3></font></center>
 			<body leftmargin='0' topmargin='0' bgproperties='fixed'>  
 <?php 
-	   }
-
-	$xroot_level= $rs['sys_level'];	
+	  }
+		$xroot_level= $rs['sys_level'];	
 ?>
   <center>
 <form method='post' name='sys_bom' >
@@ -198,7 +205,7 @@ if( $mode=='mroot' ) {
 		<td>Memo</td>
 	</tr>
 <?php
-	 if ( $rs != null ) { 
+	 if( $rs != null ) { 
 		$recordcount = $rs['sys_rcnt'];
 		$xm1 = $rs['sys_menu'];	
 		$xm2 = $rs['sys_submenu'];	
@@ -207,7 +214,7 @@ if( $mode=='mroot' ) {
 		$xroot_cnt	= $rs['sys_rcnt'];
 		$xlow_cnt	= $rs['sys_cnt'];
 
-		if ( $mode == "mroot" ){ 
+		if( $mode == "mroot" ){ 
 			$recordcount = $xroot_cnt;							
 		} else if ( $xroot_chk == "root" ) {
 			$recordcount = $xlow_cnt;
@@ -216,19 +223,14 @@ if( $mode=='mroot' ) {
 		}
 	}
 for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {  
-     //if( $mode == 'mroot') {
-     //if( $mode == 'mroot' || $xroot_level=='mroot') {
      if( $mode == 'mroot' && $xroot_level=='mroot') { // 2021-12-09
              $low_cnt = $recordcount + $i; 
-             //$xdata1 = $data1 . "_r";  // 2021-11-13 변경
              $xdata1 = $sys_pg . "_r";
              
              if ( strlen($low_cnt) == 1 ){
 				$xdata2 = $sys_pg . "_r" . "0" . $low_cnt; 
-//				$xdata2 = $data1 . "_r" . "0" . $low_cnt; // 2021-11-13 변경
              } else {
              	$xdata2 = $sys_pg . "_r" . $low_cnt;
-//             	$xdata2 = $data1 . "_r" . $low_cnt;       // 2021-11-13 변경
 			 }
 	 } else {
 	     $low_cnt = $recordcount + $i;
@@ -240,11 +242,8 @@ for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {
 			$xdata2 = $data1 . "_" . $low_cnt;	// $xdata2 = $data1 . "_" . $low_cnt;	
 		}
 	 } 
-
 	$uid = explode('@', $H_ID); // 2024-04-05
-	//$max_num = $H_ID . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨. 
 	$max_num = $uid[0] . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨. query_ok_new.php 에서도 같은 방법 사용
-
 ?>
 		<tr valign='middle' style='background-color:black;color:white;'> 
 		  <td align='center' bgcolor='black'><font color='green' size='4'><?=$low_cnt?></td>
@@ -307,11 +306,11 @@ for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {
 		 <font color='yellow'>Create bottom level of <?=$tit?>, sys_pg:<?=$sys_pg?>, data1:<?=$data1?></font><br>
 <?php
 	}
-	if (($xm1 == $xm2) and ($sw == 1)) {
-	          $sw = 2; 
-	} else {
-	          $sw = 1;
-	}
+	//if( ($xm1 == $xm2) and ($sw == 1)) {
+	//          $sw = 2; 
+	//} else {
+	//          $sw = 1;
+	//}
 	$root_chk = $root_chk;
 	$record_cnt = $recordcount;		
 ?>

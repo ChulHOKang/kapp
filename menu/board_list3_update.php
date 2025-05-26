@@ -3,6 +3,20 @@
 	/*
 	  board_list3_update.php : board attribute set : Old ver 
 	*/
+?>
+<html>
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_board_.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
+<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<meta name="robots" content="ALL">
+
+<link rel="stylesheet" href="../include/css/board.css" type="text/css">
+
+<?php
 	$ss_mb_id= get_session("ss_mb_id");
 	$H_ID= $ss_mb_id;	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	$from_session_id = $H_ID;
@@ -13,9 +27,9 @@
 			exit;
 	}
 
-	$infor = $_POST['infor'];
-	$list_no = $_POST['list_no'];
-
+	//$infor = $_POST['infor'];
+	//$list_no = $_POST['list_no'];
+/*
 	if( $_POST['infor'] ) {
 		$no = $_POST['infor'];
 		$infor = $_POST['infor'];
@@ -23,15 +37,17 @@
 	} else {
 		$no = $_REQUEST['no'];
 		$infor = $_REQUEST['no'];
-	}
+	}*/
+
+		$no = $_REQUEST['no'];
 	//m_("infor:$infor, list_no:" . $_POST[list_no]);
 
 	$query = "SELECT * from {$tkher['aboard_infor_table']} where no='$no'";
 	$mq =sql_query( $query ); //	$mf=sql_fetch_array($mq);
 	$mf =sql_fetch_row($mq);  //include "../inc/admin_login.php";
 	$mf_1 = $mf[1]; // board name
-		//$list_no = $mf[0];
-	//m_("list_no:$list_no, $mf_1");
+		$list_no = $mf[0];
+	//m_( $no . ", list_no:$list_no, $mf_1" . ", mf[48]: " . $mf[48]); //1, list_no:1, 개시판A, mf[48]: 5
 /*
 1 no, 2 name, 3 table_name, 4 fileup, 5 in_date, 6 memo_gubun, 7 ip_gubun, 8 html_gubun, 9 imember, 10 home_url, 
 11 table_width, 12 list_table_set, 13 list_title_bgcolor, 14 list_title_font, 15 list_text_bgcolor, 16 list_text_font, 
@@ -46,17 +62,6 @@
 */
 
 ?> 
-<html>
-<head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Board App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="../logo/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
-<meta name="robots" content="ALL">
-
-<link rel="stylesheet" href="../include/css/board.css" type="text/css">
 <script>
   var color = '81C131';
   var colorback = 'ffffff';
@@ -157,7 +162,7 @@ include "../menu_run.php";
         <table border="0" width="637" cellspacing="0" height="10" style="border-collapse: collapse" bordercolor="#111111" cellpadding="0">
           <tr>
             <td width="3%" bgcolor="#FF9900" height="7">　</td>
-            <td width="97%" bgcolor="#FFFFFF" height="7"><b>&nbsp;web db generator : Board attribute set</b></td> 
+            <td width="97%" bgcolor="#FFFFFF" height="7"><b>&nbsp;K-APP : Board attribute set</b></td> 
           </tr>
         </table>
         </td> 
@@ -203,7 +208,7 @@ include "../menu_run.php";
       <td width="29" height="1">　</td>
       <td width="572" height="1">
 
-       <fieldset style="padding: 2; width:569; height:260">
+       <fieldset style="padding: 2; width:569; height:120">
         <legend><font color="#006699">< Basic settings ></font></legend>
           <table border="0" cellpadding="0" cellspacing="3" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1" bgcolor="#FFFFFF">
             <tr>
@@ -215,34 +220,6 @@ include "../menu_run.php";
               <td width="29%" bgcolor="#F6F6F6" align="center">Board Name</td>
               <td width="81%" bgcolor="#FFFBEF"><input type="text" name="name" size="43" value='<?=$mf[1]?>'></td>
             </tr>
-   <!-- 
-	<tr>
-              <td width="29%" bgcolor="#C0C0C0" align="center"><b>
-              Applying Skins</b></td>
-              <td width="81%" bgcolor="#FFFBEF">
-              <select size="1" name="skin">
-              <option value="" selected >no use</option>
-              <?php 
-              $od=opendir("./skins/config");
-              while($rd=readdir($od)){
-              if($rd=="." || $rd==".."){continue;}?>
-              <option value='<?=$rd?>'><?=$rd?></option>
-              <?php }closedir($od);?>
-              </select><input type=submit value="Applying Skins">
-              </td>
-            </tr>
-            <tr>
-              <td width="29%" bgcolor="#C0C0C0" align="center" rowspan="">
-              <b>Create a skin</b></td>
-              <td width="81%" bgcolor="#FFFBEF" title='Please be sure to write in English!'>
-              &nbsp;<font color="#006699">Skin Name</font> <input type="text" name="skin_name" size="20" title='Please be sure to write in English!'><input type=submit value='Skin registration'></td>
-            </tr>
- 
-            <tr>
-              <td width="81%" bgcolor="#FFFBEF" title='Please be sure to write in English!'>
-              &nbsp;<font color="#006699"></font></td>
-            </tr>
--->
 
             <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center" height="18">Board type</td><!-- 48:movie -->
@@ -255,33 +232,52 @@ include "../menu_run.php";
 				  <option value='5' <?php if($mf[48] == "5") echo "selected"; ?>>Daum type</option>
 				  </select></td>
             </tr>
-            <tr>
+
+			<!-- <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">Table Size</td>
               <td width="81%" bgcolor="#FFFBEF">
-              <input type="text" name="table_width" size="6" value='<?=$mf[10]?>'> 
-              Pixel / Percent </td>
-            </tr>
-          <tr>
+              <input type="text" name="table_width" size="6" value='<?=$mf[10]?>'>Pixel / Percent</td>
+            </tr> -->
+          <!-- <tr>
             <td width="29%" bgcolor="#F6F6F6" align="center">Page Lines</td>
             <td width="81%" bgcolor="#FFFBEF">
             <input type="text" name="list_size" size="6" value="<?=$mf[16]?>">&nbsp;Number of page lines</td>
-          </tr>
-<?php if($mf[51]){$check_security_yes="checked";}else { $check_security_no = "checked"; }?>
-			<tr>
-              <td width="29%" bgcolor="#F6F6F6" align="center">Whether to use secrets</td><!--[비밀글사용여부]-->
+          </tr> -->
+<?php
+	if($mf[51]){ 
+		$check_security_yes="checked";
+		$check_security_no = "";
+	} else {
+		$check_security_yes="";
+		$check_security_no = "checked";
+	}
+?>
+			<!--[비밀글사용여부]-->
+			<!-- <tr>
+              <td width="29%" bgcolor="#F6F6F6" align="center">Whether to use secrets</td>
               <td width="81%" bgcolor="#FFFBEF"><input type="radio" value="1" name="security" <?=$check_security_yes?>> use&nbsp;
               <input type="radio" name="security" value="0" <?=$check_security_no?>>no use</td>
-            </tr>
+            </tr> -->
 
 
-<?php if( $mf[3] > 0 ){ $check_yes="checked"; $up_filesize=$mf[3]; }else{ $check_no="checked"; $up_filesize=0; } ?>
-            <tr>
+<?php
+	if( $mf[3] > 0 ){
+		$check_yes="checked";
+		$check_no="";
+		$up_filesize=$mf[3];
+	}else{
+		$check_yes="";
+		$check_no="checked";
+		$up_filesize=0;
+	}
+?>
+            <!-- <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">Attached file</td>
               <td width="81%" bgcolor="#FFFBEF">
 				<input type="radio" value="1" name="fileup" <?=$check_yes?>> use&nbsp;
 				<input type="radio" name="fileup" value="0" <?=$check_no?>> no use
 				</td>
-            </tr>
+            </tr> -->
 <?php //if( $mf[3] > 0 ){ ?>
             <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">Attached file size</td>
@@ -290,30 +286,33 @@ include "../menu_run.php";
 			  </td>
             </tr>
 <?php //} ?>
-<?php $check_yes="";$check_no="";?>
-            <!--<tr>
-              <td width="29%" bgcolor="#F6F6F6" align="center">Home URL</td>
-              <td width="81%" bgcolor="#FFFBEF">
-              <input type="text" name="home_url" size="57" value='<?=$mf[9]?>' readonly></td>
-            </tr>-->
-<?php if($mf[5]){$check_yes="checked";}else{$check_no="checked";}?>
-		<!--<input type="hidden" value="0" name="memo_gubun">-->
-            <tr>
+<?php
+	if($mf[5]){
+		$check_yes="checked";
+		$check_no="";
+	}else{
+		$check_yes="";
+		$check_no="checked";
+	}
+?>
+            <!-- <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">Memo support</td>
               <td width="81%" bgcolor="#FFFBEF"><input type="radio" value="1" name="memo_gubun" <?=$check_yes?>> 
               use&nbsp; <input type="radio" value="0" name="memo_gubun" <?=$check_no?>> 
               no use</td>
-            </tr>
+            </tr> -->
 			
 <?php $check_yes="";$check_no="";?>
-<?php if($mf[6]){$check_yes="checked";}else{$check_no="checked";}?>
-            <tr>
+<?php
+	if( $mf[6] ){ $check_yes="checked"; } else { $check_no="checked"; }
+?>
+            <!-- <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">Show ip</td>
               <td width="81%" bgcolor="#FFFBEF"><input type="radio" value="1" name="ip_gubun" <?=$check_yes?>> use&nbsp;
               <input type="radio" value="0" name="ip_gubun" <?=$check_no?>> no use</td>
-            </tr>
+            </tr> -->
 <?php $check_yes="";$check_no="";?>
-<?php if($mf[7]){$check_yes="checked";}else{$check_no="checked";}?>
+<?php if( $mf[7]){ $check_yes="checked"; }else{ $check_no="checked";}?>
 	<input type="hidden" value="0" name="html_gubun" > 
             <!--<tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">HTML Use</td>
@@ -322,7 +321,7 @@ include "../menu_run.php";
               no use</td>
             </tr>-->
 <?php $check_yes="";$check_no="";?>
-<?php if($mf[8]){$check_yes="checked";}else{$check_no="checked";}?>
+<?php if($mf[8]){ $check_yes="checked"; }else{ $check_no="checked";}?>
 <!--
             <tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">i-Member연동</td>
@@ -331,21 +330,21 @@ include "../menu_run.php";
             </tr>
 			-->
 <?php $check_yes="";$check_no="";?>
-<?php if($mf[42]){$check_yes="checked";}else{$check_no="checked";}?>
-          <tr>
+<?php if($mf[42]){ $check_yes="checked"; }else{ $check_no="checked";}?>
+          <!-- <tr>
             <td width="29%" bgcolor="#F6F6F6" align="center">List of Posts</td>
             <td width="81%" bgcolor="#FFFBEF">
             <input type="radio" value="1" name="list_gubun" <?=$check_yes?>> Print&nbsp;
             <input type="radio" value="0" name="list_gubun" <?=$check_no?>> No Print</td>
-          </tr>
+          </tr> -->
 <?php $check_yes="";$check_no="";?>
 <?php if($mf[43]){$check_yes="checked";}else{$check_no="checked";}?>
-          <tr>
+          <!-- <tr>
             <td width="29%" bgcolor="#F6F6F6" align="center" title='Print the comment.'>Related posts</td>
             <td width="81%" bgcolor="#FFFBEF">
             <input type="radio" value="1" name="connection_gubun" <?=$check_yes?>> print&nbsp;
             <input type="radio" value="0" name="connection_gubun" <?=$check_no?>> no print</td>
-          </tr>
+          </tr> -->
 <?php $check_yes="";$check_no="";?>
           </table>
           </fieldset>
@@ -406,7 +405,7 @@ include "../menu_run.php";
 			<tr>
               <td width="29%" bgcolor="#F6F6F6" align="center">Assign administrator</td>
               <td width="81%" bgcolor="#FFFBEF">
-				<input type="text" value="<?=$mf[8]?>" size=13 name="imember" readonly>
+				<input type="text" value="<?=$mf[8]?>" name="imember" readonly>
 				<!-- <input type=button value='Select' class=input onclick="window.open('admin_select.php', '', 'left=300, top=100, width=300, height=300, scrollbars=yes')"> Assign administrator.  --></td>
             </tr>
         </table>

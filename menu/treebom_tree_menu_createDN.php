@@ -17,9 +17,13 @@
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
 
-	$mid = $_POST['mid'];
-	$run_mode = $_POST['run_mode'];
-	$sys_pg = $_POST['sys_pg'];
+	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
+	else  $mid = '';
+	if( isset($_POST['run_mode']) ) $run_mode = $_POST['run_mode'];
+	else $run_mode = '';
+	if( isset($_POST['sys_pg']) ) $sys_pg = $_POST['sys_pg'];
+	else $sys_pg = '';
+
 	//m_("mid:$mid, $run_mode, sys_pg:$sys_pg");
 
 	if( $run_mode == 'tree_menu_createDN') {
@@ -49,39 +53,29 @@
 	//		mid  add : 2018-04-01 : 생성자. H_ID를 mid로 변경.
 	//		2018-06-25 : function submit_run() : add : https 걸러내고 카운트 add : cratree_coinadd.php
 	------------------------------------------------------------------------------------- */
-		//$result['path']	= str_replace('\\', '/', dirname(__FILE__));
-		$result_path = str_replace('\\', '/', dirname(__FILE__));
+	/*	$result_path = str_replace('\\', '/', dirname(__FILE__));
 		$tilde_rm		= preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);
 		$doc_root		= str_replace($tilde_rm, '', $_SERVER['SCRIPT_FILENAME']);
 		$pattern = '/' . preg_quote($doc_root, '/') . '/i';
-		$SCRIPT_NAME = $_SERVER['SCRIPT_NAME'];
-		$SCRIPT_FILENAME = $_SERVER['SCRIPT_FILENAME'];
-    //m_( "$result_path , $SCRIPT_NAME , $SCRIPT_FILENAME");
-	// $result_path : /home2/urllinkn/domains/urllink.net/public_html/t/menu , 
-	// $SCRIPT_NAME : /t/menu/treebom_remake_all_menu.php , 
-	// $SCRIPT_FILENAME : 
-	//      /home2/urllinkn/domains/urllink.net/public_html/t/menu/treebom_remake_all_menu.php
 
-	$root = preg_replace($pattern, '', $result_path );
-
-	$port = ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) ? '' : ':'.$_SERVER['SERVER_PORT'];
-	
-	$http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-	
-	$user = str_replace(preg_replace($pattern, '', $_SERVER['SCRIPT_FILENAME']), '', $_SERVER['SCRIPT_NAME']);
-	$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
-	if(isset($_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host))
-		$host	= preg_replace('/:[0-9]+$/', '', $host);
-	$host		= preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", '', $host);
-
-	$linkurl = $http.$host.$port.$user.$root; // m_("linkurl: " . $linkurl);
-	$linkwww = $http.$host.$port;                      //http://urllink.net
-    //m_("$linkurl");
-	$first_linkurl = $linkurl . "/cratree_my_list_menu.php?mid=".$mid; 
-
+	//$root = preg_replace($pattern, '', $result_path );
+	//$port = ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) ? '' : ':'.$_SERVER['SERVER_PORT'];
+	//$http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
+	//$user = str_replace(preg_replace($pattern, '', $_SERVER['SCRIPT_FILENAME']), '', $_SERVER['SCRIPT_NAME']);
+	//$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
+	//if(isset($_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host))
+	//	$host	= preg_replace('/:[0-9]+$/', '', $host);
+	//$host		= preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", '', $host);
+	//$linkurl = $http.$host.$port.$user.$root; // m_("linkurl: " . $linkurl);
+	//$linkwww = $http.$host.$port;                      //http://urllink.net    //m_("$linkurl");
+	//$first_linkurl = $linkurl . "/cratree_my_list_menu.php?mid=".$mid; 
 	//$first_linkurl_all = "../treelist2_cranim_book_menu.php?mymode=all"; 
-	$first_linkurl_all = $first_linkurl; 
+	*/
 
+	$linkurl = KAPP_URL_T_ . "/menu";
+	$linkwww = KAPP_URL_T_;
+	$first_linkurl = KAPP_URL_T_ . "/menu/cratree_my_list_menu.php?mid=".$mid; 
+	$first_linkurl_all = $first_linkurl; 
 	$rssys_treetit='';
 	$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_level = 'mroot' and sys_pg = '$sys_pg' ";
 	$result = sql_query( $sql);
@@ -89,19 +83,26 @@
 	$rssys_treetit   = $rs22['sys_subtit'];
 	$from_session_id = $rs22['sys_userid'];	// 관리자가 트리북을 재생성시에 생성자의 디렉토리에 소스를 생성하도록 설정함. 2018-03-20
 
-	//m_("run_mode:$run_mode");
-
 	/////////////////////////< tree file create >////////////////////////////
 
-	$path = KAPP_URL_T_ . "/";
+	if( isset($mid) && $mid !=='' ){
+		$jtree_dir = KAPP_PATH_T_ . "/file/".$mid;
+		if ( !is_dir($jtree_dir) ) {
+			if ( !@mkdir( $jtree_dir, 0777 ) ) {
+				echo " Error: $jtree_dir : " . $mid . " Failed to create directory., 디렉토리를 생성하지 못했습니다. ";
+				m_("ERROR mid:" . $mid . ", dir create OK : " . $jtree_dir);	//exit;
+			} else {
+				m_("mid:" . $mid . ", dir create OK : " . $jtree_dir);
+			}
+		}
+	} else {
+		echo "Error mid none";
+		exit;
+	}
 
-	$runfile = $path . $mid . "/" . $sys_pg . "_run.html";
-	//$insfile = $path . $mid . "/" . $sys_pg . "_ins.html";
-	//$updfile = $path . $mid . "/" . $sys_pg . "_upd.html";
-
-	$fsr = fopen("$runfile","w+");	//실행파일
-	//$fsi = fopen("$insfile","w+");	//등록파일 
-	//$fsu = fopen("$updfile","w+");	//변경파일
+	$path = KAPP_PATH_T_ . "/file/" . $mid . "/";
+	$runfile = $path . $sys_pg . "_run.html";
+	$fsr = fopen("$runfile","w+");	//실행파일	//m_("path: " . $path );//path: /home1/kappsystem/public_html/kapp/file/
 
 function funcrs($rsr_submenu) {
 	
@@ -110,16 +111,12 @@ function funcrs($rsr_submenu) {
 	global $fsr; //, $fsi, $fsu;
 	global $imgtype1,$imgtype2,$imgtype3, $fontcolor, $fontsize, $bgcolor, $fontface;
 	global $make_type, $run_mode, $book_num;
-	global $linkurl, $linkwww;
+	global $linkurl, $linkwww, $tkher;
 
 	$i = $i + 1;
-
 	$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$rsr_submenu' order by sys_disno, sys_submenu ";
-
 	$result = sql_query( $sql);
-
 	$div_id = $sys_pg . $intloop;
-
 	while( $rs2 = sql_fetch_array($result)) {
 		$rssys_menu     = $rs2['sys_menu'];
 		$rssys_menutit  = $rs2['sys_menutit'];
@@ -140,13 +137,8 @@ function funcrs($rsr_submenu) {
 			<br><font color=".$fontcolor.">--------------------<br>";
 
 			fwrite( $fsr, $link_url_run." \r\n");		/////항목명 출력
-			//fwrite( $fsu, $link_url_run." \r\n");		/////항목명 출력
-			//fwrite( $fsi, $link_url_run." \r\n");		/////항목명 출력
 
 		} else {
-			//if ( $rssys_link == "http://"  ||  $rssys_link == "" ) {
-				//$rssys_link = "http://urllink.net";
-			//}
 			$mid		= $rs2['sys_userid'];
 			$num		= $rs2['sys_pg'];
 			$pg		= $rs2['sys_link'];
@@ -164,7 +156,6 @@ function funcrs($rsr_submenu) {
 			} else if( strpos($link_, '_r1.htm') !== false) {  
 				$url = $linkwww . $link_;  
 				$tg = "solpa_user_r";  
-//			} else if(strpos($link_, 'contents/index.php') !== false) {  
 			} else if( strpos( $link_, 'index5.php') !== false) {  
 				$url = $linkwww . $link_;  
 				$tg = "solpa_user_r";  
@@ -239,14 +230,9 @@ function funcrs($rsr_submenu) {
 }//end function
 
 
-//&nbsp;&nbsp;<img src=../folder2.gif align=absmiddle> 
-
-
-/////////////////////////////////////////////////////////////////////////////////////////
-
 //////////////////////////< 스킨 select >///////////////////////////////////////////////////////
 
-$skin_sql = "SELECT * from menuskin where sys_pg = '$sys_pg' ";
+$skin_sql = "SELECT * from {$tkher['menuskin_table']} where sys_pg = '$sys_pg' ";
 $result = sql_query( $skin_sql );
 $skinrs = sql_fetch_array($result);
 
@@ -263,38 +249,17 @@ if ( $skinrs == "" ) {
 	$fontcolor	= $skinrs['fontcolor'];	/////글자색
 	$fontface	= $skinrs['fontface'];	/////글꼴
 	$fontsize	= $skinrs['fontsize'];	/////글자크기
-	//$imgtype1	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype1'];	/////이미지1(닫힘)
-	//$imgtype2	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype2'];	/////이미지2(열림)
-	//$imgtype3	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype3'];	/////이미지3(하위)
-//	$imgtype1	= $linkwww . "/cratree/skins_treeicon/as00/".$skinrs['imgtype1'];	/////이미지1(닫힘)
-//	$imgtype2	= $linkwww . "/cratree/skins_treeicon/as00/".$skinrs['imgtype2'];	/////이미지2(열림)
-//	$imgtype3	= $linkwww . "/cratree/skins_treeicon/as00/".$skinrs['imgtype3'];	/////이미지3(하위)
 	$imgtype1	= KAPP_URL_T_ . "/icon/".$skinrs['imgtype1'];	/////이미지1(닫힘)
 	$imgtype2	= KAPP_URL_T_ . "/icon/".$skinrs['imgtype2'];	/////이미지2(열림)
 	$imgtype3	= KAPP_URL_T_ . "/icon/".$skinrs['imgtype3'];	/////이미지3(하위)
 }
-////////////////////////////////////////////////////
-	/*
-	$bgcolor	= "#cccccc";		/////배경색
-	$fontcolor	= "black";			/////글자색
-	$fontface	= "Arial";			//"돋움체";			/////글꼴
-	$fontsize	= "12";				/////글자크기
-	$imgtype1	= "folder.gif";		/////이미지1(닫힘)
-	$imgtype2	= "folder1.gif";	/////이미지2(열림)
-	$imgtype3	= "folder2.gif";	/////이미지3(하위)
-
-	$imgtype1	= "folder.gif";	/////이미지1(닫힘)
-	$imgtype2	= "folder1.gif";	/////이미지2(열림)
-	$imgtype3	= "folder2.gif";	/////이미지3(하위)
-	*/
-//////////////////////////////////////< 스킨 select end >////////////////////////
 
 ////////////////// run   /////////////////////////////////////////////////
 
 fwrite($fsr,"<html> \r\n");
 fwrite($fsr,"<head> \r\n");
 fwrite($fsr,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
-fwrite($fsr,"<TITLE>AppGenerator.net solpakan89@gmail.com - Made in ChulHo Kang</TITLE> \r\n");
+fwrite($fsr,"<TITLE>K-APP solpakan89@gmail.com - Made in ChulHo Kang</TITLE> \r\n");
 fwrite($fsr,"<link rel='shortcut icon' href='".$linkwww."/logo/logo25a.jpg'> \r\n");
 
 fwrite($fsr,"<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> \r\n");
@@ -352,21 +317,15 @@ fwrite($fsr,"			} else if (pg.indexOf( 'https://')>=0 ) \r\n");
 fwrite($fsr,"			{ \r\n");
 fwrite($fsr,"				document.click_run.target='_blank';  \r\n");
 fwrite($fsr,"				document.click_run.target_.value='_top'; \r\n");
-//fwrite($fsr,"				document.click_run.action= '../cratree_coinadd_menu.php';     \r\n");
 fwrite($fsr,"				document.click_run.action= './cratree_run_member.php'; \r\n");    
-
 fwrite($fsr,"				document.click_run.submit();     \r\n");
 fwrite($fsr,"			} else { \r\n");
 fwrite($fsr,"				document.click_run.target=target_;   // add  \r\n");
 fwrite($fsr,"				document.click_run.target_.value=target_;     \r\n");
-//fwrite($fsr,"				document.click_run.action= '../cratree_coinadd_menu.php'; \r\n"); 
 fwrite($fsr,"				document.click_run.action= './cratree_run_member.php'; \r\n");    
-
 fwrite($fsr,"				document.click_run.submit();     \r\n");
 fwrite($fsr,"			} \r\n");
-
 fwrite($fsr,"	}   \r\n");
-
 
 //---------------- add end 2018-06-23 ---------------------------------
 fwrite($fsr,"//--> \r\n");
@@ -389,13 +348,12 @@ fwrite($fsr,"		scrollbar-arrow-color: #99ccff; \r\n");
 fwrite($fsr,"	} \r\n");
 fwrite($fsr,"</style> \r\n");
 fwrite($fsr,"</head> \r\n");
-//fwrite($fsr,"<body bgcolor='".$bgcolor."' oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0'> \r\n");
 fwrite($fsr,"<body bgcolor='black' oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0'> \r\n");
 
 fwrite($fsr,"	<form name='click_run' action='' method='POST' enctype='multipart/form-data' target='url_link_tree_solpa_user_r'> \r\n");
-fwrite($fsr,"	<input type='hidden' name='mid' value='<?=$mid?>'> \r\n");
+fwrite($fsr,"	<input type='hidden' name='mid' value='$mid'> \r\n");
 fwrite($fsr,"	<input type='hidden' name='num' > \r\n"); 
-fwrite($fsr,"	<input type='hidden' name='sys_pg' value='<?=$sys_pg?>' > \r\n");
+fwrite($fsr,"	<input type='hidden' name='sys_pg' value='$sys_pg' > \r\n");
 fwrite($fsr,"	<input type='hidden' name='sys_menu' > \r\n");
 fwrite($fsr,"	<input type='hidden' name='sys_submenu' > \r\n");
 fwrite($fsr,"	<input type='hidden' name='pg' > \r\n");
@@ -409,8 +367,7 @@ fwrite($fsr,"	\r\n");
 
 fwrite($fsr,"<table border='0' > \r\n");
 
-//fwrite($fsr,"   <a href='#' id='$sys_pg' class='solpa_tree_main' target='solpa_user_r'><img src='".$linkwww."/logo/logo.png' id=". $sys_pg." class='solpa_tree_main' style='cursor: hand' align='absmiddle' ></a> <br> \r\n");
-fwrite($fsr,"   <a href='https://appgenerator.net' id='$sys_pg' class='solpa_tree_main' target='_blank'><img src='".$linkwww."/logo/logo.png' id=". $sys_pg." class='solpa_tree_main' style='cursor: hand' align='absmiddle' ></a> <br> \r\n");
+fwrite($fsr,"   <a href='".KAPP_URL_T_."' id='$sys_pg' class='solpa_tree_main' target='_blank'><img src='".$linkwww."/logo/logo.png' id=". $sys_pg." class='solpa_tree_main' style='cursor: hand' align='absmiddle' ></a> <br> \r\n");
 
 fwrite($fsr,"<tr> \r\n");
 fwrite($fsr,"<td> \r\n");
@@ -431,7 +388,6 @@ fwrite($fsr," \r\n");
 fwrite($fsr," \r\n");
 
 fwrite($fsr,"<td style='background-color:".$bgcolor."'> \r\n");// bgcolor add 2021-10-09
-
 
 ////트리 메뉴 최상위 항목 가져옴
 $sql_root = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg = '$sys_pg' and sys_level <> 'client' order by sys_disno, sys_menu ";
@@ -472,11 +428,7 @@ fwrite($fsr,"            <td colspan='2' bgcolor='".$fontcolor."' height='1'></t
 fwrite($fsr,"          </tr> \r\n");
 fwrite($fsr,"          <tr> \r\n");
 
-fwrite($fsr,"            <td height='12' align='left' style='color:$fontcolor;font-size:$fontsize;'><a href='./".$sys_pg."_menu.html' target='solpa_user_r' title='Launch the drop-down menu.'>[".$rssys_treetit."]</a></td> \r\n");
-
-//fwrite($fsr,"            <td height='15' align='center' style='color:$fontcolor; font-size:$fontsize; font-weight:bold;' title='Add note item'><a href='".$linkurl."/my_editor2_book_insert_menu.php?book_num=$sys_pg' id='$sys_pg' class='solpa_tree_main' target='solpa_user_r'><img src='".$linkwww."/logo/seed.png' width='20' height='15'>Add</a></td> \r\n");
-
-fwrite($fsr,"            <td height='15' align='center' style='color:$fontcolor; font-size:12; font-weight:bold;' title='Add note item'><a href='".$linkurl."/my_editor2_book_insert_menu.php?book_num=$sys_pg' id='$sys_pg' class='solpa_tree_main' target='solpa_user_r'><img src='".$linkwww."/logo/seed.png' width='20' height='15'>Add</a></td> \r\n");
+fwrite($fsr,"            <td height='12' align='left' style='color:$fontcolor;font-size:$fontsize;'><a href='".KAPP_URL_T_."/menu/index.php' target='solpa_user_r' title='Launch the drop-down menu.'>[".$rssys_treetit."]</a></td> \r\n");
 
 fwrite($fsr,"          </tr> \r\n");
 fwrite($fsr,"          <tr> \r\n");
@@ -486,7 +438,6 @@ fwrite($fsr,"          </tr> \r\n");
 fwrite($fsr,"          <tr> \r\n");
 fwrite($fsr,"          <td colspan='1' style='color:gray;font-size:9px;'>If the registered information is not displayed, delete the browsing history and try again!</td>\r\n");
 fwrite($fsr,"          </tr> \r\n");
-
 
 fwrite($fsr,"</td> \r\n");
 
@@ -499,17 +450,9 @@ fwrite($fsr,"</html> \r\n");
 
 	fclose($fsr); 
 		
-		/////////////< 하위 프레임 파일(실행) >//////////////////////////////////////
-		//$xxfile = "../cratree/g_source/" . $sys_pg . "_runf.html";
-		//$runfile = "./" . $from_session_id . "/" . $sys_pg . "_run.html";	
-		//$fsr = fopen("$runfile","w+");	//실행파일
-		//////////////////////  2012 1.2 add  /////////////////////////
-		// tree_remakew
+	/////////////< 하위 프레임 파일(실행) >//////////////////////////////////////
 	if ( $run_mode != 'cratree_update' && $run_mode != 'cratree_insert' && $run_mode != 'cratree_delete' && $run_mode!='treebom_insw_book' && $run_mode != 'cratree_update_book' && $run_mode != 'cratree_delete_book' || $run_mode=='cratree_booktreeupdate') {
-		//echo "<script>alert(' $sys_pg, $sys_link, $from_session_id'); </script>";  
-
- 		///////////////////////////////////////////////////////////////
-		$xxfile = $path . $mid ."/". $sys_pg . "_runf.html"; 
+		$xxfile = $path . $sys_pg . "_runf.html"; 
 		
 		$ft = fopen("$xxfile","w+");
 		fwrite($ft,"<html> \r\n");
@@ -533,37 +476,27 @@ fwrite($fsr,"</html> \r\n");
 	
 	}
 	/////////////< 하위 프레임 파일(실행) 끝 >//////////////////////////////////////
-	/////////////< 하위 프레임 파일(등록) >//////////////////////////////////////
-	///////////< 하위 프레임 파일(변경) 끝 >//////////////////////////////////////
-	///////////////< top menu >///////////////////////////////////////////    
-
 	//----------------------------------------------
-
 
 include('../include/lib/pclzip.lib.php');
 
 $zf		= $sys_pg . '_tree_menu.zip';
-$zff	= "./" . $mid . "/" . $zf;
+$zf_url	= KAPP_URL_T_ . "/file/" . $mid . "/" . $zf;
+$zff	= KAPP_PATH_T_ . "/file/" . $mid . "/" . $zf;
+
 $zipfile = new PclZip($zff);//압축파일.zip
+//m_("2 zipname: " . $zipfile->zipname);
+//2 zipname: /home1/ledsignart/public_html/kapp/file/solpakan_naver.com/solpakan_naver.com1747561567_tree_menu.zip
 
 $data	 = array();
 
-$file_php1 = "./" . $mid. "/" . $sys_pg . "_runf.html";
-$file_php2 = "./" . $mid. "/" . $sys_pg . "_run.html";
+$file_php1 = KAPP_URL_T_ . "/file/" . $mid. "/" . $sys_pg . "_runf.html";
+$file_php2 = KAPP_URL_T_ . "/file/" . $mid. "/" . $sys_pg . "_run.html";
 
-//$file_pizza = "pizza.png";
-//$file_seed = "seed.png";
+$file_phpP1 = KAPP_PATH_T_ . "/file/" . $mid. "/" . $sys_pg . "_runf.html";
+$file_phpP2 = KAPP_PATH_T_ . "/file/" . $mid. "/" . $sys_pg . "_run.html";
 
-//$file_php3 = "./cratree_coinadd_menu.php";
-//$file_php3 = "./cratree_run_member.php";
-
-//	$crasin_tm	= "crasin_tm.jpg";	/////이미지3(하위)
-//	$logo_png	= "logo.png";	/////이미지3(하위)
-
-//$data	= array( $file_php ); //"압축할파일","압축할 디렉토리"
-//$data = array( $file_php1, $file_php2, $imgtype1, $imgtype2, $imgtype3, $logo_png, $crasin_tm, $file_php3, $file_pizza, $file_seed );	
-
-$data = array( $file_php1, $file_php2 );	
+$data = array( $file_phpP1, $file_phpP2 );	
 
 $create	= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH); 
 echo "<pre>";
@@ -571,11 +504,11 @@ echo "<pre>";
 
 ?> 
 	<h3> Created OK! tree menu_code:<?php echo $file_php1; ?> , Zip File:<?=$zf?></h3>
-	<h3> <a href='<?=$zff?>' target=_blank>[ Download Action:<?=$zf?> ]</a></h3> 
+	<h3> <a href='<?=$zf_url?>' target=_blank>[ Download Action:<?=$zf?> ]</a></h3> 
 <?php
 if ( $H_LEV > 1 ){ // 7-> 0 으로 변경. 2020-11-19
 ?>
-	<h3><a href='./<?=$file_php1?>' target='_blank'>[ tree RUN:<?=$file_php1?> ]</a> 
+	<h3><a href='<?=$file_php1?>' target='_blank'>[ tree RUN:<?=$file_php1?> ]</a> 
 			</h3>  <!-- tree menu -->
 
 	<h3>file 1:<?=$file_php1?> </h3>
@@ -586,3 +519,4 @@ if ( $H_LEV > 1 ){ // 7-> 0 으로 변경. 2020-11-19
 <!-- 포인터가 감소 되었습니다. 소스코드를 다운로드하세요!  -->
 </body>
 </html>
+

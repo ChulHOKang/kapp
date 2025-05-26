@@ -1,15 +1,22 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/*
+		replyD_check.php
+	*/
 	//$infor   = $_SESSION['infor'];
-	$infor = $_POST['infor'];
-	$page  = $_POST['page'];
-	$list_no = $_POST['list_no'];
-	$search_choice = $_POST['search_choice'];
-	$search_text   = $_POST['search_text'];
+	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	if( isset($_POST['page']) ) $page  = $_POST['page'];
+	if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
+	if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
+	else $search_choice = "";
+	if( isset($_POST['search_text']) ) $search_text   = $_POST['search_text'];
+	else $search_text = "";
+
+	if( isset($_POST['password']) ) $password = $_POST['password'];
+	else $password = "";
 
 	if( $_POST['mode'] !== "reply_funcTT") {
 		m_("unusual approach");   //비 정상적 접근
-		//header('Location: '.$url['root'].'bbs/modify_done.php');
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit;
 	}
@@ -20,7 +27,6 @@
 	$H_EMAIL = $member['mb_email'];
 	//-------------------------------------------------------
 	$url = array();
-	//$http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
 	$url['root'] = KAPP_URL_T_ . '/'; // $url['root'] = 'http://'.$_SERVER['HTTP_HOST'].'/contents/'; 
 	$home = $url['root'];
 	//--------------------------------------------------------
@@ -109,12 +115,12 @@
 		id = '$H_ID',
 		name = '$H_NICK',
 		email = '$H_EMAIL',
-		home = '$home',
+		home = '".KAPP_URL_T_."',
 		ip = '$ip',
 		in_date = '$in_date',
 		subject = '$subject',
 		context = '$content',
-		password = '".$_POST['password']."',
+		password = '".$password."',
 		file_name = '$upfile2',
 		file_wonbon = '$upfile_name',
 		file_size = '$upfile_size',

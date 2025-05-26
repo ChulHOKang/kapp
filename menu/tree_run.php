@@ -1,10 +1,12 @@
   <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	//$from_session_id = $H_ID;
-	if( !$H_ID || $H_LEV < 2) {
-		//m_("Login Please ");
-	}
+	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
+	else $H_LEV = 0;
+	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
+	else $H_EMAIL = '';
+
+	connect_count($host_script, $H_ID, 0,$referer);	// log count
    /* ------------------------------------------ 최종 사용 프로그램 임다. 중요.
    /t/menu/tree_run.php <- /t/menu/index_menu.php <- /t/tree_menu_guest.php
                           : Guest View Mobile <- /t/menu/tree_menu_updateM2.php 을 copy
@@ -20,8 +22,11 @@
    -------------------------------------------------------- */
    //m_("mid:" . $_REQUEST['mid']);
    //link, link src: https://ailinkapp.com/t/https://ailinkapp.com/t/bbs/board_list3m.php
-   $mid = $_REQUEST['mid'];
-   if( $_POST['mode'] == 'SearchPG'){
+   if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
+   else $mid ='';
+   if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+   else $mode ='';
+   if( $mode == 'SearchPG'){
 		$_SESSION['sys_pg'] = $_POST['sys_pg'];
 		$run_ = "tree_run.php?sys_pg=" . $_POST['sys_pg'] . "&open_mode=on". "&mid=".$mid;
 		echo "<script>window.open( '".$run_."' , '_top', ''); </script>";
@@ -31,8 +36,9 @@
 <html> 
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Appgenerator Tree Menu. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
+
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
@@ -358,19 +364,17 @@ function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, t
 <body oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white; overflow:hidden; margin-bottom: 30px;'> 
 
 <?php
-$mode = $_POST['mode'];
-$sys_subtitS = 'App Generator';
+if( isset($_REQUEST['sys_subtitS']) ) $sys_subtitS = $_REQUEST['sys_subtitS'];
+else $sys_subtitS = 'App Generator';
+
 	if( isset( $_REQUEST['sys_pg'] ) ) { 
 		$sys_pg	= $_REQUEST['sys_pg']; 
-		$sys_subtitS = $_REQUEST['sys_subtitS'];
 	} else if( isset($_POST['sys_pg']) ) {
 		$sys_pg	= $_POST['sys_pg']; 
 	} else if( isset($_SESSION['sys_pg']) ) {
 		$sys_pg = $_SESSION['sys_pg'];
-		$sys_subtitS = $_SESSION['sys_subtitS'];
-	} else if( $_POST['sys_pgS'] ) {
+	} else if( isset($_POST['sys_pgS']) ) {
 		$sys_pg = $_POST['sys_pgS']; 
-		$sys_subtitS = $_POST['sys_subtitS'];
 	} else {
 		$sys_pg	= get_session("sys_pg"); 
 	}
@@ -380,7 +384,7 @@ $sys_subtitS = 'App Generator';
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
-		$sys_subtitS = $rs['sys_subtit'];
+		$sys_subtitS = $rs['sys_subtit'];		//m_("mid: ". $mid . ", sys_pg=".$sys_pg); //mid: dao, sys_pg=
 	} else if( isset($sys_pg) ) {
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
 		$rt = sql_query( $sql);
@@ -477,8 +481,7 @@ if ( $tot == 0 ) {
 			<!-- ------------------------------------------------------------ -->			 
 			<SELECT name='sys_pg_sel' onchange="sys_pg_change(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" <?php echo" title='Upgrade the program.' "; ?> >
 <?php 
-			$mode =$_POST['mode'];
-		if( $_POST['mode']=='SearchPG') {
+		if( $mode=='SearchPG') {
 			$sys_subtitS = $_POST['sys_subtitS'];
 			$sys_pg = $_POST['sys_pg'];
 ?>
@@ -610,7 +613,10 @@ If it does not work, <br>please unblock the pop-up window.
 
 <?php
 	//m_("KAPP_HOST_: " . KAPP_HOST_); // moado.net
-	$sys_jong = $_REQUEST['sys_jong']; //mid: dao, tree_menu_guest num: dao1699235009, sys_jong: link, sys_link: , board_num: , job_addr: 
+	if( isset($_REQUEST['sys_jong'])) $sys_jong = $_REQUEST['sys_jong']; 
+	else if( isset($_POST['sys_jong'])) $sys_jong = $_POST['sys_jong']; 
+	else $sys_jong = '';
+	//mid: dao, tree_menu_guest num: dao1699235009, sys_jong: link, sys_link: , board_num: , job_addr: 
 	//m_( "mid: ".$mid.", tree_menu_guest num: ".$_REQUEST['num'].", sys_jong: ".$sys_jong.", sys_link: ".$_REQUEST['sys_link'].", board_num: ".$_REQUEST['board_num'].", job_addr: ".$_REQUEST['job_addr']);
 
 	if( isset($_REQUEST['num']) && $sys_jong=="note" ){ // index_create - 생성시 여기를 탄다.

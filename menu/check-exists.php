@@ -13,9 +13,7 @@
 	//$targetFolder = '/uploads'; // Relative to the root and should match the upload folder in the uploader script
 
 	$infor   = $_SESSION['infor'];
-	if( $infor > 0 ) {
-		include "./infor.php";
-	}
+	include "./infor.php";
 
 	$f_path1			= KAPP_PATH_T_ . "/file/" . $mf_infor[53];	// 53:maker id.
 	$f_path2			= $f_path1 . "/aboard_".$mf_infor[2]; // 2: board name

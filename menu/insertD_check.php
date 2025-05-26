@@ -17,12 +17,10 @@
 		$H_EMAIL= '';  
 	}
 
-	$url = array();
-	$http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-	$url['root'] = KAPP_URL_T_; //$http . $_SERVER['HTTP_HOST'] . '/t/'; 
-
-	if( isset($_POST['infor']) ) $infor = $_POST['infor'];	// $infor = $_SESSION['infor']; //m_("check - infor: " . $infor); exit; call: insertD.php
-	else $infor = '';
+	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	else {
+		echo "<script>history.back(-1);</script>"; exit;
+	}
 
 	include_once('./infor.php');
 
@@ -47,9 +45,8 @@
 	$content = special_chk( $content );
 	$in_dateA	= date("Y-m-d H:i:s", time());
 	$in_date	= time();
-	$host = $_SERVER['HTTP_HOST']; //$_SESSION['http'];
 
-	$q = " INSERT INTO {$tkher['ap_bbs_table']} set infor=$infor, email='$H_EMAIL', subject='$subject', content='$content', reg_date='$in_date', host='$host' ";
+	$q = " INSERT INTO {$tkher['ap_bbs_table']} set infor=$infor, email='$H_EMAIL', subject='$subject', content='$content', reg_date='$in_date', host='".KAPP_URL_T_."' ";
 	$result = sql_query($q); //$result = $mysqli->query($q);
 	if( $result){
 		m_("ap_bbs - insert OK");
@@ -126,6 +123,7 @@
 		id = '$H_ID',
 		name = '$H_NICK',
 		email = '$H_EMAIL',
+		home = '".KAPP_URL_T_."',
 		ip = '$ip',
 		in_date = $in_date,
 		subject = '$subject',
@@ -147,19 +145,13 @@
 if( $result==false) {
     $_SESSION['writing_status'] = 'NO';
 	echo "write---NO";
-	m_("write Error, url:" . $url['root']);
+	m_("write Error, url:" . KAPP_URL_T_);
 } else {
     $_SESSION['writing_status'] = 'YES';
 	echo "write---YES";
-	m_("write OK, url:" . $url['root']);
+	m_("write OK, url:" . KAPP_URL_T_);
 }
 
-//m_('insertD_check - Location: '.$url['root'].'menu/listD.php?infor='.$infor.'&page='.$page);
-
 header('Location: listD.php?infor='.$infor.'&page='.$page.'&menu_mode='.$menu_mode);
-//header('Location: '.$url['root'].'menu/listD.php?infor='.$infor.'&page='.$page.'&menu_mode='.$menu_mode);
-//header('Location: '.$url['root'].'bbs/write_done.php');
-//exit();
-
 
 ?>

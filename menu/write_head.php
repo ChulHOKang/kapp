@@ -1,15 +1,10 @@
+<?php
+	// write_head.php
+?>
 <!-- 글쓰기<br /> -->
 <div class="content">
 <div class="body">
 	<!-- 에디터 시작 -->
-	<!--
-		@decsription
-		등록하기 위한 Form으로 상황에 맞게 수정하여 사용한다. Form 이름은 에디터를 생성할 때 설정값으로 설정한다.
-	-->
-	<!-- <form name="tx_editor_form" id="tx_editor_form" action="write_check.php" method="post" accept-charset="utf-8"> -->
-		<!-- <div id="input-subject-box">
-			제목 : <input type ="text" name = "subject" size ="90">
-		</div> -->
 		<!-- 에디터 컨테이너 시작 -->
 		<div id="tx_trex_container" class="tx-editor-container">
 			<!-- 사이드바 -->
@@ -28,33 +23,31 @@
 							</div>
 						</li>
 						<!-- 이미지 첨부 버튼 끝 --><!-- 2022-1-31 제거 칸. -->
-						<!-- <li class="tx-list">
+						<li class="tx-list">
 							<div unselectable="on" id="tx_file" class="tx-file tx-btn-trans">
-								<a href="javascript:;" title="파일" class="tx-text">파일</a>
+								<a href="javascript:;" title="File" class="tx-text">파일</a>
 							</div>
-						</li> -->
+						</li>
 
-<!-- YouTube 영상 삽입 커스텀 버튼 시작 -->
+						<!-- YouTube 영상 삽입 커스텀 버튼 시작 -->
 
-<li class="tx-list">
-    <div style="height:25px;font-size:11px;margin-top:3px;">
-        <a href="javascript:;" onClick="youTubeImplant();" title="YouTube">
-            <div style="float:left;display:flex;align-items:center;">
-                <img src="./images/icon/editor/youtube-logo.png" style="height:12px;font-size:9px;margin-top:3px;" />
-            </div>
-            <div style="float:left;display:flex;align-items:center;margin-top:2px;"></div>
-        </a>
-    </div>
-</li>
-<li class="tx-list"><!-- <img src="<?=KAPP_URL_T_?>/include/img/url_link.gif" style="height:12px;font-size:9px;margin-top:3px;" /> -->
-	<div unselectable="on" class="tx-btn-bg tx-link" id="tx_link">
-		<a href="javascript:;" class="tx-icon" title="URL Link(Ctrl+K)">URL-Link</a>
-	</div>
-	<div id="tx_link_menu" class="tx-link-menu tx-menu"></div>
-</li>
-
-
-<!-- YouTube 영상 삽입 커스텀 버튼 종료 -->
+						<li class="tx-list">
+							<div style="height:25px;font-size:11px;margin-top:3px;">
+								<a href="javascript:;" onClick="youTubeImplant();" title="YouTube">
+									<div style="float:left;display:flex;align-items:center;">
+										<img src="./images/icon/editor/youtube-logo.png" style="height:12px;font-size:9px;margin-top:3px;" />
+									</div>
+									<div style="float:left;display:flex;align-items:center;margin-top:2px;"></div>
+								</a>
+							</div>
+						</li>
+						<li class="tx-list">
+							<div unselectable="on" class="tx-btn-bg tx-link" id="tx_link">
+								<a href="javascript:;" class="tx-icon" title="URL Link(Ctrl+K)">URL-Link</a>
+							</div>
+							<div id="tx_link_menu" class="tx-link-menu tx-menu"></div>
+						</li>
+						<!-- YouTube 영상 삽입 커스텀 버튼 종료 -->
 
 						<!-- 2022-1-31 제거 칸. -->
 						<!-- <li class="tx-list">
@@ -75,7 +68,8 @@
 						</li> -->
 					</ul>
 					<!-- 사이드바 / 우측영역 -->
-					<!-- 2023-11-27 <ul class="tx-bar tx-bar-right">
+					<!-- 2023-11-27
+					<ul class="tx-bar tx-bar-right">
 						<li class="tx-list">
 							<div unselectable="on" class="tx-btn-lrbg tx-fullscreen" id="tx_fullscreen">
 								<a href="javascript:;" class="tx-icon" title="넓게쓰기 (Ctrl+M)">넓게쓰기</a>
@@ -266,9 +260,9 @@
 							</div>
 							<div class="tx-menu-footer">
 								<img class="tx-menu-confirm"
-									 src="<?=KAPP_URL_T_?>/menu/images/icon/editor/btn_confirm.gif?rv=1.0.1" title=""/>
+									 src="./images/icon/editor/btn_confirm.gif?rv=1.0.1" title=""/>
 								<img class="tx-menu-cancel" hspace="3"
-									 src="<?=KAPP_URL_T_?>/menu/images/icon/editor/btn_cancel.gif?rv=1.0.1" title=""/>
+									 src="./images/icon/editor/btn_cancel.gif?rv=1.0.1" title=""/>
 							</div>
 						</div>
 					</li>
@@ -405,58 +399,54 @@
 
 			<!-- 편집영역 시작 -->
 				<!-- 에디터 Start -->
-	<div id="tx_canvas" class="tx-canvas">
-		<div id="tx_loading" class="tx-loading"><div><img src="<?=KAPP_URL_T_?>/menu/images/icon/editor/loading2.png" width="113" height="21" align="absmiddle"/></div></div>
-		<div id="tx_canvas_wysiwyg_holder" class="tx-holder" style="display:block;">
-			<iframe id="tx_canvas_wysiwyg" name="tx_canvas_wysiwyg" allowtransparency="true" frameborder="1"></iframe>
-		</div>
-		<div class="tx-source-deco">
-			<div id="tx_canvas_source_holder" class="tx-holder">
-				<textarea id="tx_canvas_source" rows="30" cols="30"></textarea>
-			</div>
-		</div>
-		<div id="tx_canvas_text_holder" class="tx-holder">
-			<textarea id="tx_canvas_text" rows="30" cols="30"></textarea>
-		</div>
-	</div>
-	<!-- ------------------------------------------------------------------------- -->
-					<!-- 높이조절 Start -->
-	<div id="tx_resizer" class="tx-resize-bar">
-		<div class="tx-resize-bar-bg"></div>
-		<img id="tx_resize_holder" src="<?=KAPP_URL_T_?>/menu/images/icon/editor/btn_drag01.gif" width="58" height="12" unselectable="on" title="" />
-	</div>
-	<!-- <div class="tx-side-bi" id="tx_side_bi">
-		<div style="text-align: right;">
-			<img hspace="4" height="14" width="78" align="absmiddle" src="<?=KAPP_URL_T_?>/menu/images/icon/editor/editor_bi.png" title='Daum Editor'/>
-		</div>
-	</div> -->
-				<!-- 편집영역 끝 -->
-			<!-- 첨부박스 시작 -->
-				<!-- 파일첨부박스 Start -->
-	<div id="tx_attach_div" class="tx-attach-div">
-		<div id="tx_attach_txt" class="tx-attach-txt">File Attache</div>
-		<div id="tx_attach_box" class="tx-attach-box">
-			<div class="tx-attach-box-inner">
-				<div id="tx_attach_preview" class="tx-attach-preview"><p></p><img src="<?=KAPP_URL_T_?>/menu/images/icon/editor/pn_preview.gif" width="147" height="108" unselectable="on"/></div>
-				<div class="tx-attach-main">
-					<div id="tx_upload_progress" class="tx-upload-progress"><div>0%</div><p>Uploading files.</p></div>
-					<ul class="tx-attach-top"><!-- 파일을 업로드하는 중입니다. -->
-						<li id="tx_attach_delete" class="tx-attach-delete"><a>Delete all</a></li><!-- 전체삭제 -->
-						<li id="tx_attach_size" class="tx-attach-size">
-							File: <span id="tx_attach_up_size" class="tx-attach-size-up"></span>/<span id="tx_attach_max_size"></span>
-						</li>
-						<li id="tx_attach_tools" class="tx-attach-tools">
-						</li>
-					</ul>
-					<ul id="tx_attach_list" class="tx-attach-list"></ul>
+			<div id="tx_canvas" class="tx-canvas">
+				<div id="tx_loading" class="tx-loading"><div><img src="./images/icon/editor/loading2.png" width="113" height="21" align="absmiddle"/></div></div>
+				<div id="tx_canvas_wysiwyg_holder" class="tx-holder" style="display:block;">
+					<iframe id="tx_canvas_wysiwyg" name="tx_canvas_wysiwyg" allowtransparency="true" frameborder="1"></iframe>
+				</div>
+				<div class="tx-source-deco">
+					<div id="tx_canvas_source_holder" class="tx-holder">
+						<textarea id="tx_canvas_source" rows="30" cols="30"></textarea>
+					</div>
+				</div>
+				<div id="tx_canvas_text_holder" class="tx-holder">
+					<textarea id="tx_canvas_text" rows="30" cols="30"></textarea>
 				</div>
 			</div>
-		</div>
-	</div>
-				<!-- 첨부박스 끝 -->
-		</div>
-		<!-- 에디터 컨테이너 끝 -->
-		<!-- <div id="hiddenFile"></div> -->
+			<!-- ------------------------------------------------------------------------- -->
+							<!-- 높이조절 Start -->
+			<div id="tx_resizer" class="tx-resize-bar">
+				<div class="tx-resize-bar-bg"></div>
+				<img id="tx_resize_holder" src="./images/icon/editor/btn_drag01.gif" width="58" height="12" unselectable="on" title="" />
+			</div>
+
+			<!-- 편집영역 끝 -->
+					<!-- 첨부박스 시작 -->
+						<!-- 파일첨부박스 Start -->
+			<div id="tx_attach_div" class="tx-attach-div">
+				<div id="tx_attach_txt" class="tx-attach-txt">File Attache</div>
+				<div id="tx_attach_box" class="tx-attach-box">
+					<div class="tx-attach-box-inner">
+						<div id="tx_attach_preview" class="tx-attach-preview"><p></p><img src="./images/icon/editor/pn_preview.gif" width="147" height="108" unselectable="on"/></div>
+						<div class="tx-attach-main">
+							<div id="tx_upload_progress" class="tx-upload-progress"><div>0%</div><p>Uploading files.</p></div>
+							<ul class="tx-attach-top"><!-- 파일을 업로드하는 중입니다. -->
+								<li id="tx_attach_delete" class="tx-attach-delete"><a>Delete all</a></li><!-- 전체삭제 -->
+								<li id="tx_attach_size" class="tx-attach-size">
+									File: <span id="tx_attach_up_size" class="tx-attach-size-up"></span>/<span id="tx_attach_max_size"></span>
+								</li>
+								<li id="tx_attach_tools" class="tx-attach-tools">
+								</li>
+							</ul>
+							<ul id="tx_attach_list" class="tx-attach-list"></ul>
+						</div>
+					</div>
+				</div>
+			</div>
+					<!-- 첨부박스 끝 -->
+			</div>
+			<!-- 에디터 컨테이너 끝 -->
+			<!-- <div id="hiddenFile"></div> -->
 	<!-- </form> -->
 </div>
 <!-- 에디터 끝 -->

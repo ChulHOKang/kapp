@@ -6,7 +6,7 @@
 	include "./infor.php";  
 	include "./memo_cnt.php"; // function memo_count($board,$no)
 /*
-listD.php :
+	listD.php :
    call : insertD.php, detailD.php, board_list_admin.php
 		: index.php?infor=<?=$rs['no']
 		:/contents/memo_password.php?infor=159&mode=memo_deleteTT&board_name=aboard_tkherdao159&memo_no=3779&list_no=51&page=1&call_pg=detailD.php
@@ -29,7 +29,6 @@ listD.php :
 		$H_LEV	= 0;
 	}
 
-	//$infor				= $_REQUEST[infor]; //include "./infor.php";
 	if( isset($_REQUEST['mode'])) $mode = $_REQUEST['mode'];
 	else if( isset($_POST['mode'])) $mode = $_POST['mode'];
 	else $mode = '';
@@ -51,7 +50,7 @@ listD.php :
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Board App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">

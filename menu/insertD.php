@@ -1,5 +1,8 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/*
+		insertD.php
+	*/
 ?>
 <html>
 <head>

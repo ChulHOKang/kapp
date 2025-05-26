@@ -585,8 +585,8 @@ $dep="";
     <tr>
       <td align='right' width="100%" height="20" >
 <?php
-$e_ad = KAPP_URL_T_ . "/icon/e_admin.gif"; //https://ailinkapp.com/t/menu/.e_admin.gif
-//m_("list_no:$list_no"); https://ailinkapp.com/t/menu/.e_admin.gif
+$e_ad = KAPP_URL_T_ . "/icon/e_admin.gif"; //https://fation.net/t/menu/.e_admin.gif
+//m_("list_no:$list_no"); https://fation.net/t/menu/.e_admin.gif
 //			if($H_LEV === "0" or $mf_infor[8] == $H_ID){
 //			if( $mf_infor[53] == $H_ID ){
 			if($H_LEV > 7 or $mf_infor[53] == $H_ID ){
@@ -607,7 +607,7 @@ $e_ad = KAPP_URL_T_ . "/icon/e_admin.gif"; //https://ailinkapp.com/t/menu/.e_adm
 
 
     <?php
-	/* https://ailinkapp.com/t/menu/.e_insert.gif
+	/* https://fation.net/t/menu/.e_insert.gif
 		// Previous, Next.
         for($i=$mf[0]+1;$i<$mf[0]+5;$i++){
         	   $query="select no from aboard_".$mf_infor[2]." where no='$i'";

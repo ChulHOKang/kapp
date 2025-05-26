@@ -1,14 +1,17 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$from_session_id  = $H_ID;
+	$H_ID	= get_session("ss_mb_id");	$ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
+	else $H_LEV = 0;
+	if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
+	else $H_EMAIL = '';
 
 	/*
-		tree_remakew_book.php : Note Tree Remake 
+		tree_remakew_book_menu.php : Note Tree Remake 
 			call : tree_remake_book_menu.php
 			run : tree_create_menu.php
 	*/
-	if ( !$from_session_id ) {
+	if ( !$H_ID ) {
 		my_msg(" Please login. ");
 		$rungo = "/";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
@@ -17,14 +20,28 @@
 	$make_type		= $_POST['make_type']; 
 	//m_("tree_remakew_book_menu - make_type:$make_type"); //tree_remakew_book_menu - make_type:booktreeupdateM2
 
-	$mid		= $_POST['mid']; 
-	$sys_pg		= $_POST['sys_pg'];
-	$book_num	= $_POST['book_num'];
-	$sys_subtit = $_POST['sys_subtit'];
-	$sys_link	= $_POST['sys_link'];
-	$sys_memo	= $_POST['sys_memo'];
-	$target_	= $_POST['target_'];
-	if ( $from_session_id !== $mid && $H_LEV < 8) {
+	if( isset($_POST['make_type'] )){
+		$mode		= $_POST['mode'];
+		$mid		= $_POST['mid'];
+		$sys_pg		= $_POST['sys_pg'];
+		$book_num	= $_POST['book_num'];
+		$sys_subtit	= $_POST['sys_subtit'];		
+		$sys_link	= $_POST['sys_link'];
+		$sys_memo	= $_POST['sys_memo'];
+		$target_	= $_POST['target_'];
+	} else {
+		$mode = '';
+		$mid = '';
+		$sys_pg	= '';
+		$sys_subtit = '';
+		$sys_subtit = '';
+		$sys_link = '';
+		$sys_memo = '';
+		$target_ = '';
+	}
+
+
+	if( $H_ID !== $mid && $H_LEV < 8) {
 		my_msg(" It is not a constructor. ");	//생성자가 아닙니다.
 		//$rungo = './' . $mid . '/' . $sys_pg . '_r1.htm';
 		echo "<script>window.open( './' , '_top', ''); </script>";
@@ -48,7 +65,7 @@
 
  			///////////< Note tree file Re create >//////////////  
 			$run_mode = 'tree_remakew_book';
-			include "./tree_create_menu.php";  
+			// 2024-06-05 작업막음, include "./tree_create_menu.php";  
 			/////////////////////////////////////////////
  			$rungo = './' . $mid . '/' . $sys_pg.'_r1.htm';
 

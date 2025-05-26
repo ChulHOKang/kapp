@@ -32,8 +32,8 @@
 	else $target_run = '';
 
 	$num = '';
-	if( isset($_REQUEST['num']) ) $num = $_REQUEST['num'];	//$content	= $_REQUEST['content'];
-	else if( isset($_POST['num']) ) $num = $_POST['num'];	//m_("num: " .$num);
+	if( isset($_POST['num']) && $_POST['num'] !=='') $num = $_POST['num'];	//$content	= $_REQUEST['content'];
+	else if( isset($_REQUEST['num']) && $_REQUEST['num'] !=='') $num = $_REQUEST['num'];	//$content	= $_REQUEST['content'];
 	else { m_("error num: " . $num); exit; }//m_("".$num);
 
 	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
@@ -41,7 +41,6 @@
 	if( isset($_POST['seq']) ) $seq = $_POST['seq'];
 	else $seq = '';
 	
-
 	if( $mode == 'del_comment'){
 		$doc_userid	= $_POST['doc_userid'];
 		$sql= "Update {$tkher['webeditor_comment_table']} SET del='1' where seq='$seq' and ( user='$mid' or doc_userid='$doc_userid') "; 
@@ -74,7 +73,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -139,6 +138,7 @@ else $row_user = '';
 if( $row_user == $line['book_name'])
 		$savetype = '1';//단독등록 구분 
 else	$savetype = '0';
+
 $h_lev		= $line['h_lev'];
 $book_name = $line['book_name'];
 $mid			= $line['user'];
@@ -149,7 +149,7 @@ $align			= $line['align'];
 
 $addfile ='';
 
-if( $line ) {
+if( isset($title) ) {
 	//m_("line OK sql_fetch_array "); //line OK sql_fetch_array 
 
 	$content   = $line['content'];
@@ -181,13 +181,13 @@ if( $line ) {
 	if( $H_ID and $H_ID == $row_user || $H_LEV > 7)  {
 ?>
 		<DIV style='background-color:yellow;color:black;text-align:left;'>
-		[ Title :<?= $line['title']?> ] [user:<?=$row_user?> - point:<?=number_format( $member['mb_point'])?>] [view:<?=$view_cnt?>] :
+		[ Title :<?=$title?> ] [user:<?=$row_user?> - point:<?=number_format( $member['mb_point'])?>] [view:<?=$view_cnt?>] :
 		<input type='button' value=' Change ' title='data change upd_func' style='border-radius:20px;' onClick="javascript:upd_func('<?=$num?>','update','1', '<?=$book_name?>', '<?=$target_run?>');">
 		&nbsp;<a href='./download.php?num=<?=$num?>'  style='background-color:blue;color:yellow;border-radius:20px;'><?=$addfile?></a>
 		</DIV>
 <?php } else {?>
 		<DIV style='background-color:yellow;color:black;text-align:left'>
-		[ Title : <?=$line['title']?> ] [user:<?=$row_user?>] [view:<?=$view_cnt?>]
+		[ Title : <?=$title?> ] [user:<?=$row_user?>] [view:<?=$view_cnt?>]
 		</DIV>
 <?php } ?>
 	</form>
@@ -204,7 +204,6 @@ if( $line ) {
 	$result =sql_query($sql);
 	$row_tot = sql_num_rows($result);
 	if( $row_tot > 0 ){ 
-		//m_("fetch tab: " . $tkher['webeditor_comment_table']  . ", tot:" . $row_tot);
 		while( $rs =sql_fetch_array($result) ){
 			$doc_userid =$rs['doc_userid'];
 			$id    =$rs['user'];
@@ -225,9 +224,6 @@ if( $line ) {
 			}
 		}
 	}
-	//else {
-		//m_( "fetch tot: ". $row_tot . ", fetch tab: " . $tkher['webeditor_comment_table'] );
-		//fetch error tab: kapp_webeditor_comment
 		echo "
 			<form name='tx_editor_form' id='tx_editor_form' action='contents_view_menuD.php' method='post' accept-charset='utf-8'>
 				<input type='hidden' name='xmode' value=''>
@@ -242,17 +238,6 @@ if( $line ) {
 		$view_cnt = $line['view_cnt'] + 1;
 		$sql = " update {$tkher['webeditor_table']} set view_cnt=$view_cnt where num = '$num' ";
 		$retok = sql_query( $sql );
-		/*if( $retok ) { 
-			m_(" ok num:" . $num);
-		} else { 
-			//m_(" error num:" . $num); echo "sql: " . $sql; exit;
-		}*/
-		//$sys = " update sys_menu_bom set view_cnt=$view_cnt where book_num = '$num' and sys_pg='$book_name' ";
-		// 2024-01-24 close - cratree_coinadd_menu에서 처리한다.
-		//sql_query( $sys ); 
-		//m_("update sys_menu_bom set view_cnt - 1 book_num= " .$num . " sys_pg=" . $book_name); // index list 에서 클릭시 view 증가한다. - tree_run 실행 한다.
-		//update sys_menu_bom set view_cnt - 1 book_num= dao1703742132 sys_pg=dao1703742132
-	//}
 
 } else {
 		echo "<DIV>error no found num:$num</DIV>";

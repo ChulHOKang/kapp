@@ -1,11 +1,15 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+
+	/*
+		replyD.php
+	*/
 ?>
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Board App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="/logo/logo25a.jpg">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_board_.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
@@ -13,30 +17,45 @@
 
 <?php
 
-	$ss_mb_id		= get_session("ss_mb_id");   //"ss_mb_id";
-	$ss_mb_level	= $member['mb_level'];    //get_session("ss_mb_level");   //"ss_mb_id";
 	$H_ID			= get_session("ss_mb_id");
-	$H_LEV			= $member['mb_level'];  
-	$H_NAME			= $member['mb_name'];  
-	$H_NICK			= $member['mb_nick'];  
-	$H_EMAIL		= $member['mb_email'];  
-	$ip				= $_SERVER['REMOTE_ADDR'];
+	if( !isset($H_ID) && $H_ID !== "" ){ 
+		echo "<script>history.back(-1);</script>"; exit; 
+	} else {
+		$H_EMAIL		= $member['mb_email'];  
+		$H_LEV			= $member['mb_level'];  
+		$H_NAME			= $member['mb_name'];  
+		$H_NICK			= $member['mb_nick'];  
+	}
+	$ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
+	else $search_choice = "";
 
-		$email			= $member['mb_email'];  //		m_("email:$email");//email:solpakan59@gmail.com
-		$mode = $_POST['mode'];
-
-		if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
-		else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
+	if( isset($_POST['search_text']) ) $search_text   = $_POST['search_text'];
+	else $search_text = "";
+	
+		if( isset($_POST['mode']) ){
+			$mode = $_POST['mode'];
+			if( $mode !== 'replyTT' ) {
+				m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
+				echo "<script>history.back(-1);</script>"; exit;
+			}
+		} else echo "<script>history.back(-1);</script>";
 
 		if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
 		else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+		else { 
+			echo "<script>history.back(-1);</script>"; exit; 
+		}
+		$_SESSION['infor'] = $infor;
+
+		if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
+		else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
+		else echo "<script>history.back(-1);</script>";
+		
 		if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 		else if( isset($_POST['page']) ) $page = $_POST['page'];
+		else $page = 1;
 
-		if( $mode != 'replyTT' || !$list_no ) {
-			m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
-			echo "<script>history.back(-1);</script>"; exit;
-		}
 		$in_day = date("Y-m-d H:i");
 
 	include "./infor.php";
@@ -65,14 +84,14 @@
 ?>
 
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<!-- <link rel="stylesheet" href="../../t/include/css/default.css" type="text/css" /> -->
+<link rel="stylesheet" href="../include/css/default.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
 <script type="text/javascript" src="../include/js/common.js"></script>
-<!-- <SCRIPT src="../js/contents_resize.js" type='text/javascript'></SCRIPT> -->
+<script type='text/javascript' src="../include/js/contents_resize.js" ></script>
 
-        <link href="<?php echo KAPP_URL_T_;?>/menu/css/main.css" rel="stylesheet">
-		<link rel="stylesheet" href="<?php echo KAPP_URL_T_;?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
-		<script src="<?php echo KAPP_URL_T_;?>/menu/js/editor_loader.js?environment=development" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/main.css" type="text/css" >
+		<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
+		<script type='text/javascript' src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js?environment=development" charset="utf-8"></script>
 
 <script type="text/javascript">
 
@@ -132,7 +151,7 @@ function data_check(x,y){
 		var nm = x.nameA.value;
 		//var contents = x.contents.value;
 		var contents = document.getElementById("EditCtrl").value;
-		alert('nm:'+nm+' , contents:'+contents);
+		//alert('nm:'+nm+' , contents:'+contents);
 		if(x.nameA.value==''){
 			alert('Please enter a name! ');
 			x.nameA.focus();
@@ -289,63 +308,54 @@ function data_check(x,y){
     $shuffled_str = str_shuffle($str);
 	$auto_char=substr($shuffled_str, 0, 6);
 	//-----------------------------------------------------------------------------------------------------
-	$query="select no,name,context,target,step,re,subject from aboard_" . $mf_infor[2] . " where no=".$list_no;
-//	$query="SELECT * from aboard_" . $mf_infor[2] . " where no='$list_no'";
-	$mq=sql_query($query);
-	$mf=sql_fetch_row($mq);
-	$mf[2]="[ ".$H_ID." Sir ]\n".$mf[2]; // context
-	$mf[6]="Re: ".$mf[6]; //subject
+	//m_("2: " . $mf_infor[2]); //2: tkhersolpakan1746132547
+//	$query="select no,name,context,target,step,re,subject from aboard_" . $mf_infor[2] . " where no=".$list_no;
+	$query="SELECT * from aboard_" . $mf_infor[2] . " where no=". $list_no;
+	//$mq = sql_query($query); // $mf = sql_fetch_row($mq);
+	$mf = sql_fetch($query);	// m_("context: " . $mf['context']; // " , 9: " .$mf[9]);
+	$mf['context'] = "[ ".$H_ID." Sir ]\n" . $mf['context']; // context
+	$mf['subject'] = "Re: ".$mf['subject']; //subject
 
+	$mf_subject = $mf['subject'];
+	$mf_context = $mf['context'];
+	$content = $mf['context'];
+
+	if( isset($_REQUEST['previous']) ) $previous = $_REQUEST['previous'];
+	else  $previous = "";
 ?>
 
 <div class="wrapper">
 		<div id="write_page" class="mainProject">
 
-<!-- <form name='reply_form' action='query_ok_new.php' method='post' enctype="multipart/form-data" > -->
 <form name="tx_editor_form" id="tx_editor_form" action="replyD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 
 		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' />
-<!--		<input type="hidden" name='c_sel'		value='<?=$c_sel?>' />
-		<input type="hidden" name='id'			value='<?=$id?>' />
-		<input type="hidden" name='board'		value='<?=$board?>' />
-		<input type="hidden" name='target_'		value='<?=$target_?>' />
-		<input type="hidden" name='name'		value='<?=$H_NAME?>' />
--->		
-			<input type='hidden' name='mode'			value='reply_funcTT'>
-			<input type='hidden' name='infor'       value='<?=$infor?>' > 
-			<input type='hidden' name='list_no'   value='<?=$list_no?>'>
-			<input type='hidden' name='page'      value='<?=$page?>'>
+			<input type='hidden' name='mode'	value='reply_funcTT'>
+			<input type='hidden' name='infor'   value='<?=$infor?>' > 
+			<input type='hidden' name='list_no' value='<?=$list_no?>'>
+			<input type='hidden' name='page'    value='<?=$page?>'>
 			<input type='hidden' name='security_yn' value='<?=$mf_infor[51]?>'>
-			<input type='hidden' name='fileup_yn' value='<?=$mf_infor[3]?>'>
-			<input type='hidden' name='file_ext'  value=''>
-			<input type="hidden" name='previous'  value='<?=$_REQUEST['previous']?>' />
+			<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'>
+			<input type='hidden' name='file_ext'    value=''>
+			<input type="hidden" name='previous'    value='<?=$previous?>' />
 
-			<input type='hidden' name='target'			value='<?=$mf[3]?>'>
-			<input type='hidden' name='step'			value='<?=$mf[4]?>'>
-			<input type='hidden' name='re'				value='<?=$mf[5]?>'>
-			<input type='hidden' name='search_choice'	value='<?=$search_choice?>'>
-			<input type='hidden' name='search_text'		value='<?=$search_text?>'>
+			<input type='hidden' name='target'		value='<?=$mf['target']?>'>
+			<input type='hidden' name='step'		value='<?=$mf['step']?>'>
+			<input type='hidden' name='re'			value='<?=$mf['re']?>'>
+			<input type='hidden' name='search_choice' 		value='<?=$search_choice?>'>
+			<input type='hidden' name='search_text' 		value='<?=$search_text?>'>
 
 			<div class="boardView">
 				<div class="viewHeader">
 					<span><?=$in_day?></span>
 
-					<a href="javascript:back_go('<?=$_REQUEST['infor']?>','<?=$_REQUEST['list_no']?>','<?=$_REQUEST['page']?>')" class="btn_bo02">Previous</a>
+					<a href="javascript:back_go('<?=$infor?>','<?=$list_no?>','<?=$page?>')" class="btn_bo02">Previous</a>
 					<a href="javascript:board_listTT();" class="btn_bo02">List</a>
 					<!-- 위 목록 버튼은 절대경로로 사이트 주소를 풀로 적고 뒤에 #customer 를 적어서 ID값으로 이동하게끔 하면 됨 -->
 				</div>
 
 				<div class="viewSubj"><span><?=$mf_infor[1]?></span> </div>
 				<ul class="viewForm">
-					<!--
-					<li>
-						<span class="t01">휴대폰</span>
-						<span class="t02"><input type="text" name="user_phone"  placeholder="전화번호를 입력하세요."></span></span>
-					</li> 
-					<li>
-						<span class="t01">홈페이지</span>
-						<span class="t02"><input type="text" name="homep" placeholder="홈페이지주소를 입력하세요." ></span>
-					</li>-->
 <?php 
 	if( $H_ID !== "" && $H_LEV > 1 ){
 ?>
@@ -356,35 +366,16 @@ function data_check(x,y){
 <?php
 	} else {
 ?>
-					<!-- <li class="autom_tit">
-						<span class="t01">Writer</span>
-						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name."></span>
-					</li>
-					<li>
-						<span class="t01">E-Mail</span>
-						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" value=''></span>
-					</li>
-					<li class="pw_char">
-						<span class="t01">password</span>
-						<span class="t02"><input type="text" name="password"  placeholder="Please enter your password, you will need it."></span>
-					</li> -->
 <?php } ?>
 					<li class="autom_tit">
 						<span class="t01">Title</span>
 						<span class="t02">
-							<input type="text" name="subject" value='<?=$mf[6]?>' placeholder="Please enter a title! " class="autom_subj" >
+							<input type="text" id="subject" name="subject" value='<?=$mf_subject?>' placeholder="Please enter a title! " class="autom_subj" >
 						</span>
 					</li>
 
-<?if($mf_infor[51]){?><!-- 비밀글. -->
-		<!-- <tr>
-      <td width="15%" height="12" bgcolor="<?=$mf_infor[25]?>" align="center">
-        <font color="<?=$mf_infor[26]?>">Secret article<br>(비밀글)</td>
-		<td width="75%" height="12">
-		<input type="radio" value="use" name="security1" id="security1"> use
-		<input type="radio" value="nouse" checked name="security1" id="security1"> no use
-        <input type="text" value="" name="security" size="10" style='border:1 black solid;' title='This is required when writing secrets. 비밀 글을 작성할때 필요합니다.'> (password) </td>
-		</tr>-->
+<?php
+	if( $mf_infor[51]){?><!-- 비밀글. -->
 					<li class="autom_tit">
 						<span class="t01">Secret article</span>
 						<span >
@@ -393,34 +384,8 @@ function data_check(x,y){
 							<input type="text"  value="" name="security" size="10" style='border:1 black solid;' title='This is required when writing secrets.'> (password) 
 						</span>
 					</li>
-<?}?>
+<?php } ?>
 				</ul>
-
-		<!-- <table border="0" width="100%" borderColorDark="#fdfdfa" borderColorLight="#bec9d4" cellSpacing="0" cellpadding="0">
-			<tr bordercolor="#FFFFFF" bgcolor="#FFFFFF">
-			 <td>
-
-				<DIV id='editctrlX' align='' style='background-color:yellow;ime-mode:active; background-image:; width:100%; height:100%; '>
-				<textarea name="EditCtrl" id="EditCtrl" ></textarea>
-				</DIV>
-
-					<script>
-						//CKEDITOR.replace( 'EditCtrl' );//처음것. 아래것은:화면크기조정 가능.
-						CKEDITOR.replace(
-						'EditCtrl',
-						{
-						customConfig: '/contents/ckeditor/config.js',
-						toolbar : 'standard',
-						language: 'en',
-						width : '100%',
-						height : '100'
-						}
-						);
-					</script>
-
-			</td>
-			</tr>
-		</table> -->
 
 <?php 
 	$_SESSION['infor'] = $infor;	//m_("infor: " . $infor);
@@ -429,25 +394,28 @@ function data_check(x,y){
 
 				<div class="viewFooter">
 					<ul class="viewForm_2">
-<?php if($mf_infor[3]){ ?><!-- 첨부화일. -->
+<?php
+		//m_("infor : " . $mf_infor[3]); //infor : 1
+		if( isset($mf_infor[3]) ){ 
+				if( isset( $mf['context']) ) $mf_context = $mf['context'];
+				else $mf_context = "";
+				if( isset( $mf['subject']) ) $mf_subject = $mf['subject'];
+				else $mf_subject = "";
+?>
 						<li>
 							<span class="t01">Attachments</span>
 							<span class="t02 select_file">
-								<input type="text" name="fileAW" style="padding-top:12.5px;" value='<?=$mf[7]?>' readonly>
-								<input type="hidden" name="fileW" value='<?=$mf[8]?>' >
+								<input type="text" name="fileAW" style="padding-top:12.5px;" value='<?=$mf['file_name']?>' readonly>
+								<input type="hidden" name="fileW" value='<?=$mf_subject?>' >
 							</span>
 						</li>
 						<li>
 							<span class="t01">Attachments</span>
 							<span class="t02 select_file">
-								<input type="file" name="fileA" style="padding-top:12.5px;">
+								<input type="file" id="fileA" name="fileA" style="padding-top:12.5px;">
 							</span>
 						</li>
 <?php } ?>
-						<!-- <li class="pw_char" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' >
-							<span class="t01">Auto-Protect : <?=$auto_char?></span>
-							<span class="t02"><?=$auto_char?></span>
-						</li> -->
 						<li>
 							<span class="t01">Auto-Protect : <?=$auto_char?></span>
 							<span class="t02"><!-- 대소문자 구분! -->
@@ -456,7 +424,6 @@ function data_check(x,y){
 						</li>
 					</ul>
 					<div class="cradata_check">
-						<!-- <a href="javascript:reply_func('<?=$auto_char?>');" class="btn_bo03">Save</a> -->
 						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a>
 					</div>
 				</div>
@@ -472,19 +439,16 @@ function data_check(x,y){
 
 
 <script type="text/javascript">
-
-	var content = '<?php echo $content; ?>';
-	//alert("--- content: " + content);
-
+	/* 여기에는 리마크르르 // 로 막으면 에러난다.... 중요! */
   var config = {
     txHost: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) http://xxx.xxx.com */
     txPath: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) /xxx/xxx/ */
-    txService: 'sample',                   /* 수정필요없음. */
-    txProject: 'sample',                   /* 수정필요없음. 프로젝트가 여러개일 경우만 수정한다. */
-    initializedId: "",                     /* 대부분의 경우에 빈문자열 */
-    wrapper: "tx_trex_container",          /* 에디터를 둘러싸고 있는 레이어 이름(에디터 컨테이너) */
-    form: 'tx_editor_form'+"",             /* 등록하기 위한 Form 이름 */
-    txIconPath: "./images/icon/editor/",   /*에디터에 사용되는 이미지 디렉터리, 필요에 따라 수정한다. */
+    txService: 'sample', /* 수정필요없음. */
+    txProject: 'sample', /* 수정필요없음. 프로젝트가 여러개일 경우만 수정한다. */
+    initializedId: "", /* 대부분의 경우에 빈문자열 */
+    wrapper: "tx_trex_container", /* 에디터를 둘러싸고 있는 레이어 이름(에디터 컨테이너) */
+    form: 'tx_editor_form'+"", /* 등록하기 위한 Form 이름 */
+    txIconPath: "./images/icon/editor/", /*에디터에 사용되는 이미지 디렉터리, 필요에 따라 수정한다. */
     txDecoPath: "./images/deco/contents/", /*본문에 사용되는 이미지 디렉터리, 서비스에서 사용할 때는 완성된 컨텐츠로 배포되기 위해 절대경로로 수정한다. */
     canvas: {
             exitEditor:{
@@ -532,7 +496,7 @@ function data_check(x,y){
   /* 예제용 함수 */
   function saveContent(xauto, no, id) {
 
-		var form = document.tx_editor_form; //tx_editor_form
+		var form = document.tx_editor_form;
 		if(form.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
 			form.auto_check.focus();
@@ -621,8 +585,7 @@ function data_check(x,y){
   function setForm(editor) { // 저장할때 여기를 탄다.
         var i, input;
         var form = editor.getForm();
-        var content = editor.getContent();
-         // alert('content: ' + content); 
+        var content = editor.getContent();         // alert('content: ' + content); 
         // 본문 내용을 필드를 생성하여 값을 할당하는 부분
         var textarea = document.createElement('textarea');
         textarea.name = 'content';
@@ -662,71 +625,8 @@ function youTubeImplant() {
     var popOption = "./youtube.html";
     window.open(popUrl, "", popOption);
 }
+</script>
 
-</script>
-<!-- <div><button onclick='saveContent()'>SAMPLE - submit contents</button></div> -->
-<!-- End: Saving Contents -->
- 
-<!-- Sample: Loading Contents -->
-<!-- 
-<script type="text/javascript">
-  function loadContent() {
 
-	//var content = '<?php echo $data["content"]; ?>';
-	//var content = '<?php echo $mf[2]; ?>';
-	var content = '<?php echo $content; ?>';
-	//alert("---2 content: " + content); // OK
-	
-    var attachments = {};
-    attachments['image'] = [];
-    attachments['file'] = [];
-    /*
-	attachments['image'].push({
-      'attacher': 'image',
-      'data': {
-        'imageurl': 'https://24c.kr/Tboard/uploads',
-        'filename': '이미지 024.png',
-        'filesize': 59501,
-        'originalurl': 'https://24c.kr/Tboard/uploads',
-        'thumburl': 'https://24c.kr/Tboard/uploads'
-      }
-    });
-	
-    attachments['file'] = [];
-    attachments['file'].push({
-      'attacher': 'file',
-      'data': {
-        'attachurl': 'http://cfile297.uf.daum.net/attach/207C8C1B4AA4F5DC01A644',
-        'filemime': 'image/gif',
-        'filename': 'editor_bi.gif',
-        'filesize': 640
-      }
-    }); */
-	//alert("---3 content: " + content);
-    /* 저장된 컨텐츠를 불러오기 위한 함수 호출 */
-    Editor.modify({
-      "attachments": function () { // 저장된 첨부가 있을 경우 배열로 넘김, 위의 부분을 수정하고 아래 부분은 수정없이 사용 
-        var allattachments = [];
-        for (var i in attachments) {
-          allattachments = allattachments.concat(attachments[i]);
-        }
-        return allattachments;
-      }(),
-      "content": content /* document.getElementById("sample_contents_source") 내용 문자열, 주어진 필드(textarea) 엘리먼트  sample_contents_source */
-       /* "content": content 내용 문자열, 주어진 필드(textarea) 엘리먼트  sample_contents_source */
-    });
-  }
-</script>
- -->
-<!--<div><button onclick='loadContent()'>SAMPLE - load contents to editor</button></div>-->
-<!-- End: Loading Contents -->
-<!-- 
-<script>
-window.onload = function()
-{
-	loadContent();
-}
-</script>
- -->
 </body>
 </html>

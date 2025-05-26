@@ -18,7 +18,7 @@ function paging($link, $total, $page, $size, $page_num){
 	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
 	// 6을 구하는식
 	$last_page = $first_page+($page_num-1);
-	if($last_page > $total_page) $last_page = $total_page;
+	if( $last_page > $total_page) $last_page = $total_page;
 
 	echo "<div class='paging'>";
 	//처음페이지

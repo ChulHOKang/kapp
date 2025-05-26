@@ -21,13 +21,16 @@
 	$H_EMAIL		= $member['mb_email'];  
 	$ip				= $_SERVER['REMOTE_ADDR'];
 
-		$mode    = $_POST['mode'];
+		if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
+		else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+		else $mode  = "";
 
 		if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 		else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 
 		if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
 		else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+		//else echo "<script>history.back(-1);</script>";
 
 		if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 		else if( isset($_POST['page']) ) $page = $_POST['page'];
@@ -35,7 +38,7 @@
 		//m_(" board_data_updateTT  -- list_no:$list_no");
 		// board_data_updateTT  -- list_no:11
 		if( $mode != 'updateTT' || !$infor ) {
-			m_("mode:$mode , You do not have permission to reply. infor:$infor"); 
+			m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); //mode: , You do not have permission to reply. infor:1
 			//mode: , You do not have permission to reply. no:21
 			echo "<script>history.back(-1);</script>"; exit;
 		}

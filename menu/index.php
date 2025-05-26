@@ -30,7 +30,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator Tree Menu. Made in Kang, Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
 <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> 
 <meta name='keywords' content='app, tree, tree menu, app make, appgenerator, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> 
@@ -235,12 +235,9 @@ common = {
 
 	if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
 	else $mode="";
-
 	if( isset($_REQUEST['mid']) ) $mid  = $_REQUEST['mid'];
 	else $mid = $H_ID;
-
-
-	if( isset($_REQUEST['mode']) ) $page  = $_REQUEST['page'];
+	if( isset($_REQUEST['page']) ) $page  = $_REQUEST['page'];
 	else $page =1;
 
 	$limite		= 15;	// 한페이지에 나타낼 글자 갯수

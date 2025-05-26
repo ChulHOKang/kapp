@@ -26,6 +26,8 @@
 
 	if( isset($_REQUEST['search_choice']) ) $mode = $_REQUEST['search_choice'];
 	else $search_choice = '';
+	if( isset($_REQUEST['search_text']) ) $search_text = $_REQUEST['search_text'];
+	else $search_text = '';
 
 	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
@@ -42,9 +44,6 @@
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 
-	if( isset($_POST['search_text']) ) $search_text = $_POST['search_text'];
-	else $search_text = '';
-	
 	if( isset($_REQUEST['menu_mode']) ) $menu_mode	= $_REQUEST['menu_mode'];
 	else if( isset($_POST['menu_mode']) ) $menu_mode	= $_POST['menu_mode'];
 	else $menu_mode	= '';
@@ -285,17 +284,16 @@ $(function () {
 
 <table width="99%" border="0" cellspacing="0" cellpadding="0" bgcolor="#CCCCCC"  align='center'>
 	<FORM name='view_form' action='listD.php' method='post' enctype="multipart/form-data">
-		<input type='hidden' name='search_choice' 		value='<?=$_POST['search_choice']?>'>
-		<input type='hidden' name='search_text' 		value='<?=$_POST['search_text']?>'>
-		<input type='hidden' name='infor' 				value='<?=$infor?>'>
+		<input type='hidden' name='search_choice' 		value='<?=$search_choice?>' >
+		<input type='hidden' name='search_text' 		value='<?=$search_text?>' >
+		<input type='hidden' name='infor' 				value='<?=$infor?>' >
 		<input type='hidden' name='list_no' 			value='<?=$list_no?>' >
-		<input type='hidden' name='page' 				value='<?=$page?>'>
+		<input type='hidden' name='page' 				value='<?=$page?>' >
 
 		<input type='hidden' name='del_admin' >
-		<input type='hidden' name='old_no' 				value='<?=$_POST['old_no']?>' >
-		<input type='hidden' name='mode' 				value='<?=$_POST['mode']?>'>
+		<input type='hidden' name='mode' 				value='<?=$mode?>' >
 		<input type='hidden' name='del' 					value=''>
-		<input type='hidden' name='previous' 			value='detailD.php'>
+		<input type='hidden' name='previous' 			value='detailD.php' >
 		<input type='hidden' name='target'				value='<?=$mf[18]?>'>
 		<input type='hidden' name='step'					value='<?=$mf[19]?>'>
 		<input type='hidden' name='re'					value='<?=$mf[20]?>'>
@@ -412,19 +410,19 @@ if( $mf[12]){	// file_name,
 <?php
 	if( $H_LEV > 7 ){
 ?>
-         <a href='updateD.php?no=<?=$infor?>' target='_blank'><img src='../icon/e_admin.gif' width='30' border='0' target='_blank' title='Bulletin Board Management '></a>
+         <a href='updateD.php?mode=updateTT&infor=<?=$infor?>' target='_blank'><img src='../icon/e_admin.gif' width='30' border='0' target='_blank' title='Bulletin Board Management '></a>
 <?php
 	 }
 ?>
     <?php
         for( $i=$mf[0]+1;$i<$mf[0]+5;$i++){
         	   $query="select no from aboard_".$mf_infor[2]." where no=".$i;
-                $mq	= sql_query($query);
-                $prev	= sql_num_rows($mq);
-                if( $prev){
-					echo("
-					<input type='button' value=' Previous ' onclick=\"javascript:window.open('detailD.php?list_no=$i&infor=$infor&page=$page&search_choice=$search_choice&search_text=$search_text','_self','')\" title='Previous'>
-					");
+               //$mq	= sql_query($query);
+               //$prev	= sql_num_rows($mq);
+			   $prev	= sql_fetch( $query);
+                if( $prev > 0){
+					echo "<input type='button' value=' Previous ' 
+					onclick=\"javascript:window.open('detailD.php?list_no=$i&infor=$infor&page=$page&search_choice=$search_choice&search_text=$search_text','_self',''); \" >";
 					break;
 				}
          }

@@ -1,11 +1,14 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$H_EMAIL   = $member['mb_email'];
+	$H_ID	= get_session("ss_mb_id");	$ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
+	else $H_LEV = 0;
+	if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
+	else $H_EMAIL = '';
 
-	if (!$H_ID) {
-		my_msg("login please! ");
-		$rungo = "/";
+	if( !$H_ID) {
+		m_("login please! ");
+		$rungo = "./";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
 	}
@@ -19,18 +22,33 @@
 		                             - make_type: booktreeupdateM
     treebom_insw_book_menu : Bulletin board table creation failed.  1, solpakan@naver.com1713422425 
 	--------------------------------------------------------- */
-	$data  = $_POST['data'];
-	$data1 = $_POST['data1'];
-	$target_my  = $_POST['target_my'];
-	$mid		= $_POST['mid'];
-	$mode		= $_POST['mode'];
-	$sys_cnt	= $_POST['sys_cnt'];
-	$make_type	= $_POST['make_type'];
-	$gtit		= $_POST['gtit'];
-	$view_lev	= $_POST['view_lev'];
-	$sys_pg_root= $_POST['sys_pg_root'];
-	$xroot_level= $_POST['xroot_level']; // 2021-12-09 root의 top line에 등록을 하는지 체크용.
-	$sql="select * from {$tkher['sys_menu_bom_table']} where sys_pg ='$sys_pg_root' and sys_submenu = '$sys_pg_root' and sys_level='mroot'";
+	if( isset($_POST['data']) ) $data = $_POST['data'];
+	else $data = 0;
+	if( isset($_POST['data1']) ) $data1 = $_POST['data1'];
+	else $data1 = 0;
+
+	$target_my  = '';
+	$mid		= '';
+	$mode		= '';
+	$sys_cnt	= '';
+	$make_type	= '';
+	$gtit		= '';
+	$view_lev	= '';
+	$sys_pg_root= '';
+	$xroot_level= '';
+	$sys_subtit= '';
+	if( isset($_POST['target_my']) ) $target_my  = $_POST['target_my'];
+	if( isset($_POST['mid']) )		$mid		= $_POST['mid'];
+	if( isset($_POST['mode']) )		$mode		= $_POST['mode'];
+	if( isset($_POST['sys_cnt']) )	$sys_cnt	= $_POST['sys_cnt'];
+	if( isset($_POST['make_type']) ) $make_type	= $_POST['make_type'];
+	if( isset($_POST['gtit']) )		$gtit		= $_POST['gtit'];
+	if( isset($_POST['view_lev']) ) $view_lev	= $_POST['view_lev'];
+	if( isset($_POST['sys_pg_root']) ) $sys_pg_root= $_POST['sys_pg_root'];
+	if( isset($_POST['xroot_level']) ) $xroot_level= $_POST['xroot_level'];
+	if( isset($_POST['isys_subtit']) ) $sys_subtit = $_POST[$isys_subtit];
+
+	$sql ="select * from {$tkher['sys_menu_bom_table']} where sys_pg ='$sys_pg_root' and sys_submenu = '$sys_pg_root' and sys_level='mroot'";
 	$result = sql_query( $sql);
 	$rs  = sql_fetch_array($result);
 	$mid = $rs['sys_userid'];
@@ -38,22 +56,32 @@
 	$sys_submenuR = $rs['sys_submenu'];
 	$up_day = date("Y-m-d H:i:s");
 
-	if ( $H_ID !== $mid ) {
-		my_msg("You do not have permission to work.");// 작업권한이 없습니다.  : no maker  member!
+	if( $H_ID !== $mid ) {
+		m_("You do not have permission to work.");// 작업권한이 없습니다.  : no maker  member!
 		$rungo = "./" . $rs['sys_userid'] . "/". $sys_pg_root . "_runf.html";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
 	}
-		$j=0;
-		$isys_subtit = 'sys_subtit_'.$j;
-		$sys_subtit = $_POST['$isys_subtit'];
+
+	$j=0;
+	$isys_subtit = 'sys_subtit_'.$j; //j: 0, isys_subtit:
+	if( isset($_POST[$isys_subtit]) ) {
+		$sys_subtit = $_POST[ $isys_subtit ];
+		m_( $sys_subtit . ", j: " . $j . ", isys_subtit: " . $_POST[ $isys_subtit ] );//게시판, j: 0, isys_subtit: 게시판
+	} else m_("none ---");
+/*
 	for ( $intloop = 0; $sys_subtit !== ""; $intloop++ ){
 		$isys_subtit = "sys_subtit_" . $intloop;
-		$sys_subtit	= $_POST[$isys_subtit];
+		$sys_subtit = $_POST[$isys_subtit];
+		m_( "i: " . $intloop . ", isys_subtit: " . $isys_subtit);
+		//i: 0, isys_subtit: sys_subtit_0
+		if( isset($_POST[$isys_subtit])) $sys_subtit = $_POST[$isys_subtit];
+		else $sys_subtit	= '';
 		$len = strlen($sys_subtit);
 	}
-	$xroot_cnt = $intloop;
- if( $xroot_cnt > 0 ) {
+	$xroot_cnt = $intloop;*/
+ //if( $xroot_cnt > 0 ) {
+ if( isset($_POST[$isys_subtit]) ) {
 	$xsys_pg = $sys_pg_root;
 	if( $mode == 'mroot')
 		 $ret_root_chk = 1;
@@ -70,10 +98,10 @@
 
 	$board_num = 0; // infor: aboard_table_make_menu( $board_title, $mroot, $board_type, $max_num ) 여기에서 infor을 생성한다.
 
-	for ( $intloop = 0; $intloop <= 13; $intloop++ ){
+	for ( $intloop = 0; $intloop < 13; $intloop++ ){
 		$isys_subtit = "sys_subtit_" . $intloop;
 		$sys_subtit	= $_POST[$isys_subtit];
-		if ( strlen($sys_subtit) > 0 ) {
+		if( strlen($sys_subtit) > 0 ) {
 			$isys_menu	 = "sys_menu_" . $intloop;
 			$isys_submenu= "sys_submenu_" . $intloop;
 			$isys_subtit = "sys_subtit_" . $intloop;
@@ -88,7 +116,7 @@
 			$sys_jong		= $_POST[$isys_jong];
 			$sys_link		= $_POST[$isys_link];
 			$sys_memo		= $_POST[$isys_memo];
-			$max_num		= $_POST[$imax_num]; // $max_num = $H_ID . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨.
+			$max_num		= $_POST[$imax_num]; // book_num, $max_num = $H_ID . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨.
 			$root_cnt = 0;
 			if( $mode == 'mroot' ) {
 				$root_chk = "sroot";
@@ -147,7 +175,7 @@
 				}
 				//insert_point_app( $member['mb_id'], $config['kapp_write_point'], $sys_link, 'linktree@treebom_insw_book_menu' , $H_ID, $sys_subtit );
 			}*/
-			job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $sys_pg_root, $sys_jong, $sys_subtit, $gubun );
+			job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $max_num, $sys_jong, $sys_subtit, $gubun );
 			//job_link_table_add( $board_num, $name, $link_name, $table_name, $job_group, $name, $jong );
 			insert_point_app( $H_ID, $config['kapp_write_point'], $sys_link, 'linktree@treebom_insw_book_menu' , $sys_subtit, $sys_pg_root );
 		}
@@ -171,8 +199,16 @@
 
 				$run_mode = 'treebom_insw_book';
                 $sys_pg   = $xsys_pg;
+			/* ----------------------------------------
 				include "./tree_create_menu.php";
-				$rungo = './' . $mid . '/'.$xsys_pg.'_r1.htm';
+			    소스 생성 막고 바로가기 추가. 2024 05 28  
+			 ------------------------------------------ */
+			$rungo = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$mid.'&sys_subtitS='.$sys_subtit . "&num=" . $max_num . "&sys_jong=" . $sys_jong . "&board_num=" . $board_num . "&sys_link=" . $sys_link;
+			// 2023-11-21 : index_menu.php<-tree_run.php 2023-11-02 add treebom_insw_book :book_num
+			
+			echo "<script>window.open('$rungo', '_top', ''); </script>";  // test 막음..
+
+				//$rungo = './' . $mid . '/'.$xsys_pg.'_r1.htm';
 				exit;
  } else {
 ?>
@@ -182,7 +218,7 @@
 	$hostnameA = getenv('HTTP_HOST'); // 2023-08-03 add
 
 	function sys_menu_bom_insert_curl( $sys_pg ){
-		global $H_ID, $H_EMAIL, $hostnameA;
+		global $H_ID, $H_EMAIL, $hostnameA, $tkher, $config;
 
 		$tabData['data'][][] = array();   // 2023-08-03 add
 
@@ -195,7 +231,6 @@
 		$imgtype3	= "folder2.gif";	/////이미지3(하위)
 
 		//m_(" sys_menu_bom_update_curl sys_pg:" . $sys_pg ); //sys_menu_bom_update_curl sys_pg:dao1691097151
-
 		$sql = " SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg='" . $sys_pg."' ";
 		$rt = sql_query( $sql);
 		$i = 0;
@@ -212,9 +247,9 @@
 			$tabData['data'][$i]['sys_rcnt']	= $rs['sys_rcnt'];
 			$tabData['data'][$i]['sys_cnt']		= $rs['sys_cnt'];
 			$tabData['data'][$i]['sys_disno']	= $rs['sys_disno'];
-			$tabData['data'][$i]['sys_file']	= $rs['sys_file'];
+			$tabData['data'][$i]['sys_board_num']	= $rs['sys_board_num'];
 			$tabData['data'][$i]['sys_memo']	= $rs['sys_memo'];
-			$tabData['data'][$i]['host']        = $rs['sys_comp']; //getenv('HTTP_HOST'); //$hostnameA;
+			$tabData['data'][$i]['host']        = KAPP_URL_T_; //$rs['sys_comp']; //getenv('HTTP_HOST'); //$hostnameA;
 			$tabData['data'][$i]['email']       = $H_EMAIL;
 
 			$tabData['data'][$i]['book_num']	= $rs['book_num'];
@@ -236,12 +271,8 @@
 		$iv = "~`!@#$%^&*()-_=+";
 
 		$sendData = encryptA( $tabData , $key, $iv);
-
-//		$url_ = 'https://ailinkapp.com/onlyshop/coupon/treebom_insw_curl_ailinkapp.php'; // insert, update 공통 URL
-		$url_ = 'https://ailinkapp.com/kapp/_Curl/treebom_insw_curl_ailinkapp.php'; // insert, update 공통 URL
-
-		//$curl = curl_init( $url_ );
-		$curl = curl_init();
+		$url_ = $config['kapp_theme'] . '/_Curl/treebom_insw_curl_ailinkapp.php'; // insert, update 공통 URL
+		$curl = curl_init();  //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
@@ -252,19 +283,18 @@
 		$response = curl_exec($curl);
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
 
-		echo curl_error($curl);	//echo "curl --- response: " . $response;
+		//echo curl_error($curl);	//echo "curl --- response: " . $response;
 		if( $response == false) {
-			//$_ms = "treebom_insw_curl_ailinkapp curl 전송 실패 : " . curl_error($curl);
-			//echo 'curl 전송 실패 : ' . curl_error($curl);
-			//m_(" ------------ : " . $_ms);
+			$_ms = "treebom_insw_curl_ailinkapp curl 전송 실패 : " . curl_error($curl);
+			echo 'curl 전송 실패 : ' . curl_error($curl);
+			m_( $url_ . " - : " . $_ms); // ------------ : treebom_insw_curl_ailinkapp curl 전송 실패 :
+			///_Curl/treebom_insw_curl_ailinkapp.php - : treebom_insw_curl_ailinkapp curl 전송 실패 : 
 		} else {
 			//$_ms = 'treebom_insw_curl_ailinkapp curl 응답 : ' . $response;
 			//echo 'curl 응답 : ' . $response;
 			//m_(" ============ :" . $_ms);
 		}
-		// ============ :table30m curl 응답 : --- count:10Error: Update failed{"message":"_api table data 전달 완료"}
-		curl_close($curl);
-		//m_("curl end--------------- ms: email: " . $H_EMAIL); //exit();
+		curl_close($curl);	//m_("curl end--------------- ms: email: " . $H_EMAIL); //exit();
 	}
 	//--------------------------------------------- 2022-05-09 보완 /t/include/lib 이동으로 my_func.php
 	function aboard_table_make_menu( $board_title, $mroot, $board_type, $max_num ){

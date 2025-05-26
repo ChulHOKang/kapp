@@ -67,7 +67,7 @@ function memo_delete(memo_no){
 		<input type='hidden' name='search_text'	value='<?=$search_text?>' >
 		<input type='hidden' name='memo'			value=''>
 		<input type='hidden' name='mode'			value=''>
-		<input type='hidden' name='xname'			value=<?=$name?>>
+		<input type='hidden' name='xname'			value=''>
 		<input type='hidden' name='memo_no'		value=''>
 		<input type='hidden' name='memo_delTT'	value=''>
 

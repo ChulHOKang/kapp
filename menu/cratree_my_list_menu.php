@@ -20,7 +20,7 @@
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>App Generator Tree Menu. Made in Kang, Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="/logo/logo25a.jpg">
+<link rel="shortcut icon" href="../logo/logo25a.jpg">
 <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> 
 <meta name='keywords' content='app, tree, tree menu, app make, appgenerator, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> 
 <meta name='description' content='app, tree, tree menu, app make, appgenerator, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 '> 
@@ -224,16 +224,19 @@ common = {
 
 	$h_lev		= $H_LEV;	//	HTTP_SESSION_VARS['H_LEV'];
 	$from_session_id  = $H_ID;	//HTTP_SESSION_VARS['from_session_id'];
-	$mode = $_REQUEST['mode'];
+	if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
+	else $mode='';
 
-	$mid  = $_REQUEST['mid'];
+	if( isset($_REQUEST['mid']) ) $mid  = $_REQUEST['mid'];
+	else $mid='';
 	//if( !$mid ) $mid = $H_ID;
 
 	//$param = $_REQUEST['param'];
 	//$sel   = $_REQUEST['sel'];
 	//$data  = $_REQUEST['data'];
 
-	$page  = $_REQUEST['page'];
+	if( isset($_REQUEST['page']) ) $page  = $_REQUEST['page'];
+	else $page  = 1;
 
 	$limite		= 15;	// 한페이지에 나타낼 글자 갯수
 	$page_num	= 10;	// [1] [2] [3] 갯수
@@ -254,7 +257,8 @@ common = {
 			$query = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_level='mroot' ";
 		}
 	}*/
-	$sdata  = $_POST['sdata'];
+	if( isset($_REQUEST['sdata']) ) $sdata  = $_POST['sdata'];
+	else $sdata  = '';
 	//$Search_Mode = $_POST['Search_Mode'];
 	//m_("sdata:" . $sdata . ", Search_Mode:" . $Search_Mode);
 		//if( $mode=='MySearch' ){
@@ -321,7 +325,8 @@ common = {
 
 	$result = sql_query( $query);
 
-	$Search_Mode = $_POST['Search_Mode']; //'cratree_my_list_menu'; // cratree_my_list_menu.php search run mode
+	if( isset($_REQUEST['Search_Mode']) ) $Search_Mode = $_POST['Search_Mode'];
+	else $Search_Mode = '';
 ?>
 
 <body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
@@ -375,10 +380,10 @@ while ($line = sql_fetch_array( $result )) {
     //if( $line['sys_subtit'] == "main" or $line['seqno'] == 1) continue;
 	//if( $line['sys_subtit'] == "main" ) continue;
 	$number = $number + 1;
-	$make_id = $line['user'];
+	$make_id = $line['sys_userid'];
 	if ( !$make_id ) $make_id ='-';
 	$nm		=$line['book_num'];
-	$day_ymd= substr( $line['date'], 0, 10);
+	$day_ymd= $line['up_day']; //substr( $line['date'], 0, 10);
 	$lnum	=$line['seqno'];
 	$mid	=$line['sys_userid'];
 

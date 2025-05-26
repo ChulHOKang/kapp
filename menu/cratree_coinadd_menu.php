@@ -54,6 +54,7 @@
 <script language="javascript">
 <!--
 	function submit_run( pg , target_ , jong, sys_pg, url_T , url_, sys_board_num) {
+		//alert(" pg: " +pg);//pg: https://fation.net/kapp/menu/tree_run.php?sys_pg=dao1745201802&open_mode=on&mid=dao&num=dao1745201802&sys_jong=note
 
 			if( pg.indexOf("blog.naver.com")>=0 ) {
 						location.href=pg;
@@ -84,9 +85,9 @@
 			} else if( pg.indexOf("index5.php?infor")>=0 ) {
 						document.click_run.action= "index_bbs.php?infor=" + sys_board_num; // pg:index_bbs.php?infor=226 - insw
 						document.click_run.submit();
-			} else if( pg.indexOf( url_) >= 0 ) { // url_ = "https://ailinkapp.com"
-						document.click_run.action= pg;
-						document.click_run.submit();
+			} else if( pg.indexOf("tree_run.php")>=0 ) {
+						document.click_run.target='_top';
+						location.href=pg;
 			} else if( pg.indexOf("https://")>=0 ) {
 						document.click_run.target='_top';
 						location.href=pg;
@@ -114,6 +115,9 @@
 						document.click_run.target=target_;
 						document.click_run.action= run_pg;
 						document.click_run.submit();
+			} else if( pg.indexOf( url_) >= 0 ) { // alert(" ---url_: " +url_); // ---url_: https://fation.net
+						document.click_run.action= pg;
+						document.click_run.submit();
 			} else {
 						document.click_run.target=target_;
 						document.click_run.action= pg;
@@ -128,7 +132,7 @@
 <?php
 	date_default_timezone_set("Asia/Seoul");
 	$ip  = $_SERVER['REMOTE_ADDR'];
-	$host	 = KAPP_URL_; //getenv("HTTP_HOST");
+	$host	 = KAPP_URL_T_; //getenv("HTTP_HOST");
 	$Accept  = getenv("HTTP_ACCEPT");
 	$agent = '';
 	$msg		= $ip . "|" . $agent . "|" . $Accept;
@@ -156,46 +160,50 @@
 			//m_("2---- tot:" . $tot); // 2---- tot:0
 	$day	= date("Y-m-d");
 	$up_day = date("Y-m-d h:i:s");
-	$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where seqno=" . $_POST['seqno']; // 2024-01-24 seqno 보완
+	$query = "update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno=" . $_POST['seqno']; // 2024-01-24 seqno 보완
 	$ret = sql_query($query); // 여기에서만 add 기존에 tree_run.php, contents_view_menuD.php에서도 add 하였다.	//m_("update sys_menu_bom set view_cnt - 3");
 
-	if( isset($H_ID) && $H_LEV > 1 ) {	// 로그인 중일때.........
-		$SQL	= " SELECT * from {$tkher['coin_view_table']} where url='$link_' ";
+	$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_pg='" . $_POST['num'] . "' and sys_subtit='" . $_POST['title_'] ."' "; // 2025-04-22  보완
+	$ret = sql_query($query); // 여기에서만 add 기존에 tree_run.php, contents_view_menuD.php에서도 add 하였다.	//m_("update sys_menu_bom set view_cnt - 3");
+
+		$SQL	= " SELECT * from {$tkher['coin_view_table']} where url='$link_' and makeid='$mid' ";
 		$ret = sql_query($SQL);
 		$v   = sql_num_rows($ret);
+	if( isset($H_ID) && $H_LEV > 1 ) {	// 로그인 중일때.........
 		if( $v ) { // url 클릭 하는 날짜가 있으면 뷰 카운터만 한다.
 			$retA = sql_fetch_array($ret);
 			$seqnoA = $retA['seqno'];
 			$query = "update {$tkher['coin_view_table']} set view_cnt=view_cnt+1 where seqno=$seqnoA";//회원이클릭시에 +1
 			$result = sql_query($query);
 		} else { // url 클릭 하는 날짜가 없으면 포인트를 지급. 보는 이 100 와 만드 이 100 모두에게
-			$query = "insert {$tkher['coin_view_table']} set id='$H_ID', makeid='$mid', title='$title_', url='$link_', up_day='$up_day', ip='$ip', host='$host', view_cnt=1, cd='$ipcode', cdname='$ipname', type='$type' ";
+			$query = "insert {$tkher['coin_view_table']} set id='$H_ID', makeid='$mid', title='$title_', url='$link_', up_day='$up_day', ip='$ip', host='$host', view_cnt=1, type='$type' "; //cd='$ipcode', cdname='$ipname', 
 			$result = sql_query($query);
 
 			if( $sys_pg && $mid != $H_ID ) {
 				// 본사람도 코인을 지급한다......당분간만????
 				//  $config['kapp_use_point']=100, $config['kapp_comment_point']=1000,$config['kapp_recommend_point']=1000, $config['kapp_login_point']=100, $config['kapp_read_point']=100, $config['kapp_write_point']=3000, $config['kapp_download_point']=-3000, $config['kapp_register_point']=3000, $config['kapp_memo_send_point']=100
-				insert_point_app( $member['mb_id'], $config['kapp_use_point'], $link_, 'viewer@cratree_coinadd_menu' , $mid, $title_, $title_ );//kapp_use_point = click point
-				//$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_menu='$sys_menu' and sys_submenu='$sys_submenu' and !(sys_userid='$H_ID') ";
-				//$result = sql_query($query);
+				insert_point_app( $member['mb_id'], $config['kapp_use_point'], $link_, 'viewer@cratree_coinadd_menu' , $mid, $title_, $title_ );
+				//kapp_use_point = click point
 				// 만든 사람에게 포인트를 지급한다...kapp_comment_point=1000, kapp_use_point=100
 				if( $member['mb_id'] !== $mid) insert_point_app( $mid, $config['kapp_read_point'], $link_, 'view@cratree_coinadd_menu' , $mid, $title_ );
 			} else {
-				insert_point_app( $member['mb_id'], $config['kapp_use_point'], $link_, 'viewer@cratree_coinadd_menu', $mid, $title_  );//kapp_use_point = click point
-	            //insert_point_app($mb_id,          $point,              $content='', $rel_table='',               $rel_id='', $rel_action='', $expire=0)
-
-				//m_("else sys_pg:" . $sys_pg .", mid:". $mid . ", h_id:" .$H_ID . ", point:" . $config['kapp_use_point']); // else sys_pg:dao1703742132, mid:dao, h_id:dao\
-				//else sys_pg:solpakan@kakao.com1706246437, mid:solpakan@kakao.com, h_id:solpakan@kakao.com, point:100
-				//else sys_pg:dao1703727697, mid:dao, h_id:dao, point:100
-				//else sys_pg:dao1703742132, mid:dao, h_id:dao, point:100
-				//else sys_pg:dao1703727697, mid:dao, h_id:dao
+				insert_point_app( $member['mb_id'], $config['kapp_use_point'], $link_, 'viewer@cratree_coinadd_menu', $mid, $title_  );
+				//kapp_use_point = click point
 			}
 
 		}
 	} else {	// 로그인이 아닌 손님일때 뷰 저장.
-
-			$query = "update {$tkher['coin_view_table']} set view_cnt=view_cnt+1 where url='".$link_."' ";//회원이클릭시에 +1
+		if( $v ) { // url 클릭 하는 날짜가 있으면 뷰 카운터만 한다.
+			$retA = sql_fetch_array($ret);
+			$seqnoA = $retA['seqno'];
+			$query = "update {$tkher['coin_view_table']} set view_cnt=view_cnt+1 where seqno=$seqnoA";//회원이클릭시에 +1
+//			$query = "update {$tkher['coin_view_table']} set view_cnt=view_cnt+1 where url='".$link_."' ";//회원이클릭시에 +1
 			$result = sql_query($query);
+		} else { // url 클릭 하는 날짜가 없으면 포인트를 지급. 보는 이 100 와 만드 이 100 모두에게
+			$query = "insert {$tkher['coin_view_table']} set id='$mid', makeid='$mid', title='$title_', url='$link_', up_day='$up_day', ip='$ip', host='$host', view_cnt=1, type='$type' ";
+			$result = sql_query($query);
+		}
+
 	}
 	if( isset($link_) ){
 		echo "<script>submit_run('" . $link_ . "', '" . $target_ . "', '" . $jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$sys_board_num."' );</script>";

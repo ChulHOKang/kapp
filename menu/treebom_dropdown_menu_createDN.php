@@ -16,17 +16,18 @@
 	$H_ID    = get_session("ss_mb_id"); 
 	$H_POINT = $member['mb_point']; $H_LEV=$member['mb_level']; 
 	if( !$H_ID or $H_LEV < 2 ) {
-		my_msg("You need to login. ");exit;
+		m_("You need to login. ");exit;
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
 	if( $H_POINT < $dn_minus_point ) { //$dn_minus_point = 1000:my_func
-		my_msg("There are not enough points. point:$H_POINT");exit;
+		m_("There are not enough points. point:$H_POINT");exit;
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
 
-	$mid = $_POST['mid'];
-	$run_mode = $_POST['run_mode'];
-	//m_("mid:$mid, $run_mode");
+	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
+	else $mid = '';
+	if( isset($_POST['run_mode']) ) $run_mode = $_POST['run_mode'];
+	else $run_mode = '';	//m_("mid:$mid, $run_mode");
 
 	if( $run_mode == 'dropdown_menu_createDN') {
 		if( $H_ID != 'dao' ) coin_minus_func($H_ID, $dn_minus_point);
@@ -35,40 +36,13 @@
 
 	/////////////////////////< tree file create >////////////////////////////
 
-	/* ---------------------------------------------------------------------------------
-	-------------------------------------------------------------------------------- */
-		$result_path = str_replace('\\', '/', dirname(__FILE__));
-		$tilde_rm		= preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);
-		$doc_root		= str_replace($tilde_rm, '', $_SERVER['SCRIPT_FILENAME']);
-		$pattern = '/' . preg_quote($doc_root, '/') . '/i';
-		$SCRIPT_NAME = $_SERVER['SCRIPT_NAME'];
-		$SCRIPT_FILENAME = $_SERVER['SCRIPT_FILENAME'];
-    //m_( "$result_path , $SCRIPT_NAME , $SCRIPT_FILENAME");
-	// $result_path : /home2/urllinkn/domains/urllink.net/public_html/t/menu , 
-	// $SCRIPT_NAME : /t/menu/treebom_remake_all_menu.php , 
-	// $SCRIPT_FILENAME : 
-	//      /home2/urllinkn/domains/urllink.net/public_html/t/menu/treebom_remake_all_menu.php
-
-	$root = preg_replace($pattern, '', $result_path );
-
-	$port = ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) ? '' : ':'.$_SERVER['SERVER_PORT'];
-	
-	$http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-	
-	$user = str_replace(preg_replace($pattern, '', $_SERVER['SCRIPT_FILENAME']), '', $_SERVER['SCRIPT_NAME']);
-	$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
-	if(isset($_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host))
-		$host	= preg_replace('/:[0-9]+$/', '', $host);
-	$host		= preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", '', $host);
-
-	$linkurl = $http.$host.$port.$user.$root; //http://urllink.net/t/menu
-	$linkwww = $http.$host.$port; //http://urllink.net
-
+	$linkurl = KAPP_URL_T_ . "/menu";
+	$linkwww = KAPP_URL_T_;
 	$first_linkurl = KAPP_URL_T_ . "/menu/index.php?mid=".$mid;  //cratree_my_list_menu.php?mid=".$mid;  
-	//$first_linkurl = "http://urllink.net/t/menu/cratree_my_list_menu.php?mid=$mid"; 
-
-	$sys_pg = $_POST['sys_pg']; 
-
+	$first_linkurl_all = $first_linkurl; 
+	
+	if( isset($_POST['sys_pg']) ) $sys_pg = $_POST['sys_pg']; 
+	else $sys_pg = ''; //m_( $mid. ", sys_pg: " . $sys_pg);//sys_pg: solpakan_naver.com1747561567
 	$rssys_treetit='';
 
 	$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_level = 'mroot' and sys_pg = '$sys_pg' ";
@@ -77,37 +51,32 @@
 	$rssys_treetit   = $rs22['sys_subtit'];
 	$from_session_id = $rs22['sys_userid'];
 
-	$path = "./";	 //KAPP_PATH_CRATREE_;		// . "../../cratree/";
-
-	//$run_top = "./" . $sys_pg . "_menu.html";
-	$runfile = "./" . $mid . "/" . $sys_pg . "_menu.html";
-
+	$runfile = KAPP_PATH_T_ . "/file/" . $mid . "/" . $sys_pg . "_menu.html";
 	$fsr = fopen("$runfile","w+");	//실행파일
 
+	/*
+	$skin_sql = "SELECT * from menuskin where sys_pg = '$sys_pg' ";
+	$result = sql_query( $skin_sql );
+	$skinrs = sql_fetch_array($result);
 
-/*
-$skin_sql = "SELECT * from menuskin where sys_pg = '$sys_pg' ";
-$result = sql_query( $skin_sql );
-$skinrs = sql_fetch_array($result);
-
-if ( $skinrs == "" ) {
-	$bgcolor	= "#cccccc";		/////배경색
-	$fontcolor	= "black";			/////글자색
-	$fontface	= "Arial";			//"돋움체";			/////글꼴
-	$fontsize	= "12";				/////글자크기
-	$imgtype1	= "folder.gif";		/////이미지1(닫힘)
-	$imgtype2	= "folder1.gif";	/////이미지2(열림)
-	$imgtype3	= "folder2.gif";	/////이미지3(하위)
-} else {
-	$bgcolor	= $skinrs['bgcolor'];		/////배경색
-	$fontcolor	= $skinrs['fontcolor'];	/////글자색
-	$fontface	= $skinrs['fontface'];	/////글꼴
-	$fontsize	= $skinrs['fontsize'];	/////글자크기
-	$imgtype1	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype1'];	/////이미지1(닫힘)
-	$imgtype2	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype2'];	/////이미지2(열림)
-	$imgtype3	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype3'];	/////이미지3(하위)
-}*/
-//////////////////////////////////////< 스킨 select end >////////////////////////
+	if ( $skinrs == "" ) {
+		$bgcolor	= "#cccccc";		/////배경색
+		$fontcolor	= "black";			/////글자색
+		$fontface	= "Arial";			//"돋움체";			/////글꼴
+		$fontsize	= "12";				/////글자크기
+		$imgtype1	= "folder.gif";		/////이미지1(닫힘)
+		$imgtype2	= "folder1.gif";	/////이미지2(열림)
+		$imgtype3	= "folder2.gif";	/////이미지3(하위)
+	} else {
+		$bgcolor	= $skinrs['bgcolor'];		/////배경색
+		$fontcolor	= $skinrs['fontcolor'];	/////글자색
+		$fontface	= $skinrs['fontface'];	/////글꼴
+		$fontsize	= $skinrs['fontsize'];	/////글자크기
+		$imgtype1	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype1'];	/////이미지1(닫힘)
+		$imgtype2	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype2'];	/////이미지2(열림)
+		$imgtype3	= "/cratree/skins_treeicon/as00/".$skinrs['imgtype3'];	/////이미지3(하위)
+	}*/
+	//////////////////////////////////////< 스킨 select end >////////////////////////
 	$bgcolor	= "#cccccc";		/////배경색
 	$fontcolor	= "black";			/////글자색
 	$fontface	= "Arial";			//"돋움체";			/////글꼴
@@ -121,7 +90,7 @@ $pathM = KAPP_URL_T_ . "/icon/";
 fwrite($fsr,"<html> \r\n");
 fwrite($fsr,"<head> \r\n");
 fwrite($fsr,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
-fwrite($fsr,"<TITLE>Web DB Generator System. Made in Kang, Chul Ho : solpakan89@gmail.com</TITLE> \r\n");
+fwrite($fsr,"<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> \r\n");
 fwrite($fsr,"<link rel='shortcut icon' href='". KAPP_URL_T_ ."/logo/logo25a.jpg'> \r\n");
 
 fwrite($fsr,"<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> \r\n");
@@ -164,42 +133,41 @@ fwrite($fsr,"			document.click_run.title_.value=title_;   \r\n");
 fwrite($fsr,"			document.click_run.link_.value=link_;   \r\n");
 
 // 2021-02-07 note menu -----
-fwrite($fsr,"			if (pg.indexOf( 'contents_view_menu.php')>=0 ) \r\n");
+fwrite($fsr,"			if (pg.indexOf( 'contents_view_menuD.php')>=0 ) \r\n");
 fwrite($fsr,"			{ \r\n");
 fwrite($fsr,"					document.click_run.target='frame';   // add  \r\n");
 fwrite($fsr,"					document.click_run.target_.value='frame';     \r\n");
-fwrite($fsr,"					document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php'; \r\n");    
+//fwrite($fsr,"					document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php'; \r\n");    
+fwrite($fsr,"					document.click_run.action= pg; \r\n");    
 fwrite($fsr,"					document.click_run.submit();     \r\n");
 fwrite($fsr,"			} else if (link_.indexOf( 'www.youtube.com')>=0 ) \r\n");
 fwrite($fsr,"			{ \r\n");
 fwrite($fsr,"				document.click_run.target='_blank';  \r\n");
 fwrite($fsr,"				document.click_run.target_.value='_top'; \r\n");
-fwrite($fsr,"				document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php';     \r\n");
+//fwrite($fsr,"				document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php';     \r\n");
+fwrite($fsr,"					document.click_run.action= pg; \r\n");    
 fwrite($fsr,"				document.click_run.submit();     \r\n");
 fwrite($fsr,"			} else if (pg.indexOf( 'https://')>=0 ) \r\n");
 fwrite($fsr,"			{ \r\n");
 fwrite($fsr,"					document.click_run.target='_blank';  \r\n");
 fwrite($fsr,"					document.click_run.target_.value='_top'; \r\n");
-fwrite($fsr,"					document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php';     \r\n");
+//fwrite($fsr,"					document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php';     \r\n");
+fwrite($fsr,"					document.click_run.action= pg; \r\n");    
 fwrite($fsr,"					document.click_run.submit();     \r\n");
 fwrite($fsr,"			} else { \r\n");
 fwrite($fsr,"					document.click_run.target='frame';   // add  \r\n");
 fwrite($fsr,"					document.click_run.target_.value='frame';     \r\n");
-fwrite($fsr,"					document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php'; \r\n");    
+//fwrite($fsr,"					document.click_run.action= '". KAPP_URL_T_ ."/menu/cratree_coinadd_menu.php'; \r\n");    
+fwrite($fsr,"					document.click_run.action= pg; \r\n");    
 fwrite($fsr,"					document.click_run.submit();     \r\n");
 fwrite($fsr,"			} \r\n");
-
 fwrite($fsr,"	}   \r\n");
-
 
 //---------------- add end 2018-06-23 ---------------------------------
 fwrite($fsr,"//--> \r\n");
 fwrite($fsr,"</script> \r\n");
-
 fwrite($fsr,"</head> \r\n");
-
 fwrite($fsr,"<body topmargin='0'> \r\n");
-
 fwrite($fsr,"	<form name='click_run' action='' method='POST' enctype='multipart/form-data' target='url_link_tree_solpa_user_r'> \r\n");
 fwrite($fsr,"	<input type='hidden' name='click_p' value='' >      \r\n");
 fwrite($fsr,"	<input type='hidden' name='mid' value='$mid' >      \r\n");
@@ -226,7 +194,7 @@ fwrite($fsr,"    		<a href='".$first_linkurl."' target='frame'><img src='". KAPP
 fwrite($fsr,"   <ul>\r\n");
 
 fwrite($fsr,"    	<li>\r\n");
-fwrite($fsr,"    		<a href='" .KAPP_URL_T_ ."/menu/" . $mid."/". $sys_pg . "_r1.htm"."' target='frame'>menu tree</a> \r\n");
+fwrite($fsr,"    		<a href='" .KAPP_URL_T_ ."/file/" . $mid."/". $sys_pg . "_menu.html"."' target='_top'>$rssys_treetit</a> \r\n");
 fwrite($fsr,"    	</li>\r\n");
 fwrite($fsr,"   </ul>\r\n");
 fwrite($fsr,"  </li>\r\n");
@@ -240,7 +208,7 @@ function funcrs($rsr_submenu, $level) {
 	global $i, $sys_pg, $intloop; 
 	global $fsr, $fsi, $fsu;
 	global $imgtype1,$imgtype2,$imgtype3, $fontcolor, $fontsize, $bgcolor, $fontface;
-	global $make_type, $run_mode, $book_num;
+	global $make_type, $run_mode, $book_num, $tkher;
 
     $cnt =0;
 	$cnt_root=0;
@@ -250,9 +218,6 @@ function funcrs($rsr_submenu, $level) {
 
 	$result = sql_query( $sql);
 	$row_num = sql_num_rows( $result );
-	//else $row_num = sql_num_rows( $result );
-	//$k=0;
-	//$j=0;
 
 	while( $rs2 = sql_fetch_array($result)) {
 		
@@ -283,7 +248,7 @@ function funcrs($rsr_submenu, $level) {
 		else if ( $rssys_level == "sroot" ) $blk="    ";
 		else if ( $rssys_level == "client" ) $blk="         ";
 			
-		$link_url_run  = $blk."<li><a onclick=\"javascript:submit_run( '$mid', '$sys_pg', '$rssys_menu', '$rssys_submenu', '$num', '$pg', '$jong', '$title_', '$link_', '$target_','$rssys_level');\" target='solpa_user_r' title='$pg, $rssys_memo'><font color='black'>".$rssys_subtit."</font></a>";//<br>
+		$link_url_run  = $blk."<li><a onclick=\"javascript:submit_run( '$mid', '$sys_pg', '$rssys_menu', '$rssys_submenu', '$xbook_num', '$pg', '$jong', '$title_', '$link_', '$target_','$rssys_level');\" target='frame' title='$pg, $rssys_memo'><font color='black'>".$rssys_subtit."</font></a>";//<br>
 
 		//////////////////< write 되는 순서 중요 >//////////////////////////
         //if($rssys_level =='mroot') 
@@ -293,23 +258,9 @@ function funcrs($rsr_submenu, $level) {
 			for ( $fornum = 1; $fornum <= $i; $fornum++ ){
 				fwrite( $fsr, "&nbsp;" );
 			}
-//		} else if ( $rssys_level == "sroot" ) {
 		} else if ( $rssys_level == "sroot" || $rssys_level == "mroot") {
-            //m_("$rssys_level, row_num:$row_num, cnt:$cnt");
-			//mroot, row_num:1, cnt:1
-			//sroot, row_num:9, cnt:1
-			//sroot, row_num:9, cnt:2
-			//sroot, row_num:9, cnt:3
-			//sroot, row_num:9, cnt:4
-			//sroot, row_num:9, cnt:5
-			//sroot, row_num:9, cnt:6
-			//sroot, row_num:9, cnt:7
-			//sroot, row_num:9, cnt:8
-			//sroot, row_num:9, cnt:9
 			$i = 1;
 		}
-
-//		if( $row_num >0 and $rssys_level == "sroot" or $cnt == 1){ // mroot, sroot, root
 		if( $cnt == 1){ // mroot, sroot, root
 			fwrite( $fsr, $link_url_run ."  \r\n"); //출력
 			if( $rs2['sys_cnt'] > 0 ) {
@@ -323,30 +274,16 @@ function funcrs($rsr_submenu, $level) {
 		}
 
 		if (( $rssys_menutit == "root" ) and ( $rssys_level != "mroot" )) {
-		//if (( $rssys_menutit == "root" ) or ( $rssys_level == "mroot" )) {
-			//m_(" $rssys_level, row_num_root:$row_num_root");
 			$rsr_submenu = $rssys_submenu;
 				$level_root ='root';
 				$row_num_root = $row_num;
 				$root_on = 1;
 			funcrs($rssys_submenu, 'root');	       /////함수 호출( 처음으로...)
-			//m_("row_num_root:$row_num_root");
 		}
 	} // while
 
-	//fwrite( $fsr, "</ul>" );//  /div
  	$i = $i - 1;
-	//else if( $ul_ok ) {
-	//	 fwrite( $fsr, $blk. " </ul></li> \r\n"); 
-	//	 $ul_ok = 0;
-	//}
-	//if( $row_num > 1 and $cnt == $row_num ) {
 	if( $row_num > 0 and $cnt == $row_num ) {
-		 //m_("---- $rssys_level, row_num:$row_num, cnt:$cnt");//mroot, row_num:1, cnt:1
-		 //---- mroot, row_num:1, cnt:1
-		 //---- client, row_num:3, cnt:3
-		 //---- client, row_num:3, cnt:3
-		 //---- sroot, row_num:9, cnt:9
 		 if($rssys_level=='mroot' and $row_num > 1) fwrite( $fsr, $blk. " </ul> \r\n"); 
 		 else if($rssys_level !=='mroot' ) fwrite( $fsr, $blk. " </ul> \r\n"); 
 	}
@@ -356,23 +293,13 @@ function funcrs($rsr_submenu, $level) {
 		 $row_num_root = 0;
 		 $root_on = 0;
 	}
-	
-	/*if( $row_num_root > 1 and $cnt_root == $row_num_root ) {
-	//if( $cnt_root == $row_num_root ) {
-	//if( $root_on ) {
-		 fwrite( $fsr, $blk. " </ul> \r\n"); 
-		 $level_root = '';
-		 $root_on = 0;
-	}*/ 
-
 }//end function
 
 ////트리 메뉴 최상위 항목 가져옴
 $sql_root = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg = '$sys_pg' and sys_level <> 'client' order by sys_disno, sys_menu ";
 
 $result = sql_query( $sql_root );
-$row    = sql_num_rows($result);
-//m_("root - row:$row");//root - row:4
+$row    = sql_num_rows($result); //m_("root - row: $row");//root - row: 3
 
 	/////root-level loop...
 	$intloop = 0;
@@ -410,46 +337,37 @@ fwrite($fsr,"</ul> \r\n");
 
 fwrite($fsr,"</div> \r\n");
 
-
-//fwrite($fsr,"<iframe src='http://urllink.net/t/menu/cratree_my_list_menu.php?mid=$mid' title='url data' name='frame' width='100%' height='100%'></iframe>  \r\n");
 fwrite($fsr,"<iframe src='".KAPP_URL_T_."/menu/index.php?mid=$mid' title='url data' name='frame' width='100%' height='100%'></iframe>  \r\n");
 fwrite($fsr,"  \r\n");
 
 fwrite($fsr,"</body> \r\n");
 fwrite($fsr,"</html> \r\n");
 
-
 //		$rungo = './' . $mid . '/' . $sys_pg.'_menu.html';// solpa_user_r
 //		echo "<script>window.open('$rungo', '_top', ''); </script>";
 
+	include('../include/lib/pclzip.lib.php');
 
+	$zf		= $sys_pg . '_menu.zip';
+	$zf_url	= KAPP_URL_T_ . "/file/" . $mid . "/" . $zf;
+	$zff	= KAPP_PATH_T_ . "/file/" . $mid . "/" . $zf;
 
-
-include('../include/lib/pclzip.lib.php');
-//$zf		= $pg_code . '_run.zip';
-$zf		= $sys_pg . '_menu.zip';
-$zff	= "./" . $mid . "/" . $zf;
-$zipfile = new PclZip($zff);//압축파일.zip
-
-$data	 = array();
-
-$list_run= $sys_pg . "_menu.html";
-
-$file_php= "./" . $mid. "/" . $list_run;		// $Zdir= "../cratree/" . $H_ID;
-
-$data		= array( $file_php );							//"압축할파일","압축할 디렉토리"
-
-$create	= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH); 
-echo "<pre>";
-//var_dump($create);
-
+	$zipfile = new PclZip($zff);//압축파일.zip
+	$data	 = array();
+	$list_run= $sys_pg . "_menu.html";
+	$file_php= KAPP_PATH_T_ . "/file/" . $mid. "/" . $list_run;
+	$file_url= KAPP_URL_T_ . "/file/" . $mid. "/" . $list_run;
+	$data		= array( $file_php );							//"압축할파일","압축할 디렉토리"
+	$create	= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH); 
+	echo "<pre>";
+	//var_dump($create);
 ?> 
-	<h3> Created OK! menu_code:<?php echo $file_php; ?> , Zip File:<?=$zf?></h3>
-	<h3> <a href='<?=$zff?>' target=_blank>[ Download Action:<?=$zf?> ]</a></h3> 
+	<h3> Created OK! menu_code:<?php echo $zff; ?> , Zip File:<?=$zf?></h3>
+	<h3> <a href='<?=$zf_url?>' target=_blank>[ Download Action:<?=$zf?> ]</a></h3> 
 <?php
-if ( $H_LEV > 1 ){ // 7-> 0 으로 변경. 2020-11-19
+	if ( $H_LEV > 1 ){ // 7-> 0 으로 변경. 2020-11-19
 ?>
-	<h3><a href='./<?=$mid?>/<?=$list_run?>' target='_blank'>[ PopupMenu RUN:<?=$list_run?> ]</a> 
+			<h3><a href='<?=$file_url?>' target='_blank'>[ PopupMenu RUN:<?=$list_run?> ]</a> 
 			</h3>  <!-- popup menu -->
 <?php } ?>
 <p>The pointer has been decremented. Download the source code!</p>

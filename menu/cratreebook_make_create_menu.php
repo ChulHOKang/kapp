@@ -1,6 +1,14 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 
+	/*
+		cratreebook_make_create_menu.php :
+		call : index_create.php - call: index.php , index_create.php
+		$first_linkurl = "../treelist_cranim_book.php";
+		run.html My-List에 연결 2018-03-21   iframe
+		$first_linkurl = "../cratree_my_list_menu.php?mid=$H_ID"; // only tree list.
+		Source Code of Tree 를 생성하지 않는다. 
+	*/
 	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
 	else $H_LEV = 0;
@@ -13,21 +21,11 @@
 		//echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	m_( $host_script . ", referer: ". $referer);	//dao, H_EMAIL: solpakan59@gmail.com
+	//m_( $host_script . ", referer: ". $referer);	//dao, H_EMAIL: solpakan59@gmail.com
 	connect_count($host_script, $H_ID, 0,$referer);	// log count
 
 	$from_session_url = $_SERVER['HTTP_HOST'];
 
-	//m_( $H_ID . ", H_EMAIL: ". $H_EMAIL);	//dao, H_EMAIL: solpakan59@gmail.com
-
-	/*
-		cratreebook_make_create_menu.php :
-		call : index_create.php - call: index.php , index_create.php
-		$first_linkurl = "../treelist_cranim_book.php";
-		run.html My-List에 연결 2018-03-21   iframe
-		$first_linkurl = "../cratree_my_list_menu.php?mid=$H_ID"; // only tree list.
-		Source Code of Tree 를 생성하지 않는다. 
-	*/
 	$first_linkurl = KAPP_URL_T_ . "/menu/index.php?mid=$H_ID"; // only tree list.
 	$first_linkurl_all = KAPP_URL_T_ . "/menu/index.php";
 
@@ -88,7 +86,7 @@ if( isset($sys_pg) ) {	 //m_("sys_pg: $sys_pg");
 		$sql = "insert into {$tkher['sys_menu_bom_table']} ( sys_comp, sys_userid, sys_pg, sys_menu, sys_submenu, sys_subtit,sys_link, sys_menutit, sys_memo, sys_level, sys_rcnt, sys_cnt, sys_disno, view_cnt, view_lev, tit_gubun, book_num, up_day ) values('$from_session_url', '$H_ID', '$sys_pg', '$sys_menu','$sys_submenu','$sys_subtit','$sys_link','$sys_menutit','$sys_memo','$sys_level',$sys_rcnt,$sys_cnt,$sys_disno,$view_cnt, '$view_lev', 'M', '$book_numR', '$up_day'  )";	//B->M
 		$ret = sql_query( $sql );
 		if( $ret ) {
-			m_("sys_menu_bom OK sys_pg:" . $sys_pg . ", tit:" . $sys_subtit); //sys_menu_bom OK sys_pg:dao1710131650, tit:초전도체FFG
+			//m_("sys_menu_bom OK sys_pg:" . $sys_pg . ", tit:" . $sys_subtit); //sys_menu_bom OK sys_pg:dao1710131650, tit:초전도체FFG
 			//=======================
 			sys_menu_bom_curl_send( $sys_pg );
 			//=======================
@@ -649,7 +647,7 @@ function source_html(){
 function sys_menu_bom_curl_send( $sys_pg ){
 
 	global $tabData, $H_ID, $H_EMAIL, $hostnameA;
-	global $sys_subtit, $sys_memo;
+	global $sys_subtit, $sys_memo, $config;
 	global $imgtype1, $imgtype2, $imgtype3, $bgcolor, $fontcolor, $fontface, $fontsize, $hostnameA;
 
 		$sys_userid		= $H_ID;	//$sys_pg;
@@ -691,22 +689,17 @@ function sys_menu_bom_curl_send( $sys_pg ){
 	$tabData['data'][$cnt]['imgtype2']    = $imgtype2;
 	$tabData['data'][$cnt]['imgtype3']    = $imgtype3;
 
-	$tabData['data'][$cnt]['host']       = $hostnameA;
+	$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostnameA;
 	$tabData['data'][$cnt]['sys_userid'] = $H_ID;
 	$tabData['data'][$cnt]['email']      = $H_EMAIL;
-
-	//$count = count($tabData['data']);	//m_( "--- count:" . $count ); // 10
 
 	$key = 'appgenerator';
     $iv = "~`!@#$%^&*()-_=+";
 
     $sendData = encryptA( $tabData , $key, $iv);
 
-    //$url_ = 'https://ailinkapp.com/onlyshop/coupon/sys_menu_bom_curl_get_ailinkapp.php'; // 전송할 대상 URL
-    $url_ = 'https://ailinkapp.com/kapp/_Curl/sys_menu_bom_curl_get_ailinkapp.php'; // 전송할 대상 URL
-
-    //$curl = curl_init( $url_ );
-	$curl = curl_init();
+    $url_ = $config['kapp_theme'] . '/_Curl/sys_menu_bom_curl_get_ailinkapp.php'; // 전송할 대상 URL
+	$curl = curl_init(); //$curl = curl_init( $url_ );
 	curl_setopt( $curl, CURLOPT_URL, $url_);
     curl_setopt( $curl, CURLOPT_POST, true);
 
@@ -716,10 +709,8 @@ function sys_menu_bom_curl_send( $sys_pg ){
     ));
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($curl);
-
 	curl_setopt($curl, CURLOPT_FAILONERROR, true);
-	echo curl_error($curl);	//echo "curl --- response: " . $response;
-
+	//echo curl_error($curl);	//echo "curl --- response: " . $response;
 	if( $response == false) {
         $_ms = "cratreebook_make_create_menu curl 전송 실패 : " . curl_error($curl);
 		echo 'curl 전송 실패 : ' . curl_error($curl);
