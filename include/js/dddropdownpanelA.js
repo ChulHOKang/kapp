@@ -166,7 +166,7 @@ var defaultpanel=new ddpanel({
 	ids: ["mypanel", "mypanelcontent", "mypaneltab"], // id of main panel DIV, content DIV, and tab DIV
 	stateconfig: {initial: "5px", persiststate: true}, // initial: initial reveal amount in pixels (ie: 5px)
 	animate: {enabled: true, steps: 5}, //steps: number of animation steps. Int between 1-20. Smaller=faster.
-	pointerimage: {enabled: true, src: ["../icon/arrow-down.gif", "../icon/arrow-up.gif"]},
+	pointerimage: {enabled: true, src: ["./icon/arrow-down.gif", "./icon/arrow-up.gif"]},
 	closepanelonclick: {enabled: true} // close panel when links or elements with CSS class="closepanel" within container is clicked on?
 })
 
@@ -174,6 +174,6 @@ var defaultpanel2=new ddpanel({
 	ids: ["mypanel2", "mypanelcontent2", "mypaneltab2"], // id of main panel DIV, content DIV, and tab DIV
 	stateconfig: {initial: "5px", persiststate: true}, // initial: initial reveal amount in pixels (ie: 5px)
 	animate: {enabled: true, steps: 5}, //steps: number of animation steps. Int between 1-20. Smaller=faster.
-	pointerimage: {enabled: true, src: ["../icon/arrow-down.gif", "../icon/arrow-up.gif"]},
+	pointerimage: {enabled: true, src: ["./icon/arrow-down.gif", "./icon/arrow-up.gif"]},
 	closepanelonclick: {enabled: true} // close panel when links or elements with CSS class="closepanel" within container is clicked on?
 })
