@@ -30,9 +30,11 @@
 				$formula_		="";
 				$poptable_		="";
 				$gita				="";
-		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-				$typeX	= $iftype[$j];
-				$dataX	= $ifdata[$j];
+		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
+				if(isset($iftype[$j]) ) $typeX	= $iftype[$j];
+				else $typeX = "";
+				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				else $dataX = "";
 				$ddd		= $list[$i];
 				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
 				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
@@ -49,15 +51,19 @@
 		}
 		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
 		$pop_fld ="";
-		for ( $i=0,$j=1; $popdata[$i] != ""; $i++, $j++ ){
-			$popfld = $popdata[$j];
-			$popfld = explode(":", $popfld);
-			$pop_fld = $pop_fld . $popfld[1] . ",";
+		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
+			if( isset($popdata[$j]) ){
+				$popfld = $popdata[$j];
+				$popfld = explode(":", $popfld);
+				$pop_fld = $pop_fld . $popfld[1] . ",";
+			} else {
+				$pop_fld = $pop_fld . ",";
+			}
 		}
 		$mpop = $popdata[0];
 		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
 		$pop_mvfld = "";
-		for ( $i=0,$j=1; $mpop[$j] != ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
 			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
 			$fld1 = $mv[0];
 			$fld2 = $mv[1];
@@ -68,9 +74,10 @@
 			$relationdata = explode("$", $relationdata);
 			$rel_db = $relationdata[0];
 			$reldb = explode(":", $rel_db);
-			$relation_db = $reldb[1];
+			if( isset($reldb[1]) ) $relation_db = $reldb[1];
+			else  $relation_db = "";
 			$rel_mvfld = "";
-		for ( $i=0,$j=1; $relationdata[$j] != ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
 			$reldata = $relationdata[$j];
 			$rel = explode("|", $reldata );
 			$fld1 = $rel[0];
@@ -85,7 +92,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -96,7 +103,7 @@ table { border-collapse: collapse; }
 th { background: #cdefff; height: 27px; }
 th, td { border: 1px solid silver; padding:5px; }
 </style>
-<link rel="stylesheet" href="<?=THKER_URL_T_?>/include/css/admin.css" type="text/css" />
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/admin.css" type="text/css" />
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
@@ -201,15 +208,16 @@ $(function () {
 
 	if( isset($_POST['data']) ) $data = $_POST['data'];
 	else $data = '';
-	if( isset($_POST["param"]) ) $param	= $_POST["param"];
+	if( isset($_POST['param']) ) $param	= $_POST['param'];
 	else $param = '';
-	if( isset($_POST["sel"]) )   $sel	= $_POST["sel"];
+	if( isset($_POST['sel']) )   $sel	= $_POST['sel'];
 	else $sel = '';
-	if( isset($_POST["seqno"]) ) $seqno	= $_POST["seqno"];
+	if( isset($_POST['seqno']) ) $seqno	= $_POST['seqno'];
 	else $seqno = '';
-	if( isset($_POST["pg_code"]) ) $pg_code	= $_POST["pg_code"];
+
+	if( isset($_POST['pg_code']) ) $pg_code	= $_POST['pg_code'];
 	else $pg_code = '';
-	if( isset($_POST["pg_name"]) ) $pg_name = $_POST["pg_name"];
+	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
    
    if( $mode == 'Delete_mode' ) {
@@ -283,7 +291,11 @@ $(function () {
 			$ls = $ls . " where userid='$H_ID' and $param $sel '$data' ";
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
-	} else if( $data !== "" ) {
+	} else if( $mode == "Project_Search" ) { // Project_Search
+		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
+		$ls = $ls . " where userid='$H_ID' and group_code='".$_POST['group_code']."' ";
+		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
+	} else if( isset($data) && $data !== "" ) {
 		$sel   = $_POST['sel'];
 		$param = $_POST['param'];
 		if( !$param ) $param = 'pg_name';
@@ -300,10 +312,6 @@ $(function () {
 			$ls = $ls . " where userid='$H_ID' and pg_name $sel '$data' ";
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
-	} else if( $mode == "Project_Search" ) { // Project_Search
-		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where userid='$H_ID' and group_code='".$_POST['group_code']."' ";
-		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' ";
@@ -324,6 +332,13 @@ $(function () {
 	}
 	$cur='B';
 	include_once "../menu_run.php";
+
+	if( isset($_POST['tab_enm']) ) $tab_enm	= $_POST['tab_enm'];
+	else $tab_enm = '';
+	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
+	else $tab_hnm = '';
+	if( isset($_POST['group_name']) ) $group_name = $_POST['group_name'];
+	else $group_name = '';
 ?>
 <h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total?></h2>
 		<form name="project_search" method="post" action="program_list_my.php" enctype="multipart/form-data" >
@@ -336,22 +351,22 @@ $(function () {
 			<input type='hidden' name='modeS'   value='Program_Search'>
 			<input type='hidden' name='page'    value="<?=$page?>">
 			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
-			<input type="hidden" name='pg_name' value="<?=$_POST['pg_name']?>">
-			<input type="hidden" name="pg_code" value="<?=$_POST['pg_code']?>" >
-			<input type="hidden" name="tab_hnmS" value="<?=$_POST['tab_enm']?>:<?=$_POST['tab_hnm']?>">
-			<input type='hidden' name='tab_enm' value="<?=$_POST['tab_enm']?>">
-			<input type='hidden' name='tab_hnm' value="<?=$_POST['tab_hnm']?>">
+			<input type="hidden" name='pg_name' value="<?=$pg_name?>">
+			<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
+			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
+			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
+			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
- if( strlen($_POST['group_name']) > 0 ){
+ if( isset($group_name) && $group_name !== "" ){
 ?>
-							<option value='<?=$group_code?>' selected ><?=$_POST['group_name']?></option>
+							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
 <?php
-			} else {
+} else {
 ?>
 							<option value=''>Select Project</option>
 <?php
-			}
+}
 
 			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
 			while($rs = sql_fetch_array($result)) {
@@ -368,7 +383,7 @@ $(function () {
 				<option value="like">Like</option>
 				<option value="=">=</option>
 			</select>
-			<input type="text" name="data" maxlength="30" size="15" value='<?=$_POST['data']?>'>
+			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="submit" value="Search">
 		</form>
 <?php
@@ -386,9 +401,8 @@ $(function () {
 ?>
 			</select>
 <?php
-			echo "<input type='button' value='Change Project' onclick=\"javascript:project_name_change_func();\" style='height:25px;background-color:red;color:yellow;border:1 solid black' title='Change the project of the $pg_name' >
-( $pg_name:$pg_code, Change the project of the program )
-			";
+			echo "<input type='button' value='Change Project' onclick=\"javascript:project_name_change_func();\" style='height:25px;background-color:red;color:yellow;border:1 solid black' 
+			title='Change the project of the $pg_name' >( $pg_name:$pg_code, Change the project of the program )";
 		}
 ?>
 	<input type='hidden' name='group_nameX' >
@@ -399,8 +413,8 @@ $(function () {
 	<input type='hidden' name='param2' value='<?=$param2?>'>
 	<input type='hidden' name='sel2' value='<?=$sel2?>'>
 	<input type='hidden' name='data2' value='<?=$data2?>'>
-<table class='floating-thead' width="903">
-<thead  width="900">
+<table class='floating-thead' width="100%">
+<thead  width="100%">
 	<tr>
 	<th>NO/Run</th>
 	<th>userid</th>
@@ -414,7 +428,7 @@ $(function () {
 	<th>Pop-up table</th>
 	<th>Pop-up column</th>
 	<th>Relationship</th>
-	<th>Column</th>
+	<!-- <th>Column</th> -->
 	<th>Cnt</th>
 	<th>Memo</th>
 	<th>Date</th>
@@ -423,7 +437,7 @@ $(function () {
 <?php } ?> -->
 	</tr>
 </thead>
-<tbody width="900">
+<tbody width="100%">
  <?php
 	$line=0;
 	$i=1;
@@ -444,21 +458,21 @@ $(function () {
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' >
 	<td><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
-	<td  width='3%'><?=$rs['userid']?> </td>
-	<td width='2%'><?=$rs['group_name']?>:<?=$rs['group_code']?></td>
-	<td  width='6%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td width='6%' title='Data List program run'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
-	<td width='15%'><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:300px;" readonly><?=$rs['item_array']?></textarea></td>
-	<td  width='10%'><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$rs['if_type']?></textarea></td>
-	<td width='10%'><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$if_data?></textarea></td>
-	<td width='10%'><textarea id='formula_d' name='formula_d' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$formula_?></textarea></td>
-	<td width='150'><textarea id='pop_data' name='pop_data' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$poptable_?>:<?=$pop_data?></textarea></td>
-	<td width='150'><textarea id='pop_mvfld' name='pop_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
-	<td width='10%'><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
-	<td width='15%'><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$column_all?></textarea></td>
-	<td width='1%'><?=$rs['item_cnt']?></td>
-	<td width='5%'><?=$rs['memo']?></td>
-	<td width='3%'><?=$rs['upday']?></td>
+	<td><?=$rs['userid']?> </td>
+	<td><?=$rs['group_name']?>:<?=$rs['group_code']?></td>
+	<td><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<td><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
+	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
+	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
+	<td><textarea id='formula_d' name='formula_d' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$formula_?></textarea></td>
+	<td><textarea id='pop_data' name='pop_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$poptable_?>:<?=$pop_data?></textarea></td>
+	<td><textarea id='pop_mvfld' name='pop_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
+	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
+	<!-- <td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td> -->
+	<td><?=$rs['item_cnt']?></td>
+	<td><?=$rs['memo']?></td>
+	<td><?=$rs['upday']?></td>
 	<!-- <?php
 		if( $mode !== 'Search' && $H_ID==$rs['userid'] ) {
 			echo "<td><input type='button' name='del' onclick=\"javascript:program_delete_func('".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\"  value='delete' style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Delete program. '><br>
@@ -470,7 +484,6 @@ $(function () {
 	</TR>
 <?php
 		$i++;
-		$count = $count - 1;
     }
 ?>
 </form>

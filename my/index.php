@@ -27,20 +27,22 @@
 					 최초 r1_my.php : my page에서 실행한다.
 		http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
    -------------------------------------------------------- */
-   $r = explode("/", $_SERVER['SCRIPT_FILENAME'] ); //SCRIPT_FILENAME: /home1/solpakanurl/public_html/t/index2.php
-   $cnt = count($r);
-   $_url = "./" . $r[$cnt-1];
-   if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
-   else $mid = '';
-   if( isset($_POST['mode']) ) $mode = $_POST['mode'];
-   else $mode = '';
-   if( $mode == 'SearchPG'){
+	$r = explode("/", $_SERVER['SCRIPT_FILENAME'] ); //SCRIPT_FILENAME: /home1/solpakanurl/public_html/t/index2.php
+	$cnt = count($r);
+	$_url = "./" . $r[$cnt-1];
+	if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
+	else $mid = '';
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode = '';
+	if( isset($_REQUEST['open_mode']) ) $open_mode = $_REQUEST['open_mode'];
+	else $open_mode = "";
+	if( $mode == 'SearchPG'){
 		$_SESSION['sys_pg'] = $_POST['sys_pg'];
 		//$run_ = "../tree_menu_guest.php?sys_pg=" . $_POST['sys_pg'] . "&open_mode=on". "&mid=".$mid;
 		$run_ = "../menu/tree_run.php?sys_pg=" . $_POST['sys_pg'] . "&open_mode=on". "&mid=".$mid;
 		echo "<script>window.open( '".$run_."' , '_top', ''); </script>";
 		exit;
-   }
+	}
 ?>
 <html> 
 <head>

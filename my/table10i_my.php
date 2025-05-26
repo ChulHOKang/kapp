@@ -26,7 +26,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -54,7 +54,7 @@ th, td { border: 1px solid silver; padding:5px; }
 
 </style>
 
-<script src="//code.jquery.com/jquery.min.js"></script>
+<!-- <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
   $('table.floating-thead').each(function() {
@@ -85,7 +85,7 @@ $(function () {
     });
   });
 });
-</script>
+</script> -->
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
 <script type="text/javascript" src="../include/js/common.js"></script>
@@ -117,7 +117,7 @@ $(function () {
 	else $param ='';
 	if( isset($_POST['sel']) ) $sel =$_POST['sel'];
 	else $sel   ='';
-
+m_("mode: ". $mode);
    if( $H_ID && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
@@ -270,7 +270,7 @@ $(function () {
 		document.table_list.tab_hnm.value=hnm;
 		document.table_list.mode.value='Search';
 		document.table_list.action="table10i_my.php";
-		document.table_list.target='_self'; // .htm
+		document.table_list.target='_top'; // .htm
 		document.table_list.submit();
 	}
 	function program_run_funcList( pg_name, pg_code ) {

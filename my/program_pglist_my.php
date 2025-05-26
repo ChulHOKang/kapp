@@ -28,12 +28,18 @@
 
 <?php
 
-			$mode = $_POST['mode'];
-			$seqno = $_POST['seqno'];
-			$tab_enm = $_POST['tab_enm'];
-			$tab_hnm = $_POST['tab_hnm'];
-			$tab_hnmS = $_POST['tab_hnmS'];
-			$pg_codeS = $_POST['pg_codeS'];
+	if( isset($_POST['mode']) ) $mode	= $_POST['mode'];
+	else $mode = '';
+	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
+	else $seqno = '';
+	if( isset($_POST['tab_enm']) ) $tab_enm	= $_POST['tab_enm'];
+	else $tab_enm = '';
+	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
+	else $tab_hnm = '';
+	if( isset($_POST['tab_hnmS']) ) $tab_hnmS	= $_POST['tab_hnmS'];
+	else $tab_hnmS = '';
+	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
+	else $pg_codeS = '';
 ?>
 <link rel="stylesheet" type="text/css" href="../include/css/admin.css">
 <body leftmargin="0" topmargin="0">
@@ -197,7 +203,7 @@
 		}
 		document.makeform.mode.value = 'program_pglist';
 		document.makeform.mode_call.value = 'program_pglist';
-		document.makeform.action='tkher_program_run.php?pg_code='+pg_code;
+		document.makeform.action='../tkher_program_run.php?pg_code='+pg_code;
 		document.makeform.target= 'tab_pg_list';
 		document.makeform.submit();
 	}
@@ -270,9 +276,9 @@
 	$w='100%';
 	$w2='200';
 	$pg_code = $H_ID . "_" . time();
-	if( $mode_session == 'POPUP') {
-	} else if( $mode_session == 'Formula') {
-	}
+	//if( $mode_session == 'POPUP') {
+	//} else if( $mode_session == 'Formula') {
+	//}
 	//---------------------------------------------------------------------------------------------------------
 	if( $mode == 'SearchTAB' ){
 			$aa = explode(':', $tab_hnmS);

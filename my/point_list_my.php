@@ -8,10 +8,11 @@ include_once('../tkher_start_necessary.php');
 		m_("my page"); exit;
 	}
 
-	if( isset($_POST["sdata"])) $sdata = $_POST["sdata"];
+	if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
+	else if( isset($_REQUEST['sdata']) ) $sdata = $_REQUEST['sdata'];
 	else $sdata = '';
-
-	if( isset($_POST["scolumn"])) $scolumn = $_POST["scolumn"];
+	if( isset($_POST['scolumn']) ) $scolumn = $_POST['scolumn'];
+	else if( isset($_REQUEST['scolumn']) ) $scolumn = $_REQUEST['scolumn'];
 	else $scolumn = '';
 
 	$sql_ = " from {$tkher['point_table']} ";
@@ -43,6 +44,7 @@ include_once('../tkher_start_necessary.php');
 
 
 	if( isset($_POST["page"]) ) $page= $_POST["page"];
+	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else $page =1;
 
 	$record_start = ($page - 1) * $rows; // 시작 열을 구함
@@ -62,7 +64,7 @@ include_once('../tkher_start_necessary.php');
 	$po_expire_term = '';
 	$mb_id = "";
 	if( isset($config['kapp_point_term']) ) $po_expire_term = $config['kapp_point_term'];
-	if( $scolumn = "mb_id" ) $mb_id = $sdata;
+	if( $scolumn == "mb_id" ) $mb_id = $sdata;
 ?>
 <link rel='StyleSheet' HREF='<?=KAPP_URL_T_?>/include/css/style_history.css' type='text/css' >
 
@@ -122,7 +124,7 @@ include_once('../tkher_start_necessary.php');
     </thead>
     <tbody>
     <?php
-    for( $i=0; $row=sql_fetch_array($result); $i++) {
+    for( $i=0, $j=1; $row=sql_fetch_array($result); $i++, $j++) {
         if( $i==0 || ($row2['mb_id'] != $row['mb_id'])) { //m_($i . ", m id:" . $row2['mb_id'] . ", p id:" . $row['mb_id']);
             $sql2 = " select mb_id, mb_name, mb_nick, mb_email, mb_homepage, mb_point from {$tkher['tkher_member_table']} where mb_id = '{$row['mb_id']}' ";
             $row2 = sql_fetch($sql2);
@@ -135,7 +137,7 @@ include_once('../tkher_start_necessary.php');
 				if( strpos( $row['po_content'], "https://") !== false) {
 					$link1 = '<a href="'.$row['po_content'].'" target="_blank" title="'.$row['po_content'].'">';
 				} else {
-					$link1 = '<a href="/t/menu/'.$row['po_content'].'" target="_blank" title="'.$row['po_content'].'">';
+					$link1 = '<a href="../menu/'.$row['po_content'].'" target="_blank" title="'.$row['po_content'].'">';
 				}
 				$link2 = '</a>';
 			} else {
@@ -171,7 +173,7 @@ include_once('../tkher_start_necessary.php');
         <td class="td_chk">
             <input type="hidden" name="mb_id[<?php echo $i ?>]" value="<?php echo $row['mb_id'] ?>" id="mb_id_<?php echo $i ?>">
             <input type="hidden" name="po_id[<?php echo $i ?>]" value="<?php echo $row['po_id'] ?>" id="po_id_<?php echo $i ?>">
-			<label for="chk_<?php echo $i; ?>" ><?php echo $i ?></label>
+			<label for="chk_<?php echo $i; ?>" ><?php echo $j ?></label>
 
         </td>
         <td><a href="?scolumn=mb_id&amp;sdata=<?php echo $row['mb_id'] ?>"><?php echo $row['mb_id'] ?></a></td>
@@ -223,7 +225,7 @@ function page_dis($write_pages, $cur_page, $total_page, $url)
     if ($total_page > 1) {
         for ($k=$start_page;$k<=$end_page;$k++) {
             if ($cur_page != $k)
-                $str .= '<a href="'.$url.$k.'" class="page">['.$k.']</a>'.PHP_EOL;
+                $str .= '<a href="'.$url.$k.'" class="page" style="font-size:25px;">['.$k.']</a>'.PHP_EOL;
             else
                 $str .= '<span class=""></span><strong class="">'.$k.'</strong>'.PHP_EOL;
         }

@@ -12,7 +12,7 @@ bbs_history_admin.php
 ?>
 <html>
 <head>
-	<title>K-App 관리 Ver 0.1</title>
+	<title>K-APP Management</title>
 <link rel='StyleSheet' HREF='../include/css/style_history.css' type='text/css' >
 
 <script language='javascript'>
@@ -38,7 +38,7 @@ bbs_history_admin.php
 </script>
 
 </head>
-<body bgcolor='white'>
+<body bgcolor='white' onLoad="initA()">
 
 <p><b>K-App 관리 Ver 0.1 [user:<?=$H_ID?>, user_level:<?=$H_LEV?>] <p>
 <?php
