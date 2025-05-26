@@ -1,0 +1,372 @@
+무엇을 할것인가
+무엇을 남길것인가
+남긴후 나는 어떻게 해야 하는가
+모든 사람이 나를 따르게 할려면 많은 사람이 필요로 하는 것을 추구 하면 된다
+그것은 바로 선 이다
+왜? 사람은 선천 적으로 악 하니까
+악한 사람은 반드시 선을 필요로 한다
+선을 추구하면 많은 사람이 따른다
+이사실을 악한자가 이용하고 악용하면 추악한 괴물이 된다.
+하나님은 사람에게 선과 악을 주었고 선과 악을 구별 하라고 지혜를 주셨다
+지혜로운 자는 선과 악을 구별 할수 있으나 지혜롭지 못한자는 악을 주구할 가능성이 매우 높다
+선한 사람은 악을 멀리 한다
+악한 사람이 지혜를 이용하면 사회를 어지럽힌다
+
+지혜롭지 못한 선한 사람을 위해 한글이 탄생하였고
+지혜롭고자 하면 글을 배워 많은 책을 읽어야 한다
+한글은 참 좋은 글이다
+
+선한 사람이 선과 악을 구분 하고 지혜로운 사람이 될 수 있게 하셨다
+한글은 지혜롭지 못한 사람을 위한 깨달음의 도구이며 곧 선을 구하고 지혜를 얻고자 하는 도구이다
+한글을 배워 쉽게 선 악을 구별하여 지혜로운자가 되어 깨달음을 찾아라
+깨달음을 얻어 선을 추구하라 그 선은 세상을 아름 답게 하리라
+선한 자가 많은 세상은 아름다우니까
+악한자는 탐욕 과 성냄 과 어리석음으로 선을 가리고 산다.
+https://platform.openai.com/settings/organization/billing/overview
+
+Table code 생성방법 과 Program code 생성방법 - 중요. - 제거 2025-05-25 code 생성시 H_ID 를 메일 에서 @제거 하고 생성.
+	:X $uid = explode('@', $H_ID);
+	:X $tab_enm = $uid[0] . "_" . time();
+	:$tab_enm = $H_ID . "_" . time(); - 최종으로 결정.
+
+: kapp_dbcon_create.php, DB_Table_CreateA.php 에서 group_code 등 사이즈 통일.
+- group_code, userid , table_enm, pg_code 등을 varchar(50)으로 설정, 
+
+2025-05-25 : moado.net 프로그램명 보완작업. 
+	: kapp_project.php - Cancel 버턴 추가.
+	: index.php, indexTT.php, /menu/index.php, menu/index_create.php, listD.php, board_list3.php
+
+2025-05-24 : moado.net 프로그램명 중복 확인 보완작업. 
+	: app_PG50RC.php 
+
+2025-05-23 : moado.net 로그인 - 구글로그인 보완작업. 
+	: tkher_start_necessary.php 
+
+2025-05-22 : fation.net, moado.net 보완작업. setup - kapp_dbcon_create.php 이메일의 '.' 이하 부분 제거 작업.
+	: kapp_dbcon_create.php
+	-$emailA = explode(".", $admin_email);
+	-$email0 = $emailA[0];
+	-$admin_id = str_replace( "@", "_", $email0); // 2025-05-18 add
+
+
+2025-05-19 : fation.net, moado.net 보완작업. pclzip.php 화일을 새로 다운.
+	: contents_view_menuD.php - script에서 실행부분
+	: treebom_dropdown_menu_createDN.php - 소스생성부분
+	: treebom_tree_menu_createDN.php - 소스생성부분
+2025-05-18 : moado.net
+	: login_checkT.php
+	- get_urllink_memberA - get_urllink_memberE 로 email 로그인 으로 변경
+	- Record_create_member($_g_email, $_g_fullname, $_g_image, $_level, $_set_point) 함수 id 부분 보완 
+	: menu_run.php - ID 를 E-mail로 로그인 타이틀 변경.
+	: my_func.php
+	- function get_urllink_memberE($mb_id, $fields='*') 추가:email login
+
+2025-05-18 : fation.net
+	: treebom_tree_menu_createDN.php 소스생성 및 다운로드 하고 실행 할 때 id가 email일때 문제 발생 
+	: cratree_my_list_menu.php 
+	: kapp_dbcon_create.php - member Table email 을 id 로 사용시에 '@' 를 '_' 로 치환하여 사용한다. 중요. 
+	- $admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
+	:curl_server_ajax.php - admin_id 보완.
+	: my_func.php - coin_minus_func($H_ID, $point) 보완.
+2025-05-17 : fation.net
+	: job_link_table. job_link_table_curl Table 의 memo column varchar 를 text 로 변경.
+	-kapp_dbcon_create.php
+	-SQL_Create_jsonA.php
+	:ulink_list.php 
+	- Encryption,  Decryption 버턴처리 시. - 수정처리시 스크립트 보완 
+	-함수 function initA(){ 추가.
+		document.getElementById('upd_save_button').style.visibility = 'hidden'; 
+		document.getElementById('upd_cancle').style.visibility = 'hidden'; 
+	}
+	:my_func.php
+	- 함수 추가 : special_comma_chk ($input) - 콤마 제거 함수.
+	: app_pg50RU.php
+	- program code 생성부분 보완 : $uid = explode('@', $H_ID); $tab_enm = $uid[0] . "_" . time();
+
+2025-05-14
+	moado.net
+	moado.net/OpenAI/ 생성 및 Table 생성
+	-ksd39673976_1689840593
+	-ksd39673976_1702944464
+	-ksd39673976_1702011735
+	-ksd39673976_1704761427
+	-ksd39673976_1694494339
+	-ksd39673976_1694565211
+
+  member table 보완 : 컬럼 3추가
+	  mb_penalty int(11) DEFAULT 0,
+	  mb_gpt_key varchar(255), : VEdyOXBvRUJia0JlZzlCOVkrWlQzN0R5ZjNzbEdRc0NaU2M5ZUZFZFYrVy9mcDIzM0dNK3grSUpsY29HVmVndzJDTDFIZmRmc2xOeVBqM2IvM2tTb3c9PQ
+	  mb_gpt_model varchar(255) : gpt-4o, gpt-4-1106-preview, gpt-4, gpt-3.5-turbo, dall-e-3 
+
+2025-05-13
+	: fation.net
+	- /adm - 관리자 소스 전부 보완
+	- /my  - my  소스 전부 보완.
+	: biogplus.com - 중요.
+	- /shop/AIo4.php - 보완 : $member 부분.
+	- SQL_Create_jsonA.php : member 부분 컬럼 추가
+	- kapp_dbcon_create.php: member 부분 컬럼 추가
+  member table 보완 : 컬럼 3추가
+	  mb_penalty int(11) DEFAULT 0,
+	  mb_gpt_key varchar(255), : VEdyOXBvRUJia0JlZzlCOVkrWlQzN0R5ZjNzbEdRc0NaU2M5ZUZFZFYrVy9mcDIzM0dNK3grSUpsY29HVmVndzJDTDFIZmRmc2xOeVBqM2IvM2tTb3c9PQ
+	  mb_gpt_model varchar(255) : gpt-4o, gpt-4-1106-preview, gpt-4, gpt-3.5-turbo, dall-e-3 
+
+2025-04-29 : Linux 64bit, Apache 2, PHP 8.3, MariaDB 10.x,
+	//fation.net/kapp     - PHP_VERSION: 8.2.4
+	//biogplus.com/kapp   - PHP_VERSION: 8.2.20
+	//moado.net           - PHP_VERSION: 7.3.33
+	//modumodu.net/biogplus PHP_VERSION: 7.2.34
+	  - $http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://'; - 사용
+	//24c.kr/kapp         - PHP_VERSION: 7.2.34
+	  - $http = $_SERVER['REQUEST_SCHEME'] . "://"; - 모두 이것 사용 http : https://
+
+2025-04-29 : /kapp/curl_server_ajax.php - 보완 
+		$query = "select kapp_admin from {$tkher['config_table']} where kapp_admin='$admin_id' ";
+		$retA =	sql_query( $query ); 
+		$retB =	sql_fetch_array( $retA ); 
+		if(!$retB) {
+			echo "--- error! Please check the admin ID during installation!"; //설치시 admin id 를 확인 하세요!
+			return false;
+			exit;
+		}
+
+2025-04-29 : /kapp/setup/kapp_dcon_create.php - moado.net 처음 적용.
+	kapp_DB table에는 pw를 md5()로 생성
+	member table 에는 $row = sql_fetch(" select password('$admin_password') as pass ");
+		$pw = $row['pass']; 로 생성
+	member table : 새로 설치시에도 무조건 삭제후 새로 생성으로 변경
+	//Kapp_Member_Record_Update(); // m_(" 2 Create_ALL_Table Member_Record Update ------- "); // 
+	drop_kapp_( $table_prefix . "member" );
+	$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); //kapp_member 없으면 생성.
+	if($member_chk) kapp_member_record_create();
+	else exit;
+
+
+2025-04-23
+   fation.net/kapp/_Curl/Server_curl_get_ailinkapp.php 추가 생성 : curl_Server update 작업. - 이 소스는 fation.net에만 존재한다. 메인 서버에만 존재.
+   kapp_DB_curl 컬럼 추가 : curl_server char(50)
+   24c.kr/kapp/ curl_server.php, curl_server_ajax.php 추가 생성 curl 서버 설정 기능. - kapp_config table 의 kapp_theme 컬럼 data 변경
+2025-04-21
+   treebom_updw_new_menu.php tree_menu+create.php call - 소스생성부분... 막음. 
+2025-04-20
+   host -> KAPP_URL_T_ 로 설정
+	cratreebook_make_create_menu.php : $tabData['data'][$cnt]['host']= KAPP_URL_T_; //$hostnameA;
+	treebom_insw_book_menu.php : $tabData['data'][$i]['host']= KAPP_URL_T_; //$rs['sys_comp']; //getenv('HTTP_HOST'); //$hostnameA;
+	treebom_updw_new_menu.php : $tabData['data'][$i]['host']= KAPP_URL_T_; //$rs['sys_comp']; //getenv('HTTP_HOST'); //$hostnameA; 
+
+   - 
+2025-04-18
+  24c.kr : app_pg50RC.php
+	//$pg_sys_link= "https://" . $hostnameA . "/t/tkher_program_data_list.php?pg_code=" . $pg_code; 를 아래와같이 변경
+	$pg_sys_link= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
+  fation.net : app_pg50RC.php
+	//$pg_sys_link= "https://" . $hostnameA . "/t/tkher_program_data_list.php?pg_code=" . $pg_code; 를 아래와같이 변경
+	$pg_sys_link= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
+
+2025-0417 - ulink_list.php $search 수정
+
+tkher_program_data_list.php - $member['mb_point'] 보완.
+if( isset($member['mb_point']) ) $H_POINT	= $member['mb_point']; 
+appgenerator.net _Curl 부분 보완. : ailinkapp.com -> fation.net
+--------------------------------------------------------------------------
+www.fation.net - cutl 보완.
+
+2025-03-17 - ailinkapp에서 copy해 옴 - 아마존 서버 제거 후 
+kappsystem을 생성하여 여기서 curl 서버를 구축
+
+/kapp/setup :  kapp_dbcon_create.php, DB_Table_CreateA.php, SQL_Create_jsonA.php table column 보완 완료 2025-0409
+
+- job_link_table_curl 을-> kapp_job_link_table_curl 로 복사
+- sys_menu_bom_curl  -> kapp_sys_menu_bom_curl copy
+- table10_pg_curl       -> kapp_table10_pg_curl copy
+- table10_curl           -> kapp_table10_curl copy
+
+
+1- sys_menu_bom_curl : sys_menu_bom_curl_get_ailinkapp.php, treebom_insw_curl_ailinkapp.php, treebom_updw_curl_ailinkapp.php
+   {$tkher['sys_menu_bom_curl_table']}
+  cratreebook_make_create_menu.php - $url_ = 'https://ailinkapp.com/onlyshop/coupon/sys_menu_bom_curl_get_ailinkapp.php';
+                                     $url_ = 'https://fation.net/kapp/_Curl/sys_menu_bom_curl_get_ailinkapp.php';
+  treebom_insw_book_menu.php       - $url_ = 'https://ailinkapp.com/onlyshop/coupon/treebom_insw_curl_ailinkapp.php'
+                                     $url_ = 'https://fation.net/kapp/_Curl/treebom_insw_curl_ailinkapp.php';
+  treebom_updw_new_menu.php        - $url_ = 'https://ailinkapp.com/onlyshop/coupon/treebom_updw_curl_ailinkapp.php';
+                                     $url_ = 'https://fation.net/kapp/_Curl/treebom_updw_curl_ailinkapp.php'; 
+
+2- table10_curl                    : table_curl_get_ailinkapp.php
+   {$tkher['table10_curl_table']}
+  table30m_A.php                   - $url_ = 'https://ailinkapp.com/onlyshop/coupon/table_curl_get_ailinkapp.php';
+                                     $url_ = 'https://fation.net/kapp/_Curl/table_curl_get_ailinkapp.php';
+               
+3- table10_pg_curl                 : pg_curl_get_ailinkapp.php
+   {$tkher['table10_pg_table']}
+  app_pg50RC.php                   - $url_ = 'https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php';
+                                     $url_ = 'https://fation.net/kapp/_Curl/pg_curl_get_ailinkapp.php';
+  table_item_run50_pg50RU.php      - $url_ = 'https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php';
+                                     $url_ = 'https://fation.net/kapp/_Curl/pg_curl_get_ailinkapp.php';
+
+4- job_link_table_curl             : Link_Table_curl_get_ailinkapp.php
+   {$tkher['job_link_table_curl']} : Link_Table_curl_send( $sys_subtit, $sys_link, $jong, $kapp_server, $ip, $memo, $up_day )
+  ulink_list.php, my_func.php      - $url_ = 'https://ailinkapp.com/kapp/_Curl/Link_Table_curl_get_ailinkapp.php';
+
+5- kapp_DB_curl                    : DB_curl_get_ailinkapp.php
+
+  /setup/kapp_dbcon_create.php     - $url_ = 'https://ailinkapp.com/kapp/DB_curl_get_ailinkapp.php';
+==================
+용어 해설
+=======
+웹훅(webhook)은
+웹 개발에서 사용자 정의 콜백을 사용하여 웹 페이지 또는 웹 애플리케이션의 동작을 강화하거나 변경하는 방법이다.
+이러한 콜백은 원래 웹사이트나 애플리케이션과 반드시 관련이 없을 수도 있는 제3자 사용자 및 개발자에 의해 유지, 수정 및 관리될 수 있다.
+웹훅이라는 용어는 2007년 제프 린제이(Jeff Lindsay)가 컴퓨터 프로그래밍 용어인 훅(hook)에서 유래시킨 것이다.
+포맷은 일반적으로 JSON이다. 요청은 HTTP POST 요청으로 수행된다.
+-----------------------------------------------
+The configuration file needs a valid key for cookie encryption.
+A temporary key was automatically generated for you. Please refer to the documentation.
+구성 파일에는 쿠키 암호화를 위한 유효한 키가 필요합니다.
+임시 키가 자동으로 생성되었습니다. 설명서를 참조하세요.
+Notice You are using an incomplete translation, please help to make it better by contributing.
+알림: 불완전한 번역을 사용하고 있습니다. 번역을 개선하는 데 도움을 주세요.
+
+phpMyAdmin 업그레이드가 필요합니다. 최신버전은 5.2.2이며 2025-01-21에 릴리즈 되었습니다.
+phpMyAdmin 설정 스토리지가 완전히 설정되지 않아, 일부 확장 기능들이 비활성화 된 상태입니다. 원인을 확인하려면 여기를 클릭하세요.
+대신 데이터베이스 작업 탭을 사용하여 설정할 수도 있습니다.
+-------------------------
+modumodu.net server info
+-------------------------
+데이터베이스 서버
+서버: Localhost via UNIX socket
+서버 타입: MariaDB
+서버 연결: SSL is not being used 문서
+서버 버전: 10.2.38-MariaDB - MariaDB Server
+제품 버전: 10
+사용자: modumoa@localhost
+서버 문자셋: cp1252 West European (latin1)
+웹 서버: Apache/2.4.57 () OpenSSL/1.0.2k-fips
+데이터베이스 클라이언트 버전: libmysql - mysqlnd 5.0.12-dev - 20150407 - $Id: 3591daad22de08524295e1bd073aceeff11e6579 $
+PHP 확장: mysqli 문서 curl 문서 mbstring 문서
+PHP 버전: 7.2.34
+phpMyAdmin: 버전 정보: 5.2.1, 최신 안정 버전: 5.2.2
+==================================
+moado.net server info
+----------------------------------
+데이터베이스 서버
+서버: Localhost via UNIX socket
+서버 타입: MariaDB
+서버 연결: SSL is not being used 문서
+서버 버전: 10.3.32-MariaDB-log - Source distribution
+제품 버전: 10
+사용자: ledsignart@localhost
+서버 문자셋: UTF-8 Unicode (utf8)
+웹 서버: Apache
+데이터베이스 클라이언트 버전: libmysql - mysqlnd 5.0.12-dev - 20150407 - $Id: 7cc7cc96e675f6d72e5cf0f267f48e167c2abb23 $
+PHP 확장: mysqli 문서 curl 문서 mbstring 문서
+PHP 버전: 7.3.33
+phpMyAdmin: 버전 정보: 5.1.1, 최신 안정 버전: 5.2.2
+====================================
+fation.net server info
+------------------------------------
+데이터베이스 서버
+서버: Localhost via UNIX socket
+서버 타입: MariaDB
+서버 연결: SSL is not being used 문서
+서버 버전: 11.5.2-MariaDB-log - MariaDB Server
+제품 버전: 10
+사용자: kappsystem@localhost
+서버 문자셋: UTF-8 Unicode (utf8mb3)
+웹 서버: Apache/2.4.62 (Unix) OpenSSL/1.1.1k PHP/8.3.11
+데이터베이스 클라이언트 버전: libmysql - mysqlnd 8.3.11
+PHP 확장: mysqli 문서 curl 문서 mbstring 문서 sodium 문서
+PHP 버전: 8.3.11
+phpMyAdmin: 버전 정보: 5.2.1, 최신 안정 버전: 5.2.2
+============================================
+
+This is Low Level CaseTool
+PHP source code Generation
+현재는 PHP만 생성합니다.
+향후에 모든 프로그램 언어를 생성 할 수 있기를 바랍니다
+
+저는 1994년도에 DOS용 SIGMA를 제작하였습니다
+SIGMA는 C Source code를 생성하는 DOS용 프로그램 생성 도구 였습니다. 
+2000년도에 WEB DB Genertor를 개발하였습니다. Windows기반의 WEB 개발 도구 입니다. ASP 소스코드를 생성하는 프로그램 개발 도구입니다.
+
+=========== Github.com https://github.com/ChulHOKang/kapp/edit/main/README.md
+README.md
+
+웹 프로그램을 제작하는 도구 입니다. - K-APP 이라 명칭을 부여 합니다
+
+--- 운영 서버 환경 ---
+서버 문자셋: UTF-8 Unicode (utf8)
+웹 서버: Apache
+데이터베이스 : MariaDB
+PHP 버전: 7.3.33
+phpMyAdmin: 버전 정보: 5.1.1
+
+--- K-APP 시스템 기능 ---
+코딩을 하지 않고, 컬럼 정보만 입력하면 쉽게 웹용 프로그램을 제작합니다.
+누구나, 전문가가 아니어도 쉽고 간편하게 프로그램을 생성하여 바로 활용 할 수 있도록 하는 것이 저의 소망 입니다.
+
+시간 날때 틈틈이 작업을 하다 보니 작업 시간이 많이 걸립니다.
+
+본 시스템은 PHP 프로그램을 생성하는 웹서버 Apache 기반의 프로그램 제작 도구 입니다.
+
+기능은 단순 합니다
+DB Table 컬럼 정보를 등록하면 테이블을 생성합니다.
+데이터 입력 컬럼의 속성을 Check Box, List Box, Radio Button, Popup Window 설정, 계산식 설정등 을 할 수 있습니다.
+데이터 등록, 조회, 수정, 삭제 등을 할 수 있는 프로그램을 생성합니다.
+
+레코드 등록 시에 테이블 과 1차원 테이블의 Relationship 설정 등을 할 수 있습니다.
+생성한 소스코드를 다운 받아 서버에 Upload해서 설치하는 기능 도 있습니다.
+- DB설정, table create 및 PHP 실행 소스를 서버에 Upload 및 실행 가능.
+
+소스를 다운 받은때 point가 필요 합니다. point는 제작 활동을 통해서 획득 할 수 있습니다.
+프로그램 생성 정보는 다른 서버와 연동 되어 다른 사람이 활용 가능 하도록 하였습니다. 
+프로그램 생성 정보는 향후 블록 체인으로 생성 되도록 하고자 합니다.
+프로그램 생성 작업은 모두 코드화 되어 DB에 저장되며.
+향후 AI DATASET을 구성하여 정밀한 프로그램을 자동 생성할 수 있도록 하여 더욱 발전 시키 고자  합니다.
+
+--- Tree Menu를 생성할 수 있습니다.
+
+생성한 프로그램을 URL을 링크 하여 바로 실행할 수 있습니다.
+
+--- 게시판을 생성 할 수 있습니다.
+
+프로그램을 생성 하기위해 설계는 모두 동일 합니다.
+설계가 이루어진 데이터 셋 정보는 다양한 programing 언어로 생성 하여 제공 할 수 있을 것 입니다. - 향후 보완 발전 사항 입니다.
+생성하고자 하는 프로그램 언어별 표준화 작업이 필요합니다. 
+프로그램 언어별 작업을 할 수 있도록 협력과 기부가 절실하게 필요 합니다.
+
+--- 설치방법 ---
+설치하는 방법은 setup 디렉토리를 실행하면 됩니다.
+DB 관련 정보와 관리자의 메일과 비번만 설정하면 셋업이 완료됩니다.
+로그인은 셋업시의 메일과 비번을 입력하면 로그인을 할 수 있습니다.
+
+--- 서버에 업로드 ---
+서버에 업로드 할 때에 디렉토리명은 kapp을 생성하여 업로드 하시면 됩니다.
+물론 다른 이른을 사용해도 됩니다. 
+
+--- 배경이미지를 자유롭게 변경이 가능합니다.
+왼쪽 첫번째 아이콘의 B3. Main Image Insert, B4. Main Image List 메뉴 항목을 참조 바랍니다.
+
+--- 향후 발전 계획 : 
+1. 프로그램 생성 코드 정보를 활용한 인공지능 시스템 제작.
+2. 프로그램 생성정보를 블록체인 생성.
+ 
+프로그램을 생성 하기위해 설계는 모두 동일 합니다.
+설계가 이루어진 데이터는 모든 언어를 생성 하여 소스를 제공 할 수 있습니다. - 향후 희망 사항 입니다.
+생성하고자 하는 프로그램 언어별 표준화 작업이 필요합니다. 
+프로그램 언어별 작업을 할 수 있도록 협력과 기부가 절실합니다.
+
+문제가 발생하면 solpakan@naver.com 으로 mail 주시면 확인 하겠습니다.
+메일을 항상 확인 하지않으니 시간이 걸릴 수 도 있습니다.
+문자는 82 10-7542-8567 로 넣어 주시면 좀더 빨리 확인이 가능 할 것입니다.
+전화는 가능하면 하지않는 것이 좋습니다. 
+
+모두가 프로그램을 제작하여 활용 할 수 있는 그날까지 화이팅 입니다.
+
+--- 기부 ---
+본 시스템의 발전을 위해 관심있는 사람들의 협력과 기부가 꼭 필요합니다.
+이 시스템이 당신에게 도움이 된다면 기부를 해주세요.
+년간 $12 기부가 부담되지 않는다면.
+K-APP 시스템 발전에 큰 도움이 될 것 입니다.
+
+감사합니다.
+
