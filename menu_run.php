@@ -42,7 +42,7 @@
     }
     //---------------------------------------------------------- kakao
     function Kakao_Login_func() {
-        kakao_login('<?=Decrypt($config["kapp_kakao_js_apikey"]?>', 'modumoa', '~!@#$%^&*()_+')?>');
+        kakao_login('<?=Decrypt($config['kapp_kakao_js_apikey'], 'modumoa', '~!@#$%^&*()_+')?>');
     }
 
     function Kout_func() {
