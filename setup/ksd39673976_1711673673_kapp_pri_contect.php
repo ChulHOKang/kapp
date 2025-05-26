@@ -449,10 +449,8 @@ function Back($pg_code) {
 	$SQLX = " SELECT * from {$tkher['pri_contect_table']} ";   
 	if ( ($result = sql_query( $SQLX ) )==false )   
 	{   
-		m_("테이블 또는 레코드가 생성되지 않았습니다.");
-		echo "<script>window.open('./DB_Table_CreateA.php' ,'_self')</script>";
-	  printf("SQLX Invalid query: %s
-", $SQLX);   
+		m_("테이블 또는 레코드가 생성되지 않았습니다.");	//	echo "<script>window.open('./DB_Table_CreateA.php' ,'_self')</script>";
+	  printf("SQLX Invalid query: %s", $SQLX);   
 	  exit();   
 	} else {   
 				$row	= sql_fetch_array($result);   
@@ -466,8 +464,8 @@ function Back($pg_code) {
             <input type=hidden name='seqno' value='' />
             <input type=hidden name='pg_name' value='kapp_pri_contect' />
             <input type=hidden name='pg_code' value='ksd39673976_1711673673' />
-            <input type=hidden name='page' value='<?=$page?>' />
-            <input type=hidden name='grant_write' value='<?=$grant_write?>' />
+            <input type=hidden name='page' value="<?=$page?>" />
+            <input type=hidden name='grant_write' value="<?=$grant_write?>" />
         </form>
         <div class='boardViewX'>
             <div class='viewHeader'>
@@ -479,117 +477,112 @@ function Back($pg_code) {
             <form name='makeform' action='' method='post' enctype='multipart/form-data' onsubmit='return check(this)'>
                 <input type=hidden name='mode' value='' />
                 <input type=hidden name='seqno' value='' />
-                <input type=hidden name='page' value='<?=$page?>' />
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>custom</span>
-                </div>
-                <div class='menu1A'><input type='VARCHAR' name='custom' value='<?=$row['custom']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a custom.'></div>
+                <input type=hidden name='page' value="<?=$page?>" />
+                <div class='menu1T' align=center><span style='width:90%;height:100%;'>custom</span></div>
+                <div class='menu1A'><input type='text' name='custom' value="<?=$row['custom']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a custom.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>compno</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">compno</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='compno' value='<?=$row['compno']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a compno.'></div>
+                <div class='menu1A'><input type='text' name='compno' value="<?=$row['compno']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a compno.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>up_name</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">up_name</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='up_name' value='<?=$row['up_name']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a up_name.'></div>
+                <div class='menu1A'><input type='text' name='up_name' value="<?=$row['up_name']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a up_name.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>postno</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">postno</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='postno' value='<?=$row['postno']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a postno.'></div>
+                <div class='menu1A'><input type='text' name='postno' value="<?=$row['postno']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a postno.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>address1</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">address1</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='address1' value='<?=$row['address1']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a address1.'></div>
+                <div class='menu1A'><input type='text' name='address1' value="<?=$row['address1']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a address1.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>address2</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">address2</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='address2' value='<?=$row['address2']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a address2.'></div>
+                <div class='menu1A'><input type='text' name='address2' value="<?=$row['address2']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a address2.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>address3</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">address3</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='address3' value='<?=$row['address3']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a address3.'></div>
+                <div class='menu1A'><input type='text' name='address3' value="<?=$row['address3']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a address3.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>tel</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='tel' value='<?=$row['tel']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a tel.'></div>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">tel</span></div>
+                <div class='menu1A'><input type='text' name='tel' value="<?=$row['tel']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a tel.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>tel1</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">tel1</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='tel1' value='<?=$row['tel1']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a tel1.'></div>
+                <div class='menu1A'><input type='text' name='tel1' value="<?=$row['tel1']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a tel1.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>tel2</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">tel2</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='tel2' value='<?=$row['tel2']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a tel2.'></div>
+                <div class='menu1A'><input type='text' name='tel2' value="<?=$row['tel2']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a tel2.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>tel3</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">tel3</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='tel3' value='<?=$row['tel3']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a tel3.'></div>
+                <div class='menu1A'><input type='text' name='tel3' value="<?=$row['tel3']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a tel3.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>email</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">email</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='email' value='<?=$row['email']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a email.'></div>
+                <div class='menu1A'><input type='text' name='email' value="<?=$row['email']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a email.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>homep</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">homep</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='homep' value='<?=$row['homep']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a homep.'></div>
+                <div class='menu1A'><input type='text' name='homep' value="<?=$row['homep']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a homep.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>gubun</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">gubun</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='gubun' value='<?=$row['gubun']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a gubun.'></div>
+                <div class='menu1A'><input type='text' name='gubun' value="<?=$row['gubun']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a gubun.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>jobgubun1</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">jobgubun1</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='jobgubun1' value='<?=$row['jobgubun1']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a jobgubun1.'></div>
+                <div class='menu1A'><input type='text' name='jobgubun1' value="<?=$row['jobgubun1']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a jobgubun1.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>jobgubun2</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">jobgubun2</span>
                 </div>
-                <div class='menu1A'><input type='TINYINT' name='jobgubun2' value='<?=$row['jobgubun2']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a jobgubun2.'></div>
+                <div class='menu1A'><input type='text' name='jobgubun2' value="<?=$row['jobgubun2']?>" style="width:90%;height:100%;" placeholder='Please enter a jobgubun2.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>jobgubun3</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">jobgubun3</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='jobgubun3' value='<?=$row['jobgubun3']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a jobgubun3.'></div>
+                <div class='menu1A'><input type='text' name='jobgubun3' value="<?=$row['jobgubun3']?>" style="width:90%;height:100%;" placeholder='Please enter a jobgubun3.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>jobgubun4</span>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">jobgubun4</span>
                 </div>
-                <div class='menu1A'><input type='VARCHAR' name='jobgubun4' value='<?=$row['jobgubun4']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a jobgubun4.'></div>
+                <div class='menu1A'><input type='text' name='jobgubun4' value="<?=$row['jobgubun4']?>" style="width:90%;height:100%;" placeholder='Please enter a jobgubun4.'></div>
                 <div class='blankA'> </div>
                 <p>memo</p>
-                <div class='menu1Area'><textarea name='memo' placeholder='Please enter your memo!'
-                        style='width:<?=$Xwidth?>;height:<?=$Text_height?>;'><?=$row['memo']?></textarea></div>
+                <div class='menu1Area'><textarea name='memo' placeholder='Please enter your memo!'  style="width:90%;height:60px;" > <?=$row['memo']?></textarea></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>day</span></div>
-                <div class='menu1A'><input type='DATETIME' name='day' value='<?=$row['day']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a day.'></div>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">day</span></div>
+                <div class='menu1A'><input type='DATETIME' name='day' value="<?=$row['day']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a day.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align=center><span
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>pass_check</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='pass_check' value='<?=$row['pass_check']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a pass_check.'></div>
+                        style="width:90%;height:100%;">pass_check</span></div>
+                <div class='menu1A'><input type='text' name='pass_check' value="<?=$row['pass_check']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a pass_check.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>cnt</span></div>
-                <div class='menu1A'><input type='INT' name='cnt' value='<?=$row['cnt']?>'
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a cnt.'></div>
+                <div class='menu1T' align=center><span style="width:90%;height:100%;">cnt</span></div>
+                <div class='menu1A'><input type='INT' name='cnt' value="<?=$row['cnt']?>"
+                        style="width:90%;height:100%;" placeholder='Please enter a cnt.'></div>
                 <div class='blankA'> </div>
-                <input type='hidden' name='upfile' value='<?=$upfile?>' />
+                <input type='hidden' name='upfile' value="<?=$upfile?>" />
                 <div class='viewHeader'>
                     <!-- <input type=button value='Save'
-                        onclick="javascript:record_modify('ksd39673976_1711673673','<?=$seqno?>');" class='Btn_List02A'>
+                        onclick="javascript:record_modify('ksd39673976_1711673673','<?=$seqno?>");" class='Btn_List02A'>
                     <input type=button value='List' onclick="javascript:tab_pg_list('ksd39673976_1711673673');"
                         class='Btn_List02A'> -->
                 </div>
@@ -625,20 +618,21 @@ function Add_Btn(_class) {
 
 function update_ajax(_this) {
     $.ajax({
-        type: "post",
+		header:{"Content-Type":"application/json"},
+        method: "post",
         dataType: "json",
         data: {
             "mode": 'pri_contect_update',
-            "column": JSON.stringify(_this.previousElementSibling.name),
+			"column": JSON.stringify(_this.previousElementSibling.name),
             "data": JSON.stringify(_this.previousElementSibling.value)
         },
         url: "./pri_contect_update_ajax.php",
-        success: function(data) {
+			success: function(data) {
             //console.log(data);
-            alert(data);
+			alert("name: " + _this.previousElementSibling.name + ", " + _this.previousElementSibling.value + " --- OK"); 
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- pri_contect_update_ajax.php");
+            alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- pri_contect_update_ajax.php, " + JSON.stringify(_this.previousElementSibling.value));
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);

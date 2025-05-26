@@ -49,7 +49,9 @@
 		//$http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://'; 
 		//HTTP_X_FORWARDED_PROTO이 기능은 PHP 7.4.0부터 더 이상 사용되지 않으며 PHP 8.0.0부터 제거되었습니다. 이 기능에 의존하는 것은 매우 권장되지 않습니다.
 		//echo $PHP . ", http: " . $http . ", SCRIPT_NAME: " . $_SERVER['SCRIPT_NAME'];
+		
 		$http = $_SERVER['REQUEST_SCHEME'] . "://";
+
 		$user = str_replace(preg_replace($pattern, '', $_SERVER['SCRIPT_FILENAME']), '', $_SERVER['SCRIPT_NAME']);       
 		$host				= isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];   
 		if( isset( $_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host))  $host =preg_replace('/:[0-9]+$/', '', $host);       

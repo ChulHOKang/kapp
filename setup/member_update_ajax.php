@@ -5,9 +5,9 @@ if($_POST['mode'] === 'member_update'){
     //print_r($_POST);
     /* $column = json_decode($_POST['column'], true);
     $data = json_decode($_POST['data'], true); */
-    $column = json_decode(getJsonText($_POST['column']), true);
-    $data = json_decode(getJsonText($_POST['data']), true);
-    $mb_id = json_decode(getJsonText($_POST['mb_id']), true);
+    $column = json_decode(getJsonTextX($_POST['column']), true);
+    $data = json_decode(getJsonTextX($_POST['data']), true);
+    $mb_id = json_decode(getJsonTextX($_POST['mb_id']), true);
 
     $enc_check = Enc_check($column); // 암호화 체크
 
@@ -38,7 +38,7 @@ function Record_Update($_column, $_data, $_mb_id) {
     
 }
 
-function getJsonText($jsontext) { // jsonText '\' 값 제거 
+function getJsonTextX($jsontext) { // jsonText '\' 값 제거 
     return str_replace("\\\"", "\"", $jsontext);
     }
 

@@ -2,7 +2,7 @@
 		include_once('../tkher_start_necessary.php');
 		if($member['mb_level'] < 8) {
 		m_("approach error. ---mb_level:".$member['mb_level']);
-			echo "<script>window.open( './index.php' , '_self');</script>";
+			echo "<script>window.open( '../' , '_self');</script>";
 		}
 ?>
 <html>
@@ -730,9 +730,9 @@ function Back($pg_code) {
         </form>
         </div>
         <?php
-			pagingA("ksd39673976_1712020603_member_run.php",$total_count,$page,$line_cnt );
+			pagingAA("ksd39673976_1712020603_member_run.php",$total_count,$page,$line_cnt );
 
-function pagingA($link, $total, $page, $size){ // paging() pagingA()로 적용함.
+function pagingAA($link, $total, $page, $size){ // paging() pagingAA()로 적용함.
 	$page_num = 10;
 	if( !$total ) { return; }
 	$total_page	= ceil($total/$size);

@@ -424,14 +424,12 @@ function Back($pg_code) {
     <center>
 
         <?php   
-	$SQLX = " SELECT * from {$tkher['tkher_my_control']} ";   
+	$SQLX = " SELECT * from {$tkher['tkher_my_control_table']} ";   //tkher_my_control_table
 	if ( ($result = sql_query( $SQLX ) )==false )   
 	{   
         m_("테이블 또는 레코드가 생성되지 않았습니다.");
-		echo "<script>window.open('./DB_Table_CreateA.php' ,'_self')</script>";
-	  printf("SQLX Invalid query: %s
-", $SQLX);   
-	  exit();   
+		//echo "<script>window.open('./DB_Table_CreateA.php' ,'_self')</script>";
+	  printf("SQLX Invalid query: %s", $SQLX);   	  exit();   
 	} else {   
 				$row	= sql_fetch_array($result);   
 ?>

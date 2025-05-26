@@ -2,7 +2,7 @@
 
 프로그램 명칭 : K-App ( Program Generator of Web )
 
-저작자 : Kang Chul Ho https://appgenerator.net
+저작자 : Kang Chul Ho https://moado.net
 
 라이센스 (License)
 

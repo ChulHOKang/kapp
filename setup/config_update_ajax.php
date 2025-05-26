@@ -10,8 +10,8 @@ if($_POST['mode'] === 'config_update'){
 	$column = json_decode($_POST['column'], true);
     $data = json_decode($_POST['data'], true); 
 	*/
-    $column = json_decode(getJsonText($_POST['column']), true);
-    $data = json_decode(getJsonText($_POST['data']), true);
+    $column = json_decode(getJsonTextX($_POST['column']), true);
+    $data = json_decode(getJsonTextX($_POST['data']), true);
 
     $enc_check = Enc_check($column); // 암호화 체크
 
@@ -45,7 +45,7 @@ function Record_Update($_column, $_data) {
     
 }
 
-function getJsonText($jsontext) { // jsonText '\' 값 제거 
+function getJsonTextX($jsontext) { // jsonText '\' 값 제거 
     return str_replace("\\\"", "\"", $jsontext);
     }
 

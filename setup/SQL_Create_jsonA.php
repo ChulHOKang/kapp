@@ -1,24 +1,20 @@
 <?php
 
 /* 
-   SQL_Create_jsonA.php 
+   DB_Table_CreateA.php : 테이블 생성 후 'Table List' 버턴을 클릭 하면 테이블 목록을 출력 한다. - SQL_Create_jsonA.php을 호출.
+   처음 셋업시에 -> kapp_dbcon_create.php 에서 테이블을 생성한다.  중요
+   SQL_Create_jsonA.php - DB_Table_CreateA.php 에서 호출한다.
    ajax echo 출력을 위한 json_encode 추가한 프로그램 
 */
-
-//include '../../modu_shop/coupon/tkher_db_lib.php';		
-//include '../../modu_shop/coupon/tkher_dbcon_Table.php';
-//include_once('../tkher_start_necessary.php');
 
 /* $table_array = array();
 $table_array = ['aboard_admin', 'aboard_infor', 'aboard_memo', 'admin_bbs', 'bbs_history', 'coin_view', 'ip_info', 'job_link_table', 'visit_sum', 'menuskin', 'sajin_group', 'sajin_jpg', 'sys_menu_bom', 'table10', 'table10_group', 'table10_pg', 'tkher_main_img', 'tkher_my_control', 'url_group', 'webeditor', 'webeditor_comment', 'member', 'log_info', 'point', 'config', 'visit', 'ap_bbs', 'e_list', 'pri_contect', 'project', 'tkher_content']; */
 
-	//include_once('../tkher_start_necessary.php');
 	if( $_SESSION['mb_level'] < 8) {
 		m_("Approche error---mb_level:".$member['mb_level']);
 		exit;
 		//echo "<script>window.open( './index.php' , '_self');</script>";
 	}
-
 
 function Delete_tableX($_prefix, $tab) {
     $kapp_tab = $_prefix.$tab;
@@ -31,7 +27,6 @@ function Delete_tableX($_prefix, $tab) {
         m_("Delete Success : $tab");
     }
 }
-
 
 function Aboard_admin($t_head, $tab) {
     /* m_("Create Success : $tab");
@@ -60,7 +55,7 @@ function Aboard_admin($t_head, $tab) {
         //m_("Create Success : $tab");
 
         $query = "
-        INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 0, '전체관리')
+        INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 0, 'Manager')
         ";
 
         $result = sql_query( $query );
@@ -286,38 +281,6 @@ function Ip_info($t_head, $tab) {
     }
 }
 
-function Job_link_table($t_head, $tab) {
-    $tab = $t_head.$tab;
-    $SQL = "
-        CREATE TABLE ".$t_head."job_link_table (
-        seqno int(11) auto_increment NOT NULL,
-        job_name varchar(200) DEFAULT NULL,
-        user_name varchar(200) DEFAULT NULL,
-        job_addr text DEFAULT NULL,
-        num varchar(50) DEFAULT NULL,
-        aboard_no varchar(50) DEFAULT NULL,
-        jong char(1) DEFAULT NULL,
-        job_level char(1) DEFAULT NULL,
-        job_group varchar(200) DEFAULT NULL,
-        job_group_code char(30) DEFAULT NULL,
-        price int(11) DEFAULT 0,
-        user_id varchar(50) DEFAULT NULL,
-        club_url varchar(50) DEFAULT NULL,
-        up_day timestamp NULL DEFAULT current_timestamp(),
-        memo varchar(255) DEFAULT NULL,
-        view_cnt int(13) DEFAULT 0,
-        ip varchar(255) DEFAULT NULL
-        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    ";
-    $result = sql_query( $SQL );
-    if( !$result ){
-        m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
-    } else {
-        m_("Create Success : $tab");
-    }
-}
-
 function Visit_sum($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -421,6 +384,109 @@ function Sajin_jpg($t_head, $tab) {
     }
 }
 
+//-----------------------------------------------------------------------
+function Table10($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."table10 (
+        seqno int(13) auto_increment NOT NULL,
+        group_code varchar(50) NOT NULL DEFAULT 'xxxx',
+        group_name varchar(50) NOT NULL DEFAULT 'ETC(기타)',
+        disno int(5) NOT NULL,
+        tab_enm varchar(50) NOT NULL,
+        tab_hnm varchar(50) NOT NULL,
+        fld_enm varchar(50) NOT NULL,
+        fld_hnm varchar(50) NOT NULL,
+        fld_type varchar(10) NOT NULL,
+        fld_len int(10) NOT NULL,
+        if_line tinyint(3) DEFAULT NULL,
+        if_type text DEFAULT NULL,
+        if_data text DEFAULT NULL,
+        relation_data text DEFAULT NULL,
+        memo text NOT NULL,
+        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        userid varchar(50) NOT NULL,
+        grant_write varchar(3) DEFAULT NULL,
+        grant_view varchar(3) DEFAULT NULL,
+        table_yn varchar(3) DEFAULT NULL,
+        sqltable text DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+    } else {
+        m_("Create Success : $tab");
+    }
+}
+
+function Table10_pg($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."table10_pg (
+        seqno int(13) auto_increment NOT NULL,
+        pg_code char(50) NOT NULL,
+        pg_name char(50) NOT NULL,
+        tab_enm varchar(50) NOT NULL,
+        tab_hnm varchar(50) NOT NULL,
+        item_cnt tinyint(3) DEFAULT NULL,
+        item_array text NOT NULL,
+        if_type text DEFAULT NULL,
+        if_data text DEFAULT NULL,
+        pop_data text DEFAULT NULL,
+        relation_data text DEFAULT NULL,
+        relation_type varchar(255) DEFAULT NULL,
+        memo text DEFAULT NULL,
+        group_code varchar(50) DEFAULT NULL,
+        group_name varchar(50) DEFAULT NULL,
+        disno int(5) DEFAULT NULL,
+        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        userid varchar(50) NOT NULL,
+        del varchar(1) DEFAULT NULL,
+        del_date datetime DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+    } else {
+        m_("Create Success : $tab");
+    }
+}
+function Job_link_table($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."job_link_table (
+        seqno int(11) auto_increment NOT NULL,
+        job_name varchar(200) DEFAULT NULL,
+        user_name varchar(200) DEFAULT NULL,
+        job_addr text DEFAULT NULL,
+        num varchar(50) DEFAULT NULL,
+        aboard_no varchar(50) DEFAULT NULL,
+        jong char(1) DEFAULT NULL,
+        job_level char(1) DEFAULT NULL,
+        job_group varchar(200) DEFAULT NULL,
+        job_group_code varchar(50) DEFAULT NULL,
+        price int(11) DEFAULT 0,
+        user_id varchar(50) DEFAULT NULL,
+        club_url varchar(50) DEFAULT NULL,
+        up_day timestamp NULL DEFAULT current_timestamp(),
+        memo text DEFAULT NULL,
+        view_cnt int(13) DEFAULT 0,
+        ip varchar(255) DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+    } else {
+        m_("Create Success : $tab");
+    }
+}
+
 function Sys_menu_bom($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -457,31 +523,34 @@ function Sys_menu_bom($t_head, $tab) {
     }
 }
 
-function Table10($t_head, $tab) {
+//------- add 2025-03-17 테이블 컬럼 확인 필요 . 중요 -  보완완료2025-03-20
+function Table10_curl($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
-        CREATE TABLE ".$t_head."table10 (
-        seqno int(13) auto_increment NOT NULL,
-        group_code char(20) NOT NULL DEFAULT 'xxxx',
-        group_name char(20) NOT NULL DEFAULT 'ETC(기타)',
-        disno int(5) NOT NULL,
-        tab_enm varchar(30) NOT NULL,
-        tab_hnm varchar(50) NOT NULL,
-        fld_enm varchar(20) NOT NULL,
-        fld_hnm varchar(30) NOT NULL,
-        fld_type varchar(10) NOT NULL,
-        fld_len int(10) NOT NULL,
-        if_line tinyint(3) DEFAULT NULL,
-        if_type char(255) DEFAULT NULL,
-        if_data text DEFAULT NULL,
-        relation_data text DEFAULT NULL,
-        memo text NOT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-        userid varchar(50) NOT NULL,
-        grant_write varchar(3) DEFAULT NULL,
-        grant_view varchar(3) DEFAULT NULL,
-        table_yn varchar(3) DEFAULT NULL,
-        sqltable text DEFAULT NULL
+        CREATE TABLE ".$t_head."table10_curl (
+        `seqno` int(13) auto_increment NOT NULL,
+  `host` char(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `group_code` varchar(50) NOT NULL DEFAULT 'xxxx',
+  `group_name` varchar(50) NOT NULL DEFAULT 'ETC',
+  `disno` int(5) NOT NULL,
+  `tab_enm` varchar(50) NOT NULL,
+  `tab_hnm` varchar(50) NOT NULL,
+  `fld_enm` varchar(50) NOT NULL,
+  `fld_hnm` varchar(50) NOT NULL,
+  `fld_type` varchar(10) NOT NULL,
+  `fld_len` int(10) NOT NULL,
+  `if_line` tinyint(3) DEFAULT NULL,
+  `if_type` text DEFAULT NULL,
+  `if_data` text DEFAULT NULL,
+  `relation_data` text DEFAULT NULL,
+  `memo` text DEFAULT NULL,
+  `upday` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `userid` varchar(50) NOT NULL,
+  `grant_write` varchar(3) DEFAULT NULL,
+  `grant_view` varchar(3) DEFAULT NULL,
+  `table_yn` varchar(3) DEFAULT NULL,
+  `sqltable` text DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -489,7 +558,113 @@ function Table10($t_head, $tab) {
         m_("$tab Table Create Invalid query: " . $SQL);
         m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
     } else {
-        m_("Create Success : $tab");
+        echo " - Create  Success : $tab";
+    }
+}
+
+function Table10_pg_curl($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."table10_pg_curl (
+        `seqno` int(13) auto_increment NOT NULL,
+  `host` varchar(30) NOT NULL,
+  `pg_code` char(50) NOT NULL,
+  `pg_name` char(50) NOT NULL,
+  `tab_enm` varchar(50) NOT NULL,
+  `tab_hnm` varchar(50) NOT NULL,
+  `item_cnt` tinyint(3) DEFAULT NULL,
+  `item_array` text NOT NULL,
+  `if_type` text DEFAULT NULL,
+  `if_data` text DEFAULT NULL,
+  `pop_data` text DEFAULT NULL,
+  `relation_data` text DEFAULT NULL,
+  `relation_type` varchar(255) DEFAULT NULL,
+  `memo` text DEFAULT NULL,
+  `group_code` varchar(50) NOT NULL,
+  `group_name` varchar(50) NOT NULL,
+  `disno` int(5) DEFAULT NULL,
+  `upday` timestamp NOT NULL DEFAULT current_timestamp(),
+  `userid` varchar(50) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `del` varchar(1) DEFAULT NULL,
+  `del_date` datetime DEFAULT NULL,
+  `sys_link` varchar(255) NOT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
+function Job_link_table_curl($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."job_link_table_curl (
+        `seqno` int(11) auto_increment NOT NULL,
+  `kapp_server` varchar(30) DEFAULT NULL,
+  `link_title` varchar(200) DEFAULT NULL,
+  `link_url` text DEFAULT NULL,
+  `link_type` char(1) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `up_day` timestamp NULL DEFAULT current_timestamp(),
+  `memo` text DEFAULT NULL,
+  `user_ip` varchar(255) DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
+function Sys_menu_bom_curl($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."sys_menu_bom_curl (
+        `seqno` int(11) auto_increment NOT NULL,
+  `host` varchar(30) DEFAULT NULL,
+  `sys_userid` varchar(50) NOT NULL,
+  `email` varchar(30) NOT NULL,
+  `sys_pg` varchar(50) NOT NULL,
+  `sys_rcnt` int(11) DEFAULT 0,
+  `sys_disno` int(11) DEFAULT 0,
+  `sys_subtit` varchar(50) DEFAULT NULL,
+  `sys_link` varchar(250) NOT NULL,
+  `sys_level` varchar(50) DEFAULT NULL,
+  `sys_menu` varchar(100) NOT NULL,
+  `sys_submenu` varchar(100) NOT NULL,
+  `sys_cnt` int(11) DEFAULT 0,
+  `sys_memo` text DEFAULT NULL,
+  `sys_file` varchar(50) DEFAULT NULL,
+  `sys_menutit` varchar(100) DEFAULT NULL,
+  `view_lev` char(1) DEFAULT NULL,
+  `view_cnt` int(11) DEFAULT 0,
+  `tit_gubun` char(1) DEFAULT NULL,
+  `book_num` varchar(50) DEFAULT NULL,
+  `up_day` timestamp NULL DEFAULT current_timestamp(),
+  `ip` varchar(20) DEFAULT NULL,
+  `bgcolor` varchar(10) DEFAULT NULL,
+  `fontcolor` varchar(10) DEFAULT NULL,
+  `fontface` varchar(10) DEFAULT NULL,
+  `fontsize` varchar(10) DEFAULT NULL,
+  `imgtype1` varchar(100) DEFAULT NULL,
+  `imgtype2` varchar(100) DEFAULT NULL,
+  `imgtype3` varchar(100) DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+    } else {
+        echo " - Create  Success : $tab";
     }
 }
 
@@ -498,46 +673,11 @@ function table10_group($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_group (
         seqno int(13) auto_increment NOT NULL,
-        group_code char(20) NOT NULL,
-        group_name char(20) NOT NULL,
+        group_code varchar(50) NOT NULL,
+        group_name varchar(50) NOT NULL,
         memo text NOT NULL,
         upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL
-        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-    ";
-    $result = sql_query( $SQL );
-    if( !$result ){
-        m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
-    } else {
-        m_("Create Success : $tab");
-    }
-}
-
-function Table10_pg($t_head, $tab) {
-    $tab = $t_head.$tab;
-    $SQL = "
-        CREATE TABLE ".$t_head."table10_pg (
-        seqno int(13) auto_increment NOT NULL,
-        pg_code char(30) NOT NULL,
-        pg_name char(30) NOT NULL,
-        tab_enm varchar(30) NOT NULL,
-        tab_hnm varchar(50) NOT NULL,
-        item_cnt tinyint(3) DEFAULT NULL,
-        item_array text NOT NULL,
-        if_type varchar(255) DEFAULT NULL,
-        if_data text DEFAULT NULL,
-        pop_data text DEFAULT NULL,
-        relation_data text DEFAULT NULL,
-        relation_type varchar(255) DEFAULT NULL,
-        memo text DEFAULT NULL,
-        group_code char(20) DEFAULT NULL,
-        group_name char(20) DEFAULT NULL,
-        disno int(5) DEFAULT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-        userid varchar(50) NOT NULL,
-        del varchar(1) DEFAULT NULL,
-        del_date datetime DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -554,11 +694,11 @@ function Tkher_main_img($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."tkher_main_img (
         no int(11) auto_increment NOT NULL,
-        jpg_name varchar(30) NOT NULL,
+        jpg_name varchar(50) NOT NULL,
         jpg_file varchar(200) NOT NULL,
         jpg_memo varchar(200) NOT NULL,
-        group_code varchar(20) DEFAULT NULL,
-        group_name varchar(20) DEFAULT NULL,
+        group_code varchar(50) DEFAULT NULL,
+        group_name varchar(50) DEFAULT NULL,
         view_no int(4) DEFAULT 99,
         g_file1 varchar(100) DEFAULT NULL,
         g_file2 varchar(100) DEFAULT NULL,
@@ -731,56 +871,59 @@ function Member($t_head, $tab) {
     $tab = $t_head.$tab;
     // 2024-03-26 mb_zip1 char(3) => char(10) 변경
     $SQL = "
-        CREATE TABLE ".$t_head."member (
-        mb_no int(11) auto_increment NOT NULL,
-        mb_id varchar(50) NOT NULL,
-        mb_sn varchar(255) DEFAULT NULL,
-        mb_password varchar(255) DEFAULT NULL,
-        mb_name varchar(255) DEFAULT NULL,
-        mb_nick varchar(255) DEFAULT NULL,
-        mb_nick_date date DEFAULT '0000-00-00',
-        mb_email varchar(255) NOT NULL,
-        mb_photo varchar(255) DEFAULT NULL,
-        mb_homepage varchar(255) DEFAULT NULL,
-        mb_level tinyint(4) DEFAULT 0,
-        mb_sex char(1) DEFAULT NULL,
-        mb_birth varchar(255) DEFAULT NULL,
-        mb_tel varchar(255) DEFAULT NULL,
-        mb_hp varchar(255) DEFAULT NULL,
-        mb_certify varchar(20) DEFAULT NULL,
-        mb_adult tinyint(4) NOT NULL DEFAULT 0,
-        mb_dupinfo varchar(255) DEFAULT NULL,
-        mb_zip1 char(10) DEFAULT NULL,
-        mb_zip2 char(3) DEFAULT NULL,
-        mb_addr1 varchar(255) DEFAULT NULL,
-        mb_addr2 varchar(255) DEFAULT NULL,
-        mb_addr3 varchar(255) DEFAULT NULL,
-        mb_addr_jibeon varchar(255) DEFAULT NULL,
-        mb_signature text DEFAULT NULL,
-        mb_recommend varchar(255) DEFAULT NULL,
-        mb_point int(11) DEFAULT 0,
-        mb_today_login datetime DEFAULT '0000-00-00 00:00:00',
-        mb_login_ip varchar(255) DEFAULT NULL,
-        mb_datetime datetime DEFAULT current_timestamp(),
-        mb_ip varchar(255) DEFAULT NULL,
-        mb_leave_date varchar(8) DEFAULT NULL,
-        mb_intercept_date varchar(8) DEFAULT NULL,
-        mb_email_certify datetime DEFAULT '0000-00-00 00:00:00',
-        mb_email_certify2 varchar(255) DEFAULT NULL,
-        mb_memo text DEFAULT NULL,
-        mb_lost_certify varchar(255) DEFAULT NULL,
-        mb_mailling tinyint(4) DEFAULT 0,
-        mb_sms tinyint(4) DEFAULT 0,
-        mb_open tinyint(4) DEFAULT 0,
-        mb_open_date date DEFAULT '0000-00-00',
-        mb_profile text DEFAULT NULL,
-        mb_memo_call varchar(255) DEFAULT NULL,
-        PRIMARY KEY (mb_no),
-        UNIQUE KEY mb_id (mb_id),
-        KEY mb_today_login (mb_today_login),
-        KEY mb_datetime (mb_datetime),
-        KEY mb_email (mb_email)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			CREATE TABLE ".$table_prefix."member (
+			  mb_no int(11) auto_increment NOT NULL,
+			  mb_id varchar(50) NOT NULL,
+			  mb_sn varchar(255) ,
+			  mb_password varchar(255) NOT NULL,
+			  mb_name varchar(255) NOT NULL,
+			  mb_nick varchar(255) ,
+			  mb_nick_date date,
+			  mb_email varchar(255) NOT NULL,
+			  mb_photo varchar(255) ,
+			  mb_homepage varchar(255) ,
+			  mb_level tinyint(4),
+			  mb_sex char(1) ,
+			  mb_birth varchar(255) ,
+			  mb_tel varchar(255) ,
+			  mb_hp varchar(255) ,
+			  mb_certify varchar(20) ,
+			  mb_adult tinyint(4) ,
+			  mb_dupinfo varchar(255) ,
+			  mb_zip1 char(4) ,
+			  mb_zip2 char(4) ,
+			  mb_addr1 varchar(255) ,
+			  mb_addr2 varchar(255) ,
+			  mb_addr3 varchar(255) ,
+			  mb_addr_jibeon varchar(255) ,
+			  mb_signature text,
+			  mb_recommend varchar(255) ,
+			  mb_point int(11) DEFAULT 0,
+			  mb_today_login datetime,
+			  mb_login_ip varchar(255) ,
+			  mb_datetime datetime ,
+			  mb_ip varchar(255) ,
+			  mb_leave_date varchar(8) ,
+			  mb_intercept_date varchar(8) ,
+			  mb_email_certify datetime,
+			  mb_email_certify2 varchar(255) ,
+			  mb_memo text NOT NULL,
+			  mb_lost_certify varchar(255),
+			  mb_mailling tinyint(4),
+			  mb_sms tinyint(4),
+			  mb_open tinyint(4),
+			  mb_open_date date,
+			  mb_profile text,
+			  mb_memo_call varchar(255),
+			  mb_penalty int(11) DEFAULT 0,
+			  mb_gpt_key varchar(255),
+			  mb_gpt_model varchar(255)
+			  , PRIMARY KEY (mb_no)
+			  , UNIQUE KEY mb_id (mb_id)
+			  , KEY mb_today_login (mb_today_login)
+			  , KEY mb_datetime (mb_datetime)
+			  , KEY mb_email (mb_email)
+			  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
@@ -995,7 +1138,7 @@ function Config($t_head, $tab) {
         //m_("Create Success : $tab");
 
         $query = "
-        INSERT INTO `".$t_head."config` (`kapp_title`, `kapp_theme`, `kapp_admin`, `kapp_admin_email`, `kapp_admin_email_name`, `kapp_add_script`, `kapp_admin_level`, `kapp_use_point`, `kapp_point_term`, `kapp_use_copy_log`, `kapp_use_email_certify`, `kapp_login_point`, `kapp_cut_name`, `kapp_nick_modify`, `kapp_new_skin`, `kapp_new_rows`, `kapp_search_skin`, `kapp_connect_skin`, `kapp_faq_skin`, `kapp_read_point`, `kapp_write_point`, `kapp_comment_point`, `kapp_download_point`, `kapp_write_pages`, `kapp_mobile_pages`, `kapp_link_target`, `kapp_delay_sec`, `kapp_filter`, `kapp_possible_ip`, `kapp_intercept_ip`, `kapp_analytics`, `kapp_add_meta`, `kapp_syndi_token`, `kapp_syndi_except`, `kapp_member_skin`, `kapp_use_homepage`, `kapp_req_homepage`, `kapp_use_tel`, `kapp_req_tel`, `kapp_use_hp`, `kapp_req_hp`, `kapp_use_addr`, `kapp_req_addr`, `kapp_use_signature`, `kapp_req_signature`, `kapp_use_profile`, `kapp_req_profile`, `kapp_register_level`, `kapp_register_point`, `kapp_icon_level`, `kapp_use_recommend`, `kapp_recommend_point`, `kapp_leave_day`, `kapp_search_part`, `kapp_email_use`, `kapp_email_wr_super_admin`, `kapp_email_wr_group_admin`, `kapp_email_wr_board_admin`, `kapp_email_wr_write`, `kapp_email_wr_comment_all`, `kapp_email_mb_super_admin`, `kapp_email_mb_member`, `kapp_email_po_super_admin`, `kapp_prohibit_id`, `kapp_prohibit_email`, `kapp_new_del`, `kapp_memo_del`, `kapp_visit_del`, `kapp_popular_del`, `kapp_optimize_date`, `kapp_use_member_icon`, `kapp_member_icon_size`, `kapp_member_icon_width`, `kapp_member_icon_height`, `kapp_login_minutes`, `kapp_image_extension`, `kapp_flash_extension`, `kapp_movie_extension`, `kapp_formmail_is_member`, `kapp_page_rows`, `kapp_mobile_page_rows`, `kapp_visit`, `kapp_max_po_id`, `kapp_stipulation`, `kapp_privacy`, `kapp_open_modify`, `kapp_memo_send_point`, `kapp_mobile_new_skin`, `kapp_mobile_search_skin`, `kapp_mobile_connect_skin`, `kapp_mobile_faq_skin`, `kapp_mobile_member_skin`, `kapp_captcha_mp3`, `kapp_editor`, `kapp_cert_use`, `kapp_cert_ipin`, `kapp_cert_hp`, `kapp_cert_kcb_cd`, `kapp_cert_kcp_cd`, `kapp_lg_mid`, `kapp_lg_mert_key`, `kapp_cert_limit`, `kapp_cert_req`, `kapp_sms_use`, `kapp_sms_type`, `kapp_icode_id`, `kapp_icode_pw`, `kapp_icode_server_ip`, `kapp_icode_server_port`, `kapp_googl_shorturl_apikey`, `kapp_facebook_appid`, `kapp_facebook_secret`, `kapp_twitter_key`, `kapp_twitter_secret`, `kapp_kakao_js_apikey`, `kapp_as_thema`, `kapp_as_color`, `kapp_as_mobile_thema`, `kapp_as_mobile_color`, `kapp_as_admin`, `kapp_as_intro`, `kapp_as_intro_skin`, `kapp_as_mobile_intro_skin`, `kapp_as_tag_skin`, `kapp_as_mobile_tag_skin`, `kapp_as_misc_skin`, `kapp_as_lang`, `kapp_as_gnu`, `kapp_as_xp`, `kapp_as_mp`) VALUES ('K-App', 'basic', 'dao', 'crakan89@gmail.com', 'K-App', '', 7, 1, 0, 1, 1, 100, 10, 60, 'basic', 15, 'basic', 'basic', 'basic', 100, 3000, 1000, -3000, 10, 5, '_blank', 30, '18아,18놈,18새끼,18뇬,18노,18것,18넘,개년,개놈,개뇬,개새,개색끼,개세끼,개세이,개쉐이,개쉑,개쉽,개시키,개자식,개좆,게색기,게색끼,광뇬,뇬,눈깔,뉘미럴,니귀미,니기미,니미,도촬,되질래,뒈져라,뒈진다,디져라,디진다,디질래,병쉰,병신,뻐큐,뻑큐,뽁큐,삐리넷,새꺄,쉬발,쉬밸,쉬팔,쉽알,스패킹,스팽,시벌,시부랄,시부럴,시부리,시불,시브랄,시팍,시팔,시펄,실밸,십8,십쌔,십창,싶알,쌉년,썅놈,쌔끼,쌩쑈,썅,써벌,썩을년,쎄꺄,쎄엑,쓰바,쓰발,쓰벌,쓰팔,씨8,씨댕,씨바,씨발,씨뱅,씨봉알,씨부랄,씨부럴,씨부렁,씨부리,씨불,씨브랄,씨빠,씨빨,씨뽀랄,씨팍,씨팔,씨펄,씹,아가리,아갈이,엄창,접년,잡놈,재랄,저주글,조까,조빠,조쟁이,조지냐,조진다,조질래,존나,존니,좀물,좁년,좃,좆,좇,쥐랄,쥐롤,쥬디,지랄,지럴,지롤,지미랄,쫍빱,凸,퍽큐,뻑큐,빠큐,ㅅㅂㄹㅁ', '', '', '', '', '', '', 'basic', 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 3000, 2, 1, 5000, 30, 1000, 1, 0, 0, 0, 0, 0, 1, 1, 0, 'admin,administrator,webmaster,sysop,manager,root,su,guest', '', 30, 180, 365, 180, '2022-12-08', 2, 5000, 22, 22, 10, 'gif|jpg|jpeg|png', 'swf', 'asx|asf|wmv|wma|mpg|mpeg|mov|avi|mp3', 1, 15, 10, 'today:2, yestday:, max:2, Total:2', 0, 'A. K-App No Coding System website terms and conditions\r\nThe following terms apply to all use of the website \r\n\r\nPLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING OR USING THE WEBSITE. By accessing or using any portion of the website, you agree to the terms of this Agreement. If you do not agree to all of the terms and conditions of this Agreement, you will not be able to access the Website or use the Services. If these Terms of Use are considered an offer of U-link System, you expressly agree to these Terms and Conditions. This website is only available to individuals who are at least 13 years old.\r\n\r\n1. Ownership\r\nOwnership, copyright and ownership of software developed by U-link System must always remain in U-link System. You may not acquire, directly, indirectly, or implicitly, ownership, copyright or ownership of the software or any part thereof. We do not claim ownership of any information you submit to the U-link System application itself, and your code is yours.\r\n\r\n2. Your account and website\r\nWhen you create an account on the website, you are responsible for maintaining the security of your account, and you are solely responsible for all activities related to your account and other actions related to your account. You must promptly notify U-link System of any unauthorized use of your account or any other security breach. U-link System is not liable for any act or negligence by you, including any damages of any kind arising out of such acts or omissions.\r\n\r\n3. Acceptable use of your account and website\r\nBy agreeing to this Agreement, you agree that you will not use, recommend, promote or facilitate the use of the Website or your account by others in a manner that is harmful to others (“Acceptable Use”). Examples of harmful uses include illegal or fraudulent activities, infringement of the intellectual property rights of others, defamation, obscene content, violent content, violent content, infringement of privacy, or distributing content that is harassing. The security or integrity of a network or communication system, a taxable resource for activities such as cryptocurrency mining. External scans of the U-link System infrastructure cannot be performed without the written permission of the U-link System.\r\n\r\n4.Payment and renewal for subscriptions purchased through the website\r\nBy choosing a subscription, you agree to pay the U-link System a designated annual subscription fee for that service. Subscription fees are non-refundable within the first 45 days of subscription. The subscription fee is stated on the invoice. Your subscription will automatically renew unless you notify the U-link System you wish to cancel your subscription before the end of the subscription period. U-link System reserves the right to adjust rates at the time of renewal. You have the right to collect the applicable annual subscription fee using the credit card or other payment method recorded by us. All subscriptions are subject to the terms and conditions of the U-link System Subscription Terms.\r\n\r\n5.U-link System newsletter\r\nBy creating an account on U-link System, you will be given the right to add your email address to the U-link System newsletter. You can unsubscribe at any time using the link at the bottom of the newsletter.\r\n\r\n6. Responsibilities of website visitors\r\nU-link System does not review \r\n\r\n7. Content posted on other websites\r\nWe have not reviewed \r\n\r\n8. Copyright Infringement and DMCA Policy\r\nU-link System respects the intellectual property rights of others because it asks others to respect their intellectual property rights. If you believe that any material on the U-link System infringes your copyright, please notify U-link System in accordance with DMCA policy.\r\n\r\n9.Data privacy\r\nYou must ensure that any inf\r\n\r\n(U-link System Contribut\r\n\r\n10. Intellectual property rights\r\nThis Agreement does not transfer the intellectual property rights of the U-link System or any third party to you by the U-link System, and all rights, titles and interests in such property remain (between the parties) with the U-link System. U-link System, the U-link System logo, and all other trademarks, service marks, graphics and logos or websites associated with the U-link System are trademarks or registered trademarks of U-link System BV or U-link System licensors. Use of the \"U-link System\" is under license. Other trademarks, service marks, graphics and logos used in connection with the website may be trademarks of other third parties. Use of the website does not give you any right or license to reproduce or otherwise use the U-link System or any third party trademarks.\r\n\r\n11. Changes\r\nWhile most changes may be min\r\n\r\n12. General Representative\r\nYou will (i) strictly comply with this Agreement \r\n\r\n13. End\r\nThe U-link System may terminate your access to all \r\n\r\n14. Limitation of Liability\r\nU-link System or its affiliates, suppliers or licensors shall not be liable for any contract, negligence, strict liability or any other liability in relation to the subject matter of this Agreement under any law or impartial theory. (i) U-link System, or consequential damages; (ii) Cost of procurement for a replacement product or service; (iii) Use or loss of data or discontinuation of data; Or (iv) we are not liable for any damages. U-link System cannot be held liable for failures or delays due to issues beyond its reasonable control.\r\n\r\n15. Warranty\r\nYou agree that U-link System, its affiliates, contract\r\n\r\n16. Disclaimer of Warranty\r\nThe website is provided \"as is\". U-link System \r\n\r\n17. Partial void\r\nIf a court of competent jurisdiction claims any provision of this document as invalid, invalid or unenforceable, the remaining provisions will remain in full effect without being damaged or invalidated in any way.\r\n\r\n18. Execution failure\r\n\r\n19. Dispute Resolution\r\nBoth parties will enter into good faith negotiations to resolve the dispute for 10 business days after written notice of the dispute or written matter has been provided to the other party. Within such 10 business days, the representatives of each party will participate in negotiations to resolve the dispute, and these individuals will meet in person via video conference or telephone to attempt to resolve the dispute or problem informally. If such parties are unable to resolve the dispute within 10 such business days, the parties may exercise their rights to use this Agreement or otherwise, unless the parties mutually agree to extend the negotiation period.\r\n\r\n20. Arbitration\r\nAny dispute, controversy, or allegation arising in connection with this Agreement, including the formation, interpretation, breach or termination of this Agreement, including whether any claims not resolved through the procedures set forth in Dispute Resolution may be asserted, shall be governed by the Arbitration Rules of the Republic of Korea Arbitration Service. Subject to arbitration and final decision. The arbitral tribunal consists of one arbitrator. The place of arbitration shall be the Republic of Korea. A ruling on an award made by an arbitrator may be filed with a court having jurisdiction.\r\n\r\n21. Governing Law\r\nThis Agreement is governed and construed in accordance with the laws of the Republic of Korea.\r\n', 'Purpose item retention period\r\nIdentification of the user, contact for contract execution, handling of complaints related to the use of the service Until the e-mail service is canceled.\r\nHowever, when it is necessary to retain the transaction-related rights and obligations for a certain period of time,\r\nFor the period set by the relevant laws or for the period set forth below\r\n1) Record of consumer complaints or disputes: 3 years\r\n2) Records on the collection, processing and use of credit information: 3 years  3) Record of payment and goods supply: 5 years\r\n4) Record of contract or withdrawal of subscription: 5 years\r\n5) Login record: 3 months\r\n', 0, 100, 'basic', 'basic', 'basic', 'basic', 'basic', 'basic', 'cheditor5', 0, '', '', '', '', '', '', 5, 1, 'icode', '', 'K-APP', '778855', '211.172.232.124', '7295', '', '', '', '', '', '', 'Basic', 'Basic', 'Basic', 'Basic', '', '', '', '', 'basic', 'basic', 'basic', 'english', 0, 'XP', 'MP')
+        INSERT INTO `".$t_head."config` (`kapp_title`, `kapp_theme`, `kapp_admin`, `kapp_admin_email`, `kapp_admin_email_name`, `kapp_add_script`, `kapp_admin_level`, `kapp_use_point`, `kapp_point_term`, `kapp_use_copy_log`, `kapp_use_email_certify`, `kapp_login_point`, `kapp_cut_name`, `kapp_nick_modify`, `kapp_new_skin`, `kapp_new_rows`, `kapp_search_skin`, `kapp_connect_skin`, `kapp_faq_skin`, `kapp_read_point`, `kapp_write_point`, `kapp_comment_point`, `kapp_download_point`, `kapp_write_pages`, `kapp_mobile_pages`, `kapp_link_target`, `kapp_delay_sec`, `kapp_filter`, `kapp_possible_ip`, `kapp_intercept_ip`, `kapp_analytics`, `kapp_add_meta`, `kapp_syndi_token`, `kapp_syndi_except`, `kapp_member_skin`, `kapp_use_homepage`, `kapp_req_homepage`, `kapp_use_tel`, `kapp_req_tel`, `kapp_use_hp`, `kapp_req_hp`, `kapp_use_addr`, `kapp_req_addr`, `kapp_use_signature`, `kapp_req_signature`, `kapp_use_profile`, `kapp_req_profile`, `kapp_register_level`, `kapp_register_point`, `kapp_icon_level`, `kapp_use_recommend`, `kapp_recommend_point`, `kapp_leave_day`, `kapp_search_part`, `kapp_email_use`, `kapp_email_wr_super_admin`, `kapp_email_wr_group_admin`, `kapp_email_wr_board_admin`, `kapp_email_wr_write`, `kapp_email_wr_comment_all`, `kapp_email_mb_super_admin`, `kapp_email_mb_member`, `kapp_email_po_super_admin`, `kapp_prohibit_id`, `kapp_prohibit_email`, `kapp_new_del`, `kapp_memo_del`, `kapp_visit_del`, `kapp_popular_del`, `kapp_optimize_date`, `kapp_use_member_icon`, `kapp_member_icon_size`, `kapp_member_icon_width`, `kapp_member_icon_height`, `kapp_login_minutes`, `kapp_image_extension`, `kapp_flash_extension`, `kapp_movie_extension`, `kapp_formmail_is_member`, `kapp_page_rows`, `kapp_mobile_page_rows`, `kapp_visit`, `kapp_max_po_id`, `kapp_stipulation`, `kapp_privacy`, `kapp_open_modify`, `kapp_memo_send_point`, `kapp_mobile_new_skin`, `kapp_mobile_search_skin`, `kapp_mobile_connect_skin`, `kapp_mobile_faq_skin`, `kapp_mobile_member_skin`, `kapp_captcha_mp3`, `kapp_editor`, `kapp_cert_use`, `kapp_cert_ipin`, `kapp_cert_hp`, `kapp_cert_kcb_cd`, `kapp_cert_kcp_cd`, `kapp_lg_mid`, `kapp_lg_mert_key`, `kapp_cert_limit`, `kapp_cert_req`, `kapp_sms_use`, `kapp_sms_type`, `kapp_icode_id`, `kapp_icode_pw`, `kapp_icode_server_ip`, `kapp_icode_server_port`, `kapp_googl_shorturl_apikey`, `kapp_facebook_appid`, `kapp_facebook_secret`, `kapp_twitter_key`, `kapp_twitter_secret`, `kapp_kakao_js_apikey`, `kapp_as_thema`, `kapp_as_color`, `kapp_as_mobile_thema`, `kapp_as_mobile_color`, `kapp_as_admin`, `kapp_as_intro`, `kapp_as_intro_skin`, `kapp_as_mobile_intro_skin`, `kapp_as_tag_skin`, `kapp_as_mobile_tag_skin`, `kapp_as_misc_skin`, `kapp_as_lang`, `kapp_as_gnu`, `kapp_as_xp`, `kapp_as_mp`) VALUES ('K-App', 'basic', 'dao', 'crakan89@gmail.com', 'K-App', '', 7, 1, 0, 1, 1, 100, 10, 60, 'basic', 15, 'basic', 'basic', 'basic', 100, 3000, 1000, -3000, 10, 5, '_blank', 30, '18아,18놈,18새끼,18뇬,18노,18것,18넘,개년,개놈,개뇬,개새,개색끼,개세끼,개세이,개쉐이,개쉑,개쉽,개시키,개자식,개좆,게색기,게색끼,광뇬,뇬,눈깔,뉘미럴,니귀미,니기미,니미,도촬,되질래,뒈져라,뒈진다,디져라,디진다,디질래,병쉰,병신,뻐큐,뻑큐,뽁큐,삐리넷,새꺄,쉬발,쉬밸,쉬팔,쉽알,스패킹,스팽,시벌,시부랄,시부럴,시부리,시불,시브랄,시팍,시팔,시펄,실밸,십8,십쌔,십창,싶알,쌉년,썅놈,쌔끼,쌩쑈,썅,써벌,썩을년,쎄꺄,쎄엑,쓰바,쓰발,쓰벌,쓰팔,씨8,씨댕,씨바,씨발,씨뱅,씨봉알,씨부랄,씨부럴,씨부렁,씨부리,씨불,씨브랄,씨빠,씨빨,씨뽀랄,씨팍,씨팔,씨펄,씹,아가리,아갈이,엄창,접년,잡놈,재랄,저주글,조까,조빠,조쟁이,조지냐,조진다,조질래,존나,존니,좀물,좁년,좃,좆,좇,쥐랄,쥐롤,쥬디,지랄,지럴,지롤,지미랄,쫍빱,凸,퍽큐,뻑큐,빠큐,ㅅㅂㄹㅁ', '', '', '', '', '', '', 'basic', 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 3000, 2, 1, 5000, 30, 1000, 1, 0, 0, 0, 0, 0, 1, 1, 0, 'admin,administrator,webmaster,sysop,manager,root,su,guest', '', 30, 180, 365, 180, '2022-12-08', 2, 5000, 22, 22, 10, 'gif|jpg|jpeg|png', 'swf', 'asx|asf|wmv|wma|mpg|mpeg|mov|avi|mp3', 1, 15, 10, 'today:2, yestday:, max:2, Total:2', 0, 'A. K-App No Coding System website terms and conditions\r\nThe following terms apply to all use of the website \r\n\r\nPLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING OR USING THE WEBSITE. By accessing or using any portion of the website, you agree to the terms of this Agreement. If you do not agree to all of the terms and conditions of this Agreement, you will not be able to access the Website or use the Services. If these Terms of Use are considered an offer of K-APP System, you expressly agree to these Terms and Conditions. This website is only available to individuals who are at least 13 years old.\r\n\r\n1. Ownership\r\nOwnership, copyright and ownership of software developed by K-APP System must always remain in K-APP System. You may not acquire, directly, indirectly, or implicitly, ownership, copyright or ownership of the software or any part thereof. We do not claim ownership of any information you submit to the K-APP System application itself, and your code is yours.\r\n\r\n2. Your account and website\r\nWhen you create an account on the website, you are responsible for maintaining the security of your account, and you are solely responsible for all activities related to your account and other actions related to your account. You must promptly notify K-APP System of any unauthorized use of your account or any other security breach. K-APP System is not liable for any act or negligence by you, including any damages of any kind arising out of such acts or omissions.\r\n\r\n3. Acceptable use of your account and website\r\nBy agreeing to this Agreement, you agree that you will not use, recommend, promote or facilitate the use of the Website or your account by others in a manner that is harmful to others (“Acceptable Use”). Examples of harmful uses include illegal or fraudulent activities, infringement of the intellectual property rights of others, defamation, obscene content, violent content, violent content, infringement of privacy, or distributing content that is harassing. The security or integrity of a network or communication system, a taxable resource for activities such as cryptocurrency mining. External scans of the K-APP System infrastructure cannot be performed without the written permission of the K-APP System.\r\n\r\n4.Payment and renewal for subscriptions purchased through the website\r\nBy choosing a subscription, you agree to pay the K-APP System a designated annual subscription fee for that service. Subscription fees are non-refundable within the first 45 days of subscription. The subscription fee is stated on the invoice. Your subscription will automatically renew unless you notify the K-APP System you wish to cancel your subscription before the end of the subscription period. K-APP System reserves the right to adjust rates at the time of renewal. You have the right to collect the applicable annual subscription fee using the credit card or other payment method recorded by us. All subscriptions are subject to the terms and conditions of the K-APP System Subscription Terms.\r\n\r\n5.K-APP System newsletter\r\nBy creating an account on K-APP System, you will be given the right to add your email address to the K-APP System newsletter. You can unsubscribe at any time using the link at the bottom of the newsletter.\r\n\r\n6. Responsibilities of website visitors\r\nK-APP System does not review \r\n\r\n7. Content posted on other websites\r\nWe have not reviewed \r\n\r\n8. Copyright Infringement and DMCA Policy\r\nK-APP System respects the intellectual property rights of others because it asks others to respect their intellectual property rights. If you believe that any material on the K-APP System infringes your copyright, please notify K-APP System in accordance with DMCA policy.\r\n\r\n9.Data privacy\r\nYou must ensure that any inf\r\n\r\n(K-APP System Contribut\r\n\r\n10. Intellectual property rights\r\nThis Agreement does not transfer the intellectual property rights of the K-APP System or any third party to you by the K-APP System, and all rights, titles and interests in such property remain (between the parties) with the K-APP System. K-APP System, the K-APP System logo, and all other trademarks, service marks, graphics and logos or websites associated with the K-APP System are trademarks or registered trademarks of K-APP System BV or K-APP System licensors. Use of the \"K-APP System\" is under license. Other trademarks, service marks, graphics and logos used in connection with the website may be trademarks of other third parties. Use of the website does not give you any right or license to reproduce or otherwise use the K-APP System or any third party trademarks.\r\n\r\n11. Changes\r\nWhile most changes may be min\r\n\r\n12. General Representative\r\nYou will (i) strictly comply with this Agreement \r\n\r\n13. End\r\nThe K-APP System may terminate your access to all \r\n\r\n14. Limitation of Liability\r\nK-APP System or its affiliates, suppliers or licensors shall not be liable for any contract, negligence, strict liability or any other liability in relation to the subject matter of this Agreement under any law or impartial theory. (i) K-APP System, or consequential damages; (ii) Cost of procurement for a replacement product or service; (iii) Use or loss of data or discontinuation of data; Or (iv) we are not liable for any damages. K-APP System cannot be held liable for failures or delays due to issues beyond its reasonable control.\r\n\r\n15. Warranty\r\nYou agree that K-APP System, its affiliates, contract\r\n\r\n16. Disclaimer of Warranty\r\nThe website is provided \"as is\". K-APP System \r\n\r\n17. Partial void\r\nIf a court of competent jurisdiction claims any provision of this document as invalid, invalid or unenforceable, the remaining provisions will remain in full effect without being damaged or invalidated in any way.\r\n\r\n18. Execution failure\r\n\r\n19. Dispute Resolution\r\nBoth parties will enter into good faith negotiations to resolve the dispute for 10 business days after written notice of the dispute or written matter has been provided to the other party. Within such 10 business days, the representatives of each party will participate in negotiations to resolve the dispute, and these individuals will meet in person via video conference or telephone to attempt to resolve the dispute or problem informally. If such parties are unable to resolve the dispute within 10 such business days, the parties may exercise their rights to use this Agreement or otherwise, unless the parties mutually agree to extend the negotiation period.\r\n\r\n20. Arbitration\r\nAny dispute, controversy, or allegation arising in connection with this Agreement, including the formation, interpretation, breach or termination of this Agreement, including whether any claims not resolved through the procedures set forth in Dispute Resolution may be asserted, shall be governed by the Arbitration Rules of the Republic of Korea Arbitration Service. Subject to arbitration and final decision. The arbitral tribunal consists of one arbitrator. The place of arbitration shall be the Republic of Korea. A ruling on an award made by an arbitrator may be filed with a court having jurisdiction.\r\n\r\n21. Governing Law\r\nThis Agreement is governed and construed in accordance with the laws of the Republic of Korea.\r\n', 'Purpose item retention period\r\nIdentification of the user, contact for contract execution, handling of complaints related to the use of the service Until the e-mail service is canceled.\r\nHowever, when it is necessary to retain the transaction-related rights and obligations for a certain period of time,\r\nFor the period set by the relevant laws or for the period set forth below\r\n1) Record of consumer complaints or disputes: 3 years\r\n2) Records on the collection, processing and use of credit information: 3 years  3) Record of payment and goods supply: 5 years\r\n4) Record of contract or withdrawal of subscription: 5 years\r\n5) Login record: 3 months\r\n', 0, 100, 'basic', 'basic', 'basic', 'basic', 'basic', 'basic', 'cheditor5', 0, '', '', '', '', '', '', 5, 1, 'icode', '', 'K-APP', '778855', '', '7295', '', '', '', '', '', '', 'Basic', 'Basic', 'Basic', 'Basic', '', '', '', '', 'basic', 'basic', 'basic', 'english', 0, 'XP', 'MP')
         ";
 
         $result = sql_query( $query );

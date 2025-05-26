@@ -354,7 +354,7 @@ function db_create_screen( $setup_type ){ // 'kapp_dbcon.php' 없어서 이것�
 
 		<div class='blankA'> </div>
 		<div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'><b>File Prefix </span></div>
-		<div class='menu1A'><input type='text' name='table_prefix' value='".KAPP_TABLE_PREFIX."' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a File Prefix' title='session:".$_SESSION['table_prefix'].", Changes are possible, but it is recommended to use it as is.'></div><!-- 변경이 가능 하지만 그대로 상용하기를 권장함. -->
+		<div class='menu1A'><input type='text' name='table_prefix' value='".KAPP_TABLE_PREFIX."' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a File Prefix' title='session:".$_SESSION['table_prefix'].", Changes are possible, but it is recommended to use it as is.' ></div><!-- 변경이 가능 하지만 그대로 상용하기를 권장함. -->
 		";
 
 if( $setup_type == "Kapp_Setup"){

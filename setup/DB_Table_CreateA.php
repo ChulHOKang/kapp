@@ -3,7 +3,9 @@
 	/*
 		Run 1. Setup - 'DB List' Button click
 		Run 2. Login - 'Kapp Table List' Button click 
-
+       처음 셋업시에 -> kapp_dbcon_create.php 에서 테이블을 생성한다.  중요 2025-03-25
+		
+		DB_Table_CreateA.php : 테이블 생성 후 'Table List' 버턴을 클릭 하면 테이블 목록을 출력 한다. - SQL_Create_jsonA.php을 호출.
 	*/
 
 	$_SESSION['admin'] = "";
@@ -42,7 +44,7 @@
 
     if( $_SESSION['mb_level'] > 7 && $mode == 'create_all') {
 
-        $uncreate_table_list = json_decode(getJsonText($_POST['uncreate_table_list']), true); // 생성되지 않은 테이블 목록 //print_r($uncreate_table_list);
+        $uncreate_table_list = json_decode( getJsonText( $_POST['uncreate_table_list']), true); // 생성되지 않은 테이블 목록 //print_r($uncreate_table_list);
         Table_Create_All($prefix, $uncreate_table_list); // echo "<script>location.replace(location.href);</script>";
         Replace();
         exit;
@@ -196,9 +198,6 @@
                 case 'ip_info':
                     Ip_info($_prefix, $table);
                     break;
-                case 'job_link_table':
-                    Job_link_table($_prefix, $table);
-                    break;
                 case 'visit_sum':
                     Visit_sum($_prefix, $table);
                     break;
@@ -211,17 +210,22 @@
                 case 'sajin_jpg':
                     Sajin_jpg($_prefix, $table);
                     break;
-                case 'sys_menu_bom':
-                    Sys_menu_bom($_prefix, $table);
-                    break;
-                case 'table10':
+                
+				case 'table10':
                     Table10($_prefix, $table);
-                    break;
-                case 'table10_group':
-                    table10_group($_prefix, $table);
                     break;
                 case 'table10_pg':
                     Table10_pg($_prefix, $table);
+                    break;
+                case 'job_link_table':
+                    Job_link_table($_prefix, $table);
+                    break;
+                case 'sys_menu_bom':
+                    Sys_menu_bom($_prefix, $table);
+                    break;
+
+				case 'table10_group':
+                    table10_group($_prefix, $table);
                     break;
                 case 'tkher_main_img':
                     Tkher_main_img($_prefix, $table);
@@ -307,7 +311,6 @@
         Config($prefix, 'config');  
         E_list($prefix, 'e_list'); 
         Ip_info($prefix, 'ip_info');
-        Job_link_table($prefix, 'job_link_table');
         Log_info($prefix, 'log_info');   
         Member($prefix, 'member');  
         Menuskin($prefix, 'menuskin');  
@@ -316,10 +319,18 @@
         Project($prefix, 'project'); 
         Sajin_group($prefix, 'sajin_group');
         Sajin_jpg($prefix, 'sajin_jpg');
-        Sys_menu_bom($prefix, 'sys_menu_bom');
-        Table10($prefix, 'table10');
-        table10_group($prefix, 'table10_group');
+        
+		Table10($prefix, 'table10');
         Table10_pg($prefix, 'table10_pg');
+        Job_link_table($prefix, 'job_link_table');
+        Sys_menu_bom($prefix, 'sys_menu_bom');
+//--------- add Curl Table 2025-03-25 --------
+		Table10($prefix, 'table10_curl');
+        Table10_pg($prefix, 'table10_pg_curl');
+        Job_link_table($prefix, 'job_link_table_curl');
+        Sys_menu_bom($prefix, 'sys_menu_bom_curl');
+//------------------------ end
+		table10_group($prefix, 'table10_group');
         Tkher_content($prefix, 'tkher_content'); 
         Tkher_main_img($prefix, 'tkher_main_img');
         Tkher_my_control($prefix, 'tkher_my_control');
@@ -403,10 +414,6 @@
             "table_name" => "ip_info",
             "table_link" => ""
         );
-        $table_list['job_link_table'] = array(
-            "table_name" => "job_link_table",
-            "table_link" => ""
-        );
         $table_list['log_info'] = array(
             "table_name" => "log_info",
             "table_link" => ""
@@ -443,20 +450,43 @@
             "table_name" => "sajin_group",
             "table_link" => ""
         );
-        $table_list['sys_menu_bom'] = array(
-            "table_name" => "sys_menu_bom",
-            "table_link" => ""
-        );
-        $table_list['table10'] = array(
+
+		$table_list['table10'] = array(
             "table_name" => "table10",
-            "table_link" => ""
-        );
-        $table_list['table10_group'] = array(
-            "table_name" => "table10_group",
             "table_link" => ""
         );
         $table_list['table10_pg'] = array(
             "table_name" => "table10_pg",
+            "table_link" => ""
+        );
+        $table_list['job_link_table'] = array(
+            "table_name" => "job_link_table",
+            "table_link" => ""
+        );
+        $table_list['sys_menu_bom'] = array(
+            "table_name" => "sys_menu_bom",
+            "table_link" => ""
+        );
+//------- add CURL Table 2025-03-25 ---------        
+		$table_list['table10_curl'] = array(
+            "table_name" => "table10_curl",
+            "table_link" => "link_php_file_none"
+        );
+        $table_list['table10_pg_curl'] = array(
+            "table_name" => "table10_pg_curl",
+            "table_link" => "link_php_file_none"
+        );
+        $table_list['job_link_table_curl'] = array(
+            "table_name" => "job_link_table_curl",
+            "table_link" => "link_php_file_none"
+        );
+        $table_list['sys_menu_bom_curl'] = array(
+            "table_name" => "sys_menu_bom_curl",
+            "table_link" => "link_php_file_none"
+        );
+//---------------------------------------------
+		$table_list['table10_group'] = array(
+            "table_name" => "table10_group",
             "table_link" => ""
         );
         $table_list['tkher_content'] = array(
@@ -635,11 +665,13 @@
             $t_check = 'checked';
             $t_create_btn = 'disabled';
 
-            if( $table['table_name'] !== "member" && $table['table_name'] !== "config" && $table['table_name'] !== "tkher_main_img" && $table['table_name'] !== "tkher_my_control") {
+            if( $table['table_name'] !== "member" && $table['table_name'] !== "config" && $table['table_name'] !== "tkher_main_img" && $table['table_name'] !== "tkher_my_control"  && $table['table_name'] !== "table10_curl" && $table['table_name'] !== "table10_pg_curl" && $table['table_name'] !== "job_link_table_curl" && $table['table_name'] !== "sys_menu_bom_curl") {
 				$t_re_create_btn = '';
 				$t_delete_btn = '';
 				$sys_file = ' - ';
-			} else $sys_file = ' system file ';
+			} else {
+				$sys_file = ' system file ';
+			}
             $back_ground_color = '';
             array_push( $create_table_list_array, $table['table_name']);
         } else {

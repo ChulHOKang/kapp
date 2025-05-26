@@ -761,7 +761,8 @@ function Add_Btn(_class) {
 
 function update_ajax(_this) {
     $.ajax({
-        type: "post",
+		header:{"Content-Type":"application/json"},
+        method: "post",
         dataType: "json",
         data: {
             "mode": 'member_update',
