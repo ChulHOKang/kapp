@@ -10,12 +10,12 @@
 	$formula_		= "";
 	$poptable_		= "";
 	$column_all		= "";
-	$pop_fld		= "";
+	$pop_fld			= "";
 	$pop_mvfld		= "";
 	$relation_db	= "";
 	$rel_mvfld		= "";
 	$gita				= "";
-	
+
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
@@ -30,9 +30,11 @@
 				$formula_		="";
 				$poptable_		="";
 				$gita				="";
-		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-				$typeX	= $iftype[$j];
-				$dataX	= $ifdata[$j];
+		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
+				if(isset($iftype[$j]) ) $typeX	= $iftype[$j];
+				else $typeX = "";
+				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				else $dataX = "";
 				$ddd		= $list[$i];
 				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
 				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
@@ -49,15 +51,20 @@
 		}
 		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
 		$pop_fld ="";
-		for ( $i=0,$j=1; $popdata[$i] != ""; $i++, $j++ ){
-			$popfld = $popdata[$j];
-			$popfld = explode(":", $popfld);
-			$pop_fld = $pop_fld . $popfld[1] . ",";
+		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
+			if( isset($popdata[$j]) ){
+				$popfld = $popdata[$j];
+				$popfld = explode(":", $popfld);
+				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
+				else  $pop_fld = $pop_fld . ",";
+			} else {
+				$pop_fld = $pop_fld . ",";
+			}
 		}
 		$mpop = $popdata[0];
 		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
 		$pop_mvfld = "";
-		for ( $i=0,$j=1; $mpop[$j] != ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
 			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
 			$fld1 = $mv[0];
 			$fld2 = $mv[1];
@@ -68,9 +75,10 @@
 			$relationdata = explode("$", $relationdata);
 			$rel_db = $relationdata[0];
 			$reldb = explode(":", $rel_db);
-			$relation_db = $reldb[1];
+			if( isset($reldb[1]) ) $relation_db = $reldb[1];
+			else  $relation_db = "";
 			$rel_mvfld = "";
-		for ( $i=0,$j=1; $relationdata[$j] != ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
 			$reldata = $relationdata[$j];
 			$rel = explode("|", $reldata );
 			$fld1 = $rel[0];
@@ -85,7 +93,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -96,7 +104,7 @@ table { border-collapse: collapse; }
 th { background: #cdefff; height: 27px; }
 th, td { border: 1px solid silver; padding:5px; }
 </style>
-<link rel="stylesheet" href="<?=THKER_URL_T_?>/include/css/admin.css" type="text/css" />
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/admin.css" type="text/css" />
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
@@ -128,7 +136,7 @@ $(function () {
 });
 </script>
 <script type="text/javascript" >
-	/*function group_name_add_func(){
+	function group_name_add_func(){
 		nm = document.project_search.group_name.value;
 		msg = " Do you want to register the group name of "+nm+"?"; // \n (" + nm + "의 그룹명을 등록할까요?) \n
 		if ( window.confirm( msg ) )
@@ -137,7 +145,7 @@ $(function () {
 			document.project_search.action="program_list_adm.php";
 			document.project_search.submit();
 		} else return false;
-	}*/
+	}
 	function project_name_change_func(){
 		seqno = document.project_search.seqno.value;
 		group_code = document.project_search.group_codeX.value;
@@ -196,62 +204,53 @@ $(function () {
  <BODY>
  <center>
 <?php
-	$line_cnt = 15;
+	$limite = 15;
 	$page_num = 10;
 
 	if( isset($_POST['data']) ) $data = $_POST['data'];
 	else $data = '';
-	if( isset($_POST["param"]) ) $param	= $_POST["param"];
+	if( isset($_POST['param']) ) $param	= $_POST['param'];
 	else $param = '';
-	if( isset($_POST["sel"]) )   $sel	= $_POST["sel"];
+	if( isset($_POST['sel']) )   $sel	= $_POST['sel'];
 	else $sel = '';
-	if( isset($_POST["seqno"]) ) $seqno	= $_POST["seqno"];
+	if( isset($_POST['seqno']) ) $seqno	= $_POST['seqno'];
 	else $seqno = '';
-	if( isset($_POST["pg_code"]) ) $pg_code	= $_POST["pg_code"];
+
+	if( isset($_POST['pg_code']) ) $pg_code	= $_POST['pg_code'];
 	else $pg_code = '';
-	if( isset($_POST["pg_name"]) ) $pg_name = $_POST["pg_name"];
+	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
-
-	if( isset($_POST["tab_enm"]) ) $tab_enm = $_POST['tab_enm'];
-	else $tab_enm = '';
-	if( isset($_POST["tab_hnm"]) ) $tab_hnm = $_POST['tab_hnm'];
-	else $tab_hnm = '';
-
-
+   
    if( $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_pg_table']} where seqno=$seqno ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
-			m_(" $pg_name Program delete failed!");
-		} else m_(" Deleted the program $pg_name! ");
+			my_msg(" $pg_name Program delete failed!");
+		} else my_msg(" Deleted the program $pg_name! ");
 		$url = "program_list_adm.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
    } else if( $mode=='group_name_add'){
 		$group_code	= $H_ID . "_" . time();
-		if( isset($_POST["group_name"]) ) $group_name = $_POST["group_name"];
-		else $group_name = '';
+		$group_name	= $_REQUEST["group_name"];
 		$result	= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' and group_name='$group_name' " );
-		$total  = sql_num_rows( $result );
-		if( $total ) m_(" Group name is duplicate. Use a different name! ");
+		$total		= sql_num_rows( $result );
+		if( $total ) my_msg(" Group name is duplicate. Use a different name! ");
 		else {
 			$query="insert into {$tkher['table10_group_table']} set group_code='$group_code', group_name='$group_name', userid='$H_ID' , memo='program_list_adm.php' ";
 			$g = sql_query( $query );
-			if( !$g ) m_("Add error");
-			else  m_("Group added! ");
+			if( !$g ) my_msg("Add error");
+			else  my_msg("Group added! ");
 		}
 			$resultT = sql_query( "SELECT * from {$tkher['table10_pg_table']} where pg_name='$pg_name' " );
-			$total   = sql_num_rows( $resultT );
+			$total		= sql_num_rows( $resultT );
 			$mode='Search';
    } else if( $mode=='project_name_change'){
-		if( isset($_POST["project_codeX"]) ) $project_code	= $_POST["project_codeX"];
-		else $project_code	= '';
-		if( isset($_POST["project_name"]) ) $project_name	= $_POST["project_name"];
-		else $project_name	= '';
-
+		$project_code	= $_POST["project_codeX"];
+		$project_name	= $_POST["project_name"];
 		$query="update {$tkher['table10_pg_table']} set group_code='$project_code', group_name='$project_name' where seqno='$seqno' ";
 		$g = sql_query( $query );
-		if( !$g ) m_("Change Project Error");
-		else  m_("Project name changed! ");
+		if( !$g ) my_msg("Change Project Error");
+		else  my_msg("Project name changed! ");
 		$group_code = $project_code;
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where group_code='" . $project_code . "' ";
@@ -280,8 +279,11 @@ $(function () {
 		if( !$data ){
 			$sel   = 'like';
 			$param = 'pg_name';
+		} else {
+			$sel   = $_POST['sel'];
+			$param = $_POST['param'];
 		}
-		if( $sel == 'like') {
+		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param like '%$data%' ";
 			$ls = $ls . " ORDER BY upday desc, $param ";
@@ -290,13 +292,19 @@ $(function () {
 			$ls = $ls . " where $param $sel '$data' ";
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
-	} else if( $data !== "" ) {
+	} else if( $mode == "Project_Search" ) { // Project_Search
+		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
+		$ls = $ls . " where group_code='".$_POST['group_code']."' ";
+		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
+	} else if( isset($data) && $data !== "" ) {
+		$sel   = $_POST['sel'];
+		$param = $_POST['param'];
 		if( !$param ) $param = 'pg_name';
 		if( !$sel )   $sel   = 'like';
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where pg_name like '%$data%' ";
 		$ls = $ls . " ORDER BY upday desc, $param ";
-		if( $sel == 'like') {
+		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name like '%$data%' ";
 			$ls = $ls . " ORDER BY upday desc, $param ";
@@ -305,35 +313,33 @@ $(function () {
 			$ls = $ls . " where pg_name $sel '$data' ";
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
-	} else if( $mode == "Project_Search" ) { // Project_Search
-		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where group_code='".$_POST['group_code']."' ";
-		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
+		//$ls = $ls . " where userid='$H_ID' ";
 		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
-    }
+   }
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-if( $total > 0 ){
-	$total_page = intval(($total-1) / $line_cnt)+1;
-	$first = ($page-1)*$line_cnt;
-	$last = $line_cnt;
-	if( $total < $last) $last = $total;
+	if(!$page) $page=1;
+	$total_page = intval(($total-1) / $limite)+1;
+	$first = ($page-1)*$limite;
+	$last = $limite;
+	if($total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-} else {
-	$total_page = 1;
-	$first = 0;
-	$last = 0;
-	$limit = " ";
-}
-	if( $page == 1){
+	if ($page == "1"){
 		$no = $total;
 	} else {
-		$no = $total - ($page - 1) * $line_cnt;
+		$no = $total - ($page - 1) * $limite;
 	}
 	$cur='B';
 	include_once "../menu_run.php";
+
+	if( isset($_POST['tab_enm']) ) $tab_enm	= $_POST['tab_enm'];
+	else $tab_enm = '';
+	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
+	else $tab_hnm = '';
+	if( isset($_POST['group_name']) ) $group_name = $_POST['group_name'];
+	else $group_name = '';
 ?>
 <h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total?></h2>
 		<form name="project_search" method="post" action="program_list_adm.php" enctype="multipart/form-data" >
@@ -353,23 +359,21 @@ if( $total > 0 ){
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
- if( isset($_POST['group_name']) ){
+ if( isset($group_name) && $group_name !== "" ){
 ?>
-							<option value='<?=$group_code?>' selected ><?=$_POST['group_name']?></option>
+							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
 <?php
-			} else {
+} else {
 ?>
 							<option value=''>Select Project</option>
 <?php
-			}
+}
 
-			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
-			if( $result ){
-				while($rs = sql_fetch_array($result)) {
+			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
+			while($rs = sql_fetch_array($result)) {
 ?>
 							<option value='<?=$rs['group_code']?>'><?=$rs['group_name']?></option>
 <?php
-				}
 			}
 ?>
 			</select>
@@ -380,7 +384,7 @@ if( $total > 0 ){
 				<option value="like">Like</option>
 				<option value="=">=</option>
 			</select>
-			<input type="text" name="data" maxlength="30" size="15" value='<?=$_POST['data']?>'>
+			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="submit" value="Search">
 		</form>
 <?php
@@ -389,21 +393,17 @@ if( $total > 0 ){
 			<SELECT id='project_code' name='project_code' onchange="project_code_change_funcA(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' title='Select the project' >
 				<option value=''>select project</option>
 <?php
-			//$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
-			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
-			if( $result ){
-				while($rs = sql_fetch_array($result)) {
+			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
+			while($rs = sql_fetch_array($result)) {
 ?>
-					<option value='<?=$rs['group_code']?>' <?php if( $rs['group_name']==$group_name) echo " selected "; ?> title='<?php echo $rs['group_name'].":".$rs['group_code']; ?>'><?=$rs['group_name']?></option>
+				<option value='<?=$rs['group_code']?>' <?php if($rs['group_name']==$group_name) echo " selected "; ?> title='<?php echo $rs['group_name'].":".$rs['group_code']; ?>'><?=$rs['group_name']?></option>
 <?php
-				}
 			}
 ?>
 			</select>
 <?php
-			echo "<input type='button' value='Change Project' onclick=\"javascript:project_name_change_func();\" style='height:25px;background-color:red;color:yellow;border:1 solid black' title='Change the project of the $pg_name' >
-( $pg_name:$pg_code, Change the project of the program )
-			";
+			echo "<input type='button' value='Change Project' onclick=\"javascript:project_name_change_func();\" style='height:25px;background-color:red;color:yellow;border:1 solid black' 
+			title='Change the project of the $pg_name' >( $pg_name:$pg_code, Change the project of the program )";
 		}
 ?>
 	<input type='hidden' name='group_nameX' >
@@ -414,10 +414,10 @@ if( $total > 0 ){
 	<input type='hidden' name='param2' value='<?=$param2?>'>
 	<input type='hidden' name='sel2' value='<?=$sel2?>'>
 	<input type='hidden' name='data2' value='<?=$data2?>'>
-<table class='floating-thead' width="903">
-<thead  width="900">
+<table class='floating-thead' width="1900">
+<thead width="1900">
 	<tr>
-	<th>NO/Run</th>
+	<th>NO</th>
 	<th>userid</th>
 	<th>Project</th>
 	<th>Program</th>
@@ -438,18 +438,18 @@ if( $total > 0 ){
 <?php } ?> -->
 	</tr>
 </thead>
-<tbody width="900">
+<tbody width="1500">
  <?php
-	$line =0;
-	$i    =1;
-	if( $mode == "" || $mode == "Program_Search" || $mode=="Project_Search") $ls = $ls . " $limit ";
-	$resultT = sql_query( $ls );
-	while( $rs = sql_fetch_array( $resultT ) ) {
-		$line = $line_cnt*$page + $i - $line_cnt;
+	$line=0;
+	$i=1;
+	if($mode == "" || $mode == "Program_Search" || $mode=="Project_Search")	$ls = $ls . " $limit ";
+	$resultT	= sql_query( $ls );
+	while ( $rs = sql_fetch_array( $resultT ) ) {
+		$line=$limite*$page + $i - $limite;
 		$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
-		$item_all = item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
+		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
 		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
@@ -459,42 +459,42 @@ if( $total > 0 ){
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' >
 	<td><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
-	<td  width='3%'><?=$rs['userid']?> </td>
-	<td width='2%'><?=$rs['group_name']?>:<?=$rs['group_code']?></td>
-	<td  width='6%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td width='6%' title='Data List program run'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
-	<td width='15%'><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:300px;" readonly><?=$rs['item_array']?></textarea></td>
-	<td  width='10%'><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$rs['if_type']?></textarea></td>
-	<td width='10%'><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$if_data?></textarea></td>
-	<td width='10%'><textarea id='formula_d' name='formula_d' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$formula_?></textarea></td>
-	<td width='150'><textarea id='pop_data' name='pop_data' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$poptable_?>:<?=$pop_data?></textarea></td>
-	<td width='150'><textarea id='pop_mvfld' name='pop_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
-	<td width='10%'><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
-	<td width='15%'><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:200px;" readonly><?=$column_all?></textarea></td>
-	<td width='1%'><?=$rs['item_cnt']?></td>
-	<td width='5%'><?=$rs['memo']?></td>
-	<td width='3%'><?=$rs['upday']?></td>
-	<?php
-		/*if( $mode !== 'Search' && $H_ID==$rs['userid'] ) {
-			//echo "<td><input type='button' name='del' onclick=\"javascript:program_delete_func('".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\"  value='delete' style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Delete program. '><br><input type='button' name='project_change' value='Change' onclick=\"javascript:project_func('".$rs['group_code']."','".$rs['group_name']."','".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\" style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Change project. '> </td>"; //\n 프로그램 $rs['pg_name']을 삭제합니다. 주의하세요!
+	<td><?=$rs['userid']?> </td>
+	<td title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
+	<td><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<td><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
+	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
+	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
+	<td><textarea id='formula_d' name='formula_d' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$formula_?></textarea></td>
+	<td><textarea id='pop_data' name='pop_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$poptable_?>:<?=$pop_data?></textarea></td>
+	<td><textarea id='pop_mvfld' name='pop_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
+	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
+	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td>
+	<td><?=$rs['item_cnt']?></td>
+	<td><?=$rs['memo']?></td>
+	<td><?=$rs['upday']?></td>
+	<!-- <?php
+		if( $mode !== 'Search' && $H_ID==$rs['userid'] ) {
+			echo "<td><input type='button' name='del' onclick=\"javascript:program_delete_func('".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\"  value='delete' style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Delete program. '><br>
+			<input type='button' name='project_change' value='Change' onclick=\"javascript:project_func('".$rs['group_code']."','".$rs['group_name']."','".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\" style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Change project. '> </td>"; //\n 프로그램 $rs['pg_name']을 삭제합니다. 주의하세요!
 		} else {
 			echo "<td>-</td>";
-		}*/
-?>
+		}
+?> -->
 	</TR>
 <?php
 		$i++;
-		$count = $count - 1;
     }
 ?>
 </form>
 </tbody>
 </table>
-<table width="100%"   bgcolor="#CCCCCC">
+<table width="1500"   bgcolor="#CCCCCC">
   <tr>
     <td align="center" bgcolor="f4f4f4">
 <?php
-	if( $mode =='Search' ) { // table click
+	if( $mode=='Search' ) { // table click
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='DB & Table Source Down' onclick=\"DB_table_create_source('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of ".$tab_hnm."' >&nbsp;&nbsp; ";
@@ -505,17 +505,18 @@ if( $total > 0 ){
 	} else {
 		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
 		$last_page = $first_page+($page_num-1);
-		if( $last_page > $total_page) $last_page = $total_page;
+		if($last_page > $total_page) $last_page = $total_page;
 		$prev = $first_page-1;
-		if( $page > $page_num)
+		if($page > $page_num)
 			echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-		for( $i = $first_page; $i <= $last_page; $i++){
-			if( $page == $i) echo" <b>".$i."</b> ";
+		for($i = $first_page; $i <= $last_page; $i++)
+		{
+			if($page == $i) echo" <b>".$i."</b> ";
 			else
 				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
 		}
 		$next = $last_page+1;
-		if( $next <= $total_page)
+		if($next <= $total_page)
 			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 	}
 ?>

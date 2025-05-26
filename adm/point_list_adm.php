@@ -14,19 +14,21 @@ include_once('../tkher_start_necessary.php');
 		exit;
 	}
 
-	if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
-	else $sdata = '';
-	if( isset($_POST['scolumn']) ) $scolumn = $_POST['scolumn'];
-	else $scolumn = '';
-	if( isset($_POST['page']) ) $page = $_POST['page'];
-	else $page = 1;
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 
+	if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
+	else if( isset($_REQUEST['sdata']) ) $sdata = $_REQUEST['sdata'];
+	else $sdata = '';
+	if( isset($_POST['scolumn']) ) $scolumn = $_POST['scolumn'];
+	else if( isset($_REQUEST['scolumn']) ) $scolumn = $_REQUEST['scolumn'];
+	else $scolumn = '';
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else $page = 1;
+
 $sql_ = " from {$tkher['point_table']} ";
 
-$search_ = " where (1) ";
+$search_ = " where (1) ";	//m_( $mode . ", sdata: ". $sdata . ", scolumn: " . $scolumn);
 
 if( $sdata) {
     $search_ .= " and ( ";
@@ -136,16 +138,26 @@ else
     }
     ?>
 </div> -->
+<script type="text/javascript" >
+	function search_func(){
+		data = document.fsearch.sdata.value;
+		document.fsearch.mode.value	="Search";
+		document.fsearch.action="point_list_adm.php";
+		document.fsearch.submit();
+	}
+</script>
+
 <center>
-<form name="fsearch" id="fsearch" class="local_sch01 local_sch" method="get">
-<label for="scolumn" class="sound_only">Target</label>
-<select name="scolumn" id="scolumn">
-    <option value="mb_id"<?php if($scolumn=='mb_id') echo " selected ";?> >id</option>
-    <option value="po_content"<?php  if($scolumn=='po_content') echo " selected ";?> >Point msg</option>
-</select>
-<label for="sdata" class="sound_only">word</label>
-<input type="text" name="sdata" value="<?php echo $sdata ?>" id="sdata" required class="required frm_input">
-<input type="submit" class="btn_submit" value="Search">
+<form name="fsearch" id="fsearch" method="post">
+	<input type="hidden" name="mode"  value="">
+	<label for="scolumn" class="sound_only">Target</label>
+	<select name="scolumn" id="scolumn">
+		<option value="mb_id" <?php if($scolumn=='mb_id') echo " selected ";?> >id</option>
+		<option value="po_content"<?php  if($scolumn=='po_content') echo " selected ";?> >Point msg</option>
+	</select>
+	<label for="sdata" class="sound_only">word</label>
+	<input type="text" name="sdata" value="<?php echo $sdata ?>" id="sdata" required class="required frm_input">
+	<input type="button" onclick="javascript:search_func();" value="Search">
 </form>
 
 
@@ -190,7 +202,7 @@ else
     </thead>
     <tbody>
     <?php
-    for( $i=0; $row=sql_fetch_array($result); $i++) {
+    for( $i=0, $j=1; $row=sql_fetch_array($result); $i++, $j++) {
         if ($i==0 || ( $row2['mb_id'] != $row['mb_id'])) { //m_($i . ", m id:" . $row2['mb_id'] . ", p id:" . $row['mb_id']);
             $sql2 = " select mb_id, mb_name, mb_nick, mb_email, mb_homepage, mb_point from {$tkher['tkher_member_table']} where mb_id = '{$row['mb_id']}' ";
             $row2 = sql_fetch($sql2);
@@ -243,7 +255,7 @@ else
         <td class="td_chk"  style="background-color:black;color:yellow;">
             <input type="hidden" name="mb_id[<?php echo $i ?>]" value="<?php echo $row['mb_id'] ?>" id="mb_id_<?php echo $i ?>">
             <input type="hidden" name="po_id[<?php echo $i ?>]" value="<?php echo $row['po_id'] ?>" id="po_id_<?php echo $i ?>">
-			<label for="chk_<?php echo $i; ?>" ><?php echo $i ?></label>
+			<label for="chk_<?php echo $i; ?>" ><?php echo $j ?></label>
         </td>
         <td style="background-color:black;color:white;"><a href="?scolumn=mb_id&amp;sdata=<?php echo $row['mb_id'] ?>" style="background-color:black;color:white;"><?php echo $row['mb_id'] ?></a></td>
         <td style="background-color:black;color:cyan;"><?=$row2['mb_name']?></td> <!-- <td class="td_name sv_use"><div><?=$row2['mb_nick']?></div></td> -->
@@ -301,7 +313,7 @@ function page_dis($write_pages, $cur_page, $total_page, $url)
     if ($total_page > 1) {
         for ($k=$start_page;$k<=$end_page;$k++) {
             if ($cur_page != $k)
-                $str .= '<a href="'.$url.$k.'" class="page" style="background-color:black;color:white;">['.$k.']</a>'.PHP_EOL;
+                $str .= '<a href="'.$url.$k.'" class="page" style="background-color:black;color:white;font-size:25px;" title="'.$url.'">['.$k.']</a>'.PHP_EOL;
             else
                 $str .= '<span class=""></span><strong class="" style="background-color:black;color:white;">'.$k.'</strong>'.PHP_EOL;
         }
@@ -310,7 +322,7 @@ function page_dis($write_pages, $cur_page, $total_page, $url)
     if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).'" style="background-color:black;color:white;">Next</a>'.PHP_EOL;
 
     if ($cur_page < $total_page) {
-        $str .= '<a href="'.$url.$total_page.'" style="background-color:black;color:white;">[Last]</a>'.PHP_EOL;
+        $str .= '<a href="'.$url.$total_page.'" style="background-color:black;color:white;" title="'.$url.'">[Last]</a>'.PHP_EOL;
     }
 
     if ($str)

@@ -23,7 +23,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="/logo/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -45,7 +45,7 @@
 	else $tab_hnmS = '';
 	if( isset($_POST["pg_codeS"]) ) $pg_codeS = $_POST['pg_codeS'];
 	else $pg_codeS = '';
-
+m_("---- ");
 ?>
 <link rel="stylesheet" type="text/css" href="admin.css">
 <body leftmargin="0" topmargin="0">
@@ -394,7 +394,7 @@
 					$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_name like '%$program_name_search%' order by pg_name ";
 			else if( $mode == "project_search" )
 					$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='".$_POST['group_codeX']."' order by upday desc";
-			else	$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc";
+			else	$sql = "SELECT * from {$tkher['table10_pg_table']} order by upday desc";
 			$result = sql_query($sql);
 			if( $result ){
 				while($rsP = sql_fetch_array($result)) {

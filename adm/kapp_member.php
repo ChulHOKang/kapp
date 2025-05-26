@@ -183,7 +183,7 @@ $(function () {
 		$limite = 10;
 		$page_num = 10;
 
-		if( $mode == 'search_rtn') {
+		if($mode == 'search_rtn') {
 			$sdata = $sel_num;
 		}
 

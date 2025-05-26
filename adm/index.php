@@ -34,19 +34,19 @@
 	http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
    -------------------------------------------------------- */
 
-   //SCRIPT_FILENAME: /home1/solpakanurl/public_html/t/index2.php
-   $r = explode("/", $_SERVER['SCRIPT_FILENAME'] );
-   $cnt = count($r);
-   //m_("count:" . $cnt . ", r:" . $r[$cnt-1]); // count:6, r:indexApp.php
-   $_url = "./" . $r[$cnt-1];
+	$r = explode("/", $_SERVER['SCRIPT_FILENAME'] );
+	$cnt = count($r);	//m_("count:" . $cnt . ", r:" . $r[$cnt-1]); // count:6, r:indexApp.php
+	$_url = "./" . $r[$cnt-1];
 
 	if( isset($_REQUEST["mid"])) $mid = $_REQUEST["mid"];
 	else $mid = '';
 
 	if( isset($_REQUEST["mode"])) $mode = $_REQUEST["mode"];
 	else $mode = '';
+	if( isset($_REQUEST['open_mode']) ) $open_mode = $_REQUEST['open_mode'];
+	else $open_mode = "";
 
-   if( $mode == 'SearchPG'){
+	if( $mode == 'SearchPG'){
 		$_SESSION['sys_pg'] = $_POST['sys_pg'];
 		//echo "<script>run_r1_func('r1.php');</script>"; 
 		//echo "<script>window.open( 'r1.php' , '_top', ''); </script>";
@@ -55,7 +55,7 @@
 		echo "<script>window.open( '".$run_."' , '_top', ''); </script>";
 
 		exit;
-   }
+	}
 
 ?>
 <html> 
@@ -357,7 +357,7 @@ $sys_subtitS = 'Admin App Generator';
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<div style="color:cyan; background-color:black; height:33px; border:none"><a href="index_adm.php" target='_BLANK' title="Admin Control Setup Page">K-App Admin<br>[ <?=$H_ID?> ]</a></div>
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='bbs_history_admin.php' target='run_menu' title='table design'>1.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Job History</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_history.php' target='run_menu' title='table design'>1.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Job History</a></li>
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_member.php' target='run_menu' title='table design'>2.<img src='<?=KAPP_URL_T_?>/icon/berry.png' width='15' height='15'>Kapp Member</a></li>
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='point_list_adm.php' target='run_menu' title='table design'>3.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
 	
@@ -400,7 +400,7 @@ $sys_subtitS = 'Admin App Generator';
 </body>
 </html>
 <?php
-	if( $_REQUEST['open_mode'] == 'on' ) {
+	if( $open_mode == 'on' ) {
 	  echo "<script>document.getElementById('mySidenav').style.width = '250px';</script>";
 	}
 ?>

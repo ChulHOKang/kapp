@@ -1,24 +1,18 @@
 <?php
-/*
-	bbs_history.php :
-		call : bbs_history_admin.php : 
-*/
-
+	/*
+		bbs_history.php :
+			call : bbs_history_admin.php : 
+	*/
 	if( isset($_POST["pg_code"])) $pg_code = $_POST["pg_code"];
 	else $pg_code = '';
 	if( isset($_POST["pg_name"])) $pg_name = $_POST["pg_name"];
 	else $pg_name = '';
-
 	if( isset($_POST["comment"])) $comment = $_POST["comment"];
 	else $comment = '';
-
 	if( isset($_POST["mode"])) $mode = $_POST["mode"];
 	else $mode = '';
-
 	if( isset($_POST["no"])) $no = $_POST["no"];
 	else $no = '';
-
-	//my_msg( " mode: ". $mode . ", pg_code:" . $pg_code);
 	if( $mode=='update' && $H_LEV>7) {
 		$build_time = time();
 		sql_query( "update {$tkher['bbs_history_table']} set pg_code='$pg_code', pg_name='$pg_name', comment='$comment', cid='$H_ID', ctime=$build_time where no='$no' " );
@@ -34,25 +28,19 @@
 		else  {
 			m_(" Error history "); //echo "sql: " . $sql; exit;
 		}
-
 		echo "<script>window.open( 'bbs_history_admin.php' , '_self',''); </script>";
-		//exit;
 	} else {
 		$result = sql_query( "SELECT * from {$tkher['bbs_history_table']} order by build_time desc");
 ?>	
 <p>
 			<font color='maroon'><b>K-App History</b></font><p>
-			
 			<form name='history' method='post' action='bbs_history_admin.php'>
 				<input type='hidden' name='no' value=''>
-
-				<!-- <table border=0 cellpadding=0 cellspacing=1 bgcolor='gray' width=100%> -->
 				<table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 				<tr>
 					<td bgcolor='#cccc66' height='1' colspan='5'></td>
 				</tr>
 				<tr>
-					<!-- <span>Ymd His</span><span>Code</span><span>Name</span><span>Message</span><span>CTL</span> -->
 					<TH>m-d-Y</TH><TH>user</TH><TH>Code</TH><TH>Name</TH><TH>Message</TH><TH>CTL</TH>
 				</tr>
 				<?php
@@ -62,17 +50,13 @@
 
 				?>
 					<tr>
-						<!-- <input type='hidden' name='day[<?=$i?>]' value='insert'> -->
 						<td valign='top' bgcolor='#ffffff' width='70'><?=$time?></td>
 						<td bgcolor='#ffffff' width='70'><?=$rs['id']?></td>
 						<td bgcolor='#ffffff' width='70'><?=$rs['pg_code']?></td>
 						<td bgcolor='#ffffff' width='120'><?=$rs['pg_name']?></td>
-						<!-- <td bgcolor='#ffffff' title='change id:<?=$cid?>, time:<?=$ctime?>'><?=nl2br($rs['comment'])?></td> -->
 						<td bgcolor='#ffffff' title='change id:<?=$cid?>, time:<?=$ctime?>'><?=$rs['comment'] ?></td>
-						
 						<td bgcolor='#ffffff' style='border:1 black solid;width:50;'>
 						<?php 
-							//if ( $H_LEV > 7 ) { 
 								$bt=$rs['build_time']; 
 								$mg= '';//$rs['comment']; // : 메세지내용에 엔터값이 있을때 update버턴이 클릭되지않는다. 중요.
 								$no=$rs['no']; 
@@ -80,7 +64,6 @@
 						?>
 							<input type='button' onclick="javascript:his_update('<?=$i?>','<?=$bt?>', '<?=$mg?>','<?=$no?>', '<?=$pcd?>','<?=$pnm?>')" value='Update' >
 							<input type='hidden' name='msg_<?=$i?>' value="<?=$rs['comment']?>">
-						<?php //} ?>
 						</td>
 					</tr>
 				<?php
@@ -118,9 +101,7 @@
 <?php
 }
 ?>
-&nbsp;<br>
-				</table>
-
+		</table>
 <script language='javascript'>
 <!--
 	function his_update(i, xday, dd, no, cd, nm) {
@@ -129,7 +110,6 @@
 			document.history.pg_code.value = cd;
 			document.history.pg_name.value = nm;
 			msg = eval( "document.history.msg_"+i+".value");
-			//alert('msg:'+msg);
 			document.history.comment.value = msg;
 			document.history.mode.value="update";
 			return;
@@ -139,11 +119,6 @@
 			document.history.submit();
 	 }
 	function f_ins(dd) {
-			//pg = "bbs_write.php?board=" + board + "&page=" + page;
-			//window.open( pg,"","");
-			//cc = document.history.comment.value;
-			//alert(' comment=' + cc);
-			//location.href ='bbs_write.php?board='+board +'&page='+page;
 			document.history.mode.value="insert";
 			document.history.submit();
 	 }
