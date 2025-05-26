@@ -2,72 +2,23 @@
     <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/default.css" type="text/css" />
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
-    <!-- <meta name="google-signin-scope" content="profile email"> -->
-    <!-- <meta name="google-signin-client_id"
-        content="57167996094-cnp3hpbhtesc1qauarr3s79485dcj82i.apps.googleusercontent.com"> -->
-    <!-- --- appgenerator -->
-    <!-- <meta name="google-signin-client_id"
-        content="57167996094-3af0su9i0i9atg53d2pq0kq3ula72p2n.apps.googleusercontent.com"> -->
-    <!-- --- modumodu.net -->
-    <!-- <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script> -->
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-    <!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
-
-    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-    <script src="https://apis.google.com/js/api:client.js"></script> -->
 
     <link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'><!-- 중요! -->
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <!-- javascript 암호화 -->
+
+	<!-- javascript 암호화 -->
 
     <script type='text/javascript'>
     //alert("---sign---");
     <!--
     //-------------------------------------- google
-    function onSignIn(googleUser) {
-        //alert("onSignIn googleUser: " + googleUser);
-        //alert("")
-
-        /* var profile = googleUser.getBasicProfile();
-
-        console.log(googleUser); */
+    function onSignIn(googleUser) { // no use old type ???
 
         return;
 
-        /* [[Prototype]]: Object
-        	AA: ƒ (a)
-        	Al: ƒ (a)
-        	Bl: ƒ ()
-        	FG: ƒ ()
-        	Lg: ƒ ()
-        	O9: ƒ (a)
-        	QG: ƒ ()
-        	Qu: ƒ (a)
-        	T8: ƒ ()
-        	disconnect: ƒ()
-        	getAuthResponse: (ƒ a)
-        	getBasicProfile: ƒ()
-        	getGrantedScopes: ƒ()
-        	getHostedDomain: ƒ()
-        	getId: ƒ()
-        	grant: ƒ a)
-        	grantOfflineAccess: ƒ a)
-        	hasGrantedScopes: ƒ a)
-        	isSignedIn: ƒ()
-        	nK: ƒ ()
-        	om: ƒ (a)
-        	r8: ƒ ()
-        	reloadAuthResponse: ƒ()
-        	update: ƒ a)
-        	constructor: ƒ a)
-        	[[Prototype]]: Object */
-
-        //alert(document.kakao_form.gemail.value);
-
-        if (!document.kakao_form.gemail.value) {
+        /*
+		if (!document.kakao_form.gemail.value) {
             var profile = googleUser.getBasicProfile();
             email = profile.getEmail();
             em = email.split("@");
@@ -81,17 +32,17 @@
             document.kakao_form.gemail.value = profile.getEmail();
             document.kakao_form.gname.value = profile.getName();
             document.kakao_form.gsajin.value = profile.getImageUrl();
-            alert("gmail : " + document.kakao_form.gemail.value);
+            //alert("gmail : " + document.kakao_form.gemail.value);
             document.kakao_form.target = "_top";
             document.kakao_form.action = "index.php";
             document.kakao_form.submit();
         } else {
             //alert("No Google email :" + document.kakao_form.gemail.value); // OK
-        }
+        }*/
     }
     //---------------------------------------------------------- kakao
     function Kakao_Login_func() {
-        kakao_login('<?=Decrypt($config['kapp_kakao_js_apikey'], 'modumoa', '~!@#$%^&*()_+')?>');
+        kakao_login('<?=Decrypt($config["kapp_kakao_js_apikey"]?>', 'modumoa', '~!@#$%^&*()_+')?>');
     }
 
     function Kout_func() {
@@ -115,7 +66,7 @@
         document.kakao_form.gemail.value = ''; // google
         document.kakao_form.gname.value = '';
         document.location.href =
-            " https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://ailinkapp.com/"; // logout이된다. 그런데 원사이트로 이동하지않는다.
+            " https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=https://fation.net/"; // logout이된다. 그런데 원사이트로 이동하지않는다.
     }
 
     //----------------------------------------------------------------------
@@ -147,23 +98,20 @@
     -->
     </script>
 
-    <?php
-	//$member		= array(); // start_
+<?php
 	$login_count_today = 0;
 	$login_count_total = 0;
 	$visit_all_today   = 0;
 
-		$day = date("Y-m-d H:i", time());
-		$Kday = date("Y-m-d H:i", time()) . ' member SignUp';
+	$day = date("Y-m-d H:i", time());
+	$Kday = date("Y-m-d H:i", time()) . ' member SignUp';
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
-	//m_("menu run - kapp_register_point: " . $config['kapp_register_point']);
 
-    //m_("menu_run P mode : ".$_POST['mode'] . ", type: " . get_session("urllink_login_type") );
 	$gsajin = "";
-	if( $mode == 'Google_Login') {
-        //m_("gid : ".$_POST['gid']);
+	if( $mode == 'Google_Login') { 
+		m_("--- 확인용 menu_run mode: " .$mode);
 		$gid    = $_POST['gid'];
 		$gemail = $_POST['gemail'];
 		$gname  = $_POST['gname'];
@@ -239,14 +187,14 @@
 			$login_count_total = $res['total_cnt'];
 
 			$sql = "SELECT * from {$tkher['visit_sum_table']} WHERE vs_date = '$day' ";
-			$ret = sql_query( $sql );	//	$cnt = sql_num_rows( $ret );
-			$cnt = $ret->num_rows;		//m_("row: " . $ret->num_rows);
-			if( $ret->num_rows > 0 ) {	//m_(" select OK cnt:" . $cnt);
-				$res = sql_fetch_array( $ret);				//m_("vs_count: " . $res['vs_count']);
+			$ret = sql_query( $sql );
+			$cnt = $ret->num_rows;
+			if( $ret->num_rows > 0 ) {
+				$res = sql_fetch_array( $ret);
 				$login_count_today = $res['vs_count'] +1;
 				$visit_all_today = $res['visit_all'] +1;
 				$sql = " update {$tkher['visit_sum_table']} set visit_all=visit_all+1 where vs_date = '".date("Y-m-d",time())."' ";
-				$ret = sql_query( $sql );	//echo "sql: " . $sql; exit;
+				$ret = sql_query( $sql );
 				if( $ret ) {
 					//m_("ok update visit_all_today: " . $visit_all_today);
 				} else {
@@ -259,10 +207,7 @@
 				$sql = " insert into `kapp_visit_sum` set vs_count=1, visit_all=1, vs_date = '".date("Y-m-d",time())."' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
-					m_(" `kapp_visit_sum` insert error ");
-					echo "sql: " . $sql; exit;
-				} else {
-					//m_(" insert ok "); //echo "sql: " . $sql;
+					m_(" `kapp_visit_sum` insert error ");	//echo "sql: " . $sql; exit;
 				}
 			}
 	}
@@ -344,18 +289,11 @@
             ',height=' + f_popup_h);
         </script>";
     }
-
-	//m_("login_count_today: " . $login_count_today);
-    //m_("mb_id : ".$member['mb_id']);
 	$H_ID = $member['mb_id'];
 	$H_LEV= $member['mb_level'];
 	$ip   = $_SERVER['REMOTE_ADDR'];
 	$cur="";
     if( $H_ID && $H_LEV > 1 && get_cookie('add_info') != 'next') Member_info_check(); // 비어있는 회원정보 체크
-
-    //echo md5('add_info');
-
-    //m_("H_ID : ".$H_ID);
 ?>
 
     <!-- end -->
@@ -416,24 +354,22 @@
                 <!-- <li align='left'><a href="<?=KAPP_URL_T_?>/adm/board_list_adm.php" target='_blank' >B8. Board Adm</a> </li> -->
                 <!-- <li align='left'><a href="<?=KAPP_URL_T_?>/menu/board_list3.php" target='_blank'>B8. Board Adm</a></li> -->
                 <!-- <li align='left'><a href="<?=KAPP_URL_T_?>/menu/board_list_admin.php" target='_blank'>B8. Board Admin</a> </li> -->
-                <li align='left'><a href="<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php" target='_blank'>B9. Kapp Table List</a> </li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php" target='_blank'>B5. Kapp Table List</a> </li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/curl_server.php" target='_blank'>B6. Shared-Server Reset</a> </li>
 <?php } ?>
 
             </ul>
         </li>
-        <?php
-	//m_("id: " . $H_ID . ", lev: " . $H_LEV);
+<?php
 	if( $H_ID && $H_LEV > 1) $my_tit='Mypage';
 	else $my_tit='Login';
 ?>
         <li <?php if($cur=='B') echo "class='current'"; ?>>
             <div class="lnbFooterKANMy">
-                <a href="#"><img src='<?=KAPP_URL_T_?>/icon/land.png'
-                        style='border-style:;height:20px;'><?=$my_tit?></a>
+                <a href="#"><img src='<?=KAPP_URL_T_?>/icon/land.png' style='border-style:;height:20px;'><?=$my_tit?></a>
             </div>
             <ul>
-                <?php
-                //m_("H_ID : ".$H_ID.", H_LEV : ".$H_LEV);
+<?php
 		if( !$H_ID || $H_LEV < 2 ) {
 ?>
                 <li align='left'>
@@ -443,7 +379,7 @@
                 </li>
                 <li align='left'>
                     <div class="SIGN_S">
-                        <a href="javascript:Ologin();">SIGN UP</a>
+                        <a href="javascript:Ologin();" title='- SIGN UP - '>SIGN UP</a>
                     </div>
                 </li>
                 <li align='left'>
@@ -517,7 +453,7 @@
             <a href='#' target='run_menu' <?php echo " title='K-App Create a program.' "; ?>><img
                     src='<?=KAPP_URL_T_?>/icon/pcman1.png' style='border-style:;height:20px;'>App Make</a>
             <ul>
-                <li align='left'> <a href='<?=KAPP_URL_T_?>' target='_top'
+                <li align='left'> <a href='<?=KAPP_URL_T_?>/index.php?open_mode=on' target='_top'
                         <?php echo " title='Create a program.' "; ?>>C0.Program-Make</a></li>
                 <li align='left'>
                     <a href="<?=KAPP_URL_T_?>/program_list3u.php" title='Program List by User' target='_top'>C1.Program
@@ -536,7 +472,8 @@
 	?>
                 <li align='left'><a href="<?=$board_run?>" title='Board list' target='_top'>C3.Board List </a></li>
                 <li align='left'>
-                    <a href="<?=KAPP_URL_T_?>/link_list_all.php" title='List by group' target='_top'>C4.Link List</a>
+                    <!-- <a href="<?=KAPP_URL_T_?>/link_list_all.php" title='List by group' target='_top'>C4.Link List</a> -->
+					<a href="<?=KAPP_URL_T_?>/menu/ulink_list.php" title='List by group' target='_top'>C4.Link List</a><!-- 2025-03-29  -->
                 </li>
             </ul>
         </li>
@@ -549,7 +486,6 @@
 
     <?php
 if( !$H_ID  ) {
-	//m_("KAPP_URL_T_: " . KAPP_URL_T_); //KAPP_URL_T_: http://ailinkapp.com/t
 ?>
     <div class="loginBox">
         <div class="rela">
@@ -560,7 +496,7 @@ if( !$H_ID  ) {
                 <div class="pic"><img src="<?=KAPP_URL_T_?>/include/img/etc_login.png" /></div>
                 <div class="form">
                     <div class="row">
-                        <label for="loginid">ID</label>
+                        <label for="loginid">E-mail</label><!-- ID를 Email로 Title만 변경 2025-05-18 -->
                         <input type="text" id="loginid" name="mb_id" />
                     </div>
                     <div class="row">
@@ -573,9 +509,8 @@ if( !$H_ID  ) {
                     </div>
                 </div>
                 <div class="formA">
-                    <div class="S">
-                        <a href="javascript:Ologin();"
-                            style='width:150px;height:100px; text-align:left;font-size:30px;color:#666fff;'>SIGN UP</a>
+                    <div class="Sign_up">
+                        <a href="javascript:Ologin();" style='width:150px;height:100px; text-align:center;font-size:30px;color:#666fff;' title='LoginBox SIGN UP' >SIGN UP</a>
                     </div>
                 </div><br>
                 <div>
@@ -614,17 +549,16 @@ if( !$H_ID  ) {
 			$Search_run = KAPP_URL_T_ . "/menu/ulist.php";
 		}*/
 			$Search_Mode = "PG";
-			$Search_run = KAPP_URL_T_ . "/menu/ulist.php";
+			//$Search_run = KAPP_URL_T_ . "/menu/ulist.php";
+			$Search_run = KAPP_URL_T_ . "/menu/ulink_list.php";
 
 		if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
 		else $sdata = "";
 ?>
     <div>
         <table board='0'>
-            <FORM name="fsearchbox" method="post" action="<?=$Search_run?>">
-                <!-- onsubmit="return search_run(this);" -->
-                <input type='hidden' name='Search_Mode' value='<?=$Search_Mode?>' />
-                <!-- Search_Mode :cratree_my_list_menu  2023-10-27 -->
+            <FORM name="fsearchbox" method="post" action="<?=$Search_run?>">             <!-- onsubmit="return search_run(this);" -->
+                <input type='hidden' name='Search_Mode' value='<?=$Search_Mode?>' />          <!-- Search_Mode :cratree_my_list_menu  2023-10-27 -->
                 <td><a href="/kapp" target='_top'><img src="<?=KAPP_URL_T_?>/icon/logo.png" height='30'
                             title='appgenerator home'></a></td>
                 <td><input type="text" name="sdata" value="<?=$sdata?>" maxlength="250" style='height:30;'>
@@ -637,20 +571,25 @@ if( !$H_ID  ) {
             </form>
         </table>
     </div>
-    <?php
+<?php
 if( isset($H_ID) && $H_LEV > 1 ) { //get_session("urllink_login_type") , $_SESSION['urllink_login_type']
+	if( get_session("urllink_login_type") == "Google_Login_K") {
+		$log_i = "Google";
+	} else $log_i = "Guest";
 ?>
+
     <div title='Login-Google'>
-        <?=get_session("urllink_login_type")?>:<?=$H_ID?>:<?=$member['mb_email']?>:<?=$member['mb_name']?>:<?=$member['mb_level']?>,
+        <?=get_session("urllink_login_type")?>:
+		<?=$H_ID?>:<?=$member['mb_email']?>:<?=$member['mb_name']?>:<?=$member['mb_level']?>,
         Point:<?=number_format($member['mb_point'])?>
         <br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?> - <?=$config['kapp_visit']?>
     </div>
     <?php } else { ?>
-    <div title='Guest visit'>Guest - <?=$config['kapp_visit']?>
+    <div title='<?=$log_i?> visit'><?=$log_i?> - <?=$config['kapp_visit']?>
         <br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?>
     </div>
 
-    <?php }
+<?php }
 
 	function menu_call($sys_submenu, $cnt){
 		global $H_ID;
@@ -707,7 +646,7 @@ if( isset($H_ID) && $H_LEV > 1 ) { //get_session("urllink_login_type") , $_SESSI
         }
         //	alert("sr: " + $sr);
         document.fsearchbox.Search_Mode.value = "";
-        document.fsearchbox.action = Search_Mode + "/menu/ulist.php";
+        document.fsearchbox.action = Search_Mode + "/menu/ulink_list.php"; // ulist.php
         document.fsearchbox.submit();
     }
 
@@ -778,16 +717,16 @@ if( isset($H_ID) && $H_LEV > 1 ) { //get_session("urllink_login_type") , $_SESSI
             document.loginA.submit();
         });
 
-        $('.S').on('click', function() {
+        $('.Sign_up').on('click', function() {
 
             document.loginA.mode.value = "signup";
-            var Upg1_ = "./tkher_register_.php?device=mobile";
+            var Upg1_ = "./tkher_register_.php";
             document.loginA.action = Upg1_;
             document.loginA.submit();
         });
         $('.SIGN_S').on('click', function() {
             document.loginA.mode.value = "signup";
-            var Upg1_ = "./tkher_register_.php?device=mobile";
+            var Upg1_ = "./tkher_register_.php";
             document.loginA.action = Upg1_;
             document.loginA.submit();
         });
@@ -845,26 +784,21 @@ if( isset($H_ID) && $H_LEV > 1 ) { //get_session("urllink_login_type") , $_SESSI
                 Kakao.API.request({
                     url: '/v2/user/me',
                     success: function(res) {
-                        //document.kakao_form.mode.value = "Kakao_Login"; // 2024-04-01 수정 전
                         document.kakao_form.mode.value = "Kakao_Login_K"; // 2024-04-01 수정
                         document.kakao_form.userObject.value = JSON.stringify(res);
                         document.kakao_form.authObject.value = JSON.stringify(authObj);
-                        /* console.log("userObj : " + JSON.stringify(res));
-                        console.log("authObj : " + JSON.stringify(authObj)); */
-                        //alert("action : " + document.kakao_form.action);
                         document.kakao_form.action = 'login_checkT.php'; // 2024-04-01 추가
                         document.kakao_form.submit();
-
                     },
                     fail: function(err) {
-                        alert("1 appgenerator.net login fail");
+                        alert("1 --- login fail");
                         document.kakao_form.mode.value = 'NO';
                     }
                 });
             },
             fail: function(err) {
                 alert(JSON.stringify(err))
-                alert("2 appgenerator.net login fail:" + JSON.stringify(err));
+                alert("2 --- login fail:" + JSON.stringify(err));
             },
         })
     }

@@ -2,7 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 
 	/*
-	  login_checkT.php
+	  login_checkT.php - menu_run.php <div class="loginBox">
 	  - $member = get_urllink_memberA($mb_id); // my_func : 
 	  - set_session('urllink_login_type', "appgeneratorsystem");
 
@@ -18,31 +18,46 @@
     if( isset($_POST['returnURL']) ) $returnURL = trim($_POST['returnURL']);
     else $returnURL = 'index.php';
 
-	//m_("login_checkT - P mode: " . $mode . ", _POST mode: " . $_POST['mode']); // login_checkT - P mode: , REQUEST mode: N_login
+	//m_("login_checkT - P mode: " . $mode . ", _POST mode: " . $_POST['mode']); 
+	// login_checkT - P mode: A_login, _POST mode: A_login, login_checkT - P mode: , REQUEST mode: N_login
+
 if( $mode == 'A_login') { // 
 	
-    $mb_id       = trim($_POST['mb_id']);
+    $mb_email    = trim($_POST['mb_id']); // mb_id=email : id를 email로 변경 2025-05-18
+
     $mb_password = trim($_POST['mb_password']);
-    if( !$mb_id || !$mb_password) {
-        m_('Member ID or password must not be blank. ');  //회원아이디나 비밀번호가 공백이면 안됩니다.
-        echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
+    if( !$mb_email || !$mb_password) {
+        m_('Member email or password must not be blank. ');  //회원아이디나 비밀번호가 공백이면 안됩니다.
+        echo("<meta http-equiv='refresh' content='0; URL=$returnURL'>");
         exit;
     }
-    $member = get_urllink_memberA($mb_id);// google login my_func
+    //$member = get_urllink_memberA($mb_id);// ID로 로그인 체크.
+    $member = get_urllink_memberE($mb_email);  // Email로 로그인. 2025-05-18
     if( !$member['mb_id'] || !check_passwordA( $mb_password, $member['mb_password'])) {
-        m_("It is not a registered member ID or password. is:" );
-        echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
+        m_("It is not a registered member Email or password. is:" );
+        //echo("<meta http-equiv='refresh' content='0; URL=$returnURL'>");
+        echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     } else {
-        //m_("connect");
-        connect_count('K-App login : appgeneratorsystem', $mb_id, 1, $referer);	// 1: log_info 생성, country code return 요청.
+		$mb_id = $member['mb_id'];    //m_("connect");
+        connect_count('K-App login : appgeneratorsystem', $mb_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
     }
+
+    // 대리점 아이디이며, 승인이 됬는가?
+    if( $member['mb_level'] == 5 && !isset($member['mb_certify'])) {
+        m_('승인 대기중인 아이디입니다.');
+        //echo("<meta http-equiv='refresh' content='0; URL=$returnURL'>");
+        echo("<script>window.open('$returnURL', '_top')</script>");
+        exit;
+    } 
+
     // 차단된 아이디인가?
     if( $member['mb_intercept_date'] && $member['mb_intercept_date'] <= date("Ymd", KAPP_SERVER_TIME)) {
         $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $member['mb_intercept_date']);
         //alert('Your ID is prohibited from access. 회원님의 아이디는 접근이 금지되어 있습니다. \n 처리일 : '.$date);
         m_('Your ID is prohibited from access. date: '.$date);
-        echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
+        //echo("<meta http-equiv='refresh' content='0; URL=$returnURL'>");
+        echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     }
     // 탈퇴한 아이디인가?
@@ -50,12 +65,13 @@ if( $mode == 'A_login') { //
         $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $member['mb_leave_date']);
         //탈퇴한 아이디이므로 접근하실 수 없습니다. 탈퇴일 : '.$date);
         m_('You can not access it because it is an ID you left. Date of withdrawal: '.$date);
-        echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
+        //echo("<meta http-equiv='refresh' content='0; URL=$returnURL'>");
+        echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     }
     if( $config['kapp_use_email_certify'] && !preg_match("/[1-9]/", $member['mb_email_certify'])) {
         $ckey = md5($member['mb_ip'].$member['mb_datetime']); //로그인하려면 이메일 인증을 받아야 합니다. 다른 이메일 주소로 변경하고 확인하려면 취소를 클릭하세요.
-       confirm("{$member['mb_email']} You must be authenticated by e-mail to log in.  Please click Cancel to change to another email address and verify. ", KAPP_URL_T_, './tkher_register_email.php?mb_id='.$mb_id.'&ckey='.$ckey); // confirm 코드 중지됨
+       confirm("{$member['mb_email']} You must be authenticated by e-mail to log in.  Please click Cancel to change to another email address and verify. ", KAPP_URL_T_, './tkher_register_email.php?mb_id='.$member['mb_id'].'&ckey='.$ckey); // confirm 코드 중지됨
     } 
     Create_Session('appgeneratorsystem', $member, $remote_addr, $user_agent);
 
@@ -70,8 +86,14 @@ if( $mode == 'A_login') { //
     $g_email_check = Record_check($g_email); // GOOGLE 첫 로그인 체크
     if( !$g_email_check) { // 첫 구글 로그인        //m_("first");
         Record_create_member($g_email, $g_fullname, $g_image, $level, $set_point);
-        Record_create_point_info($g_email, $set_point);
-        $member = get_urllink_memberA($g_email);// google login my_func
+		
+		//$id = str_replace( "@", "_", $g_email);
+		$emailA = explode(".", $g_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); // 2025-05-18 add
+		
+		Record_create_point_info($userid, $set_point);
+        $member = get_urllink_memberE($g_email);
         connect_count('K-App login : Create Google_account', $g_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
         Create_Session('Google_Login_K', $member, $remote_addr, $user_agent); // 로그인 SESSION 생성 - add kan Google_Login_K 2024-04-24
 
@@ -80,7 +102,7 @@ if( $mode == 'A_login') { //
             m_("이미 등록된 계정입니다.---Google");
         } else {
             Record_update_google($g_email, $g_fullname, $g_image);
-            $member = get_urllink_memberA($g_email);// google login my_func     //m_("mb_id : ".$member['mb_id']);
+            $member = get_urllink_memberE($g_email);
             connect_count('K-App login : Login Google', $g_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
         }
         Create_Session('Google_Login_K', $member, $remote_addr, $user_agent); // 로그인 SESSION 생성
@@ -91,7 +113,6 @@ if( $mode == 'A_login') { //
     $userObj_json = getJsonText($_POST['userObject']);
     $userObj = json_decode($userObj_json, true);   /* print_r($userObj['kakao_account']);    exit; */
 
-    //$k_id = trim($userObj['kakao_account']['email']);
     $k_email = trim($userObj['kakao_account']['email']);
     $k_nickname = trim($userObj['properties']['nickname']);
     //$k_birthday = trim($userObj['kakao_account']['birthday']);
@@ -104,9 +125,15 @@ if( $mode == 'A_login') { //
 
     if( !$kakao_email_check) { // 첫 카카오 로그인     //m_("first");
         Record_create_member_kakao($k_email, $k_nickname, $k_image, $level, $set_point);
-        Record_create_point_info($k_email, $set_point);
-        $member = get_urllink_memberA($k_email);// google login my_func
-        connect_count('K-App login : Create Google_account', $k_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
+		
+		//$id = str_replace( "@", "_", $k_email);
+		$emailA = explode(".", $k_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); // 2025-05-18 add
+        
+		Record_create_point_info($userid, $set_point);
+        $member = get_urllink_memberE($k_email);  //$member = get_urllink_memberA($k_email);
+        connect_count('K-App login : Create Kakao_account', $k_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
         Create_Session('Kakao_Login_K', $member, $remote_addr, $user_agent); // 로그인 SESSION 생성 add kan Kakao_Login_K 2024-04-24
 
 	} else { // 카카오 로그인
@@ -114,14 +141,11 @@ if( $mode == 'A_login') { //
             m_("이미 등록된 email 계정입니다.---Kakao");
         } else {
             Record_update_kakao($k_email, $k_nickname, $k_image);
-            $member = get_urllink_memberA($k_email);// google login my_func    //m_("mb_id : ".$member['mb_id']);
-            connect_count('K-App login : Login Google', $k_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
+			$member = get_urllink_memberE($k_email);  //$member = get_urllink_memberA($k_email);
+            connect_count('K-App login : Login Kakao', $k_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
         }
         Create_Session('Kakao_Login_K', $member, $remote_addr, $user_agent); // 로그인 SESSION 생성
 	}
-
-    //Record_create_log_info($g_email); // log_info 생성 // tkher_start_necessary.php 중복
-    //connect_count('K-App login : Google_Login_K', $g_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
 
 } else if( $mode == 'N_login'){ // 네이버 로그인
 
@@ -189,9 +213,15 @@ if( $mode == 'A_login') { //
 
     if( !$naver_email_check) { // 첫 네이버 로그인      //m_("first");
         Record_create_member_naver($n_email, $n_name, $n_nickname, $n_profile_image, $level, $n_gender, $n_birth, $n_hp, $set_point);
-        Record_create_point_info($n_email, $set_point);
-        $member = get_urllink_memberA($k_email);// google login my_func
-        connect_count('K-App login : Create Naver_account', $k_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
+		
+		//$id = str_replace( "@", "_", $n_email);
+		$emailA = explode(".", $n_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); // 2025-05-18 add
+        
+		Record_create_point_info($userid, $set_point);
+        $member = get_urllink_memberE($n_email);  //$member = get_urllink_memberA($n_email);
+        connect_count('K-App login : Create Naver_account', $n_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
         Create_Session('Naver_Login_K', $member, $remote_addr, $user_agent);
 		// $remote_addr,$user_agent:tkher_start, 로그인 SESSION 생성 - add kan Naver_Login_K
 
@@ -200,7 +230,7 @@ if( $mode == 'A_login') { //
             m_("이미 등록된 계정입니다.---Naver");
         } else {
             Record_update_naver( $n_email, $n_name, $n_nickname, $n_profile_image, $n_hp);
-            $member = get_urllink_memberA($n_email);// google login my_func  //m_("mb_id : ".$member['mb_id']);
+            $member = get_urllink_memberE($n_email); //$member = get_urllink_memberA($n_email);
             connect_count('K-App login : Login Naver ', $n_email, 1, $referer);	// 1: log_info 생성, country code return 요청.
         }
         Create_Session('Naver_Login_K', $member, $remote_addr, $user_agent); // 로그인 SESSION 생성
@@ -210,13 +240,6 @@ if( $mode == 'A_login') { //
 	m_("---- Error login checkT"); 
 	//echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
 	exit;
-}
-
-function Create_Session($_type, $_member, $_remote_addr, $_user_agent){    // 회원아이디 세션 생성
-    set_session('urllink_login_type', $_type);
-    set_session('ss_mb_id', $_member['mb_id']);
-    set_session('ss_mb_level', $_member['mb_level']);
-    set_session('ss_mb_key', md5($_member['mb_datetime'] . $_remote_addr . $_user_agent));// FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 
 }
 
 if( $config['kapp_use_point']) {
@@ -263,10 +286,31 @@ echo "<script>window.open( '$url' , '_top', ''); </script>";
 exit;
 
 
+function Create_Session($_type, $_member, $_remote_addr, $_user_agent){    // 회원아이디 세션 생성
+    set_session('urllink_login_type', $_type);
+    set_session('ss_mb_id', $_member['mb_id']);
+    set_session('ss_mb_level', $_member['mb_level']);
+    set_session('ss_mb_key', md5($_member['mb_datetime'] . $_remote_addr . $_user_agent));// FLASH XSS 공격에 대응하기 위하여 회원의 고유키를 생성해 놓는다. 
+	/*
+	$jtree_dir = KAPP_PATH_T_ . "/file/".$_member['mb_id']; //m_("- jtree_dir:" . $jtree_dir); //- jtree_dir:
+	if ( !is_dir($jtree_dir) ) {
+		if ( !@mkdir( $jtree_dir, 0777 ) ) {
+			echo " Error: $jtree_dir : " . $email_id . " Failed to create directory., 디렉토리를 생성하지 못했습니다. ";
+			m_("ERROR email id:" . $email_id . ", dir create OK : " . $jtree_dir);	//exit;
+		} else {
+			//echo " $jtree_dir : " . $email_id . " Created directory., 디렉토리를 생성 OK";
+			///var/www/html/t/file/kim19260716@gmail.com : kim19260716@gmail.com Created directory., 디렉토리를 생성 OK
+			m_("email id:" . $email_id . ", dir create OK : " . $jtree_dir);
+			//email id:, dir create OK : /home1/ledsignart/public_html/kapp/file/solpakan_naver.com
+			//email id:kim19260716, dir create OK : /home1/solpakanurl/public_html/t/file/kim19260716
+		}
+	}*/
+}
 function Record_check($_email) {
     global $tkher;
     
-    $SQL = " select mb_id, mb_sn from {$tkher['tkher_member_table']} where mb_id = '".$_email."' ";
+    //$SQL = " select mb_id, mb_sn from {$tkher['tkher_member_table']} where mb_id = '".$_email."' ";
+    $SQL = " select mb_id, mb_sn from {$tkher['tkher_member_table']} where mb_email = '".$_email."' ";
 	$result = sql_query($SQL);
     $row = sql_fetch_array($result);
 
@@ -276,7 +320,12 @@ function Record_check($_email) {
 
 function Record_create_member($_g_email, $_g_fullname, $_g_image, $_level, $_set_point) { // 구글 정보로 생성
     global $tkher;
-    $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$_g_email."' , mb_sn = 'Google'  , mb_name = '".$_g_fullname."'  , mb_nick = '".$_g_fullname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_g_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."' , mb_photo = '".$_g_image."' , mb_level = '".$_level."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
+	//$userid == str_replace( "@", "_", $_g_email);
+		$emailA = explode(".", $_g_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); // 2025-05-18 add
+
+    $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$userid."' , mb_sn = 'Google'  , mb_name = '".$_g_fullname."'  , mb_nick = '".$_g_fullname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_g_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."' , mb_photo = '".$_g_image."' , mb_level = '".$_level."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
     $ret=sql_query($query);
     if(!$ret) {
         m_("Google 회원 정보 생성에 문제가 발생했습니다. ---");
@@ -285,7 +334,12 @@ function Record_create_member($_g_email, $_g_fullname, $_g_image, $_level, $_set
 
 function Record_create_member_kakao($_k_email, $_k_nickname, $_k_image, $_level, $_set_point) { // 카카오 정보로 생성
     global $tkher;
-    $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$_k_email."' , mb_sn = 'Kakao'  , mb_name = '".$_k_nickname."'  , mb_nick = '".$_k_nickname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_k_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."'  , mb_photo = '".$_k_image."' , mb_level = '".$_level."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
+	//$userid == str_replace( "@", "_", $_k_email);
+		$emailA = explode(".", $_k_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); // 2025-05-18 add
+
+    $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$userid."' , mb_sn = 'Kakao'  , mb_name = '".$_k_nickname."'  , mb_nick = '".$_k_nickname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_k_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."'  , mb_photo = '".$_k_image."' , mb_level = '".$_level."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
     $ret=sql_query($query);
     if(!$ret) {
         m_("KAKAO 회원 정보 생성에 문제가 발생했습니다. ---" );
@@ -294,7 +348,12 @@ function Record_create_member_kakao($_k_email, $_k_nickname, $_k_image, $_level,
 
 function Record_create_member_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_level, $_gender, $_birth, $_hp, $_set_point) { // 카카오 정보로 생성
     global $tkher;
-    $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$_n_email."' , mb_sn = 'Naver'  , mb_name = '".$_n_name."'  , mb_nick = '".$_n_nickname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_n_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."'  , mb_photo = '".$_n_image."' , mb_level = '".$_level."' , mb_sex = '".$_gender."' , mb_birth = '".$_birth."' , mb_hp = '".$_hp."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
+	//$userid == str_replace( "@", "_", $_n_email);
+	$emailA = explode(".", $_n_email);
+	$email0 = $emailA[0];
+	$userid = str_replace( "@", "_", $email0); // 2025-05-18 add
+
+    $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$userid."' , mb_sn = 'Naver'  , mb_name = '".$_n_name."'  , mb_nick = '".$_n_nickname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_n_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."'  , mb_photo = '".$_n_image."' , mb_level = '".$_level."' , mb_sex = '".$_gender."' , mb_birth = '".$_birth."' , mb_hp = '".$_hp."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
     $ret=sql_query($query);
     if(!$ret) {
         m_("Naver 회원 정보 생성에 문제가 발생했습니다. ---" );
@@ -318,8 +377,6 @@ function Record_update_google($_g_email, $_g_fullname, $_g_image) {
         
         // 계정 정보 업데이트
         $query = " UPDATE {$tkher['tkher_member_table']} SET  "; 
-        //$query = $query . "mb_id = '" . $g_fullname . "' ";   
-        //$query = $query . "mb_name= '" . $g_fullname . "' ";   
 
         if(Change_nick_check($_g_email, $_g_fullname)) { // 닉네임이 변경 체크
             $query = $query . "mb_nick= '" . $_g_fullname . "' ";  
@@ -330,7 +387,7 @@ function Record_update_google($_g_email, $_g_fullname, $_g_image) {
         }
 
         $query = $query . ",mb_datetime= '" . date('Y-m-d H:i:s') . "' ";   
-        $query = $query . " where mb_id = '".$_g_email."' ";   
+        $query = $query . " where mb_email = '".$_g_email."' ";   
 
         $ret = sql_query( $query );
         if(!$ret) {
@@ -344,8 +401,6 @@ function Record_update_kakao($_k_email, $_k_nickname, $_k_image) {
         
         // 계정 정보 업데이트
         $query = " UPDATE {$tkher['tkher_member_table']} SET  "; 
-        //$query = $query . "mb_id = '" . $g_fullname . "' ";   
-        //$query = $query . "mb_name= '" . $g_fullname . "' ";   
 
         if(Change_nick_check($_k_email, $_k_nickname)) { // 닉네임이 변경 체크
             $query = $query . "mb_nick= '" . $_k_nickname . "' ";  
@@ -356,7 +411,7 @@ function Record_update_kakao($_k_email, $_k_nickname, $_k_image) {
         }
 
         $query = $query . ",mb_datetime= '" . date('Y-m-d H:i:s') . "' ";   
-        $query = $query . " where mb_id = '".$_k_email."' ";   
+        $query = $query . " where mb_email = '".$_k_email."' ";   
 
         $ret = sql_query( $query );
         if(!$ret) {
@@ -370,8 +425,6 @@ function Record_update_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_hp)
         
         // 계정 정보 업데이트
         $query = " UPDATE {$tkher['tkher_member_table']} SET  "; 
-        //$query = $query . "mb_id = '" . $g_fullname . "' ";   
-        //$query = $query . "mb_name= '" . $g_fullname . "' ";   
 
         if(Change_nick_check($_n_email, $_n_nickname)) { // 닉네임이 변경 체크
             $query = $query . "mb_name= '" . $_n_name . "' ";   
@@ -386,7 +439,7 @@ function Record_update_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_hp)
         }
 
         $query = $query . ",mb_datetime= '" . date('Y-m-d H:i:s') . "' ";   
-        $query = $query . " where mb_id = '".$_k_email."' ";   
+        $query = $query . " where mb_email = '".$_n_email."' ";   
 
         $ret = sql_query( $query );
         if(!$ret) {
@@ -394,9 +447,9 @@ function Record_update_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_hp)
         }
 }
 
-function Change_nick_check($_mb_id, $_nick){ // 닉네임 변경 체크
+function Change_nick_check($_mb_email, $_nick){ // 닉네임 변경 체크
     global $tkher;
-    $SQL = " select mb_nick from {$tkher['tkher_member_table']} where mb_id = '".$_mb_id."' ";
+    $SQL = " select mb_nick from {$tkher['tkher_member_table']} where mb_email = '".$_mb_email."' ";
 	$result = sql_query($SQL);
     $row = sql_fetch_array($result);
 
@@ -434,9 +487,9 @@ function Change_nick_check($_mb_id, $_nick){ // 닉네임 변경 체크
     //m_("sql : ".$sql);
 } */
 
-function getJsonText($jsontext) { // jsonText '\' 값 제거 
+/* function getJsonText($jsontext) { // jsonText '\' 값 제거 
     return str_replace("\\\"", "\"", $jsontext);
-    }
+    } */
 
 function get_Number_K($_number){
     return str_replace("-", "", $_number);
