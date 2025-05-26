@@ -33,7 +33,7 @@ $bbs_make_level = 1;	// add : 2018-06-25, 2018-06-28: 8에서 1로
 //$Kakao_APP_KEY = "cd5a2a04d70b1eec352180e85c8cec47"; // ?
 //$Kakao_APP_KEY = "0912c63a7fe3712a7dc1096471dfc0c6"; // javascript key 24c
 //$Kakao_APP_KEY = "f1a7cbcada566d6cc0a9fd088f6ec69c"; // appgenerator, https://developers.kakao.com/console/app/652064 2024-04-01 사용 안함
-//$Kakao_APP_KEY = "60917fc8a9568fe86042ce78782bac18"; // modu_shop 2024-04-01 교체 //32자
+//$Kakao_APP_KEY = "60917fc8a9568fe86042ce78782bac18"; // shop 2024-04-01 교체 //32자
 //$Kakao_APP_KEY = "60917fc8a9568fe86042ce78782bac18"; // kapp_config 사용
 
 /* point +, - : add 2021-03-23 중요. */
@@ -59,49 +59,16 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
     $strT .= "0123456789";
 
 
-	/*
-	function m_($message) {
-		echo "<script language='javascript'>alert('$message');</script>";
+
+	function special_comma_chk ($input) { // 특수문자 제거. "'"만 제거한다.
+		if( is_array($input)) { //m_("---1");
+			return array_map('special_chk', $input); 
+		} else if ( is_scalar($input)) { //m_("---2");
+				return preg_replace("/'/i", "", $input); //return preg_replace("/[ #\/\\\:;,'\"`<>()]/i", "", $input);
+		} else { //m_("---3");
+			return $input; 
+		} 
 	}
-	function index_url_path()
-	{
-		$result['path']	= str_replace('\\', '/', dirname(__FILE__));
-		$tilde_rm		= preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);
-		$doc_root		= str_replace($tilde_rm, '', $_SERVER['SCRIPT_FILENAME']);
-		$pattern = '/' . preg_quote($doc_root, '/') . '/i';
-		$root    = preg_replace($pattern, '', $result['path']);
-		//m_("result_path: " . $result['path'] . ", doc_root: " . $doc_root . ", pattern: " . $pattern . ", root: " . $root);
-		//result_path: /var/www/html/t, doc_root: /var/www/html, pattern: //var/www/html/i, root: /t
-		//result_path: /var/www/html/t, doc_root: /var/www/html, pattern: //var/www/html/i, root: /t
-		//result_path: /var/www/html/t, doc_root: /var/www/html, pattern: //var/www/html/i, root: /t
-
-		$port = ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) ? '' : ':'.$_SERVER['SERVER_PORT'];
-		//m_("_SERVER[HTTPS] : " . $_SERVER['HTTPS']); // _SERVER[HTTPS] :
-		//m_("_SERVER[HTTP_X_FORWARDED_PROTO] : " . $_SERVER['HTTP_X_FORWARDED_PROTO'] ); // _SERVER[HTTP_X_FORWARDED_PROTO] : https
-		//$http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-		//$http = 'http' . (($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') ? 's' : '') . '://';           //tkher_iurl: https://ailinkapp.com/t
-		$http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-
-		$user = str_replace(preg_replace($pattern, '', $_SERVER['SCRIPT_FILENAME']), '', $_SERVER['SCRIPT_NAME']);
-		$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
-		if(isset($_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host))
-			$host	= preg_replace('/:[0-9]+$/', '', $host);
-		$host		= preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", '', $host);
-		$words = explode( '/', $_SERVER['SCRIPT_FILENAME'] );
-		$tkher_iurl		= $http.$host.$port.$user.$root;
-		$tkher_ipath	= $result['path'];  // tkher_ipath: /home/onlyshop/public_html/t
-		$tkher_u = $http . $host;
-		$tkher_p = "/" . $words[1] . "/" . $words[2] . "/" . $words[3];
-
-		define('KAPP_DIR_',		$root );       // root:        /t
-		define('KAPP_URL_',		$tkher_u );    // tkher_u:     https://ailinkapp.com
-		define('KAPP_PATH_',		$tkher_p );    // tkher_p:     /home/onlyshop/public_html
-		define('KAPP_URL_T_',		$tkher_iurl ); // tkher_iurl:  https://ailinkapp.com/t
-		define('KAPP_PATH_T_',		$tkher_ipath );// tkher_ipath: /home/onlyshop/public_html/t
-		define('KAPP_LOGO_URL_',	$tkher_u . '/logo' );
-		return $result;
-	}*/
-
 
 	function a_number_formatA($number_in_iso_format, $no_of_decimals=3, $decimals_separator='.', $thousands_separator='', $digits_grouping=3){
 		// Check input variables
@@ -229,18 +196,17 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
 		$sql= " update {$tkher['tkher_member_table']} set mb_point=mb_point+$point where mb_id = '$from_session_id' ";
 		sql_query($sql);
 	}
-	function coin_minus_func($from_session_id, $point)
+	function coin_minus_func($H_ID, $point)
 	{   // $config['kapp_download_point'] = 3000
 		global $tkher;
-		global $config, $tkher_iurl;
+		global $config, $tkher_iurl, $from_session_id;
 		$point = $config['kapp_write_point'];
-		//$table = $tkher['tkher_member_table']; // urllink_member_table을 변경함. 21-07-21
-		$sql= " update {$tkher['tkher_member_table']} set mb_point=mb_point-$point where mb_id = '$from_session_id' ";
+		$sql= " update {$tkher['tkher_member_table']} set mb_point=mb_point-$point where mb_id = '$H_ID' ";
 		$ok_sql = sql_query($sql);
 		if( $ok_sql ) {
 			$minus_point = 0 - $point;
 			$rungo = $tkher_iurl . "/" . $_SERVER['SCRIPT_NAME'];
-			insert_point_app( $H_ID, $minus_point, $rungo, $_SERVER['SCRIPT_NAME'], $H_ID );
+			insert_point_app( $from_session_id, $minus_point, $rungo, $_SERVER['SCRIPT_NAME'], $H_ID );
 		}
 		//	function insert_point_app($mb_id, $point, $content='', $rel_table='', $rel_id='', $rel_action='', $expire=0){
 	}
@@ -290,7 +256,7 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
 	}
 	//Curl job link table error
 	function Link_Table_curl_send( $sys_subtit, $sys_link, $jong, $kapp_server, $ip, $memo, $up_day ){
-		global $H_ID, $H_EMAIL;
+		global $H_ID, $H_EMAIL, $config;
 
 		$tabData['data'][][] = array();
 		$cnt = 0;
@@ -310,7 +276,8 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
 
 		$sendData = encryptA( $tabData , $key, $iv);
 
-		$url_ = 'https://ailinkapp.com/kapp/Link_Table_curl_get_ailinkapp.php'; // 전송할 대상 URL
+		$url_ = $config['kapp_theme'] . '/_Curl/Link_Table_curl_get_ailinkapp.php';
+		
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -322,6 +289,7 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($curl);
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		
 		echo curl_error($curl);
 
 		//echo "Link_Table_curl_send --- response: " . $response;
@@ -336,6 +304,7 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
 		curl_close($curl);
 
 		//m_("curl end--------------- ms: email: " . $H_EMAIL); //exit();
+		return $response;
 	}
 	// tkher_star_necessary 에서사용. Kakao Login 시 member table 등록 여부 확인 -----------------
 	function get_memberT( $email, $table, $fields='*')
@@ -347,8 +316,12 @@ $dn_minus_point = 1000; // 소스를 다운할때 사용자의 id에 포인트�
 	function get_urllink_memberA($mb_id, $fields='*')
 	{
 		global $tkher;
-
 		return sql_fetch(" select $fields from {$tkher['tkher_member_table']} where mb_id = TRIM('$mb_id') ");
+	}
+	function get_urllink_memberE($mb_id, $fields='*')
+	{ // email login 2025-05-18 add 
+		global $tkher;
+		return sql_fetch(" select $fields from {$tkher['tkher_member_table']} where mb_email = TRIM('$mb_id') ");
 	}
 	//--------------------------------------------- 21-04-4 add.
 	function urllink_member_set( $gid, $gemail, $gname, $gsajin, $sn, $table){
@@ -1518,9 +1491,9 @@ function gmail( $s_enm, $s_e, $mb_name, $mb_email, $subject, $content, $no){
 		if( !$config['kapp_use_point']) { return 0; } // 포인트 사용을 하지 않는다면 return
 		if( $point == 0) { return 0; } // 포인트가 없다면 업데이트 할 필요 없음
 		if( $mb_id == '') { return 0; }// 회원아이디가 없다면 업데이트 할 필요 없음
+
 		$mb = sql_fetch(" select mb_id, mb_point from {$tkher['tkher_member_table']} where mb_id = '$mb_id' ");
 		if( !$mb['mb_id']) { return 0; }
-
 		$mb_point = $mb['mb_point'];
 		$po_mb_point = $mb_point + $point;
 
@@ -1535,7 +1508,7 @@ function gmail( $s_enm, $s_e, $mb_name, $mb_email, $subject, $content, $no){
 		$sql = " insert into {$tkher['point_table']}
 					set mb_id         = '$mb_id',
 						po_datetime   = '".$day."',
-						po_title    = '" . $rel_action . "',
+						po_title    = '" . $rel_table . "',
 						po_content    = '" . $content . "',
 						po_point      = $point,
 						po_use_point  = 0,
@@ -1827,7 +1800,7 @@ function insert_point($mb_id, $point, $content='', $rel_table='', $rel_id='', $r
     global $tkher;
     global $is_admin;
 
-    if( !$mb['mb_id'] || $mb_id == '') { return 0; }
+    if( !isset($mb_id) || $mb_id == '') { return 0; }
 	if( !$config['kapp_use_point']) { return 0; } // $config['kapp_use_point'] == 1 이면 포인트 관리를 사용
     if( $point == 0) { return 0; }                // 포인트가 없다면 업데이트 할 필요 없음
     $mb = sql_fetch(" select mb_id from {$tkher['tkher_member_table']} where mb_id = '$mb_id' ");
@@ -1865,15 +1838,16 @@ function insert_point($mb_id, $point, $content='', $rel_table='', $rel_id='', $r
                     po_mb_point   = '$po_mb_point',
                     po_expired    = '$po_expired',
                     po_expire_date= '$po_expire_date',
+                    po_title  = '$rel_table',
                     po_rel_table  = '$rel_table',
                     po_rel_id     = '$rel_id',
                     po_rel_action = '$rel_action' ";
-    sql_queryG($sql);
+    sql_query($sql);
     if( $point < 0) { // 포인트를 사용한 경우 포인트 내역에 사용금액 기록
         insert_use_point($mb_id, $point);
     }
     $sql = " update {$tkher['tkher_member_table']} set mb_point = '$po_mb_point' where mb_id = '$mb_id' ";
-    sql_queryG($sql);
+    sql_query($sql);
     return 1;
 }
 function get_point_sum($mb_id){
@@ -1966,7 +1940,7 @@ class html_process {
 
             // 부담(overhead)이 있다면 테이블 최적화
             //$row = sql_fetch(" SHOW TABLE STATUS FROM `$mysql_db` LIKE '$tkher['login_table']' ");
-            //if ($row['Data_free'] > 0) sql_queryG(" OPTIMIZE TABLE $tkher['login_table'] ");
+            //if ($row['Data_free'] > 0) sql_query(" OPTIMIZE TABLE $tkher['login_table'] ");
         }
 
         $buffer = ob_get_contents();
@@ -2080,14 +2054,14 @@ function is_mobile(){
 // key make
 function get_uniqid(){
     global $tkher;
-    sql_queryG(" LOCK TABLE {$tkher['uniqid_table']} WRITE ");
+    sql_query(" LOCK TABLE {$tkher['uniqid_table']} WRITE ");
     while (1){ // 년월일시분초에 100분의 1초 두자리를 추가함 (1/100 초 앞에 자리가 모자르면 0으로 채움)
         $key = date('ymdHis', time()) . str_pad((int)(microtime()*100), 2, "0", STR_PAD_LEFT);
-        $result = sql_queryG(" insert into {$tkher['uniqid_table']} set uq_id = '$key', uq_ip = '{$_SERVER['REMOTE_ADDR']}' ", false);
+        $result = sql_query(" insert into {$tkher['uniqid_table']} set uq_id = '$key', uq_ip = '{$_SERVER['REMOTE_ADDR']}' ", false);
         if ($result) break;
         usleep(10000); // 100분의 1초를 쉰다
     }
-    sql_queryG(" UNLOCK TABLES ");
+    sql_query(" UNLOCK TABLES ");
     return $key;
 }
 
@@ -2179,5 +2153,65 @@ function goto_url($url){
     exit;
 }
 
+function pagingA($link, $total, $page, $size){ // paging() pagingA()로 적용함.
+	$page_num = 10;
+	if( !$total ) { return; }
+	$total_page	= ceil($total/$size);
+	/*
+	$temp		= $page%$size;
+	if($temp=="0"){
+		$a=$size-1;
+		$b=$temp;
+	}else{
+		$a=$temp-1;
+		$b=$size-$temp;
+	}
+	$start	= $page-$a;
+	$end		= 10;//$page+$b;
+	*/
+	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	$last_page = $first_page+($page_num-1);
+	if($last_page > $total_page) $last_page = $total_page;
+
+	echo "<div class=paging>";
+	if( $page > $page_num ) {
+		echo("<a href='javascript:page_move(1)'>[First]</a><span>.</span>");
+	} else {
+		echo("<span>[Start].</span>");
+		//echo("<img src=./include/img/btn/b_first_silver.gif border=0 height=30 title='First'>");
+	}
+	if( $page > $page_num ) {
+		$back_page = $first_page - 1;
+		//echo("<a href='javascript:page_move($back_page)' ><img src=./include/img/btn/btn_prev.png width=30 title='previous'></a>");
+		echo("<a href='javascript:page_move($back_page)' >[Prev]</a><span>.</span>");
+	} else {
+		//echo("<img src=./include/img/btn/btn_prev.png width=30 title='Previous'>");
+		//echo("<span>[Prev].</span>");
+	}
+	for( $i=$first_page; $i <= $last_page; $i++ ){
+		if( $i > $total_page){ break;}
+		if( $page==$i ){ echo("<a href='javascript:void(0)' class=on>$i</a><span>.</span>"); }
+		else         { echo("<a href='javascript:page_move($i)'>$i</a><span>.</span>"); }
+	}
+	if( $last_page < $total_page){
+		$next_page=$last_page+1;
+		echo("<a href='javascript:page_move($next_page)'>[Next]</a><span>.</span>");
+		//echo("<a href='javascript:page_move($next_page)'><img src=./include/img/btn/btn_next.png width=30 title='B Next Page'></a>");
+	}else { 
+		//echo("<img src=./include/img/btn/btn_next.png width=30 title='Btn Next Page'>");
+		//echo("<span>[Next].</span>");
+	}
+	if( $last_page < $total_page){
+		echo("<a href='javascript:page_move($total_page)'>[Last]</a>");
+	}else{
+		echo("<span>[End]</span>");
+		//echo("<img src=./include/img/btn/b_last_silver.gif border=0 height=30 title='Last'>");
+	}
+	echo "</div>";
+}
+
+function getJsonText($jsontext) { // jsonText '\' 값 제거 
+	return str_replace("\\\"", "\"", $jsontext);
+}
 
 ?>
