@@ -186,7 +186,7 @@
 		//echo "<td><div id='buttonDiv' style='text-align: -webkit-center;' title='Google Login A'></div></td><tr></table>"; // 구글 수동로그인
 
 		$n_client_id = $config['kapp_naver_client_id'];
-		$N_reurl = KAPP_URL_T . "/login_checkT.php?mode=N_login";
+		$N_reurl = KAPP_URL_T_ . "/login_checkT.php?mode=N_login";
         $redirectURI = urlencode( $N_reurl );
         $state = "modumoa";
         $apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".$n_client_id."&redirect_uri=".$redirectURI."&state=".$state;
