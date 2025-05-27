@@ -733,7 +733,8 @@ jQuery(document).ready(function ($) {
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<a href="ulink_list.php?g_type=U" target='iframe_url'>Note list</a><!-- <a href="ulink_list.php?g_type=D" target='iframe_url'>Note list</a> -->
+		<a href="ulink_list.php?g_type=U" target='iframe_url'>Note list</a>
+		<!-- <a href="ulink_list.php?g_type=D" target='iframe_url'>Note list</a> -->
 		</td>
 		</tr>
 		<tr>
@@ -969,9 +970,9 @@ jQuery(document).ready(function ($) {
 				<?php } else { ?>
 						---
 			<?php }  ?>
-			  </td>
+			  </td>-->
 			<?php } ?> 
-				</tr> -->
+				</tr> 
 		<?php
 			}	//-------- Loop
 		?>
