@@ -30,7 +30,7 @@
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
+<link rel="shortcut icon" href="../icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
@@ -57,7 +57,8 @@ th, td { border: 1px solid silver; padding:5px; }
 		boarder: 1px solid gray;
 	}
 </style>
-<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
+<!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
 <script>
 $(function () {
   $('table.floating-thead').each(function() {
@@ -94,8 +95,6 @@ $(function () {
 
 <link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
-
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script> -->
 
 </head> 
 
@@ -396,7 +395,7 @@ jQuery(document).ready(function ($) {
 
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
 		//var seq_no = $("#insert_form").seq_no.val();
-		alert("view_click --- " );
+		//alert("Note Create click --- " );
 
 	});
 
@@ -835,8 +834,7 @@ jQuery(document).ready(function ($) {
 			<TH>Project</TH>
 			<!-- <TH>User</TH> -->
 			<TH>Title</TH>
-			<!-- <TH>URL-Link </TH> -->
-			<TH>Link Url</TH>
+			<!-- <TH>Link Url</TH> -->
 			<TH>type</TH>
 			<TH>View</TH>
 			<TH>date</TH>
@@ -943,26 +941,19 @@ jQuery(document).ready(function ($) {
 			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='white'; $i_tit='U: Link Note';}
 			else	$t_color='grace';
 ?>
-				<tr valign="middle" align='left' width='30' height='20'> 
-				  <td  bgcolor='black' width='30' title='<?=$user_id?>'><img src='<?=$icon?>' width='30' ></td>
-				  <td  bgcolor='black' width='30' width='5%' style="color:<?=$t_color?>;"><?=$sys_group?></td>
-				  <!-- <td  bgcolor='black' width='30'  width='5%' style="color:<?=$t_color?>;"><?=$user_id?></td> -->
-				  <!-- <td bgcolor='<?=$td_bg?>' align='left'  width='150' title='type:<?=$gubun?>'>
-					<a href="javascript:call_pg_selectT( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;"  title='type:<?=$gubun?>'><?=$sys_label?></a>
-				  </td> -->
+				<tr valign="middle" align='left' > 
+				  <td  bgcolor='black' title='<?=$user_id?>' width='30' ><img src='<?=$icon?>' width='30'></td>
+				  <td  bgcolor='black' style="width:15%;color:<?=$t_color?>;"><?=$sys_group?></td>
 <?php if( $rs['job_name']=='Note') { ?>
-				  <!-- <td bgcolor='<?=$td_bg?>' align='left' title='<?=$memo?>'>
-					<a href="javascript:void(0);" onclick="contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" class="view_click" style="background-color:black;color:<?=$t_color?>;" ><?=$sys_name?></a>
-				  </td> -->
-				  <td bgcolor='<?=$td_bg?>' align='left' title='<?=$user_id?>'>
-					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" ><?=$sys_name?></a>
+				  <td bgcolor='<?=$td_bg?>' align='left' title='<?=$user_id?>:<?=$rs_job_addr?>'>
+					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a>
 				  </td>
 <?php } else {?>
-				  <td bgcolor='<?=$td_bg?>' align='left' title='<?=$user_id?>'>
-					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='<?=$user_id?>'><?=$sys_name?></a>
+				  <td bgcolor='<?=$td_bg?>' align='left' title='<?=$user_id?>:<?=$rs_job_addr?>'>
+					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a>
 				  </td>
 <?php }?>
-				  <td style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr?></td>
+				  <!-- <td style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr?></td> -->
 				  <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$i_tit ?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:30px;" ><?=$rs['view_cnt'] ?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:120px;" ><?=$rs['up_day'] ?></td>
