@@ -5,8 +5,9 @@
 						 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
 						 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
 						 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
-						 : table_item_run50.php call 하고 pg_curl_send() 추가 : 2023-08-03 - ailinkapp.com : pg_curl_get_ailinkapp.php 와 연동됨.
+						 : table_item_run50.php call 하고 PG_curl_send() 추가 : 2023-08-03 - ailinkapp.com : pg_curl_get_ailinkapp.php 와 연동됨.
 							- https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php
+						 : program_list3.php - call : upgrade
 
 	*/
 	$ss_mb_id	= get_session("ss_mb_id");
@@ -18,20 +19,43 @@
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	$_SESSION['mode_session_ok']	= 'ok';  // 막으면 : point 지급완료 확인용. 1일 1번만 적용.
-	$project_nmS = $_POST['project_nmS'];
-	$pg_codeS    = $_POST['pg_codeS']; // pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
-	$tab_hnmS    = $_POST['tab_hnmS'];
-	$mode		 = $_POST['mode'];
-	$lev		= $_POST['lev'];//m_("pg50 - lev:$lev"); // program level:3
-	$seqno		= $_POST['seqno'];
-	$tab_enm	= $_POST['tab_enm'];
-	$tab_hnm	= $_POST['tab_hnm'];
+	
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode = "";
+
+	if( !isset($_SESSION['mode_session_ok']) ) $_SESSION['mode_session_ok']= 'ok';  // 막으면 : point 지급완료 확인용. 1일 1번만 적용.
+
+	if( isset($_POST['project_nmS']) ) $project_nmS = $_POST['project_nmS'];
+	else $project_nmS = "";
+
+	if( isset($_POST['project_code']) ) $project_code = $_POST['project_code'];
+	else $project_code = "";
+
+	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS']; //$_POST['pg_codeS']
+	else $pg_codeS = '';	 // pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
+	
+	if( isset($_POST['tab_hnmS']) ) $tab_hnmS = $_POST['tab_hnmS'];
+	else $tab_hnmS = '';
+
+	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS'];
+	else $pop_tabS = '';
+
+	if( isset($_POST['lev']) ) $lev = $_POST['lev'];
+	else $lev = '';	//m_('pg50 - lev:$lev'); // program level:3
+	
+	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
+	else $seqno = '';
+	
+	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
+	else $tab_enm = '';
+
+	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
+	else $tab_hnm = '';
 ?>
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="./logo/land25.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -39,8 +63,6 @@
 <meta name="robots" content="ALL">
 </head>
 <link href="./include/css/admin.css" rel="stylesheet" type="text/css">
-
-<!-- <SCRIPT language=JavaScript src="cra_func.js"></SCRIPT> -->
 <script language="JavaScript"> 
 <!--
 	var frealname	= ''
@@ -64,52 +86,7 @@
 		}
 		return str
 	}
-	/*
-	function titlechange_btncfm_onclickXX() {
-		var selStr = makeform.column_list;
-		var chgStr = makeform.column_name_change.value;
-		if (makeform.column_list.selectedIndex < 0) return;
-		// chgStr.indexOf("^")>=0 || '^' 만 가능하도록 한다.
-		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
-		{
-			alert(' You used a special character that is not allowed. \n Please enter it again.');
-			// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
-			return false;
-		}
-		// selected 된 것과 같은 이름이 있는지?
-		for (i=0;i<makeform.column_list.options.length;i++) {
-			  if (chgStr == selStr.options[i].text) {
-				alert("This name already exists.")
-					return false;
-			  }
-		}
-		selStr.options[line].text = chgStr;
-		return;
-	}
-	function titlechange_btncfm_onclickX() {
-		var selStr = makeform.column_list;
-		var chgStr = makeform.column_name_change.value;
-		line = makeform.column_list.selectedIndex;
 
-		if( line < 0 ) {
-			alert(' Please select a column! ' );
-			return false;
-		}
-		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0)
-			{
-			alert(' You used a special character that is not allowed. Please re-enter..');
-			// \n 허용이 안 되는 특수문자를 사용하셨습니다. 다시 입력하시기 바랍니다
-			return false;
-		}
-		for (i=0;i<makeform.column_list.options.length;i++) {
-			  if (chgStr == selStr.options[i].text) {
-				alert(" This name already exists. Please use it after changing the name.");//
-					return false;
-			  }
-		}
-		selStr.options[line].text = chgStr;
-		return;
-	}*/
 	//-----------------
 	function upItem() {
 		var tmpValue, tmpText
@@ -723,6 +700,8 @@ function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribut
 			}
 			document.makeform["if_data[" + selind + "]"].value = chgStr;
 			document.makeform["iftype[" + selind + "]"].value = ii;	//alert( colnm_hnm + ' , ' + msg + ', label=' +chgStr );
+			alert(' OK! ' );
+
 		} else {
 			alert(' Please enter a property! 1:radio button or 3:check box or 5:listbox Only' );// 1:radio button or 3:check box or 5:listbox 만적용한다.
 			return false;
@@ -801,39 +780,31 @@ function Save_and_Run(pg)
 		document.makeform.pg_name.focus();
 		return false;
 	}
-
-	mode_session_ok = document.makeform.mode_session_ok.value;
-	mode_session = document.makeform.mode_session.value;	//alert('mode_session: '+mode_session + ', mode_session_ok: ' + mode_session_ok);
-	
+	var mode_session_ok = document.makeform.mode_session_ok.value;
+	var mode_session = document.makeform.mode_session.value;
 	var colnm = document.getElementsByName('column_list');
-	var st = "";	//var new_column = "";
-	var item_cnt = colnm.length;	//var item_cnt = makeform.column_list.options.length; 
+	var st = "";
+	var item_cnt = colnm.length;
 	var str_array= "";
 
 	//중요! - 컬럼 순서변경, 컬럼명칭 변경, 컬럼 조건및 조건데이터 처리 에따른 item_array 재생성.18-09-11
 	for (i = 0; i < item_cnt; i++) {
 		colnm_value = colnm[i].value;
-		st = colnm_value.split('|');  //val:275|fld_2|작업공정|CHAR|10// seqno+enm+hnm+type+len
+		st = colnm_value.split('|');
 		str_array = str_array + st[0] +'|'+ st[1] +'|'+ st[2] +'|'+ st[3]+'|'+ st[4]+'@';	
 	} 
 	document.makeform.item_array.value = str_array;
-	//document.makeform.mode.value = 'table10_pg_create';
 	
 	if( mode_session == "POPUP" || mode_session == "Formula") {
 		if( mode_session_ok == 'end') {
-			document.makeform.mode.value = 'Pg_Upgrade'; //'pg_update'; - 2023-09-18 변경. // upgrade 작업시 1일 1번만 point 지급
+			document.makeform.mode.value = 'Pg_Upgrade';
 		} else {
-			document.makeform.mode.value = 'Pg_Upgrade'; //point 지급:600
-			//document.makeform.mode_session_ok.value = 'end'; // 중복지급 차단.
+			document.makeform.mode.value = 'Pg_Upgrade';
 		}
-	} else document.makeform.mode.value = 'Pg_Upgrade'; //'pg_update'; - 2023-09-18 변경.  // pg_new_create - 
-
-	document.makeform.mode_call.value = 'app_pg50RU';    // table_pg50R, 'table_item_run50';
-//	document.makeform.action='table_item_run50.php';     // curl 작업을 여기서 실행한다. tkher_program_run
-	document.makeform.action='table_item_run50_pg50RU.php';     // 2023-09-18 새로 생성. table10 테아블 update 부분을 막았다. curl 작업을 여기서 실행한다. tkher_program_run
-
-	//document.makeform.action='tkher_program_run.php';  //tkher_program_run
-	document.makeform.target='_blank';//run_menu, _self 
+	} else document.makeform.mode.value = 'Pg_Upgrade';
+	document.makeform.mode_call.value = 'app_pg50RU';
+	document.makeform.action='table_item_run50_pg50RU.php';
+	document.makeform.target='_blank';
 	document.makeform.submit();
 }
 //--- 사용 하지않는다. --------
@@ -894,53 +865,102 @@ function Create_button(pg)
 <body leftmargin="0" topmargin="0">
 
 <?php
-	$pg_code			= $H_ID . "_" . time();	//$multy_menu_sel	= $_REQUEST['multy_menu_sel'];
-	$mode_session   = $_POST['mode_session']; //m_("mode: " . $mode . ", mode_session:" . $mode_session); //mode: project_search, mode_session:, mode: SearchPG, mode_session:
-	$if_line_session= '';
-	if( $_POST['mode_session'] == 'POPUP') {
 
-		$if_line_session	= $_POST["if_line"];    //get_session("if_line");
-		$j						= $if_line_session+1;
-		$pg_codeS			= $_POST["pg_codeS"];   //$pg_codeS_session; // 2023-1005
-		$tab_hnmS				= $_POST["tab_hnmS"]; //$tab_hnmS_session;
+	//$uid = explode('@', $H_ID);
+	//$pg_code = $uid[0] . "_" . time();
+	//$pg_code = $H_ID . "_" . time();
+	
+	if( isset($_POST['project_name']) )  $project_name = $_POST['project_name'];
+	else $project_name = '';
+
+	if( isset($_POST['pg_code']) )  $pg_code = $_POST['pg_code'];
+	else $pg_code = '';
+	
+	if( isset($_POST['mode_session']) ) $mode_session   = $_POST['mode_session'];
+	$mode_session   = '';
+
+	if( isset($_POST['item_array']) ) $post_item_array   = $_POST['item_array'];
+	else $post_item_array   = '';
+
+	if( isset($_POST['if_column']) ) $if_column   = $_POST['if_column'];
+	else $if_column   = '';
+
+
+	if( isset($_POST['iftype_db']) ) $iftype_db = $_POST['iftype_db'];
+	else $iftype_db = '';
+
+	$if_line_session= 0; $j=0;
+	$fld_sel_type	 = '';
+	$pg_name = '';
+
+	$column_attribute = ''; 
+
+	//m_('mode: ' . $mode . ', mode_session:' . $mode_session); //mode: project_search, mode_session:, mode: SearchPG, mode_session:
+	if( $mode_session == 'POPUP') {
+
+		if( isset($_POST['if_line']) ) $if_line_session	= $_POST['if_line'];    //get_session('if_line');
+
+		$j= $if_line_session+1;
+		//$pg_codeS			= $_POST['pg_codeS'];   //$pg_codeS_session; // 2023-1005
+		//$tab_hnmS				= $_POST['tab_hnmS']; //$tab_hnmS_session;
 		$mode					= 'SearchPG';
-		$aa						= explode(':', $_POST["pop_tabS"] );
-		$column_attribute	= $aa[1]; 
-		$at						= explode('|', $_POST["iftype_db"] );
-		$fld_sel_type			= $at[$j]; 
-		$ar						= explode('@', $_POST["item_array"] ); 
-		$arr					= $ar[$if_line_session];
+		$aa						= explode(':', $pop_tabS );
+		if( isset($aa[1]) &&  $aa[1] !=='' ) $column_attribute	= $aa[1]; 
+		else  $column_attribute = ''; 
+		$at						= explode('|', $iftype_db );
+		if( isset($at[$j]) ) $fld_sel_type	= $at[$j]; 
+		else  $fld_sel_type	 = '';
+		$ar						= explode('@', $post_item_array ); 
+		if( isset($ar[$if_line_session]) ) $arr = $ar[$if_line_session];
+		else  $arr = '';
 		$flda					= explode('|', $arr);
-		$fld_sel				= $flda[1]; 
+		if( isset($flda[1]) ) $fld_sel				= $flda[1]; 
+		else  $fld_sel = '';; 
 		$mode_session       = ''; set_session('mode_session',  '');
 
-	} else if( $_POST['mode_session'] == 'Formula') {
+	} else if( $mode_session == 'Formula') {
 
-		$if_line_session	= $_POST["if_line"];       //get_session("if_line");
-		$j					= $if_line_session+1;
-		$pg_codeS			= $_POST["pg_codeS"];      //$pg_codeS_session;
-		$tab_hnmS			= $_POST["tab_hnmS"];      //$tab_hnmS_session;
+		//$if_line_session	= $_POST['if_line'];       //get_session('if_line');
+		if( isset($_POST['if_line']) ) $if_line_session	= $_POST['if_line'];    //get_session('if_line');
+		$j	 = $if_line_session+1;
+
+		//$pg_codeS			= $_POST['pg_codeS'];      //$pg_codeS_session;
+		//$tab_hnmS			= $_POST['tab_hnmS'];      //$tab_hnmS_session;
 		$mode				='SearchPG';
-		$calc				= explode(':', $_POST["formula_data"] ); //$formula_data_session
-		$column_attribute	= $calc[1];
-		$at					= explode('|', $_POST["iftype_db"] ); //$iftype_db_session
-		$fld_sel_type		= $at[$j]; 
-		$ar					= explode('@', $_POST["item_array"] ); //$item_array_session
-		$arr				= $ar[$if_line_session];
+		if( isset($_POST['formula_data']) ) $calc = explode(':', $_POST['formula_data'] ); //$formula_data_session
+		else $calc = array();
+		if( isset($calc[1]) ) $column_attribute	= $calc[1];
+		else $column_attribute	= '';
+		$at					= explode('|', $iftype_db ); //$iftype_db_session
+
+		if( isset($at[$j]) ) $fld_sel_type		= $at[$j]; 
+		else $fld_sel_type		= '';
+
+		$ar					= explode('@', $post_item_array ); //$item_array_session
+		if( isset($ar[$if_line_session]) ) $arr = $ar[$if_line_session];
+		else $arr = '';
 		$flda				= explode('|', $arr);
-		$fld_sel			= $flda[1]; 
+		if( isset($flda[1]) ) $fld_sel			= $flda[1]; 
+		else  $fld_sel ='';; 
 		$mode_session       = ''; set_session('mode_session',  '');
 	}
 	if( $mode == 'SearchPG' ){
-		//m_("mode: " . $mode . ", pg_codeS:" . $pg_codeS); //mode: SearchPG, pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
-		$aa         = explode(':', $pg_codeS);
-		$pg_code    = $aa[0];
-		$pg_name    = $aa[1];
-		$tab_enm    = $aa[2];
-		$tab_hnm    = $aa[3];
-		$group_code	= $aa[4];
-		$group_name	= $aa[5];
-		$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' "; //"SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID'  and pg_code='$pg_code' ";
+		//m_('mode: ' . $mode . ', pg_codeS:' . $pg_codeS); //mode: SearchPG, pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
+		$aa= explode(':', $pg_codeS);
+		if( isset($aa[0]) ) $pg_code    = $aa[0];
+		else $pg_code    = '';
+		if( isset($aa[1]) ) $pg_name    = $aa[1];
+		else $pg_name    ='';
+		if( isset($aa[2]) ) $tab_enm    = $aa[2];
+		else $tab_enm    = '';
+		if( isset($aa[3]) ) $tab_hnm    = $aa[3];
+		else $tab_hnm    = '';
+		if( isset($aa[4]) ) $group_code	= $aa[4];
+		else $group_code	= '';
+		if( isset($aa[5]) ) $group_name	= $aa[5];
+		else $group_name	= '';
+
+		$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
 		$resultPG		= sql_query($sqlPG);
 		$table10_pg	= sql_num_rows($resultPG);
 		$rsPG			= sql_fetch_array($resultPG);
@@ -953,19 +973,44 @@ function Create_button(pg)
 		$rel_data		= $rsPG['relation_data'];
 		$rel_type		= $rsPG['relation_type'];
 		$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
-	}	// mode search end
-	$w		= '100%';
-	$w2	= '300';
+	
+	} else if( $mode == 'program_upgrade' ){ // call: program_list3.php 
+		if( isset($_POST['pg_code']) ) {
+			$pg_code = $_POST['pg_code'];
+			$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
+			$resultPG		= sql_query($sqlPG);
+			$table10_pg	= sql_num_rows($resultPG);
+			$rsPG			= sql_fetch_array($resultPG);
+			$seqno			= $rsPG['seqno'];
+			$item_cnt		= $rsPG['item_cnt'];
+			$item_array		= $rsPG['item_array'];
+			$if_type		= $rsPG['if_type'];
+			$if_data		= $rsPG['if_data'];
+			$pop_data		= $rsPG['pop_data'];
+			$rel_data		= $rsPG['relation_data'];
+			$rel_type		= $rsPG['relation_type'];
+			$tab_enm		= $rsPG['tab_enm'];
+			$tab_hnm		= $rsPG['tab_hnm'];
+			$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
+			$group_code		= $rsPG['group_code'];
+			$group_name		= $rsPG['group_name'];
+			$project_nmS	= $group_code .":". $group_name;
+			$pg_name		= $rsPG['pg_name'];
+			$pg_codeS		= $pg_code.":".$pg_name.":".$tab_enm.":".$tab_hnm.":".$group_code.":".$group_name;
+		}
+	}
 
-	$mode_session_ok = get_session("mode_session_ok");//m_("mode_session_ok: $mode_session_ok");
+	//m_("mode_session_ok: $mode_session_ok");
+	$mode_session_ok = get_session("mode_session_ok");
+
 ?>
 <center>
 <div id='menu_normal'>
-   <table cellspacing='0' cellpadding='4' width='<?=$w2?>' border='1' class="c1"> 
+   <table cellspacing='0' cellpadding='4' width='300' border='1' class="c1"> 
 		<form name="makeform" method="post" >
 			<input type="hidden" name="sellist"	        value="" >
-			<input type="hidden" name="program_level"	value="<?=$_POST['lev']?>" >
-			<input type="hidden" name="mode"            value="" >
+			<input type="hidden" name="program_level"	value="<?=$lev?>" >
+			<input type="hidden" name="mode"            value="<?=$mode?>" >
 			<input type="hidden" name="mode_call"		value="" >
 			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
 			<input type="hidden" name="calc"            value="<?=$calc?>"> 
@@ -973,48 +1018,43 @@ function Create_button(pg)
 			<input type="hidden" name="rel_data"        value="<?=$rel_data?>"> 
 			<input type="hidden" name="rel_type"        value="<?=$rel_type?>"> 
 			<input type="hidden" name="mode_session"    value=""> 
-			<input type="hidden" name="mode_session_ok" value='<?=get_session("mode_session_ok")?>'> 
-			<input type="hidden" name="project_nmSX"	value="<?=$_POST['project_nmS']?>"> <!-- project_nmSX -->
-			<input type="hidden" name="project_code"	value="<?=$_POST['project_code']?>"> 
+			<input type="hidden" name="mode_session_ok" value='<?=$mode_session_ok?>'> 
+			<input type="hidden" name="project_nmSX"	value="<?=$project_nmS?>"> <!-- project_nmSX -->
+			<input type="hidden" name="project_code"	value="<?=$project_code?>"> 
  <tr>
-    <td height="30" style="border-style:;background-color:#666666;color:cyan;" 
-	<?php //echo" title='Program Upgrade. \n 1:Select Project. \n 2:Select Program. \n 3:Select column. \n 4: Column attribute definition. \n 5:Click Save and RUN button.' "; 
-		echo" title='Program Upgrade:app_pg50RU' "; 
-	?>
+    <td height="30" style="border-style:;background-color:#666666;color:cyan;" title='Program Upgrade:app_pg50RU'
 	align='center'>Program Upgrade<br>
-	<input type='hidden' name='project_name' value="<?=$_POST['project_name']?>" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" readonly>
-		<!-- display:none; -->
-	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' maxlength='200'  style="display:none;border-style:;background-color:black;color:yellow;height:25;width:130;" value='' 
-	<?php echo" title=' Enter the name of the program to be created and select the table! ' "; ?>>
-		<!-- display:none; -->
-		<!-- <input type='button' value='Create' onClick="Create_button('table_item_run50')" style="display:none;border-style:;background-color:#666fff;color:yellow; height:25px;" <?php echo "title='Program Upgrade. ' "; ?> title='table_pg50'> -->
+	<input type='hidden' name='project_name' value="<?=$project_name?>" readonly >
+	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" >
 <br><p align='left'>
 	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
-<?php 
-if( isset( $_POST['project_nmS'] ) ) {
-	$pj = $_POST['project_nmS'];
-	$pcd_nm = explode(":", $pj );//m_("pj: " . $pj . ", pcd_nm0:" . $pcd_nm[0] . ", pcd_nm1:" . $pcd_nm[1]); //pj: ksd39673976_16878342:ksd39673976
-	//$pcd_nm = explode(":", $_POST['project_nmSX'] );//m_("pj: " . $pj . ", pcd_nm0:" . $pcd_nm[0] . ", pcd_nm1:" . $pcd_nm[1]); //pj: ksd39673976_16878342:ksd39673976
-?>
-			<option value="<?=$_POST['project_nmS']?>" selected ><?=$pcd_nm[1]?></option>
-<?php
-} else {
-?>
+
 			<option value=''>1.Select Project</option>
+			<!-- <option value='ETC:ETC' selected>ETC</option> -->
+
 <?php
-}
+//m_(": " . $project_nmS);
+				$pcd_nm = array();
+				if( isset($project_nmS) && $project_nmS !=="" ){
+					$pcd_nm = explode(":", $project_nmS );
+				} else {
+					$pcd_nm[0] ="";
+					$pcd_nm[1] ="";
+				}
 				$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); // table10_group
 				while( $rs = sql_fetch_array($result)) {
+					$j_code = $rs['group_code'];
+					$j_name = $rs['group_name'];
 ?>
-					<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' title='Project code: <?php echo $rs['group_code'];?>' ><?=$rs['group_name']?></option>
+					<option value='<?=$j_code?>:<?=$j_name?>' <?php if( $pcd_nm[0]=== $j_code ) echo " selected "; ?> title='Project code:<?=$j_code?>' ><?=$j_name?></option>
 <?php
 				}
 ?>
 			</select>
-		<br>Program:
-		<select name='pg_codeS' onchange="change_program_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" <?php echo" title='Upgrade the program.' "; ?> >
+		<br>
+		Program:<SELECT name='pg_codeS' onchange="change_program_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" title='Upgrade the program.' >
 <?php 
-				if($mode=='SearchPG') {
+				if( $mode=='SearchPG' || $mode=='program_upgrade') {
 ?>
 					<option value="<?php echo $pg_codeS ?>"  selected ><?php echo $pg_name ?> </option>
 <?php
@@ -1024,14 +1064,17 @@ if( isset( $_POST['project_nmS'] ) ) {
 <?php
 				}
 				$sql = "SELECT * from {$tkher['table10_pg_table']} where group_code='". $pcd_nm[0] ."' order by upday desc , pg_name ";
+//				$sql = "SELECT * from {$tkher['table10_pg_table']} where pg_code='". $pg_code ."' order by upday desc , pg_name ";
+//				$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='". $H_ID ."' order by upday desc , pg_name ";
 				$result = sql_query( $sql );
+
 				while( $rs = sql_fetch_array($result)) {
 ?>
-					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php echo" title='Program code:$pg_codeS' "; ?> ><?=$rs['pg_name']?></option>
+					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" ><?=$rs['pg_name']?></option>
 <?php
 				}
 ?>
-			</select></p>
+			</SELECT></p>
 </td>
 </tr>
 			  <tr>
@@ -1046,11 +1089,11 @@ if( isset( $_POST['project_nmS'] ) ) {
 <?php
 	$ss = "";
 	$ckv = "";	//m_("if_line:" . $_POST["if_line"]);
-	if( $table10_pg ){ 
+	if( isset($table10_pg) ){ 
 			$itX = explode("@",$item_array);
 			for( $i=0, $j=0; $i < $item_cnt; $i++, $j++){
-				if( $_POST['mode_session'] == 'POPUP' || $_POST['mode_session'] == 'Formula' ) {
-					if( $_POST["if_line"] == $j) $ckv = " checked "; 
+				if( $mode_session == 'POPUP' || $mode_session == 'Formula' ) {
+					if( $if_line_session == $j) $ckv = " checked "; 
 					else $ckv = "";
 				}
 				$it = explode("|",$itX[$i]);	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
@@ -1091,7 +1134,7 @@ if( isset( $_POST['project_nmS'] ) ) {
 							   <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
 <br>
 <label class="container" <?php echo "title='Only one selectable button. ' "; ?> >
-  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(0,0)" <?php if( !$fld_sel_type ) echo " checked "; ?> >For general input
+  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(0,0)" <?php if( !isset($fld_sel_type) ) echo " checked "; ?> >For general input
   <span class="checkmark"></span> 
 </label>
 <br>
@@ -1136,20 +1179,29 @@ if( isset( $_POST['project_nmS'] ) ) {
 		<input type='hidden' name='tab_enm'  value='<?=$tab_enm?>' >
 		<input type='hidden' name='seqno'      value='<?=$seqno?>' >
 		<input type='hidden' name='item_cnt'   value='<?=$item_cnt?>' >
-		<input type='hidden' name='if_line'    value="<?=$_POST['if_line']?>" >
-		<input type='hidden' name='if_column'  value="<?=$_POST['if_column']?>" ><!-- 2023-10-10 add -->
+		<input type='hidden' name='if_line'    value="<?=$if_line_session?>" >
+		<input type='hidden' name='if_column'  value="<?=$if_column?>" ><!-- 2023-10-10 add -->
 		<input type='hidden' name='item_array' value='<?=$item_array?>' >
 <?php
-			if( $table10_pg > 0 ) { // table10_pg 테이블에 pg_code 가 존재하면.//			if( $table10_pg>0 || $table10_tab>0 ) {
-					$iftypeR = explode("|", $if_type );
-					$ifdataR = explode("|", $if_data );
-					$itemR   = explode("@", $item_array );
-					$popdataR= explode("^", $pop_data );               // add 2022-02-19
+			if( isset($table10_pg) ) { // table10_pg 테이블에 pg_code 가 존재하면.//			if( $table10_pg>0 || $table10_tab>0 ) {
+					if( isset($if_type) ) $iftypeR = explode("|", $if_type );
+					else $iftypeR = "";
+					if( isset($if_data) ) $ifdataR = explode("|", $if_data );
+					else $ifdataR = "";
+					if( isset($item_array) ) $itemR   = explode("@", $item_array );
+					else $itemR   = "";
+					if( isset($pop_data) ) $popdataR= explode("^", $pop_data );               // add 2022-02-19
+					else $popdataR= "";
+
 					for( $i=0, $j=1; $i < $item_cnt; $i++, $j++){
-						$ifT	= $iftypeR[$j];
-						$ifD	= $ifdataR[$j];
-						$it		= $itemR[$i];
-						$pop	= $popdataR[$j];  // add 2022-02-19
+						if( isset($iftypeR[$j]) ) $ifT	= $iftypeR[$j];
+						else $ifT	= "";
+						if( isset($ifdataR[$j]) ) $ifD	= $ifdataR[$j];
+						else $ifD	= "";
+						if( isset($itemR[$i]) ) $it		= $itemR[$i];
+						else $it		=  "";
+						if( isset($popdataR[$j]) ) $pop	= $popdataR[$j];  // add 2022-02-19
+						else $pop	= "";
 ?>
 						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$ifT?>' >
 						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$ifD?>' > 
@@ -1169,7 +1221,7 @@ if( isset( $_POST['project_nmS'] ) ) {
                 </tr>
 						<input type='hidden' name='group_code' value="<?=$group_code?>" >
 						<input type='hidden' name='group_name' value="<?=$group_name?>" >
-						<input type='hidden' name='iftype_db'  value="<?=$_POST['iftype_db']?>" >
+						<input type='hidden' name='iftype_db'  value="<?=$iftype_db?>" >
 						<!-- 
 						<input type='hidden' name='ifdata_db'  value='<?=$if_dataX?>' >
 						<input type='hidden' name='popdata_db' value='<?=$pop_dataX?>' > -->

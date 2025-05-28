@@ -3,7 +3,7 @@
 	/*
 	  table_item_run50_pg50RU.php : app_pg50RU.php 에서 call , mode:Pg_Upgrade
 	  - tkher_program_data_list.php 을 call 한다.
-	  pg_curl_send() 추가 : 2023-08-03 : curl 실행한다. - https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php
+	  pg_curl_send() 추가 : 2023-08-03 : curl 실행한다. - https://fation.net/onlyshop/coupon/pg_curl_get_ailinkapp.php
 	*/
 	//$call_pg = $_POST['mode_call']; m_("call_pg:" . $call_pg); // app_pg50RU
 	/* ---------------------------------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -50,6 +50,7 @@
 		$item_cnt		= $_POST['item_cnt'];
 		$group_code		= $_POST['group_code'];
 		$group_name		= $_POST['group_name'];
+
 		$pg_code		= $_POST['pg_code'];
 		$pg_name		= $_POST['pg_name'];
 
@@ -77,9 +78,10 @@
 
 	$hostnameA = getenv('HTTP_HOST');
 	$tabData['data'][][] = array();
-
+	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
+	else $pg_codeS = '';
 	function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA;      
+		global $pg_codeS, $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config;      
 		$cnt = 0;
 		$tabData['data'][$cnt]['pg_code']  = $pg_code;
 		$tabData['data'][$cnt]['pg_name']  = $pg_name;
@@ -89,7 +91,7 @@
 		$tabData['data'][$cnt]['group_code'] = $group_code;
 		$tabData['data'][$cnt]['group_name'] = $group_name;
 
-		$tabData['data'][$cnt]['host']       = $hostnameA;
+		$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostnameA;
 		$tabData['data'][$cnt]['email']      = $H_EMAIL;
 
 		$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
@@ -108,8 +110,7 @@
 
 		$sendData = encryptA( $tabData , $key, $iv);
 
-//		$url_ = 'https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL
-		$url_ = 'https://ailinkapp.com/kapp/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL
+		$url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL
 
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
@@ -120,6 +121,7 @@
 			'iv' => $iv
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
 		$response = curl_exec($curl);
 
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
@@ -128,9 +130,12 @@
 		//echo "curl --- response: " . $response;
 
 		if( $response == false) {
-			$_ms = "table30m curl 전송 실패 : " . curl_error($curl);
-			echo 'curl 전송 실패 : ' . curl_error($curl);
+			$day = date("Y-m-d H:i:s", time());
+			$_ms = $day . ", pg:". $pg_name . ", table_item_run50_pg50RU curl 전송 실패 : " . curl_error($curl) . ", pg_codeS: " . $pg_codeS ;
+			echo $_ms;//'table_item_run50_pg50RU curl 전송 실패 : ' . curl_error($curl);
 			echo "<br>response: " . $response;
+			$E_SQL = " INSERT Error_Table Set message = '".$_ms."' ";
+			sql_query($E_SQL); 
 			//m_(" ------------ : " . $_ms);
 		} else {
 			//$_ms = 'table30m curl 응답 : ' . $response;

@@ -27,26 +27,30 @@
 	$rel_mvfld		= "";
 	$gita				= "";
 
-	//$page = $_POST['page'];
-	if( strlen($_POST['pj_code']) > 0  && strlen($_POST['pj_code_check']) > 0 ) {
-		//$page = 1;
-		$page = $_POST["page"];
-		$_POST['pj_code_check'] = $_POST['pj_code'];
-	} else if( $_POST['pj_code'] !=  $_POST['pj_code_check']) {
-		$_POST['pj_code_check'] = $_POST['pj_code'];
-		$page = 1;
-	} else if( strlen($_POST['pj_code']) > 0 ) {
-		$_POST['pj_code_check'] = $_POST['pj_code'];
-		$page = 1;
-        //m_("--- page: " . $page . ", pj_code: " . $_POST['pj_code'] . ", pj_code_check: " . $_POST['pj_code_check'] );
-		//--- page: 1, pj_code: gggg, pj_code_check:
-	} else if( strlen($_POST['pj_code']) == 0 ) {
-		//$page = 1; //$_POST["page"];
-		$page = $_POST["page"]; // 1
-	} else {
-		$page = 1;
+	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
+	$mid = $H_ID;
+
+	if( isset($_POST['page']) ) $page = $_POST['page'];
+	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else $page=1;
+
+	if( isset($_POST['pj_code']) ) $pj_code = $_POST['pj_code'];
+	else $pj_code = ""; //$pj_code = "ETC";
+	if( isset($_POST['pj_code_check']) )	$pj_code_check = $_POST['pj_code_check'];
+	else $pj_code_check = "";
+
+	if( isset($pj_code) && isset($pj_code_check) ) {
+		
+		if( $pj_code !==  $pj_code_check ) {
+			$pj_code_check = $pj_code;
+		}
+	} else if( isset($pj_code)  ) {
+		$pj_code_check = $pj_code;
 	}
-    //m_("page: " . $page . ", pj_code: " . $_POST['pj_code'] . ", pj_code_check: " . $_POST['pj_code_check'] );
+
+	if( isset($_POST['pj_name']) ) $pj_name = $_POST['pj_name'];
+	 $pj_name = "";
+    //m_("page: " . $page . ", pj_code: " . $pj_code . ", pj_code_check: " . $pj_code_check );
 
 	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
 		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
@@ -58,8 +62,11 @@
 				$poptable_		="";
 				$gita				="";
 		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-				$typeX	= $iftype[$j];
-				$dataX	= $ifdata[$j];
+				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
+				else $typeX	= "";
+				if( isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				else $dataX	= "";
+
 				$ddd		= $list[$i];
 				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
 				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
@@ -74,48 +81,64 @@
 							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
 						}
 		}
+		
 		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
 		$pop_fld ="";
-		for ( $i=0,$j=1; $popdata[$i] != ""; $i++, $j++ ){
-			$popfld = $popdata[$j];
-			$popfld = explode(":", $popfld);
-			$pop_fld = $pop_fld . $popfld[1] . ",";
+		for ( $i=0,$j=1; $j < 100; $i++, $j++ ){
+			if( isset($popdata[$j]) ) {
+				$popfld = $popdata[$j];
+				$popfld = explode(":", $popfld);
+				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
+			} else {
+				//m_("-----");
+				break;
+			}
 		}
-		$mpop = $popdata[0];
-		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
-		$pop_mvfld = "";
-		for ( $i=0,$j=1; $mpop[$j] != ""; $i++, $j++ ){
-			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
-			$fld1 = $mv[0];
-			$fld2 = $mv[1];
-			$mvfld1 = explode(":", $fld1);
-			$mvfld2 = explode(":", $fld2);
-
-			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
+		if( isset($popdata[0]) && $popdata[0] !=="" ){
+			$mpop = $popdata[0];
+			$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
+			$pop_mvfld = "";
+			//for ( $i=0,$j=1; $mpop[$j] != ""; $i++, $j++ ){
+			for ( $i=0,$j=1; $j < 100 ; $i++, $j++ ){
+				if( isset($mpop[$j]) ){
+					$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
+					$fld1 = $mv[0];
+					$fld2 = $mv[1];
+					$mvfld1 = explode(":", $fld1);
+					$mvfld2 = explode(":", $fld2);
+					$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
+				} else {
+					//m_("-----333333");
+					break;
+				}
+			}
 		}
-			$relationdata = explode("$", $relationdata);
-			$rel_db = $relationdata[0];
-			$reldb = explode(":", $rel_db);
-			$relation_db = $reldb[1];
-			$rel_mvfld = "";
-		for ( $i=0,$j=1; $relationdata[$j] != ""; $i++, $j++ ){
-			$reldata = $relationdata[$j];
-			$rel = explode("|", $reldata );
-			$fld1 = $rel[0];
-			$sik = $rel[1];
-			$fld2 = $rel[2];
-			$rmvfld1 = explode(":", $fld1);
-			$rmvfld2 = explode(":", $fld2);
-
-			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
+		if( isset($relationdata) && $relationdata !=="" ){
+				$rel_mvfld = "";
+				$rmvfld1 = "";
+				$rmvfld2 = "";
+				$relationdata = explode("$", $relationdata);
+				$rel_db = $relationdata[0];
+				$reldb = explode(":", $rel_db);
+				$relation_db = $reldb[1];
+				for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] != ""; $i++, $j++ ){
+					$reldata = $relationdata[$j];
+					$rel = explode("|", $reldata );
+					$fld1 = $rel[0];
+					$sik = $rel[1];
+					$fld2 = $rel[2];
+					$rmvfld1 = explode(":", $fld1);
+					$rmvfld2 = explode(":", $fld2);
+					$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
+				}
 		}
-	}
+	} // function item_array_func
 ?>
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="./icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
@@ -183,6 +206,18 @@ $(function () {
 		document.table_list.target				="_blank";
 		document.table_list.submit();
 	}
+	//app_pg50RU.php
+	function program_upgrade( seqno, pg_code, userid ) {
+		alert("program_upgrade --- ");
+		document.table_list.mode.value		="program_upgrade";
+		document.table_list.seqno.value		=seqno;
+		document.table_list.userid.value	=userid;
+		document.table_list.pg_code.value	=pg_code;	//alert("pg_code:" + pg_code);
+		document.table_list.action= "./app_pg50RU.php";
+		document.table_list.target ="_blank";
+		document.table_list.submit();
+	}
+
 	function page_func( page, data ){
 		document.tkher_search.mode.value		=''; // page click
 		document.tkher_search.data.value		=data;
@@ -205,9 +240,12 @@ $(function () {
 	function kproject_func(pj) {
 		document.tkher_search.mode.value='';
 		document.tkher_search.pj_code.value=pj;
+		Prj = pj.split(':');
 		var num = document.getElementById("kproject").selectedIndex;
 		var arr = document.getElementById("kproject").options;
-		document.tkher_search.pj_name.value= arr[num].text;
+		document.tkher_search.pj_name.value= Prj[1]; //arr[num].text;
+		document.tkher_search.pj_code.value= Prj[0];
+
 		document.tkher_search.action="program_list3.php";
 		document.tkher_search.submit();
 	}
@@ -217,17 +255,37 @@ $(function () {
  <BODY>
  <center>
  <?php
-	$mode		= $_POST["mode"];
-	//$page		= $_POST["page"];
+	if( isset($_POST["mode"]) ) $mode		= $_POST["mode"];
+	else $mode	 = "";
 
-	if( isset($_POST['data']) ) $data = $_POST['data'];
+	if( isset($_POST['data']) && $_POST['data'] !=="" ) $data = $_POST['data'];
 	else $data = '';
-	$param	= $_POST["param"];
-	$sel		= $_POST["sel"];
-	$seqno	= $_POST["seqno"];
-	$pg_code	= $_POST["pg_code"];
-	$pg_name= $_POST["pg_name"];
-    //m_("pj_code: " . $_POST['pj_code'] . ", mode:" . $_POST['mode'] );
+	
+	if( isset($_POST['param']) && $_POST['param'] !=="" ) $param = $_POST['param'];
+	else $param = '';
+
+	if( isset($_POST['sel']) && $_POST['sel'] !=="" ) $sel = $_POST['sel'];
+	else $sel = '';
+
+	if( isset($_POST['seqno']) && $_POST['seqno'] !=="" ) $seqno = $_POST['seqno'];
+	else $seqno = '';
+
+	if( isset($_POST['pg_code']) && $_POST['pg_code'] !=="" ) $pg_code = $_POST['pg_code'];
+	else $pg_code = '';
+
+	if( isset($_POST['pg_name']) && $_POST['pg_name'] !=="" ) $pg_name = $_POST['pg_name'];
+	else $pg_name = '';
+
+	if( isset($_POST['mid_nm']) )  $mid_nm = $_POST['mid_nm'];
+	$mid_nm = "";
+
+	if( isset($_POST['tab_hnm']) )  $tab_hnm = $_POST['tab_hnm'];
+	$tab_hnm = "";
+	if( isset($_POST['tab_enm']) )  $tab_enm = $_POST['tab_enm'];
+	$tab_enm = "";
+	
+	
+	//m_("pj_code: " . $pj_code . ", mode:" . $mode );
 
 	if( $mode == 'Delete_mode' ) { //2023-09-19 add
 		$lsD = " DELETE from {$tkher['table10_pg_table']} ";
@@ -244,9 +302,9 @@ $(function () {
 	$limite = 15;
 	$page_num = 10;
 
-	if( strlen($_POST['pj_code']) > 0 ) {
-		$lsPJ = " where group_code ='".$_POST['pj_code']."' ";
-		$lsPJand = " and group_code ='".$_POST['pj_code']."' ";
+	if( isset($pj_code) &&  $pj_code !== "") {
+		$lsPJ = " where group_code ='".$pj_code."' ";
+		$lsPJand = " and group_code ='".$pj_code."' ";
 	} else {
 		$lsPJ = " ";
 		$lsPJand = " ";
@@ -283,26 +341,22 @@ $(function () {
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param like '%$data%' " . $lsPJand;
-			if( strlen($_POST['mid']) > 0 ) $ls = $ls;
+			if( isset($mid) ) $ls = $ls;
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param $sel '$data' " . $lsPJand;
-			if( strlen($_POST['mid']) > 0 ) $ls = $ls;
+			if( isset($mid) ) $ls = $ls;
 			$ls = $ls . " ORDER BY upday desc, $param ";
 			//$ls = $ls . " ORDER BY group_code, upday desc, $param ";
 		}
-	} else if( strlen($_POST['pj_code']) > 0 ) {
-		//m_(" len pj_code: " . $_POST['pj_code'] . ", mode:" . $_POST['mode'] );
-
+	} else if( isset($pj_code) && $pj_code !== "" ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where group_code= '".$_POST['pj_code']."'";
-		$ls = $ls . " ORDER BY upday desc ";
-
-		//echo $_POST['pj_code'] . ", ls: " . $ls; exit;
+		$ls = $ls . " where group_code= '".$pj_code."'";
+		$ls = $ls . " ORDER BY upday desc ";		//echo $pj_code . ", ls: " . $ls; //exit;
 		//dao_1543912777, ls: SELECT * from {$tkher['table10_pg_table']} where group_code= 'dao_1543912777' ORDER BY upday desc
 
-	} else if( strlen($data) > 0 ) {
+	} else if( isset($data) && $data !== "" ) {
 		$sel   = $_POST['sel'];
 		$param = $_POST['param'];
 		if( !$param ) $param = 'pg_name';
@@ -310,20 +364,21 @@ $(function () {
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name like '%$data%' " ;
-			if( strlen($_POST['pj_code']) > 0 ) $ls = $ls . " and group_code= '".$_POST['pj_code']."'";
+			if( isset($pj_code) ) $ls = $ls . " and group_code= '".$pj_code."'";
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name $sel '$data' ";
-			if( strlen($_POST['mid']) > 0 ) {
-				$ls = $ls . " and userid= '".$_POST['mid']."'";
-				if( strlen($_POST['pj_code']) > 0 ) $ls = $ls . " and group_code= '".$_POST['pj_code']."'";
-			} else if( strlen($_POST['pj_code']) > 0 ) $ls = $ls . " and group_code= '".$_POST['pj_code']."'";
+			if( isset($mid) ) {
+				$ls = $ls . " and userid= '".$mid."'";
+				if( isset($pj_code) > 0 ) $ls = $ls . " and group_code= '".$pj_code."'";
+			} else if( isset($pj_code) ) $ls = $ls . " and group_code= '".$pj_code."'";
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
    } else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( strlen($_POST['pj_code']) > 0 ) $ls = $ls . " where group_code= '".$_POST['pj_code']."'";
+		$ls = $ls . " where userid= '".$H_ID."'";
+		//if( isset($pj_code ) ) $ls = $ls . " where group_code= '".$pj_code."'";
 		$ls = $ls . " ORDER BY upday desc "; //ORDER BY upday desc
 		//$ls = $ls . " ORDER BY group_code "; //ORDER BY upday desc
    }
@@ -354,29 +409,30 @@ $(function () {
 	}
 		$cur='B';
 		include_once "./menu_run.php";
+
+
 ?>
 <h2 title='pg:program_list3'>Program List (admin:<?=$H_ID?>) - total:<?=$total?></h2>
 		<form name="tkher_search" target="_self" method="post" action="program_list3.php"  >
 			<input type='hidden' name='mode'    value='Program_Search'>
-			<input type='hidden' name='modeS'   value='Program_Search'>
 			<input type='hidden' name='page'    value="<?=$page?>">
 			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
-			<input type="hidden" name='pg_name' value="<?=$_POST['pg_name']?>">
-			<input type="hidden" name="pg_code" value="<?=$_POST['pg_code']?>" >
-			<input type="hidden" name="tab_hnmS" value="<?=$_POST['tab_enm']?>:<?=$_POST['tab_hnm']?>">
-			<input type='hidden' name='tab_enm' value="<?=$_POST['tab_enm']?>">
-			<input type='hidden' name='tab_hnm' value="<?=$_POST['tab_hnm']?>">
-			<input type='hidden' name='mid'     value="<?=$_POST['mid']?>">
-			<input type='hidden' name='mid_nm' value="<?=$_POST['mid_nm']?>">
-			<input type="hidden" name='pj_name' value="<?=$_POST['pj_name']?>">
-			<input type="hidden" name="pj_code" value="<?=$_POST['pj_code']?>" >
-			<input type="hidden" name="pj_code_check" value="<?=$_POST['pj_code_check']?>" >
+			<input type="hidden" name='pg_name' value="<?=$pg_name?>">
+			<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
+			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
+			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
+			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+			<input type='hidden' name='mid'     value="<?=$H_ID?>">
+			<input type='hidden' name='mid_nm' value="<?=$mid_nm?>">
+			<input type="hidden" name='pj_name' value="<?=$pj_name?>">
+			<input type="hidden" name="pj_code" value="<?=$pj_code?>" >
+			<input type="hidden" name="pj_code_check" value="<?=$pj_code_check?>" >
 		<input type="hidden" name="data" >
 		<input type="hidden" name="seqno" >
 			<!-- <select name="kapp_user" id="kapp_user" onChange="kmember(this.value)" style="background-color:cyan;color:#000;height:24;">
 			<option value="">Select member</option>
 <?php
-			if( strlen($_POST['mid']) > 0 ) echo "<option value='".$_POST['mid']."' selected >".$_POST['mid_nm']."</option>";
+			if( strlen($mid) > 0 ) echo "<option value='".$mid."' selected >".$_POST['mid_nm']."</option>";
 $sql ="SELECT * from {$tkher['tkher_member_table']} ";
 $ret = sql_query($sql);
     for ($i=0; $rs=sql_fetch_array($ret); $i++) {
@@ -384,34 +440,28 @@ $ret = sql_query($sql);
 			<option value="<?=$rs['mb_id']?>"><?=$rs['mb_name']?></option>
 <?php } ?>
 			</select>  -->
-			<select name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
+			<SELECT name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
 			<option value="">Select Project</option>
+			<!-- <option value="ETC:ETC" >ETC</option> --><!-- default : 2025-05-08 close -->
 <?php
-	if( strlen($_POST['pj_code']) > 0 ) echo "<option value='".$_POST['pj_code']."' selected >".$_POST['pj_name']."</option>";
+//	if( isset($pj_code) ) echo "<option value='".$pj_code."' selected >".$pj_name."</option>";
 
-		if( strlen($_POST['mid'])>0 ) $sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$_POST['mid']."'";
-		else $sql ="SELECT * from {$tkher['table10_group_table']} ";
-	/*if( strlen($_POST['pj_code']) > 0 ){
-		if( strlen($_POST['mid'])>0 ) $sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$_POST['mid']."' and group_code='" .$_POST['pj_code'] ."' ";
-		else $sql ="SELECT * from {$tkher['table10_group_table']} where group_code ='". $_POST['pj_code']. "' ";
-	} else {
-		if( strlen($_POST['mid'])>0 ) $sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$_POST['mid']."'";
-		else $sql ="SELECT * from {$tkher['table10_group_table']} ";
-	}*/
+	if( isset($H_ID) ) $sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$H_ID."'";
+	else $sql ="SELECT * from {$tkher['table10_group_table']} ";
 
 	$ret = sql_query($sql);
-    for( $i=0; $rs=sql_fetch_array($ret); $i++) {
+    for( $i=0; $rs=sql_fetch_array($ret); $i++) {		//m_("g cd: " . $rs['group_code'] . ",  pj_code: ". $pj_code);
 ?>
-			<option value="<?=$rs['group_code']?>"><?=$rs['group_name']?>:<?=$rs['userid']?></option>
+			<option value="<?=$rs['group_code']?>:<?=$rs['group_name']?>"  <?php if( $pj_code == $rs['group_code']) echo" selected "; ?>><?=$rs['group_name']?></option>
 <?php } ?>
-			</select>
-			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
+			</SELECT>
+			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
 			<option value="pg_name">Program</option>
 			</select>
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
 			<option value="like">Like</option>
 			<option value="=">=</option>
-			</select>
+			</SELECT>
 			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="submit" value="Search" title="- Search -">
 		</form>
@@ -420,28 +470,22 @@ $ret = sql_query($sql);
 	<input type="hidden" name="page" >
 	<input type="hidden" name="data" >
 	<input type="hidden" name="seqno" >
+	<input type="hidden" name="userid" >
 	<input type="hidden" name="pg_name" >
 	<input type="hidden" name="pg_code" >
 	<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
 	<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
-	<input type='hidden' name='group_nameX' >
-	<input type='hidden' name='param' value='<?=$param?>'>
-	<input type='hidden' name='sel' value='<?=$sel?>'>
-	<input type='hidden' name='data' value='<?=$data?>'>
-	<input type='hidden' name='sel1' value='<?=$sel1?>'>
-	<input type='hidden' name='param2' value='<?=$param2?>'>
-	<input type='hidden' name='sel2' value='<?=$sel2?>'>
-	<input type='hidden' name='data2' value='<?=$data2?>'>
 
 <table class='floating-thead' width="100%">
 <thead  width="100%">
 	<tr>
 	<th>NO</th>
-	<th>manager</th>
+	<th>user</th>
 	<th>Project</th>
 	<th>Program</th>
 	<th>Table</th>
 	<th>Date</th>
+	<th>Management</th>
 	</tr>
 </thead>
 <tbody width="100%">
@@ -465,26 +509,27 @@ $ret = sql_query($sql);
 		else $attr="";
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR bgcolor='<?=$bgcolor?>' width='900' >
-	<td width='1%'><?=$line?><!-- <input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>> --></td>
-	<td  width='3%'><?=$rs['userid']?> </td>
-	<td width='2%'><?=$rs['group_name']?><br><?=$rs['group_code']?></td>
+	<TR bgcolor='<?=$bgcolor?>' width='100%' >
+	<td width='1%'><?=$line?></td>
+	<td width='3%'><?=$rs['userid']?> </td>
+	<td width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
 	<td  width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
 	<td width='5%' title='Data List program run'>
 		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
 	</td>
-	<td width='5%'><?=substr($rs['upday'], 0,10)?><br>
-
-	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>>
-	<?php if( $H_ID == $rs['userid'] ) {	?>
-	&nbsp;&nbsp;<input type='button' onclick="program_del_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>', '<?=$H_ID?>', '<?=$rs['userid']?>')" value='Delete' style='height:22px;width:60px;background-color:red;color:white;border-radius:20px;border:1 solid black'  <?php echo "title=' Delete of ".$rs['pg_name']."' ";?>>
-	<?php }	?>
+	<td width='5%'><?=substr($rs['upday'], 0,10)?></td>
+	<td width='15%' align='center'>
+	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>>
+<?php if( $H_ID == $rs['userid'] ) { ?>
+	<input type='button' onclick="program_del_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>', '<?=$H_ID?>', '<?=$rs['userid']?>')" value='Delete' style='height:22px;width:60px;background-color:red;color:white;border-radius:20px;border:1 solid black'  <?php echo "title=' Delete of ".$rs['pg_name']."' ";?>>
+	&nbsp;
+	<input type='button' onclick="program_upgrade('<?=$rs['seqno']?>','<?=$rs['pg_code']?>','<?=$rs['userid']?>')" value=' Upgrade ' style='height:22px;width:69px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  <?php echo "title=' Upgrade of ".$rs['pg_name']."' ";?>>
+<?php }	?>
 
 	</td>
 	</TR>
  <?php
-		$i++;
-		$count = $count - 1;
+		$i++;		//$count = $count - 1;
     }
  ?>
 </form>
