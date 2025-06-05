@@ -1,5 +1,6 @@
 <center>
-    <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/default.css" type="text/css" />
+    <!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/default.css" type="text/css" /> -->
+ <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
@@ -330,16 +331,14 @@
                 <li align='left'>
                     <a href="<?=KAPP_URL_T_?>/terms_service_en.html" target='_blank'>2. Service Terms</a>
                 </li>
-                <li align='left'><a href="3" target='_blank'>3. Notice</a>
-                    <ul>
-                        <li><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=159" target='_blank'>31. Notice</a>
-                        </li>
-                        <li><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=160" target='_blank'>32. News</a> </li>
-                        <li><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=190" target='_blank'>33. Q&A</a> </li>
-                        <li><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=163" target='_blank'>34. Free Board</a>
-                        </li>
-                    </ul>
-                </li>
+                <!-- <li align='left'><a href="3" target='_blank'>3. Notice</a>
+                    <ul> -->
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=1" target='_top'>31. Notice</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=2" target='_top'>32. News</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=3" target='_top'>33. Q&A</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=4" target='_top'>34. Free Board</a></li>
+                    <!-- </ul>
+                </li> -->
                 <?php
 	if( $H_ID && $H_LEV > 7) { // 관리자용. 메인 메뉴 설정.
 ?>
@@ -374,7 +373,7 @@
 ?>
                 <li align='left'>
                     <div class="lnbFooterKAN">
-                        <a href="javascript:void(0)" class="lnbIcon01KAN">Login</a>
+                        <a href="javascript:void(0)" class="lnbIcon01KAN" title="menu Login">Login</a>
                     </div>
                 </li>
                 <li align='left'>
@@ -491,8 +490,7 @@ if( !$H_ID  ) {
         <div class="rela">
             <FORM name='loginA' action='<?=KAPP_URL_T_?>/login_checkT.php' method='post' enctype="multipart/form-data">
                 <input type='hidden' name='mode' value=''>
-                <a href="javascript:void(0);" class="loginClose"><img
-                        src="<?=KAPP_URL_T_?>/include/img/bg_closeBtn.png" /></a>
+                <a href="javascript:void(0);" class="loginClose" title="-bg_closeBtn-"><img src="<?=KAPP_URL_T_?>/include/img/bg_closeBtn.png" /></a>
                 <div class="pic"><img src="<?=KAPP_URL_T_?>/include/img/etc_login.png" /></div>
                 <div class="form">
                     <div class="row">
@@ -510,7 +508,7 @@ if( !$H_ID  ) {
                 </div>
                 <div class="formA">
                     <div class="Sign_up">
-                        <a href="javascript:Ologin();" style='width:150px;height:100px; text-align:center;font-size:30px;color:#666fff;' title='LoginBox SIGN UP' >SIGN UP</a>
+                        <a href="javascript:Ologin();" title='LoginBox SIGN UP' >SIGN UP</a>
                     </div>
                 </div><br>
                 <div>
@@ -572,6 +570,7 @@ if( !$H_ID  ) {
         </table>
     </div>
 <?php
+$log_i = "";
 if( isset($H_ID) && $H_LEV > 1 ) { //get_session("urllink_login_type") , $_SESSION['urllink_login_type']
 	if( get_session("urllink_login_type") == "Google_Login_K") {
 		$log_i = "Google";
@@ -760,7 +759,7 @@ if( isset($H_ID) && $H_LEV > 1 ) { //get_session("urllink_login_type") , $_SESSI
             }, 200, 'linear');
         });
         $("body").on("click", ".lnbFooterKAN a.lnbIcon01KAN", function() {
-            //alert("login_click");
+            //alert("menu login_click");
             $(".loginBox").stop().animate({
                 "right": "0"
             }, 200, 'linear');

@@ -1,7 +1,7 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	$H_ID	= get_session("ss_mb_id");
-	if( isset($H_ID) ) $H_POINT = $member['mb_point'];
+	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
 	else $H_POINT = 0;
 	$ip = $_SERVER['REMOTE_ADDR'];
 	connect_count($host_script, $H_ID, 0 ,$referer);
@@ -16,7 +16,7 @@
 ?>
 <html>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -81,14 +81,27 @@ $(function () {
 <?php
 	$limite = 15;
 	$page_num = 10;
-	$sdata			= $_REQUEST["sdata"];
+	if( isset($_REQUEST["sdata"]) ) $sdata	= $_REQUEST["sdata"];
+	else $sdata	= "";
 	if( isset($_REQUEST['Table_page']) ) $Table_page = $_REQUEST['Table_page'];
-	else $Table_page = $_POST['Table_page'];
-   $mode = $_POST["mode"];
-   $data = $_POST["data"];
-   $pg_code		= $_REQUEST["pg_code"];
-   $tab_enm	= $_REQUEST["tab_enm"];
-   $tab_hnm	= $_REQUEST["tab_hnm"];
+	else if( isset($_POST['Table_page']) ) $Table_page = $_POST['Table_page'];
+	else $Table_page = 1;
+
+	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
+	else $mode	= "";
+	if( isset($_POST["data"]) ) $data = $_POST["data"];
+	else $data	= "";
+
+	if( isset($_REQUEST["pg_code"]) ) $pg_code		= $_REQUEST["pg_code"];
+	else $pg_code		= "";
+	if( isset($_REQUEST["tab_enm"]) ) $tab_enm	= $_REQUEST["tab_enm"];
+	else $tab_enm		= "";
+	if( isset($_REQUEST["tab_hnm"]) ) $tab_hnm	= $_REQUEST["tab_hnm"];
+	else $tab_hnm		= "";
+
+	if( isset($_POST['param']) ) $param =$_POST['param'];
+	else $param = "tab_hnm";
+
    if( $H_ID && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
@@ -135,17 +148,22 @@ $(function () {
 			//$ls = $ls . " ORDER BY seqno asc ";
 			$ls = $ls . " ORDER BY disno";
 		}
-   } else if( $mode == 'Table_Search' || strlen($data) ) {
-		$data  =$_POST['data'];
-		$param =$_POST['param'];
-		$sel   =$_POST['sel'];
+   } else if( $mode == 'Table_Search' || isset($data) ) {
+		if( isset($_POST['sel']) ) $sel =$_POST['sel'];
+		else $sel = "";
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where fld_enm='seqno' and $param like '%$data%' ";
-			$ls = $ls . " ORDER BY $param ";
+			if( isset($data) && $data !==""  ){
+				$ls = $ls . " where fld_enm='seqno' and $param like '%$data%' ";
+				$ls = $ls . " ORDER BY $param ";
+			} else  $ls = $ls . " where fld_enm='seqno' ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where fld_enm='seqno' and $param $sel '$data' ";
+			if( isset($data) && $data !=="" ) {
+				$ls = $ls . " where fld_enm='seqno' and $param $sel '$data' ";
+			} else {
+				$ls = $ls . " where fld_enm='seqno' ";
+			}
 			$ls = $ls . " ORDER BY $param ";
 		}
    } else {
@@ -153,6 +171,7 @@ $(function () {
 		$ls = $ls . " where fld_enm='seqno' ";
 		$ls = $ls . " ORDER BY upday desc, tab_hnm asc, seqno asc ";
    }
+   //echo "sql: "  . $ls; exit; //sql: SELECT * from kapp_table10 where fld_enm='seqno' and tab_hnm '' ORDER BY tab_hnm
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
 		if(!$Table_page) $Table_page=1;
@@ -337,7 +356,7 @@ $(function () {
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
 	<input type="hidden" name="mode" >
-	<input type='hidden' name='Table_page' value="<?=$_POST['Table_page']?>">
+	<input type='hidden' name='Table_page' value="<?=$Table_page?>">
 	<input type="hidden" name="tab_hnmS" value=''> <!-- table10i_old.php  -->
 	<input type="hidden" name="pg_name" value=''>
 	<input type="hidden" name="pg_code" value='<?=$pg_code?>' >
@@ -348,8 +367,11 @@ $(function () {
 <?php
 		if( $mode == "Search" ) $T_msg = "[ Table10i, Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
 		else $T_msg = "[ table10i ]";
-		if( strlen($H_ID) > 2 ) $T_msg = $T_msg . ", P:" . number_format($member['mb_point']). ", L:" . $member['mb_level'] . "," .$member['mb_email'];
-		else $T_msg = $T_msg . " , " . $ip;
+		if( !isset($H_ID) || $H_ID == '' || !$H_ID ) {
+			$T_msg = $T_msg . " , " . $ip;
+		} else {
+			$T_msg = $T_msg . ", P:" . number_format($H_POINT). ", L:" . $member['mb_level'] . "," .$member['mb_email'];
+		}
 ?>
 		<div><center>
 			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
@@ -447,7 +469,7 @@ if( $mode != 'Search') {
 					else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';	// 사용하지않는다.
 				}
 		}
-		if( $mode !== 'Search' && strlen($H_ID) > 2 ){
+		if( $mode !== 'Search' && isset($H_ID) ){
 				echo " <TD align='center'><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
 
 				if($rs['userid'] == $H_ID) echo " <TD align='center'><input type='button' name='delete' onclick=\"javascript:delete_table_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."', '".$rs['userid']."', '".$H_ID."');\"  value=' Table Delete ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Table delete. ". $rs['tab_enm']. ":" . $rs['tab_hnm'] . "  '> </TD>";
@@ -474,7 +496,7 @@ if( $mode != 'Search') {
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $tab_hnm.' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
 	} else {
-		$data = $_POST['data'];
+		//$data = $_POST["data"];
 		$first_page = intval(($Table_page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;

@@ -1,24 +1,22 @@
 <?php
 	include_once('./tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	
-	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id");	
+	$H_LEV = $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	if ( !$H_ID || $H_LEV < 2) {
-			//$url= KAPP_URL_T_;//$PHP_SELF;
-			//$url= urlencode($url);
-			//echo("<meta http-equiv='refresh' content='0; URL=$url'>");
+		m_("Login Please!");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
 	/*
-		- table10u1_PC.php : table10u1.php copy �۾����� : table ��� ���� ����.
+		- table10u1_PC.php :  table:
 	*/
 ?>
 
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href= KAPP_URL_T_ . "/logo/land25.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -146,10 +144,15 @@ function edit_attr_save(aaa, no, num)
 	$page_num = 10; 
 
 	if( isset($_REQUEST['Table_page']) ) $Table_page = $_REQUEST['Table_page'];
-	else $Table_page = $_POST['Table_page'];
+	else if( isset($_POST['Table_page']) ) $Table_page = $_POST['Table_page'];
+	else $Table_page = 1;
 
-	$mode = $_POST["mode"];   
-	$data = $_POST["data"];   
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode = "";   
+	if( isset($_POST['data']) && $_POST['data'] !=="" ) $data = $_POST['data'];
+	else $data = "";   
+
+	$param ="tab_hnm";
 	//m_("mode:".$mode);
 	if ($mode == "update_level") {
 		$seqno = $_POST['seqno_'];
@@ -162,32 +165,40 @@ function edit_attr_save(aaa, no, num)
 		if( $mq ){ echo("<script>alert('Update Table')</script>");}
 
 		$data  =$_POST['data'];
-		$param =$_POST['param'];
+		//$param =$_POST['param'];
 		$sel   =$_POST['sel'];
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param like '%$data%' ";
+			if( isset($data) && $data !=="" ) $ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param like '%$data%' ";
+			else  $ls = $ls . " where userid='$H_ID' and fld_enm='seqno'  ";
 			$ls = $ls . " ORDER BY group_name, $param ";
 
 		} else {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param $sel '$data' ";
+			if( isset($data) && $data !=="" ) $ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param $sel '$data' ";
+			else  $ls = $ls . " where userid='$H_ID' and fld_enm='seqno'  ";
 			$ls = $ls . " ORDER BY group_name, $param ";
 		}
 	} else if( $mode == 'Table_Search' || isset($data) ) { // .htm ���� �˻�.
 
-		$data  =$_POST['data'];
-		$param =$_POST['param'];
-		$sel   =$_POST['sel'];
+		if( isset($_POST['data']) ) $data  =$_POST['data'];
+		else $data  = "";
+		//if( isset($_POST['param']) ) $param =$_POST['param'];
+		//else $param  = "";
+		if( isset($_POST['sel']) ) $sel   =$_POST['sel'];
+		else $sel  = "";
+
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param like '%$data%' ";
+			if( isset($data) && $data !=="") $ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param like '%$data%' ";
+			else  $ls = $ls . " where userid='$H_ID' and fld_enm='seqno'  ";
 			$ls = $ls . " ORDER BY group_name, $param ";
 
 		} else {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param $sel '$data' ";
-			$ls = $ls . " ORDER group_name, BY $param ";
+			if( isset($data) && $data !=="" ) $ls = $ls . " where userid='$H_ID' and fld_enm='seqno' and $param $sel '$data' ";
+			else  $ls = $ls . " where userid='$H_ID' and fld_enm='seqno'  ";
+			$ls = $ls . " ORDER BY group_name,  $param ";
 		}
 	} else {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
@@ -195,7 +206,8 @@ function edit_attr_save(aaa, no, num)
 		//$ls = $ls . " ORDER BY tab_hnm asc, seqno asc ";
 		$ls = $ls . " ORDER BY group_name, upday desc ";
 	}
-
+//echo "ls: " . $ls; exit;
+//SELECT * from kapp_table10 where userid='dao' and fld_enm='seqno' ORDER BY group_name, tab_hnm
 
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
@@ -239,7 +251,7 @@ function edit_attr_save(aaa, no, num)
 			<input type="hidden" name="seqno_"	value="" >
 			<input type="hidden" name="memo_"	value="" >
 			<input type="hidden" name="mode"	value="" >
-			<input type='hidden' name='Table_page' value="<?=$_POST['Table_page']?>">
+			<input type='hidden' name='Table_page' value="<?=$Table_page?>">
 			<input type="hidden" name="tab_hnmS" value=''> <!-- table10i_old.php  -->
 			<input type="hidden" name="pg_name" value=''> 
 			<input type="hidden" name="pg_code" value='<?=$pg_code?>' > 
@@ -334,7 +346,7 @@ function edit_attr_save(aaa, no, num)
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $tab_hnm.' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
 	} else {
-		$data = $_POST['data'];
+		//$data = $_POST['data'];
 		$first_page = intval(($Table_page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;

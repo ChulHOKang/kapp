@@ -21,36 +21,45 @@
 				$formula_		="";
 				$poptable_		="";
 				$gita				="";
-		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-				$typeX	= $iftype[$j];
-				$dataX	= $ifdata[$j];
-				$ddd		= $list[$i];
-				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
-				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
-						if( !$typeX ) { // 0 or ''
-						} else if( $typeX == "11" ) { // calc
-							$formula = explode(":", $dataX);
-							$formula_ = $formula[1];
-						} else if( $typeX == "13" ) { // 팝업창
-							$poptable = explode(":", $dataX);
-							$poptable_ = $poptable[1];
-						} else {
-							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
-						}
+		for( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
+				if( isset($iftype[$j]) ) {
+					$typeX	= $iftype[$j];
+				} else $typeX	= "";
+				if( isset($ifdata[$j]) ) $dataX = $ifdata[$j];
+				else $dataX = "";
+				if( isset($list[$i]) && $list[$i] !=="" ) {
+					$ddd		= $list[$i];
+					$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+					if( isset($fld[2]) && isset($fld[3]) ) $column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
+				}
+
+				if( !$typeX ) { // 0 or ''
+				} else if( $typeX == "11" ) { // calc
+					$formula = explode(":", $dataX);
+					$formula_ = $formula[1];
+				} else if( $typeX == "13" ) { // 팝업창
+					$poptable = explode(":", $dataX);
+					$poptable_ = $poptable[1];
+				} else {
+					$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
+				}
 		}
 		// $fld_1:상품명|fld_3:제품명$fld_8:재고|fld_4:수량@fld_1:상품명@fld_2:규격@fld_3:원가@fld_4:판매가@fld_5:구분@fld_6:거래처@fld_8:재고@	
 		// 3번 분류한다. 첫번째 @로, 두번째 $로, 세번째 |로
 		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
 		$pop_fld ="";
-		for ( $i=0,$j=1; $popdata[$i] != ""; $i++, $j++ ){
-			$popfld = $popdata[$j];
-			$popfld = explode(":", $popfld);
-			$pop_fld = $pop_fld . $popfld[1] . ",";
+		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
+			if( isset($popdata[$j]) ) {
+				$popfld = $popdata[$j];
+				$popfld = explode(":", $popfld);
+				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
+				else $pop_fld = $pop_fld . ",";
+			}
 		}
 		$mpop = $popdata[0];
 		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
 		$pop_mvfld = "";
-		for ( $i=0,$j=1; $mpop[$j] != ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
 			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
 			$fld1 = $mv[0];
 			$fld2 = $mv[1];
@@ -62,9 +71,10 @@
 			$relationdata = explode("$", $relationdata);
 			$rel_db = $relationdata[0];
 			$reldb = explode(":", $rel_db);
-			$relation_db = $reldb[1];
+			if( isset($reldb[1]) ) $relation_db = $reldb[1];
+			else $relation_db = "";
 			$rel_mvfld = "";
-		for ( $i=0,$j=1; $relationdata[$j] != ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
 			$reldata = $relationdata[$j];
 			$rel = explode("|", $reldata );
 			$fld1 = $rel[0];
@@ -94,7 +104,7 @@ th { background: #cdefff; height: 27px; }
 th, td { border: 1px solid silver; padding:5px; }
 </style>
 
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/admin.css" type="text/css" />
+<link rel='stylesheet' href='./include/css/kancss.css' type='text/css'><!-- 중요! -->
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
@@ -306,7 +316,7 @@ $(function () {
 		}
    } else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " ORDER BY group_code ";
+		$ls = $ls . " ORDER BY upday desc ";
    }
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
@@ -423,6 +433,10 @@ $(function () {
 	if($mode == "" || $mode == "Program_Search")	$ls = $ls . " $limit "; // none table click 
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) { 
+		if( isset($rs['group_name']) ) $group_name = $rs['group_name'];
+		else $group_name = "";
+		if( isset($rs['group_code']) ) $group_code = $rs['group_code'];
+		else $group_code = "";
 		$line=$limite*$page + $i - $limite;
 			$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
@@ -434,23 +448,23 @@ $(function () {
 		else if( !$pop_fld && !$pop_mvfld )	$attr = $gita;
 		else $attr="";
   ?> 
-	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR bgcolor='<?=$bgcolor?>' width='900' >
-	<td width='1%'><?=$line?></td>
-	<td width='2%'>
-	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
-	<td  width='3%'><?=$rs['userid']?> </td>
-	<td  width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td> 
-	<td width='5%' title='Data List program run'>
-		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
-	</td> 
-	<td width='2%'><?=$rs['group_name']?></td>
-	<td width='2%'><?=$rs['group_code']?></td>
-	<td width='5%'><?=substr($rs['upday'], 0,10)?></td>
-	</TR>
+		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
+		<TR bgcolor='<?=$bgcolor?>' width='900' >
+		<td width='1%'><?=$line?></td>
+		<td width='2%'>
+		<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
+		<td  width='3%'><?=$rs['userid']?> </td>
+		<td  width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td> 
+		<td width='5%' title='Data List program run'>
+			<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
+		</td> 
+		<td width='2%'><?=$group_name?></td>
+		<td width='2%'><?=$group_code?></td>
+		<td width='5%'><?=substr($rs['upday'], 0,10)?></td>
+		</TR>
  <?php
 		$i++;
-		$count = $count - 1;
+		//$count = $count - 1;
     }
  ?>
 </form>

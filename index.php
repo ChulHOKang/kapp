@@ -62,7 +62,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="./icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -406,7 +406,7 @@ body {
 
 <?php
 
-$sys_subtitS = 'K-APP Generator';
+$sys_subtitS = 'K-App Generator';
 
 	if( isset( $_REQUEST['sys_pg'] ) ) {
 		$sys_pg	= $_REQUEST['sys_pg'];
@@ -454,7 +454,7 @@ $sys_subtitS = 'K-APP Generator';
 			$sys_subtitS = "";
 		}
 	}
-	$kapp = "K-APP";
+	$kapp = "K-App";
 ?>
 
 <form name='click_run' action='' method='post' enctype='multipart/form-data' target='run_menu'>
@@ -465,7 +465,7 @@ $sys_subtitS = 'K-APP Generator';
 		<!-- ------------------------- -->
 		<!-- <h1 style="background-color:black;">
 			<a href="#" onclick="openNav()" style="font-size:24px;cursor:pointer;color:cyan;background-color:black;">
-				&#9776; <?=$kapp?><img src="/t/logo/logo120-120.png" height='24' title='K-APP'>
+				&#9776; <?=$kapp?><img src="/t/logo/logo120-120.png" height='24' title='AppGenerator.net'>
 			</a>
 		</h1> -->
 		<!-- ------------------------- -->
@@ -497,26 +497,37 @@ $sys_subtitS = 'K-APP Generator';
 
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'>1.<img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'>2.<img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'>3.<img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'>4.<img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'>5.<img src='<?=KAPP_URL_T_?>/logo/ship.png' width='22' height='22'>Program Upgrade</a></li>
+			<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
 
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_relationA.php' target='run_menu'>6.<img src='<?=KAPP_URL_T_?>/logo/seed.png' width='22' height='22'>Table Relationship</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'>7.<img src='<?=KAPP_URL_T_?>/logo/seedX.png' width='22' height='22'>Program List A</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'>8.<img src='<?=KAPP_URL_T_?>/logo/berry.png' width='22' height='22'>Program List B</a></li>
-			<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'>p.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
+
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_relationA.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seed.png' width='22' height='22'>Table Relationship</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seedX.png' width='22' height='22'>Program List A</a></li>
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/berry.png' width='22' height='22'>Program List B</a></li>
 
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 
-			<li style='font-size:9;color:#666666;height:9px;line-height:1'>K-APP</li>
+			<li style='font-size:9;color:#666666;height:9px;line-height:1'>
+			K-App
+			<!-- We call it mining to register in the tree menu.<br>
+			Points will be paid in coins in the future.<br>
+			If it does not work, <br>please unblock the pop-up window. -->
+			</li>
+			<!--
+				우리는 트리 메뉴에 등록하는것을 채굴이라 한다
+				포인트는 향후에 코인으로 지급될것이다.
+				작동하지 않으면 팝업 창을 차단 해제하십시오.
+			-->
 		</div>
 	</div><!-- head -->
 </form>
 
 <div style="background-color:black;">
-	<span style="font-size:24px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='KAPP:<?=KAPP_URL_T_?>'>&#9776; K-APP<img src="<?=KAPP_URL_T_?>/logo/logo120-120.png" align='center' style="margin:0px auto;height:24px;" title='K-APP'></span><!-- menu 출력버턴 -->
+	<span style="font-size:24px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='KAPP:<?=KAPP_URL_T_?>: tree menu list'>&#9776; K-APP<img src="<?=KAPP_URL_T_?>/logo/logo120-120.png" align='center' style="margin:0px auto;height:24px;" title='K-APP'></span><!-- 트리출력버턴 Url link system -->
 </div>
 
 <center>

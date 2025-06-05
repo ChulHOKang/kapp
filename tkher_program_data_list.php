@@ -20,12 +20,12 @@
 	if( !$H_ID ) {
 		//my_msg("You need to login. ");
 	}
-	$H_POINT	= $member['mb_point']; 
+	if( isset($member['mb_point']) ) $H_POINT	= $member['mb_point']; 
 ?>
 <html> 
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -218,16 +218,27 @@ $(function () {
 	$cur='B';
 	include "./menu_run.php";
 
-	$mode		= $_REQUEST['mode'];
-	$c_sel		= $_REQUEST['c_sel'];
-	$c_sel3		= $_REQUEST['c_sel3'];
-	$searchT	= $_REQUEST['searchT'];
-	$search_fld = $_REQUEST['search_fld'];
-//	$search_fld_type	=	$_REQUEST[search_fld_type];
-	$search_choice	=	$_REQUEST['search_choice'];
+	if( isset($_REQUEST['mode']) ) $mode		= $_REQUEST['mode'];
+	else  $mode = "";
+	if( isset($_REQUEST['c_sel']) ) $c_sel		= $_REQUEST['c_sel'];
+	else  $c_sel = "";
+	if( isset($_REQUEST['c_sel3']) ) $c_sel3		= $_REQUEST['c_sel3'];
+	else  $c_sel3 = "";
+	if( isset($_REQUEST['searchT']) ) $searchT		= $_REQUEST['searchT'];
+	else  $searchT = "";
+	if( isset($_REQUEST['search_fld']) ) $search_fld		= $_REQUEST['search_fld'];
+	else  $search_fld = "";
+	if( isset($_REQUEST['search_choice']) ) $search_choice		= $_REQUEST['search_choice'];
+	else  $search_choice = "";
 
-	$pg_name	=	$_REQUEST['pg_name'];
-	$pg_code	=	$_REQUEST['pg_code'];
+	if( isset($_REQUEST['pg_name']) ) $pg_name		= $_REQUEST['pg_name'];
+	else  $pg_name = "";
+	if( isset($_REQUEST['pg_code']) ) $pg_code		= $_REQUEST['pg_code'];
+	else  $pg_code = "";
+
+	if( isset($_POST['group_name']) ) $group_name		= $_POST['group_name'];
+	else  $group_name = "";
+
 	//$pg_code	=	$_SESSION['pg_code']; // 2023-08-03 변경. program_list3.php에서도 사용 중 변경 불가. 중요.
 	//m_("data_list pg_code:" . $pg_code);
 	if( !$pg_code ) {
@@ -276,13 +287,16 @@ $(function () {
 	}
 	$item_cnt	= $fld_cnt=$i;
 	
-	//if( isset($_REQUEST[page]) ) $page = $_REQUEST[page];
-	if( isset($_POST['page']) ) $page = $_POST['page'];
-	else $page = 1;
-
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_POST['page']) ) $page = $_POST['page'];
+	else $page = 1; //m_("page: " . $page);
 	$in_day		= date("Y-m-d H:i");
-	$line_cnt	= $_REQUEST['line_cnt'];
-	if( !$line_cnt  ) $line_cnt	= 30;					// $line_cnt; // page line cnt
+
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=="" ){
+		$line_cnt	= $_POST['line_cnt'];
+	} else  $line_cnt	= 10;
+	
+	if( $line_cnt < 10  ) $line_cnt	= 10;					// $line_cnt; // page line cnt
 	$page_cnt	= 10;										// #[1] [2] [3] 갯수
 
 	$SQL1 = "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
@@ -343,14 +357,11 @@ $(function () {
 								<p align="left" style="margin-top: 0px" title='pg: Project List '>
 
 			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
-<?php
- if( strlen($_POST['group_name']) > 0 ){
-?>
-							<option value='<?=$group_code?>' selected ><?=$_POST['group_name']?></option>
-<?php
-			} else {
-?>
 							<option value=''>Select Project</option>
+<?php
+ if( isset($group_name) && $group_name !==''){
+?>
+							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
 <?php
 			}
 					$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
@@ -362,22 +373,23 @@ $(function () {
 ?>
 			</select>
 
-
-
-								
 								
 								<a href="#" id="contentlink" rel="subcontent2">
-								<font color='#000ccc' size='4'> ▤ <font color='green' size='2'><b>Program List[▼]</b></font>
+								<!-- <font color='#000ccc' size='4'> ▤ <font color='green' size='2'><b>Program List[▼]</b></font> -->
+								<font color='black' ><b>&#9776; Program List [▼]</b></font>
+
 								</a><?php if( isset($H_ID) ) echo "id:$H_ID, lev:$H_LEV"; ?> 
 								</p>
 
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
-			if( isset($H_ID) ) { 	//m_("gX:". $_POST['group_codeX'] . ", g:" . $_POST['group_code']);
-					if( isset( $_POST['group_codeX']) ){
-						$group_code = $_POST['group_codeX'];
-						$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $_POST['group_codeX'] . "' order by upday desc ";
+	if( isset($_POST['group_codeX']) ) $group_codeX = $_POST['group_codeX'];
+	else $group_codeX = "";
+
+			if( isset($H_ID) ) { 	//m_("gX:". $group_codeX . ", g:" . $_POST['group_code']);
+					if( isset( $group_codeX) ){
+						$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_codeX . "' order by upday desc ";
 						//$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
 					} else {
 						 $sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
@@ -417,7 +429,7 @@ $(function () {
 				</DIV> 
 
 				<div class="viewHeaderT">
-						<span>K-App : <?=$pg_code?> &nbsp;&nbsp;&nbsp;&nbsp;Total: <strong><?=$total_count?> &nbsp;&nbsp;&nbsp;&nbsp; Page:<?=$page?></strong>
+						<span>&nbsp;&nbsp;K-APP : <?=$pg_code?> &nbsp;&nbsp;&nbsp;&nbsp;Total: <strong><?=$total_count?> &nbsp;&nbsp;&nbsp;&nbsp; Page:<?=$page?></strong>
 							<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
 								<option value='10'  <?php if($line_cnt=='10' )  echo " selected " ?> >10</option>
 								<option value='30'  <?php if($line_cnt=='30' )  echo " selected " ?> >30</option>
@@ -444,8 +456,8 @@ $(function () {
 						<input type="hidden" name='target_'		value='<?=$target_?>' />
 						<input type="hidden" name='pg_code'		value='<?=$pg_code?>' />
 						<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
-						<input type="hidden" name='group_codeX'		value="<?=$_POST['group_codeX']?>" />
-						<input type="hidden" name='group_name'		value="<?=$_POST['group_name']?>" />
+						<input type="hidden" name='group_codeX'		value="<?=$group_codeX?>" />
+						<input type="hidden" name='group_name'		value="<?=$group_name?>" />
 
 						<input type="hidden" name='fld_enm'		value='<?=$fld_enm?>' />
 						<input type="hidden" name='fld_hnm'		value='<?=$fld_hnm?>' />
@@ -487,6 +499,7 @@ $(function () {
 				else	 $SQL = $SQL . " where $search_fld like '%$searchT%' ";
 			} 
 			$SQL = $SQL . $OrderBy . $SQL_limit;
+			//echo "sql: " . $SQL; //sql: SELECT * from dao_1744251268 order by seqno desc limit 0, 1
 			if ( ($result = sql_query( $SQL ) )==false )
 			{
 				printf("Record 0 : query: %s\n", $SQL);

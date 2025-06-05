@@ -2,6 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 		ap_pg50RC.php    : PC 버전. table_pg50RC.php를 copy. : 기존의 table_pg50R.php copy하여 backup 보관.
+		:  PG_curl_send() 
 						 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
 						 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
 						 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
@@ -31,19 +32,34 @@
 <meta name="robots" content="ALL">
 </head>
 <?php
-		$lev		= $_POST['lev'];
-		$mode		= $_POST['mode'];
-		$seqno		= $_POST['seqno'];
-		$pg_code	= $_POST['pg_code']; // 2023-08-03 add
-		$pg_name	= $_POST['pg_name']; // 2023-08-03 add
-		$tab_enm	= $_POST['tab_enm'];
-		$tab_hnm	= $_POST['tab_hnm'];
-		$tab_hnmS = $_POST['tab_hnmS'];
-		$pg_codeS = $_POST['pg_codeS'];
+
+		if( isset($_POST['lev']) ) $lev		= $_POST['lev'];
+		else  $lev = "";
+
+		if( isset($_POST['mode']) ) $mode		= $_POST['mode'];
+		else  $mode = "";
+		if( isset($_POST['seqno']) ) $seqno		= $_POST['seqno'];
+		else  $seqno = "";
+		if( isset($_POST['pg_code']) ) $pg_code		= $_POST['pg_code'];
+		else  $pg_code = "";
+		if( isset($_POST['pg_name']) ) $pg_name		= $_POST['pg_name'];
+		else  $pg_name = "";
+		
+		if( isset($_POST['tab_enm']) ) $tab_enm		= $_POST['tab_enm'];
+		else  $tab_enm = "";
+		if( isset($_POST['tab_hnm']) ) $tab_hnm		= $_POST['tab_hnm'];
+		else  $tab_hnm = "";
+		if( isset($_POST['tab_hnmS']) ) $tab_hnmS		= $_POST['tab_hnmS'];
+		else  $tab_hnmS = "";
+		if( isset($_POST['pg_codeS']) ) $pg_codeS		= $_POST['pg_codeS'];
+		else  $pg_codeS = "";
+
+
+		if( isset($_POST['project_nmS']) ) $project_nmS		= $_POST['project_nmS'];
+		else  $project_nmS = "";
 
 		if( $mode == "project_change" ){
-			$project_nmS = $_POST['project_nmS'];
-			if( isset( $_POST['project_nmS']) )	{
+			if( isset( $project_nmS) )	{
 				$aaP= explode(':', $project_nmS);
 				$p_code		= $aaP[0];
 				$p_name		= $aaP[1];
@@ -551,10 +567,7 @@ function Save_and_Run(pg)
 	//https://appgenerator.net/t/tkher_program_run.php?pg_code=dao_1691041203
 }
 //----- program 중복체크 와 최조 생성을 실행 한다.
-function Create_button(pg)
-{
-
-	//$pcd_nm = explode(":", $_POST['project_nmS'] );
+function Create_button(pg) {
 	var p_selind = makeform.project_nmS.selectedIndex; 
 	var p_val    = makeform.project_nmS.options[p_selind].value;
 	var p_nm      = makeform.project_nmS.options[p_selind].text;
@@ -675,7 +688,7 @@ function change_project_func(pnmS){
 <?php
 
 function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-	global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA;      
+	global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config;      
 	$cnt = 0;
 	$tabData['data'][$cnt]['pg_code']  = $pg_code;
 	$tabData['data'][$cnt]['pg_name']  = $pg_name;
@@ -685,7 +698,7 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 	$tabData['data'][$cnt]['group_code'] = $group_code;
 	$tabData['data'][$cnt]['group_name'] = $group_name;
 
-	$tabData['data'][$cnt]['host']       = $hostnameA;
+	$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostnameA;
 	$tabData['data'][$cnt]['email']      = $H_EMAIL;
 
 	$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
@@ -704,10 +717,7 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 
     $sendData = encryptA( $tabData , $key, $iv);
 
-    //$url_ = 'https://appgenerator.net/t/_api/table_curl_get.php'; // 전송할 대상 URL
-//    $url_ = 'https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL
-	//$url_ = 'https://appgenerator.net/t/_api/table_curl_get_ailinkapp.php'; // 전송할 대상 URL
-    $url_ = 'https://ailinkapp.com/kapp/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL
+    $url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
 
     //$curl = curl_init( $url_ );
 	$curl = curl_init();
@@ -740,54 +750,69 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
     curl_close($curl);
 
 	//m_("curl end--------------- ms: email: " . $H_EMAIL); //exit();
-}
+} // function
 //=====================================================
 	$hostnameA = getenv('HTTP_HOST'); // 2023-08-03 add
 	$tabData['data'][][] = array();   // 2023-08-03 add
 
 	$dup_check = '';
-	$pg_code			= $H_ID . "_" . time();
+
+//	$pg_code			= $H_ID . "_" . time();
+	$uid = explode('@', $H_ID);
+	$pg_code = $uid[0] . "_" . time();
+
 	$_SESSION['pg_code'] = $pg_code;  //2023-08-03 add
-	$mode	= $_POST['mode'];
-	//$multy_menu_sel	= $_REQUEST['multy_menu_sel'];
+
 	$mode_session		= get_session("mode_session");
 
-	if( isset($_POST['project_nmS']) ){
-		$pcd_nm = explode(":", $_POST['project_nmS'] );
-		$group_code	= $pcd_nm[0]; //$rsTAB['group_code'];  
-		$group_name	= $pcd_nm[1]; //$rsTAB['group_name'];  
-	}
+	if( isset($project_nmS) && $project_nmS !=="" ){
 
-//m_("mode:" . $_POST['mode'] . ", project_nmS: " . $_POST['project_nmS']);
-//mode:SearchTAB, project_nmS: 
-//mode:SearchTAB, project_nmS: dao_1536042229:쇼핑
+		$pcd_nm = explode(":", $project_nmS );
+		if( isset($pcd_nm[0]) ) $group_code	= $pcd_nm[0];
+		else $group_code = "ETC";
+		$group_code	= $pcd_nm[0]; //$rsTAB['group_code'];  
+		if( isset($pcd_nm[1]) ) $group_name	= $pcd_nm[1]; //$rsTAB['group_name'];  
+		else $group_name= "ETC";
+	} else {
+		$group_name= "ETC";
+		$group_code= "ETC";
+	}
+	$fld_sel_type	= ""; 
 
 	if( $mode == 'pg_new_create') {
 
-			$column_attribute = $_POST['column_attribute']; 
-			$item_array		= $_POST['item_array'];
-			$tab_hnm		= $_POST['tab_hnm'];
-			$tab_enm		= $_POST['tab_enm'];
-			$item_cnt		= $_POST['item_cnt'];
-			//$group_code		= $_POST['group_code'];
-			//$group_name		= $_POST['group_name'];
-			$pg_code		= $_POST['pg_code'];
-			$pg_name		= $_POST['pg_name'];
-			$if_data		= $_POST['if_dataT'];
-			$if_type		= $_POST['if_typeT'];
-			$pop_data		= $_POST['pop_dataT'];
-			$item_array		= $_POST['item_array'];
-			$rel_data		= $_POST['rel_data']; 
-			$rel_type		= $_POST['rel_type']; 
+			$rel_type = ""; 
+			$rel_data = ""; 
+			$pop_data = ""; 
+			$if_data = ""; 
+			$if_type = ""; 
+			if( isset($_POST['column_attribute']) ) $column_attribute = $_POST['column_attribute']; 
+			else  $column_attribute = ""; 
+			if( isset($_POST['item_array']) ) $item_array = $_POST['item_array']; 
+			else  $item_array = ""; 
+			if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt']; 
+			else  $item_cnt = ""; 
+			/*
+			if( isset($_POST['if_data']) ) $if_data = $_POST['if_dataT']; 
+			else  $if_data = ""; 
+			if( isset($_POST['if_type']) ) $if_type = $_POST['if_typeT'];  //if_typeT
+			else  $if_type = ""; 
+			if( isset($_POST['pop_data']) ) $pop_data = $_POST['pop_dataT']; 
+			else  $pop_data = ""; 
+			if( isset($_POST['rel_data'])  && $_POST['rel_data'] !=="") $rel_data = $_POST['rel_data']; 
+			else  $rel_data = ""; 
+			if( isset($_POST['rel_type']) && $_POST['rel_type'] !=="") $rel_type = $_POST['rel_type']; 
+			else  $rel_type = ""; 
+			*/
+
 			$in_day			= date("Y-m-d H:i");
 
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$if_type', if_data='$if_data', pop_data='$pop_data', relation_data='$rel_data', relation_type='$rel_type', userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$if_type', if_data='$if_data', pop_data='$pop_data', relation_data='$rel_data', relation_type='', userid='$H_ID' ";
 			$ret = sql_query($query);
 			$sys_pg_root	= $pg_code;
 			$sys_subtit		= $pg_name;
-//			$sys_link		= "./tkher_program_data_list.php?pg_code=" . $pg_code;
 			$aboard_no		= $pg_code;
-			$job_group		= "tkher_program";
+			$job_group		= "KAPP-Program";
 			$job_name		= $pg_name;
 			$jong			= "P";
 			$pg_cd_nm = $pg_code . ":" . $pg_name;
@@ -797,7 +822,8 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			// 프로그램명,테이블명만 기록한이유:20자리로 내용을 줄여넣음. 포인트 지급내역 생성.
 
 			//===========
-			$pg_sys_link	= "https://" . $hostnameA . "/t/tkher_program_data_list.php?pg_code=" . $pg_code;
+//			$pg_sys_link	= "https://" . $hostnameA . "/t/tkher_program_data_list.php?pg_code=" . $pg_code;
+			$pg_sys_link	= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
 			PG_curl_send( $item_cnt , $item_array, $if_type, $if_data, $pop_data, $pg_sys_link, $rel_data, $rel_type );
 			//===========
 
@@ -808,7 +834,7 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			//}
 			//exit;
 			//=============================================
-	} else if( $mode_session == 'POPUP') {
+	} else if( $mode_session == 'POPUP') { // pop window
 		$pg_codeS_session	= get_session("pg_codeS");
 		$pg_codeS = $pg_codeS_session;
 		$if_line_session		= get_session("if_line");
@@ -865,40 +891,17 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 		$if_data		= $rsTAB['if_data'];
 		$pop_data		= $rsTAB['pop_data'];
 		$rel_data		= $rsTAB['relation_data'];
-		//$group_code	= $pcd_nm[0]; //$rsTAB['group_code'];  
-		//$group_name	= $pcd_nm[1]; //$rsTAB['group_name'];  
-	} else if( $mode == 'SearchPG' ){
-		//m_("SearchPG pg_codeS: " . $pg_codeS);
-		$aa				= explode(':', $pg_codeS);
-		$pg_code		= $aa[0];
-		$pg_name		= $aa[1];
-		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID'  and pg_code='$pg_code' ";
-		$resultPG		= sql_query($sqlPG);
-		$table10_pg	= sql_num_rows($resultPG);
-		$rsPG			= sql_fetch_array($resultPG);
-		$seqno			= $rsPG['seqno'];
-		$item_cnt		= $rsPG['item_cnt'];
-		$item_array		= $rsPG['item_array'];
-		$if_type		= $rsPG['if_type'];
-		$if_data		= $rsPG['if_data'];
-		$pop_data		= $rsPG['pop_data'];
-		$rel_data		= $rsPG['relation_data'];
-		$tab_enm		= $rsPG['tab_enm'];
-		$tab_hnm		= $rsPG['tab_hnm'];
-		$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
-		//$group_code	= $rsPG['group_code']; //2023-09-05 막음. kan
-		//$group_name	= $rsPG['group_name'];
-		$dup_check = '1';
-	}	// mode search end
-	$w		= '100%';
-	$w2	= '300';
+		$group_code	    = $rsTAB['group_code'];  
+		$group_name	    = $rsTAB['group_name'];  
+		$project_nmS	= $group_code.":".$group_name;
+	}
 ?>
 <center>
 <div id='menu_normal'>
-   <table height='100%' cellspacing='0' cellpadding='4' width='<?=$w2?>' border='1' class="c1"> 
+   <table height='100%' cellspacing='0' cellpadding='4' width='300' border='1' class="c1"> 
 		<form name="makeform" method="post" >
 			<input type="hidden" name="sellist"	        value="" >
-			<input type="hidden" name="program_level"	value="<?=$_POST['lev']?>" >
+			<input type="hidden" name="program_level"	value="<?=$lev?>" >
 			<input type="hidden" name="mode"			value="" >
 			<input type="hidden" name="mode_call"		value="" >
 			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
@@ -906,61 +909,56 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			<input type="hidden" name="rel_data"		value="<?=$rel_data?>"> 
 			<input type="hidden" name="rel_type"		value="<?=$rel_type?>"> <!-- 2023-08-03 : add -->
 			<input type="hidden" name="dup_check"		value="<?=$dup_check?>" > <!-- 프로그램 dup check : 2021-09-25 : add -->
-<tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
+		<tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
 Program Creation: app_pg50RC
 <br>
-	Project:<SELECT name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the Project! ' "; ?> >
+	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the Project! ' "; ?> >
+
+			<option value=''>1.Select Project</option>
 <?php 
-if( isset( $_POST['project_nmS'] ) ) {
-	$pcd_nm = explode(":", $_POST['project_nmS'] );
+if( isset( $project_nmS ) && $project_nmS !=="" ) {
+	$pcd_nm = explode(":", $project_nmS );
 ?>
-			<option value="<?=$_POST['project_nmS']?>" selected ><?=$pcd_nm[1]?></option>
+			<option value="<?=$project_nmS?>" selected ><?=$group_name?></option>
+<?php
+} else {
+?>
+			<option value='ETC:ETC' title='Project code: ETC' selected>ETC</option><!-- default set -->
 <?php
 }
 ?>
-			<option value=''>1.Select Project</option>
 <?php
-				$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); // table10_group
-				while( $rs = sql_fetch_array($result)) {
+		$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
+		while( $rs = sql_fetch_array($result)) {
+			if( $group_code == $rs['group_code']) $chk = " selected ";
+			else $chk = "";
 ?>
-					<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' title='Project code: <?php echo $rs['group_code'];?>' ><?=$rs['group_name']?></option>
+					<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo $chk; ?> title='Project code: <?php echo $group_code;?>' ><?=$rs['group_name']?></option>
 <?php
 				}
 ?>
-			</select>
+			</SELECT>
 			<!-- 프로그램면 중복확인을 위해 사용 출력. 디스플레이 하지 않는다. program list: display:none; -->
-		<br><select name='pg_codeS' onchange="change_program_func(this.value);" style="display:NONE;border-style:;background-color:#666666;color:yellow;width:130px; height:3px;" >
-<?php 
-				if( $mode=='SearchPG' || $mode=='pg_new_create') {
-					$pg_codeS = $pg_code . ":" . $pg_name;
-?>
-						<option value="<?php echo $pg_codeS ?>"  selected ><?php echo $pg_name ?> </option>
+			<SELECT id='pg_codeS' name='pg_codeS' style="display:NONE;" >
 <?php
-				} else {
+			$result = sql_query( "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc " );
+			while( $rs = sql_fetch_array($result)) {
 ?>
-						<option value=''>Select program</option>
+				<option value='<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>' ><?=$rs['pg_name']?></option>
 <?php
-				}
-					$result = sql_query( "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc " );
-					while( $rs = sql_fetch_array($result)) {
+			}
 ?>
-							<option value='<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo" title='Program code:$pg_codeS' "; ?> ><?=$rs['pg_name']?></option>
-<?php
-					}
-?>
-			</select>
+			</SELECT>
 </td></tr>
 
 <tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
-			Table:&nbsp;<select name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
-<?php 
-				if( $mode=='SearchTAB' || $mode=='SearchPG' || $mode=='pg_new_create') {
-?>
-					<option value="<?php echo $tab_hnmS ?>"  selected ><?php echo $tab_hnm ?> </option>
-<?php
-				} else {
-?>
+			Table:&nbsp;
+			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
 					<option value=''>1.Select table</option>
+<?php 
+				if( $mode=='SearchTAB' || $mode=='pg_new_create') {
+?>
+					<option value="<?php echo $tab_hnmS ?>" selected ><?php echo $tab_hnm ?> </option>
 <?php
 				}
 				$result = sql_query( "select tab_enm, tab_hnm from {$tkher['table10_table']} where userid='$H_ID' and fld_enm='seqno' order by upday desc " );
@@ -981,7 +979,9 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 <div id="here">
 <?php
 	$ss = "";
-	if( $mode =='pg_new_create' or $table10_pg>0 or $table10_tab>0  ){
+//	if( $mode =='pg_new_create' or $table10_pg>0 or $table10_tab>0  ){
+	if( $mode =='pg_new_create' or isset($table10_pg) or isset($table10_tab)  ){
+		//m_("pg_new_create----");
 		$itX = explode("@",$item_array);
 		for( $i=0, $j=0; $i<$item_cnt; $i++, $j++){
 			$it = explode("|",$itX[$i]);
@@ -1040,7 +1040,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
    <!--  \n 입력예-취미:야구:축구:농구:테니스:골프 와 같이 구분자 ':' 를 사용하여 구분한다. -->
    <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
 		<br>
-		<label class="container" <?php echo "title='Only one selectable button. ' "; ?> >
+		<label class="container" title='Only one selectable button. ' >
 		  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(0,0)" <?php if( !$fld_sel_type ) echo " checked "; ?> >For general input
 		  <span class="checkmark"></span> 
 		</label>
@@ -1093,15 +1093,28 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 		<input type='hidden' name='if_dataT' value='<?=$if_data?>' >
 		<input type='hidden' name='pop_dataT' value='<?=$pop_data?>' >
 <?php
-	if( $table10_pg>0 || $table10_tab>0 || $item_cnt>0) { // 테이블 선택시에 여기를 탄다.
-			$iftypeR = explode("|", $if_type );
-			$ifdataR = explode("|", $if_data );
-			$popdataR= explode("^", $pop_data );
-			$itemR   = explode("@", $item_array );
+	$iftypeR =array();
+	$ifdataR =array();
+	$popdataR =array();
+	$itemR =array();
+
+	$ifT	= "";	$ifD	= "";	$ifP	= "";
+	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // 테이블 선택시에 여기를 탄다.
+
+			if( isset($if_type) ) $iftypeR = explode("|", $if_type );
+			//else $iftypeR = "";
+			if( isset($if_data) ) $ifdataR = explode("|", $if_data );
+			//else  $ifdataR = "";
+			if( isset($pop_data) ) $popdataR= explode("^", $pop_data );
+			//else  $popdataR = "";
+			if( isset($item_array) ) $itemR   = explode("@", $item_array );
+			//else $itemR   = "";
+
 			for( $i=0, $j=1;$i<$item_cnt;$i++, $j++){
-				$ifT	= $iftypeR[$j];
-				$ifD	= $ifdataR[$j];
-				$ifP	= $popdataR[$j];
+				if( isset($iftypeR[$j]) ) $ifT	= $iftypeR[$j];
+				if( isset($ifdataR[$j]) ) $ifD	= $ifdataR[$j];
+				if( isset($popdataR[$j]) ) $ifP	= $popdataR[$j];
+
 				$it		= $itemR[$i];
 ?>
 				<input type='hidden' name="iftype[<?=$i?>]"  value='<?=$ifT?>' >
@@ -1111,6 +1124,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 				<input type='hidden' name="iftypeA_<?=$i?>" value='<?=$ifT?>' >
 				<input type='hidden' name="if_dataA_<?=$i?>" value='<?=$ifD?>' > 
 <?php
+				$ifT	= "";	$ifD	= "";	$ifP	= "";
 			}			
 	} else {
 		// 첫실행시에 온다.
