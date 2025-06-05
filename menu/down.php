@@ -1,10 +1,8 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	//include_once('../cratree/func/my_func.php');
 	include "./infor.php";
 
-//$file_id = $_REQUEST['file_id'];
-$no = $_REQUEST[no];
+$no = $_REQUEST['no'];
 
 $query = "SELECT * from aboard_$mf_infor[2] where no = '$no' ";
 $result = sql_query( $query );
@@ -20,23 +18,35 @@ $afile		= $line['file_wonbon'];	//원본화일명칭.
 
 //$fileDir = $in_dir;	//	"./".$in_dir;
 $fullPath = $line['file_path'] . "/" . $line['file_name'];	//$fileDir."/".$ff;
+
+/*
 $length = filesize($fullPath);
 
 //$length = $line[file_size];	//filesize($fullPath);
-
 //m_(" $fullPath : $length ,  --- no:$no, infor:$infor , $afile, $ff");
 // ./file/dao/dao_1549071466.jpg : 1307087 ,  --- no:8, infor:115 , IMG_00263.jpg, dao_1549071466.jpg
-
-
 header("Content-Type: application/octet-stream");
 header("Content-Length: $length");
 header("Content-Disposition: attachment; filename=".$afile);
 //header("Content-Disposition: attachment; filename=".iconv('utf-8','euc-kr',$afile));
 //header("Content-Disposition: attachment; filename=".iconv('euc-kr','utf-8',$afile));
 header("Content-Transfer-Encoding: binary");
+*/
+
+	$length = filesize($fullPath);
+
+	header("Content-Type: application/octet-stream");
+	header("Content-Length: $length");
+	header("Content-Disposition: attachment; filename=".iconv('utf-8','euc-kr',$afile));
+	header("Content-Transfer-Encoding: binary");
+
 
 $fh = fopen($fullPath, "r");
 fpassthru($fh);
+
+
+
+
 
 
 exit;

@@ -43,36 +43,43 @@
 
 		$in_day = date("Y-m-d H:i");
 
-	if( isset($_REQUEST['infor']) )  $infor = $_REQUEST['infor'];
-	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	//if( isset($_REQUEST['infor']) )  $infor = $_REQUEST['infor'];
+	//else
+	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else $infor = '';
 	if( $infor ) $_SESSION['infor'] = $infor;
 
 	include "./infor.php";
+	$grant_write=$mf_array['grant_write'];
 	//m_(" session infor: ". $_SESSION['infor'] . ", 47: " . $mf_infor[47]. ", grant_write: " . $mf_array['grant_write'] );
 	//session infor: 2, 47: 2, grant_write: 2
-	switch( $mf_infor[47] ){ // board type
-		case '0': break;			// guest
-		case '1': 					// member
-			if( !$H_ID || $H_LEV < 2 ) { 
-				m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV); 
-				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-			}
-			else break;
-		case '2': 
-			if( $H_ID != $mf_infor[53] && $H_LEV < 2) { 
-				m_("You do not have permission to write."); 
-				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-			}
-			else break;
-		case '3': 
-			if( $H_ID != $mf_infor[53] && $H_LEV < 8 ) { 
-				m_("You do not have permission to write."); //echo "<script>history.back(-1);</script>"; exit;
-				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-			}
-			else break;
-	}
-
+	/*
+		switch( $mf_infor[47] ){ // 47=grant_write
+			case '0': break;			// guest
+			case '1': 					// member
+				if( !$H_ID || $H_LEV < $grant_write ) { 
+					m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV); 
+					echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+				}
+				else break;
+			case '2': 
+				//if( $H_ID != $mf_infor[53] && $H_LEV < 2) { 
+				if( $H_ID != $mf_infor[53] && $H_LEV < $grant_write) { 
+					m_("You do not have permission to write."); 
+					echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+				}
+				else break;
+			case '3': 
+				if( $H_ID != $mf_infor[53] && $H_LEV < 8 ) { 
+					m_("You do not have permission to write."); //echo "<script>history.back(-1);</script>"; exit;
+					echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+				}
+				else break;
+		} */
+		if( $grant_write > 1 && $H_LEV < $grant_write ) { 
+			m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV . ", write: " . $grant_write); 
+			echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+		}
 	$amember_name	= $H_NICK;
 	$amember_id		= $H_ID;
 	$mf_47 = $mf_infor[47];

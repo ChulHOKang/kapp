@@ -32,8 +32,8 @@
 	<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 	<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 	<meta name="robots" content="ALL">
-	<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
-<TITLE>Admin App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+	<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/project_.png">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
@@ -133,7 +133,8 @@ $doc=$H_ID . time();
   <table border="0" width="100%" height="393" bgcolor="#FFFFFF" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" cellpadding="0">
 	<H3 style='background-color:#006699;color:cyan;height:20px;padding:9px;'>&nbsp; Tkher Board List</H3>
 
-	<input type='button' style='background-color:#006699;color:cyan;height:35px; ' value='Board Create' onclick="javascript:window.open('../adm/board_create_pop.php','_blank','');">
+	<!-- <input type='button' style='background-color:#006699;color:cyan;height:35px; ' value='Board Create' onclick="javascript:window.open('../adm/board_create_pop.php','_blank','');"> -->
+	<input type='button' style='background-color:#006699;color:cyan;height:35px; ' value='Board Create' onclick="javascript:window.open('./board_list3.php','_blank','');">
     <tr>
       <td width="100%" height="57">
       <div align="left">
@@ -185,6 +186,7 @@ $doc=$H_ID . time();
 		}
 		$mq		= sql_query($query);
 		$tot		= sql_num_rows($mq);
+	m_("cranim_lev: " . $cranim_lev . ", tot: " . $tot);
 	?>
     <tr>
       <td width="100%" height="55" bgcolor="#FFFFFF">
@@ -210,6 +212,8 @@ $doc=$H_ID . time();
 <?php
 		$cnt=0; $i=0;
 		while( $mf = sql_fetch_array($mq)){
+			m_("table_name: " . $mf['table_name']);
+			$tab_nm = "aboard_". $mf['table_name'];
 			$i++;
 			if(!$cnt){$cnt=1;}
 			$board_url		 = "index_bbs.php?infor=" . $mf['no'];
@@ -219,41 +223,39 @@ $doc=$H_ID . time();
 			$query	= "SELECT * from aboard_" . $mf['table_name'] . " ";
 			$mq1	= sql_query($query);
 			$mn1	= sql_num_rows($mq1);
-			if( $mf['grant_view'] == '0' ) $vx="Guest";
-			else if ($mf['grant_view'] == '1' ) $vx="Member";
-			else if ($mf['grant_view'] == '2' ) $vx="Only Me";
-			else if ($mf['grant_view'] == '3' ) $vx="System";
+			if( $mf['grant_view'] == '1' ) $vx="Guest";
+			else if ($mf['grant_view'] == '2' ) $vx="Member";
+			else if ($mf['grant_view'] == '3' ) $vx="Only Me";
+			else if ($mf['grant_view'] == '8' ) $vx="System";
 			else $vx="Guest";
-			if( $mf['grant_write'] == '0' ) $vW="Guest";
-			else if ($mf['grant_write'] == '1' ) $vW="Member";
-			else if ($mf['grant_write'] == '2' ) $vW="Only Me";
-			else if ($mf['grant_write'] == '3' ) $vW="System";
+			if( $mf['grant_write'] == '1' ) $vW="Guest";
+			else if ($mf['grant_write'] == '2' ) $vW="Member";
+			else if ($mf['grant_write'] == '3' ) $vW="Only Me";
+			else if ($mf['grant_write'] == '8' ) $vW="System";
 			else $vW="Guest";
 
 			$day = $mf['in_date'];
 			$day = date( "Y-m-d", $mf['in_date']);
+			$mf_no = $mf['no'];
 ?>
 </thead>
 
-<tbody width=100%>
+<tbody width='100%'>
 
           <tr>
             <td width="1%" align="center" height="12"><?=$mf['make_id']?></td>
             <td width="2%" align="center" height="12">
-				<a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf['no']?>')"><font color=006699><?=$mf['no']?></font></a></td>
+				<a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf_no?>')">
+				<font color='#006699'><?=$mf_no?></font></a></td>
             <td width="3%" align="center" height="12"><?=$vx?></td>
             <td width="3%" align="center" height="12"><?=$vW?></td>
             <td width="3%" align="center" height="12"><?=$mf['fileup']?></td>
-            <!--<td width="1%" align="center" height="12"><?=$mf[list_gubun]?></td>-->
-            <td width="7%" align="center" height="12">
-				<a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf['no']?>')"><font color=006699>aboard_<?=$mf['table_name']?></font></a></td>
-            <td width="15%" align="center" height="12">
-				<a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf['no']?>')"><font color=006699><?=$mf['name']?></font></a></td>
-            <td width="20%" align="center" height="12">
-				<a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf['no']?>')"><font color=006699><?=$board_url?></font></a> </td>
-            <td width="10%" align="center" height="12">
 
-	<select id="sel_skin" name="sel_skin['<?=$cnt?>']" onchange="skin_func(this.value, '<?=$mf['no']?>', '<?=$cnt?>')" style='height:22px;background-color:black;color:yellow; border:1 solid black' title='board type' >
+            <td width="7%" align="center" height="12"><a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf_no?>');"><?=$tab_nm?></a></td>
+            <td width="15%" align="center" height="12"><a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf_no?>');"><?=$mf['name']?></a></td>
+            <td width="20%" align="center" height="12"><a href="javascript:openpage('<?=$board_url_adminI?>', '<?=$mf_no?>');"><?=$board_url?></a></td>
+            <td width="10%" align="center" height="12">
+	<select id="sel_skin" name="sel_skin_<?=$cnt?>" onchange="skin_func(this.value, '<?=$mf_no?>', '<?=$cnt?>')" style='height:22px;background-color:black;color:yellow; border:1 solid black' title='board type' >
  <?php
  /*if( $mf['movie']=='1' ) $skin_tit='General type';
  else*/ 
@@ -263,12 +265,12 @@ $doc=$H_ID . time();
  //else if( $mf['movie']=='5' ) $skin_tit='Daum Type';
  else $skin_tit='Error type';
  ?>
-		<!-- <option value="index_bbs.php?infor=<?=$mf['no']?>" selected > Select Skin</option> -->
-		<option value="index_bbs.php?infor=<?=$mf['no']?>" selected > <?=$skin_tit?> </option>
-		<!-- <option value="board_data_list.php?infor=<?=$mf['no']?>" >General type</option> -->
-		<option value="index_bbs.php?infor=<?=$mf['no']?>" >Standard type</option>
-		<option value="index_bbs.php?infor=<?=$mf['no']?>" >Memo type</option>
-		<option value="index_bbs.php?infor=<?=$mf['no']?>" >Image type</option>
+		<!-- <option value="index_bbs.php?infor=<?=$mf_no?>" selected > Select Skin</option> -->
+		<option value="index_bbs.php?infor=<?=$mf_no?>" selected > <?=$skin_tit?> </option>
+		<!-- <option value="board_data_list.php?infor=<?=$mf_no?>" >General type</option> -->
+		<option value="index_bbs.php?infor=<?=$mf_no?>" >Standard type</option>
+		<option value="index_bbs.php?infor=<?=$mf_no?>" >Memo type</option>
+		<option value="index_bbs.php?infor=<?=$mf_no?>" >Image type</option>
 	</select>
 				</td>
 			<td width="3%"  align=right><?=number_format( $mn1 )?></td>
@@ -276,13 +278,13 @@ $doc=$H_ID . time();
 			<td align="center"><?=$day?></td>
 
             <td width="10%" align="center" height="12">
-				<!-- <a href='update.php?no=<?=$mf['no']?>' target='_blank'>[Change]</a> -->
-				<a href="javascript:board_table('<?=$mf['no']?>')" title='board managememt' >[Change]</a>
-				<a href="javascript:del_table('<?=$mf['no']?>','<?=$mf['name']?>','<?=$mf['table_name']?>', '<?=$cnt?>')" title='Delete all data. Recovery is not possible. Please note!'><font color=red><b>[Del]</b></font></a>
+				<!-- <a href='update.php?no=<?=$mf_no?>' target='_blank'>[Change]</a> -->
+				<a href="javascript:board_table('<?=$mf_no?>')" title='board managememt' >[Change]</a>
+				<a href="javascript:del_table('<?=$mf_no?>','<?=$mf['name']?>','<?=$mf['table_name']?>', '<?=$cnt?>')" title='Delete all data. Recovery is not possible. Please note!'><font color=red><b>[Del]</b></font></a>
 			</td>
           </tr>
 <?php
-		$cnt+=1;
+		$cnt++;
 } // while
 ?>
           <tr>

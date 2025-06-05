@@ -1,11 +1,13 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( isset($H_ID) ) $H_LEV=$member['mb_level'];
+	$ip = $_SERVER['REMOTE_ADDR'];
 ?>
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Tkher system for special her. Tkher system is generator program. Made in ChulHo Kang</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
@@ -16,23 +18,23 @@
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
-
 <body>
 <?php
 		/*
-		*   album.php : main_image_list.php 메인 이미지 Lsit - 이미지 슬라이드.
+		*   main_image_list.php 메인 이미지 Lsit - 이미지 슬라이드.
+			                   : view_v.php
 		*/
-		$mode = $_POST['mode'];
+		if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+		else $mode = '';
 ?>
 <center>
 		<div class="mainProjectX" id="mainProjectX">
-			<h2 <?php echo "title='Get and print a database file.'"; ?> >TKHER Main Image List</h2>
+			<h2 title='Get and print a database file.' >Main Page Image List</h2>
 		<?php 
 		$cur='C';
 		include_once( KAPP_PATH_T_ . "/menu_run.php"); 
 		?>
 			<div class="grid">
-
 <?php
 				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} order by view_no, no";
 				if( ($result = sql_query( $SQL ) )==false ){
@@ -44,7 +46,7 @@
 						$num++;
 						$group_name = $row['group_name'];
 						$jpg_file = $row['jpg_file'];
-						$jpg_name = $row['jpg_name'];
+						$jpg_name = $row['jpg_name']; // title - 
 						$jpg_memo = $row['jpg_memo'];
 
 						echo "<div class='element-item $group_name pop_$num pop' data-category='$group_name'>
@@ -61,7 +63,6 @@
 <?php
 		include "./view_v.php";
 ?>
-
  <script type="text/javascript">
 	$('.pop').click(function(){
 		var index = $('.pop').index();
@@ -71,13 +72,11 @@
 	$('.whleft').click(function(){
 		$('.workView').fadeOut();
 	})
-
 	$('.nextwork').click(function(){
 		var next = $(this).index()
 		$('.workView').fadeOut();
 		$(this).parent().parent().parent().next().fadeIn();
 	})
 </script>
-
 </body>
 </html>

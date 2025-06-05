@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Tkher system for special her. Tkher system is generator program. Made in ChulHo Kang</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
@@ -15,25 +15,31 @@
 <?php
 		/*
 		*   main_img.php : 이미지 슬라이드. table:tkher_main_img
-		*                                           tkher_my_control : 슬라이드 시간 설정.
+		*   tkher_my_control : 슬라이드 시간 설정. /data/main_scroll_image/
+		    main_img_list.php
 		*/
 		$ss_mb_id = get_session("ss_mb_id");	//"ss_mb_id";
 		$H_ID = get_session("ss_mb_id");  
 		$H_LEV = $member['mb_level'];			//get_session("ss_mb_level");   //"ss_mb_id";
-		$mode = $_POST['mode'];
 
-if($mode == "File_Change") {
+		if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+		else $mode = '';
+		if( isset($_POST['no']) ) $no = $_POST['no'];
+		else $no = '';
+		if( isset($_POST['num']) ) $num = $_POST['num'];
+		else $num = '';
+
+if( $mode == "File_Change") {
 	if( $H_LEV < 8 ) {
 		m_(" You do not have permission.");	// \\n 권한이 없습니다. 
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
-		$i = $_POST[i];
+		if( isset($_POST['i']) ) $i = $_POST[i];
+		else $i = 0;
 		$fnm = "file_" . $i;
 		$filenm = $_FILES[$fnm]['name'];
-		$no = $_POST['no'];
 
-//        $f_path = "../cratree/" . $H_ID . "/";	//---------------------------------- 보완필요. : tkher
         $f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";	//---------------------------------- 보완 OK.
 		$in_date = time();
 
@@ -254,85 +260,66 @@ else if($mode == "Insert_func") {
 		document.form1.submit();
 	}
  -->
- </script>
+</script>
 <link rel="stylesheet" type="text/css" href="<?=KAPP_URL_T_?>/include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/dddropdownpanel.js"></script>
 </head>
-
 <?php
-
-	$mode = $_REQUEST['mode'];
-	$num = $_REQUEST['num'];
-	$no = $_REQUEST['no'];
 	$SQL = "SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
 	$result = sql_query( $SQL );
 	$tot = sql_num_rows( $result );
-	if ( !$tot )
-	{
-		$slide_time=3000;
+	if( !$tot ){
+		$slide_time=6000;
 		$SQL = "INSERT {$tkher['tkher_my_control_table']} SET userid='tkher', slide_time='$slide_time' ";
 		sql_query( $SQL );
 	} else {
 		$row = sql_fetch_array( $result );
 		$slide_time=$row['slide_time'];
 	}
-
 ?>
 <body bgcolor="#FFFFFF" text="#000000" topmargin="0" leftmargin="0">
 <center>
-
 		<?php 
 		$cur='C';
 		include_once( KAPP_PATH_T_ . "/menu_run.php"); 
 		?>
-		
-		
-		
-		<h2>Main Slide Image Management</h2>
-		
+<h2>Main Slide Image Management</h2>
 <!-- --------------------------------------------------------------------- -->
 <div id="mypanel" class="ddpanel">
-<div id="mypanelcontent" class="ddpanelcontent">
-<!-- --------------------------------------------------------------------- -->
-		
-<table border=0 bgcolor='#666666' width=100%>
-	<form name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
-		<input type='hidden' name='mode'	 value=''>
-
-			<tr style="border-style:;background-color:cyan;color:black;height:25;width:300;" >
-			<td align=right><font color=black>&nbsp; Slide Time:</td>
-			<td>
-					<input type="text" name="slide_time" style='border:1 black solid;height:25;width:50' value='<?=$slide_time?>' title='1 second -1000'>
-					&nbsp;<input type='button' value='Time_Change' onClick='javascript:time_func(this)' style="border-style:;background-color:blue;color:yellow;height:30;width:100;"> 
-			</td>
-			<tr style="border-style:;background-color:cyan;color:black;height:25;width:300;" >
-				<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp;Image</td>
-				<td><input type="file" name="file" size="50" style='border:1 black solid;'></td>
-			</tr>
-			<tr style="border-style:;background-color:cyan;color:black; " >
-				<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp;Title</td>
-				<td><input type=text name='jpg_name' value='' style="border-style:;background-color:white;color:black;height:30;width:300;"></td>
-			</tr>
-			<tr style="border-style:;background-color:cyan;color:black;height:60;width:600;">
-				<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp; Memo</td>
-				<td>
-					<textarea id='jpg_memo' name='jpg_memo' style="border-style:;background-color:white;color:black;height:60;width:600;" ></textarea>
-					
-				</td>
-			</tr>
-			<tr style="border-style:;background-color:cyan;color:black;height:30;width:300;" >
-				<td colspan=2 align='center'>&nbsp;<input type='button'  onclick='insert_func()' value=' Insert ' style="border-style:;background-color:blue;color:yellow;height:30;width:100;"></td>
-			</tr>
-</form>
-</table>
-<!-- ---------------------------------------------- -->
-</div>
-<div id="mypaneltab" class="ddpaneltab">
-<a href="#"><span><font color=grace>▤ Main Image Insert </span> </a>
-</div>
+	<div id="mypanelcontent" class="ddpanelcontent">
+		<table border=0 bgcolor='#666666' width=100%>
+			<form name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
+				<input type='hidden' name='mode'	 value=''>
+					<tr style="border-style:;background-color:cyan;color:black;height:25;width:300;" >
+					<td align=right><font color=black>&nbsp; Slide Time:</td>
+					<td>
+							<input type="text" name="slide_time" style='border:1 black solid;height:25;width:50' value='<?=$slide_time?>' title='1 second -1000'>
+							&nbsp;<input type='button' value='Time_Change' onClick='javascript:time_func(this)' style="border-style:;background-color:blue;color:yellow;height:30;width:100;"> 
+					</td>
+					<tr style="border-style:;background-color:cyan;color:black;height:25;width:300;" >
+						<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp;Image</td>
+						<td><input type="file" name="file" size="50" style='border:1 black solid;'></td>
+					</tr>
+					<tr style="border-style:;background-color:cyan;color:black; " >
+						<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp;Title</td>
+						<td><input type=text name='jpg_name' value='' style="border-style:;background-color:white;color:black;height:30;width:300;"></td>
+					</tr>
+					<tr style="border-style:;background-color:cyan;color:black;height:60;width:600;">
+						<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp; Memo</td>
+						<td>
+							<textarea id='jpg_memo' name='jpg_memo' style="border-style:;background-color:white;color:black;height:60;width:600;" ></textarea>
+							
+						</td>
+					</tr>
+					<tr style="border-style:;background-color:cyan;color:black;height:30;width:300;" >
+						<td colspan=2 align='center'>&nbsp;<input type='button'  onclick='insert_func()' value=' Insert ' style="border-style:;background-color:blue;color:yellow;height:30;width:100;"></td>
+					</tr>
+		</form>
+		</table>
+	</div>
+	<div id="mypaneltab" class="ddpaneltab"><a href="#"><span style="border-style:;background-color:;color:yellow;"><b>&#9776; Main Image Insert</b></span></a></div>
 
 </div>
-
 <table border="1" width=100% cellspacing="0" bordercolor="#C0C0C0" bordercolordark="#FFFFFF" bordercolorlight="#FFFFFF" align='center'>
 	<tr>
 		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">Image </font></td>
@@ -340,7 +327,6 @@ else if($mode == "Insert_func") {
 		<td bgcolor="#C0C0C0" align='center' title='Output Order'><font color="#FFFFFF">no</td>
 		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">CTL</td>
 	</tr>
-
 	<form name='form2' action='main_img.php' method='post' enctype='multipart/form-data'>
 					<input type='hidden' name='i'				value=''>
 					<input type='hidden' name='no'			value=''>
@@ -350,9 +336,7 @@ else if($mode == "Insert_func") {
 					<input type='hidden' name='mode'			value=''>
 					<input type='hidden' name='sel_g'			value=''>
 <?php
-
 	$SQL = "SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher'  order by view_no, no";
-
 	if( ($result = sql_query( $SQL ) )==false ){
 	  printf("Invalid query: %s \n", $SQL);
 	  exit();
@@ -365,7 +349,7 @@ else if($mode == "Insert_func") {
 				$jpg_file			= $row['jpg_file'];
 				$jpg_memo		= $row['jpg_memo'];
 				$group_code	= $row['group_code'];
-				$g_name	= $row['g_name'];
+				$g_name	= $row['group_name'];
 
 		echo "	
 			<tr>

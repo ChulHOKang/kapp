@@ -1,4 +1,4 @@
-2025-05-08<?php
+<?php
 	include_once('../tkher_start_necessary.php');
 	 $_ID	= get_session("ss_mb_id"); 
 	if( isset( $_ID) ){
@@ -30,7 +30,7 @@
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="../icon/logo25a.jpg">
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/land.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">

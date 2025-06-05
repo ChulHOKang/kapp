@@ -7,8 +7,8 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_board_.jpg">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/_board_.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
@@ -39,10 +39,12 @@
 		$infor = $_REQUEST['no'];
 	}*/
 
-		$no = $_REQUEST['no'];
+		if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
+		else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+		else $infor = '';
 	//m_("infor:$infor, list_no:" . $_POST[list_no]);
 
-	$query = "SELECT * from {$tkher['aboard_infor_table']} where no='$no'";
+	$query = "SELECT * from {$tkher['aboard_infor_table']} where no=$infor";
 	$mq =sql_query( $query ); //	$mf=sql_fetch_array($mq);
 	$mf =sql_fetch_row($mq);  //include "../inc/admin_login.php";
 	$mf_1 = $mf[1]; // board name
@@ -225,11 +227,11 @@ include "../menu_run.php";
               <td width="29%" bgcolor="#F6F6F6" align="center" height="18">Board type</td><!-- 48:movie -->
               <td width="81%" bgcolor="#F6F6F6" height="18">
 				  <select name='movie' onchange='set_type(this.value)'>
-				  <option value='1' <?php if($mf[48] == "1") echo "selected"; ?>>general type</option>
+				  <!-- <option value='1' <?php if($mf[48] == "1") echo "selected"; ?>>general type</option> -->
 				  <option value='2' <?php if($mf[48] == "2") echo "selected"; ?>>standard type</option>
 				  <option value='3' <?php if($mf[48] == "3") echo "selected"; ?>>memo type</option>
 				  <option value='4' <?php if($mf[48] == "4") echo "selected"; ?>>Image type</option>
-				  <option value='5' <?php if($mf[48] == "5") echo "selected"; ?>>Daum type</option>
+				  <!-- <option value='5' <?php if($mf[48] == "5") echo "selected"; ?>>Daum type</option> -->
 				  </select></td>
             </tr>
 

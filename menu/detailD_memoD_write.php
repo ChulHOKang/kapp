@@ -6,7 +6,7 @@
 	$H_NAME = $member['mb_name'];
 	$H_NICK = $member['mb_nick'];
 
-	 if( $mode=='memo_insertTT' ){	// memoD.php, board_data_listTT.php - detailD.php - memoTT.php 메모등록시에 처리한다. 2019-01-26
+if( $mode=='memo_insertTT' ){	// memoD.php, board_data_listTT.php - detailD.php - memoTT.php 메모등록시에 처리한다. 2019-01-26
 		$context    = $_POST['context'];
 		$board_name = $_POST['board_name'];
 		$list_no    = $_POST['list_no'];
@@ -24,6 +24,11 @@
 		} else {
 			//echo("<script>alert('Memo OK! ')</script>");
 		}
+	if( isset($_REQUEST['call_pg']) ) $call_pg = $_REQUEST['call_pg'];
+	else $call_pg = ''; 
+	if( $call_pg == 'list1_detail')
+		echo "<meta http-equiv='refresh' content=0;url='list1_detail.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+	else
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
-	}
+}
 ?>

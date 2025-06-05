@@ -15,7 +15,8 @@ function check(x){
 	
 
 }
-function memo_insert(id){
+function memo_insert(id, call_pg){
+	//alert("memoD call_pg: " + call_pg);// call_pg set: list1_detail.php 
 	if( !id ) {
 		alert("Login please"); return false;
 	}
@@ -36,7 +37,7 @@ function memo_insert(id){
 		return false;
 	}
 	document.memo_form.mode.value='memo_insertTT';
-	document.memo_form.action='detailD_memoD_write.php'; // query_ok_new.php
+	document.memo_form.action='detailD_memoD_write.php?call_pg=' + call_pg; // query_ok_new.php
 	document.memo_form.submit();
 }
 function memo_delete(memo_no){
@@ -54,6 +55,9 @@ function memo_delete(memo_no){
 }
 </script>
 <?php
+	if( isset($call_pg) ) $call_pg = $call_pg; // call: list1_detail.php
+	else $call_pg = ''; 
+
 	$query_memo="select no,name,memo,in_date from {$tkher['aboard_memo_table']} where board_name='aboard_".$mf_infor[2]."' and list_no=" .$list_no. " order by in_date desc ";
 	$mq_memo=sql_query($query_memo);
 ?>
@@ -70,6 +74,7 @@ function memo_delete(memo_no){
 		<input type='hidden' name='xname'			value=''>
 		<input type='hidden' name='memo_no'		value=''>
 		<input type='hidden' name='memo_delTT'	value=''>
+	<input type='hidden' name='call_pg' value='<?=$call_pg?>' >
 
 	<table align='center' width='100%' border='0' cellpadding='0' cellspacing='0'>
 <?php
@@ -87,12 +92,14 @@ function memo_delete(memo_no){
 				<a href="javascript:memo_delete('<?=$memo[0]?>')" title='<?=$tit_memo?> - Delete memo'><font color='red'><?=$memo[1]?>:<?=$memoD?> &nbsp;√Del</a>
 				</td>
 		</tr>
-<?php } ?>
+<?php
+	}
+?>
 	    <tr><td height="1" colspan='3' bgcolor="#ffffff" background="../include/img/dot.gif"></td></tr><!-- 점선...... -->
 		<tr><td colspan='3' align='center'><font size='1' color=<?=$mf_infor[23]?>>
 			name&nbsp;<input type=text name='name' value='<?=$H_NAME?>' size='15' style='border:1 black solid;'>
 			password <input type='password' name='password' size='10' style='border:1 black solid;'>
-					<input type='button' value='Reply' onclick="memo_insert('<?=$H_ID?>')" title='Register your comment.'>
+					<input type='button' value='Reply' onclick="memo_insert('<?=$H_ID?>', '<?=$call_pg?>')" title='Register your comment.'>
 		</td></tr>
 		<tr><td colspan='3' align='center'>
 			<textarea wrap="hard" name="context" rows="3" cols="65" ></textarea>

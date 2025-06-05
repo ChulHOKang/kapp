@@ -29,6 +29,10 @@
 		$H_LEV	= 0;
 	}
 
+		$grant_view = $mf_array['grant_view']; // grant_view, security $mf_array, $row
+		$grant_write = $mf_array['grant_write']; // grant_view, security $mf_array, $row
+		//m_("wr: " . $grant_write . ", vi: " . $grant_view); // $bbs_lev, wr: 1, vi: 1
+
 	if( isset($_REQUEST['mode'])) $mode = $_REQUEST['mode'];
 	else if( isset($_POST['mode'])) $mode = $_POST['mode'];
 	else $mode = '';
@@ -42,16 +46,16 @@
 	
 	if( isset($_REQUEST['target_'])) $target_ = $_REQUEST['target_'];
 	else if( isset($_POST['target_'])) $target_ = $_POST['target_'];
-	else $target_='url_link_bbstree_solpa_user_r';
+	else $target_='_top';
 
-	if( isset($_REQUEST['menu_mode'])) $menu_mode =$_REQUEST['menu_mode'];
+	if( isset($_REQUEST['menu_mode'])) $menu_mode =$_REQUEST['menu_mode']; // off: menu bar none display
 	else $menu_mode = '';
 ?>
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/board_new.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
@@ -60,7 +64,7 @@
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 	$(function () {
-	  $('table.listTableT').each(function() {
+	  $('table.listTable').each(function() {
 		if( $(this).css('border-collapse') == 'collapse') {
 		  $(this).css('border-collapse','separate').css('border-spacing',0);
 		}
@@ -70,7 +74,7 @@
 	  $(window).scroll(function() {
 		var scrollTop = $(window).scrollTop(),
 		  scrollLeft = $(window).scrollLeft();
-		$('table.listTableT').each(function(i) {
+		$('table.listTable').each(function(i) {
 		  var thead = $(this).find('thead:last'),
 			clone = $(this).find('thead:first'),
 			top = $(this).offset().top,
@@ -99,26 +103,35 @@
 		document.view_form.submit();
 	}
 </script>
- <link rel="stylesheet" href="../include/css/Oboard.css" type="text/css" />
- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
- <!-- <link rel='stylesheet' href='/t/include/css/kancss.css' type='text/css'> --><!-- 중요! -->
+ <!-- <link rel="stylesheet" href="../include/css/Oboard.css" type="text/css" /> -->
+ <!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" /> -->
+ <!-- <link rel='stylesheet' href='../include/css/kancss.css' type='text/css'> --><!-- menu_run에 선언 중요! -->
+
+<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script> -->
+
 </head>
 <body>
-		<?php
+<?php
 		$cur='A';
 		if( $menu_mode != 'off') include_once "../menu_run.php";
-		?>
+		else { 
+?>
+			<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
+<?php  } ?>
 <!-- <div class="wrapper">
-	<div class="container">  -->
+	<div class="container"> -->
 <?php
 	$tit			= $mf_infor[1];
-	$bbs_lev		= $mf_infor[47];	// grant_write
+	$bbs_lev		= $mf_infor[47];	// 47:grant_write
 
 	if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
 	else if( isset($mf_infor[16]) ) $line_cnt = $mf_infor[16]; // $line_cnt; //  page line cnt
 	else $line_cnt = 15;
 	$page_cnt	= 10;					// $my_rs[page_num];		#[1] [2] [3] 갯수
 ?>
+		
 		<div id="write_page" class="mainProject">
 			<div class="listTabs01">
 				<a href="./listD.php?infor=<?=$infor?>&menu_mode=<?=$menu_mode?>" class="on" title="infor:<?=$infor?>, table:aboard_<?=$mf_infor[2]?>"><?=$tit?></a>
@@ -143,45 +156,42 @@
 					<div class="fl">
 						<tr>
 							<td align=left>
-								<script type="text/javascript" src="../include/js/dropdowncontent.js">
-									/***********************************************
-									* Drop Down/ Overlapping Content- (c) Dynamic Drive (www.dynamicdrive.com)
-									* Please keep this notice intact.
-									* Visit http://www.dynamicdrive.com/ for full source code
-									***********************************************/
-								</script>
+								<!-- <script type="text/javascript" src="../include/js/dropdowncontent.js"></script>
 								<p align="left" style="margin-top: 0px">
-								<a href="#" id="contentlink" rel="subcontent2">
-								<font color=#000ccc size=4> ▤ <font color=green size=2><b>Board List[▼]</b></font>
-								</a><?php if($H_ID) echo "id:$H_ID, user_lev:$H_LEV"; ?>
-								</p>
+									<a href="#" id="contentlink" rel="subcontent2">
+									<font color=#000ccc size=4> ▤ <font color=green size=2><b>Board List[▼]</b></font>
+									</a><?php if($H_ID) echo "id:$H_ID, user_lev:$H_LEV"; ?>
+								</p> -->
 
-								<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 600px; height: 100%px; padding: 4px;z-index:1000">
+			<script type="text/javascript" src="../include/js/dropdowncontent.js"></script>
+			<p align="left" style="margin-top: 0px">
+				<a href="#" id="contentlink" rel="subcontent2">
+					<font color='black' ><b>&#9776; Board List [▼]</b></font>
+				</a><?php if($H_ID) echo "id:$H_ID, user_lev:$H_LEV"; ?>
+			</p>
 
-									<table border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='209'>
+
+						<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 200px; height: 100%px; padding: 4px;z-index:200">
+
+							<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='160'>
 <?php
 
-			$ttt = "---";
-			if( $H_ID and $H_LEV > 1 ) {
-				$sql = "SELECT * from {$tkher['aboard_infor_table']} where make_id='$H_ID' order by in_date desc";
-				if( ($result = sql_query( $sql ) )==false ){
-					printf("1 Invalid query: %s\n", $sql);
-					m_(" 2 Select Error ");
-				}
-				$ttt = "Member[". $H_ID . "]:";
-			} else {	// 비회원 no login guest에게 보여질 게시판 목록.
-				$sql = "SELECT * from {$tkher['aboard_infor_table']} order by in_date desc limit 0,10";
-				if( ($result = sql_query( $sql ) )==false ){
-					printf("2 Invalid query: %s\n", $sql);
-					m_("3 Select Error ");
-				}
-				$ttt = "Login-Please:";
-			}
+						if( $H_ID and $H_LEV > 1 ) {
+							$sql = "SELECT * from {$tkher['aboard_infor_table']} where make_id='$H_ID' order by in_date desc";
+							if( ($result = sql_query( $sql ) )==false ){
+								m_("listD 2 Select Error ");
+							}
+						} else {	// 비회원 no login guest에게 보여질 게시판 목록.
+							$sql = "SELECT * from {$tkher['aboard_infor_table']} order by in_date desc limit 0,10";
+							if( ($result = sql_query( $sql ) )==false ){
+								m_("listD 3 Select Error ");
+							}
+						}
 ?>
 <?php if( $H_ID && $H_LEV > 7) { ?>
 					<tr>
-					<td width='130' height='24' background='./images/admin_submenu.gif'>&nbsp;<img src='./images/left_icon.gif'>
-					<a href="./board_list_admin.php" target='url_link_bbstree_solpa_user_r'>&nbsp;<font color='blue'>:management:<?=$ttt?></a>
+					<td width='130' height='24' >
+					<a href="./board_list_admin.php" target='_blank' title='board write level:<?=$bbs_lev?>'><img src='../icon/admin.gif' width='27' height='27' title='super manager mode'>User:<?=$mf_array['make_id']?>:<?=$mf_array['grant_write']?></a>
 					</td>
 					</tr>
 <?php }
@@ -192,21 +202,20 @@
 ?>
 					<tr>
 					<td width='130' height='24' background='./images/admin_submenu.gif'>&nbsp;<img src='./images/left_icon.gif'>
-					<a href="index_bbs.php?infor=<?=$rs['no']?>&menu_mode=<?=$menu_mode?>" target='url_link_bbstree_solpa_user_r'><?=$rs['name']?></a>
+					<a href="index_bbs.php?infor=<?=$rs['no']?>&menu_mode=<?=$menu_mode?>" target='_top'><?=$rs['name']?></a>
 					</td>
 					</tr>
 <?php
 				}
 			}
 ?>
-
-									</TABLE>
+							</TABLE>
 									<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
-								</DIV><!-- subcontent2 -->
+						</DIV><!-- subcontent2 -->
 
-								<script type="text/javascript">
-									dropdowncontent.init("searchlink", "left-bottom", 800, "mouseover")
-									dropdowncontent.init("contentlink", "right-bottom", 800, "click")
+								<script type="text/javascript"><!-- 800 - 200 -->
+									dropdowncontent.init("searchlink", "left-bottom", 200, "mouseover")
+									dropdowncontent.init("contentlink", "right-bottom", 200, "click")
 								</script>
 							</td>
 						</tr>
@@ -267,7 +276,7 @@
 					<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
 					<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
 
-	<table class='listTableT' width='99%'>
+	<table class='listTable' width='99%'><!-- listTableT -->
 		<thead>
 					<tr>
 						<th style='width:5%'>No</th>
@@ -309,8 +318,8 @@
 				$infor38 = $mf_infor[38];
 ?>
 				<tr>
-					<td class="cell03" title='today:<?=$today?>:<?=$infor38?>:<?=$ck?>'><?=$row['no']?></td>
-					<td class="cell03">
+					<td class="cell01" title='today:<?=$today?>:<?=$infor38?>:<?=$ck?>'><?=$row['no']?></td>
+					<td class="cell02">
 <?php
 						//m_("5 : " . $mf_infor[5]);
 						$dep=""; $memo_cnt=""; $file="";
@@ -350,7 +359,6 @@
 ?>
 					<td class="cell03" title='<?=$msg_t?>' style="text-align:left;">
 <?php
-				$grant_view = $mf_array['grant_view']; // grant_view, security $mf_array, $row
 				$rno = $row['no'];
 				if($dep){ echo $dep; }
 ?>
@@ -358,9 +366,9 @@
 
 					<span><?=$msg_?><?=$memo_cnt?><?php echo $new; ?></span></a>
 					</td>
-					<td class="cell03"><?=$row['name']?></td>
-					<td class="cell03" style='width:15%;'><?=$dt?></td>
-					<td class="cell03"><?=$row['cnt']?></td>
+					<td class="cell04"><?=$row['name']?></td>
+					<td class="cell05" style='width:15%;'><?=$dt?></td>
+					<td class="cell06"><?=$row['cnt']?></td>
 				</tr>
 <?php
 			}	// while
@@ -369,6 +377,7 @@
 					</tbody>
 				</table>
 				</form>
+
 				<div class="boardNorBox mt10">
 					<div class="fl">
 						<form name='c_sel2' action='listD.php' method='post' enctype="multipart/form-data" >
@@ -384,19 +393,18 @@
 								<!-- <td align=left><div class="sr"><a href="javascript:void(0)" class="btn_bo02">Search</a></div></td> -->
 								<td align='left'><div class="sr"><a href="javascript:search_data('<?=$menu_mode?>')" class="btn_bo02">Search</a></div></td>
 								<td align='right'><div class="fr">
-								<a href="javascript:board_write('<?=$infor?>','<?=$H_LEV?>','<?=$page?>');" class="btn_bo02">Write</a></div></td>
+								<a href="javascript:board_write('<?=$infor?>','<?=$H_LEV?>','<?=$page?>','<?=$grant_write?>');" class="btn_bo02">Write</a></div></td>
 								</tr>
 							</table>
 						</form>
-					</div>
+					</div><!-- 검색버턴과 write 버턴. -->
 
 <?php
-	paging("listD.php?infor=$infor&search_text=$search_text&menu_mode=$menu_mode",$total_count,$page,$line_cnt,$page_cnt);
+					paging("listD.php?infor=$infor&search_text=$search_text&menu_mode=$menu_mode",$total_count,$page,$line_cnt,$page_cnt);
 ?>
-			</div><!-- boardNorBox mt10 -->
-		</div><!-- boardNorBox -->
-<!-- 	</div> --><!-- end : container -->
-<!-- </div> --><!-- end : wrapper-->
+				</div><!-- boardNorBox mt10 -->
+			</div><!-- boardView -->
+		</DIV><!-- mainProject -->
 
 <script type="text/javascript" >
 
@@ -447,8 +455,10 @@
 		document.c_sel2.action='listD.php?menu_mode=' + menu_mode;
 		document.c_sel2.submit();
 	}
-	function board_write( infor, user_lev, page ){
-		if( user_lev < 2 ) {
+	function board_write( infor, user_lev, page, grant_write ){
+		//alert("grant_write: " + grant_write);
+		//if( user_lev < 2 ) {
+		if( user_lev < grant_write ) {
 			alert(' You Login check lev:' +user_lev );
 			return false;
 		}
