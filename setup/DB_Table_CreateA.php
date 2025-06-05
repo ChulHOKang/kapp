@@ -380,7 +380,7 @@
         );
         $table_list['aboard_infor'] = array(
             "table_name" => "aboard_infor",
-            "table_link" => ""
+            "table_link" => "../menu/board_list3.php"
         );
         $table_list['aboard_memo'] = array(
             "table_name" => "aboard_memo",
@@ -665,7 +665,7 @@
             $t_check = 'checked';
             $t_create_btn = 'disabled';
 
-            if( $table['table_name'] !== "member" && $table['table_name'] !== "config" && $table['table_name'] !== "tkher_main_img" && $table['table_name'] !== "tkher_my_control"  && $table['table_name'] !== "table10_curl" && $table['table_name'] !== "table10_pg_curl" && $table['table_name'] !== "job_link_table_curl" && $table['table_name'] !== "sys_menu_bom_curl") {
+            if( $table['table_name'] !== "member" && $table['table_name'] !== "config" && $table['table_name'] !== "tkher_main_img" && $table['table_name'] !== "tkher_my_control"  && $table['table_name'] !== "table10_curl" && $table['table_name'] !== "table10_pg_curl" && $table['table_name'] !== "job_link_table_curl" && $table['table_name'] !== "sys_menu_bom_curl" && $table['table_name'] !== "aboard_infor") {
 				$t_re_create_btn = '';
 				$t_delete_btn = '';
 				$sys_file = ' - ';

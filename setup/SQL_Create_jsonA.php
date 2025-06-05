@@ -15,6 +15,7 @@ $table_array = ['aboard_admin', 'aboard_infor', 'aboard_memo', 'admin_bbs', 'bbs
 		exit;
 		//echo "<script>window.open( './index.php' , '_self');</script>";
 	}
+	$admin_id = 'admin'; //$member['mb_id'];
 
 function Delete_tableX($_prefix, $tab) {
     $kapp_tab = $_prefix.$tab;
@@ -55,7 +56,7 @@ function Aboard_admin($t_head, $tab) {
         //m_("Create Success : $tab");
 
         $query = "
-        INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 0, 'Manager')
+        INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'kapp', 8, 'Manager')
         ";
 
         $result = sql_query( $query );
@@ -70,6 +71,7 @@ function Aboard_admin($t_head, $tab) {
 }
 
 function Aboard_infor($t_head, $tab) {
+	global $admin_id;
     $tab = $t_head.$tab;
     $SQL = "
         CREATE TABLE ".$t_head."aboard_infor (
@@ -137,6 +139,8 @@ function Aboard_infor($t_head, $tab) {
         m_("$tab Table Create Invalid query: " . $SQL);
         m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
     } else {
+
+		//$admin_id
         m_("Create Success : $tab");
     }
 }

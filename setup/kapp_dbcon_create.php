@@ -16,12 +16,14 @@
 	*/
 
 	$tabData['data'][][] = array();
-		$db_host 		= "";
-		$db_name 		= "";
-		$db_user		= "";
-		$db_password 	= "";
-		$admin_email 	= "";
-		$admin_password = "";
+	$db_host 		= "";
+	$db_name 		= "";
+	$db_user		= "";
+	$db_password 	= "";
+	$admin_email 	= "";
+	$admin_password = "";
+	$admin_id 	= "";
+	$home_url = KAPP_URL_T_;
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else  $mode = "";
@@ -41,6 +43,10 @@
 		$db_password 	= $_POST['db_password'];
 		$admin_email 	= $_POST['admin_email'];
 		$admin_password = $_POST['admin_password'];
+
+		$emailA = explode(".", $admin_email);
+		$email0 = $emailA[0];
+		$admin_id = str_replace( "@", "_", $email0); // 2025-05-18 add
 	}
 	if( $mode == 'Kapp_Setup' ) {
 		// $kapp_dbcon = KAPP_PATH_T_ . "/data/kapp_dbcon.php"; 만 생성 티스트를 한다.
@@ -157,6 +163,12 @@
 		if( kapp_DB_table_check( $table_prefix . "point" ) )			drop_kapp_( $table_prefix . "point" ); 
 		if( kapp_DB_table_check( $table_prefix . "aboard_admin" ) )	drop_kapp_( $table_prefix . "aboard_admin" ); 
 		if( kapp_DB_table_check( $table_prefix . "aboard_infor" ) )	drop_kapp_( $table_prefix . "aboard_infor" ); 
+		//-------------------- add 2025-05-30
+		if( kapp_DB_table_check( "aboard_" .$table_prefix . "notice" ) )	drop_kapp_( "aboard_" .$table_prefix . "notice" ); 
+		if( kapp_DB_table_check( "aboard_" .$table_prefix . "news" ) )	drop_kapp_( "aboard_" .$table_prefix . "news" ); 
+		if( kapp_DB_table_check( "aboard_" .$table_prefix . "qna" ) )	drop_kapp_( "aboard_" .$table_prefix . "qna" ); 
+		if( kapp_DB_table_check( "aboard_" .$table_prefix . "free" ) )	drop_kapp_( "aboard_" .$table_prefix . "free" ); 
+		
 		if( kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		drop_kapp_( $table_prefix . "aboard_memo" ); 
 		if( kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		drop_kapp_( $table_prefix . "admin_bbs" ); 
 		if( kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			drop_kapp_( $table_prefix . "ap_bbs" ); 
@@ -215,6 +227,7 @@
 		if( !kapp_DB_table_check( $table_prefix . "point" ) )			Point( $table_prefix , "point" ); 
 		if( !kapp_DB_table_check( $table_prefix . "aboard_admin" ) )	Aboard_admin( $table_prefix , "aboard_admin" ); 
 		if( !kapp_DB_table_check( $table_prefix . "aboard_infor" ) )	Aboard_infor( $table_prefix , "aboard_infor" ); 
+
 		if( !kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		Aboard_memo( $table_prefix , "aboard_memo" ); 
 		if( !kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		Admin_bbs( $table_prefix , "admin_bbs" ); 
 		if( !kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			Ap_bbs( $table_prefix , "ap_bbs" ); 
@@ -335,16 +348,11 @@
 	}
 	function kapp_member_record_create(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
-		global $tkher;      
+		global $tkher, $admin_id;      
 		$upday  = date("Y-m-d H:i:s",time());
 		$nickday  = date("Y-m-d",time());
 		$row = sql_fetch(" select password('$admin_password') as pass ");
 		$pw = $row['pass'];
-
-		//$str = str_replace("Hello", "Goodbye", $str);
-		$emailA = explode(".", $admin_email);
-		$email0 = $emailA[0];
-		$admin_id = str_replace( "@", "_", $email0); // 2025-05-18 add
 
 		$sqlA = "insert into " . $table_prefix. "member set 
 		mb_id='".$admin_id."', mb_email='".$admin_email."', mb_certify='".$upday."', mb_email_certify='".$upday."', mb_email_certify2='DB Setup', mb_nick_date='".$nickday."', mb_name='DBadmin', mb_nick='DBadmin', mb_level=9, mb_sn='db', mb_password='".$pw."', mb_point=100000, mb_ip='".$_SERVER['REMOTE_ADDR']."', mb_memo='".$_SERVER['SERVER_NAME'].":".$_SERVER['HTTP_HOST']. ":" . $_SERVER['SCRIPT_NAME']."' ";
@@ -359,10 +367,12 @@
 	}
 	function Kapp_Member_Record_Update(){ // 
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
-		global $tkher;      
+		global $tkher, $admin_id;      
 		$upday  = date("Y-m-d H:i:s",time());
 		$nickday  = date("Y-m-d",time());
-		$admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
+		
+		//$admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
+
 		$row = sql_fetch(" select password('$admin_password') as pass ");
 		$pw = $row['pass']; //m_(" pw: " . $pw); // pw: *2FAA1FB2012C385C7CFE7FE38E4F4FC018237420
 		$sqlA = "update " . $table_prefix. "member set 
@@ -615,31 +625,19 @@
 		fwrite($fsi,"define('KAPP_MYSQL_PASSWORD', '".$db_password."'); \r\n");
 		fwrite($fsi,"define('KAPP_MYSQL_SET_MODE', true);               \r\n");
 
-
-		//define('URLLINK_TABLE_PREFIX', 'urllink_'); // urllinkcoin.com add-2021-04-04
-		//$tkher['urllink_member_table']	= URLLINK_TABLE_PREFIX.'member'; // add 2021-04-04 회원 테이블
-		
-		//fwrite($fsi," $" . "prefix = '". $table_prefix ."';                   \r\n");
 		fwrite($fsi," define('KAPP_TABLE_PREFIX', '" . $table_prefix . "' );                // table prefix   \r\n\r\n");
 
-		fwrite($fsi," $" . "tkher['config_table']		= KAPP_TABLE_PREFIX.'config';       // 기본환경 설정 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['login_table']		= KAPP_TABLE_PREFIX.'login';        // 로그인 테이블 (접속자수)   \r\n");
-		fwrite($fsi," $" . "tkher['point_table']		= KAPP_TABLE_PREFIX.'point';        // 포인트 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['visit_table']		= KAPP_TABLE_PREFIX.'visit';        // 방문자 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['visit_sum_table']	= KAPP_TABLE_PREFIX.'visit_sum';    // 방문자 합계 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['tkher_member_table']	= KAPP_TABLE_PREFIX.'member';       // 회원 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['pri_contect_table']		= KAPP_TABLE_PREFIX.'pri_contect';       // 회사 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['config_table']		= KAPP_TABLE_PREFIX.'config';       // basic config table   \r\n");
+		fwrite($fsi," $" . "tkher['login_table']		= KAPP_TABLE_PREFIX.'login';        // login table   \r\n");
+		fwrite($fsi," $" . "tkher['point_table']		= KAPP_TABLE_PREFIX.'point';        // point table   \r\n");
+		fwrite($fsi," $" . "tkher['visit_table']		= KAPP_TABLE_PREFIX.'visit';        // visit table   \r\n");
+		fwrite($fsi," $" . "tkher['visit_sum_table']	= KAPP_TABLE_PREFIX.'visit_sum';    // visit sum   \r\n");
+		fwrite($fsi," $" . "tkher['tkher_member_table']	= KAPP_TABLE_PREFIX.'member';       // member   \r\n");
+		fwrite($fsi," $" . "tkher['pri_contect_table']  = KAPP_TABLE_PREFIX.'pri_contect';  // company contect    \r\n");
 
-		fwrite($fsi," $" . "tkher['group_table']		= KAPP_TABLE_PREFIX.'coin_group';   // 게시판 그룹 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['group_member_table']	= KAPP_TABLE_PREFIX.'group_member'; // 게시판 그룹+회원 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['board_table']		= KAPP_TABLE_PREFIX.'board';        // 게시판 설정 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['board_file_table']	= KAPP_TABLE_PREFIX.'board_file';   // 게시판 첨부파일 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['board_good_table']	= KAPP_TABLE_PREFIX.'board_good';   // 게시물 추천,비추천 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['board_new_table']	= KAPP_TABLE_PREFIX.'board_new';    // 게시판 새글 테이블   \r\n");
-
-		//fwrite($fsi," $" . "tkher['memo_table']			= KAPP_TABLE_PREFIX.'memo';         // 메모 테이블   \r\n");
 /*
+		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['group_member_table']	= KAPP_TABLE_PREFIX.'group_member'; //    \r\n");
 		fwrite($fsi," $" . "tkher['auth_table']			= KAPP_TABLE_PREFIX.'auth';         // 관리권한 설정 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['uniqid_table']		= KAPP_TABLE_PREFIX.'uniqid';       // 유니크한 값을 만드는 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['autosave_table']		= KAPP_TABLE_PREFIX.'autosave';     // 게시글 작성시 일정시간마다 글을 임시 저장하는 테이블   \r\n");
@@ -649,47 +647,49 @@
 		fwrite($fsi," $" . "tkher['content_table']		= KAPP_TABLE_PREFIX.'content';      // 내용(컨텐츠)정보 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['faq_table']			= KAPP_TABLE_PREFIX.'faq';          // 자주하시는 질문 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['faq_master_table']	= KAPP_TABLE_PREFIX.'faq_master';   // 자주하시는 질문 마스터 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['new_win_table']		= KAPP_TABLE_PREFIX.'new_win';      // 새창 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['menu_table']			= KAPP_TABLE_PREFIX.'menu';         // 메뉴관리 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['poll_table']			= KAPP_TABLE_PREFIX.'poll';         // 투표 테이블   \r\n");
-		fwrite($fsi," $" . "tkher['poll_etc_table']		= KAPP_TABLE_PREFIX.'poll_etc';     // 투표 기타의견 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['popular_table']		= KAPP_TABLE_PREFIX.'popular';      // 인기검색어 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['scrap_table']		= KAPP_TABLE_PREFIX.'scrap';        // 게시글 스크랩 테이블   \r\n");
 */
 
-		fwrite($fsi," $" . "tkher['table10_table']		= KAPP_TABLE_PREFIX.'table10';                               // kapp_table10_table   \r\n");
-		fwrite($fsi," $" . "tkher['table10_pg_table']	= KAPP_TABLE_PREFIX.'table10_pg';                     // kapp_table10_pg_table   \r\n");
-		fwrite($fsi," $" . "tkher['job_link_table']		= KAPP_TABLE_PREFIX.'job_link_table';                    // kapp_job_link_table   \r\n");
-		fwrite($fsi," $" . "tkher['sys_menu_bom_table']		= KAPP_TABLE_PREFIX.'sys_menu_bom';     // kapp_sys_menu_bom   \r\n");
+		fwrite($fsi," $" . "tkher['table10_table']		= KAPP_TABLE_PREFIX.'table10';             // kapp_table10_table   \r\n");
+		fwrite($fsi," $" . "tkher['table10_pg_table']	= KAPP_TABLE_PREFIX.'table10_pg';          // kapp_table10_pg_table   \r\n");
+		fwrite($fsi," $" . "tkher['job_link_table']		= KAPP_TABLE_PREFIX.'job_link_table';      // kapp_job_link_table   \r\n");
+		fwrite($fsi," $" . "tkher['sys_menu_bom_table']		= KAPP_TABLE_PREFIX.'sys_menu_bom';    // kapp_sys_menu_bom   \r\n");
 // ----------------------------- add 2025-03-25 curl 부분 추가 . ---------------------------------------------
-		fwrite($fsi," $" . "tkher['table10_curl_table']		= KAPP_TABLE_PREFIX.'table10_curl';                               // kapp_table10_table_curl   \r\n");
-		fwrite($fsi," $" . "tkher['table10_pg_curl_table']	= KAPP_TABLE_PREFIX.'table10_pg_curl';                     // kapp_table10_pg_table_curl   \r\n");
-		fwrite($fsi," $" . "tkher['job_link_table_curl']		= KAPP_TABLE_PREFIX.'job_link_table_curl';                    // kapp_job_link_table_curl   \r\n");
-		fwrite($fsi," $" . "tkher['sys_menu_bom_curl_table']		= KAPP_TABLE_PREFIX.'sys_menu_bom_curl';     // kapp_sys_menu_bom_curl  \r\n");
+		fwrite($fsi," $" . "tkher['table10_curl_table']		= KAPP_TABLE_PREFIX.'table10_curl';             // kapp_table10_table_curl   \r\n");
+		fwrite($fsi," $" . "tkher['table10_pg_curl_table']	= KAPP_TABLE_PREFIX.'table10_pg_curl';          // kapp_table10_pg_table_curl   \r\n");
+		fwrite($fsi," $" . "tkher['job_link_table_curl']		= KAPP_TABLE_PREFIX.'job_link_table_curl';  // kapp_job_link_table_curl   \r\n");
+		fwrite($fsi," $" . "tkher['sys_menu_bom_curl_table']		= KAPP_TABLE_PREFIX.'sys_menu_bom_curl';// kapp_sys_menu_bom_curl  \r\n");
 //---------------------- end
 
-		fwrite($fsi," $" . "tkher['table10_group_table']		= KAPP_TABLE_PREFIX.'table10_group';    // table10_group   \r\n");
-		fwrite($fsi," $" . "tkher['project_table']		= KAPP_TABLE_PREFIX.'project';      // project   \r\n");
-
-		fwrite($fsi," $" . "tkher['aboard_infor_table']		= KAPP_TABLE_PREFIX.'aboard_infor'; // aboard_infor   \r\n");
-		fwrite($fsi," $" . "tkher['aboard_admin_table']		= KAPP_TABLE_PREFIX.'aboard_admin'; // aboard_admin   \r\n");
-		fwrite($fsi," $" . "tkher['aboard_memo_table']		= KAPP_TABLE_PREFIX.'aboard_memo';  // aboard_memo   \r\n");
+		fwrite($fsi," $" . "tkher['table10_group_table']= KAPP_TABLE_PREFIX.'table10_group';         // Project management   \r\n");
+		fwrite($fsi," $" . "tkher['project_table']		= KAPP_TABLE_PREFIX.'project';               // Work request         \r\n");
+		fwrite($fsi," $" . "tkher['aboard_infor_table']		= KAPP_TABLE_PREFIX.'aboard_infor';     // aboard infor   \r\n");
+		fwrite($fsi," $" . "tkher['aboard_admin_table']		= KAPP_TABLE_PREFIX.'aboard_admin';     // aboard admin   \r\n");
+		fwrite($fsi," $" . "tkher['aboard_memo_table']		= KAPP_TABLE_PREFIX.'aboard_memo';      // aboard memo   \r\n");
 		fwrite($fsi," $" . "tkher['webeditor_table']			= KAPP_TABLE_PREFIX.'webeditor';    // webeditor   \r\n");
-		fwrite($fsi," $" . "tkher['webeditor_comment_table']	= KAPP_TABLE_PREFIX.'webeditor_comment';// webeditor_comment   \r\n");
-		fwrite($fsi," $" . "tkher['menuskin_table']			= KAPP_TABLE_PREFIX.'menuskin';     // menuskin   \r\n");
-		fwrite($fsi," $" . "tkher['ap_bbs_table']			= KAPP_TABLE_PREFIX.'ap_bbs';      // 게시판 등록 모든 데이터 수집 테이블   \r\n");
-
-		fwrite($fsi," $" . "tkher['memo_table']			= KAPP_TABLE_PREFIX.'memo_table';   // X 관리자 및 사용자 간의 메모 전달 관리. 1 대 다 전달 기능   \r\n");
-
+		fwrite($fsi," $" . "tkher['webeditor_comment_table']	= KAPP_TABLE_PREFIX.'webeditor_comment'; // webeditor comment   \r\n");
+		fwrite($fsi," $" . "tkher['menuskin_table']			= KAPP_TABLE_PREFIX.'menuskin';     // board menuskin   \r\n");
+		fwrite($fsi," $" . "tkher['ap_bbs_table']			= KAPP_TABLE_PREFIX.'ap_bbs';       // Bulletin Board Collect All Data   \r\n");
+/*
+		fwrite($fsi," $" . "tkher['memo_table']			= KAPP_TABLE_PREFIX.'memo_table';   // X Manage note transfer between administrators and users  \r\n");
+		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['group_table']		= KAPP_TABLE_PREFIX.'coin_group';   // 게시판 그룹 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['group_member_table']	= KAPP_TABLE_PREFIX.'group_member'; // 게시판 그룹+회원 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['board_table']		= KAPP_TABLE_PREFIX.'board';        // 게시판 설정 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['board_file_table']	= KAPP_TABLE_PREFIX.'board_file';   // 게시판 첨부파일 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['board_good_table']	= KAPP_TABLE_PREFIX.'board_good';   // 게시물 추천,비추천 테이블   \r\n");
+		fwrite($fsi," $" . "tkher['board_new_table']	= KAPP_TABLE_PREFIX.'board_new';    // 게시판 새글 테이블   \r\n");
+*/
 		fwrite($fsi," $" . "tkher['tkher_main_img_table']  = KAPP_TABLE_PREFIX.'tkher_main_img';  // slide main and my image   \r\n");
 		fwrite($fsi," $" . "tkher['sajin_group_table']	   = KAPP_TABLE_PREFIX.'sajin_group';     //   \r\n");
 		fwrite($fsi," $" . "tkher['tkher_my_control_table']= KAPP_TABLE_PREFIX.'tkher_my_control';//   \r\n");
 		fwrite($fsi," $" . "tkher['pri_maintenance_table']= KAPP_TABLE_PREFIX.'pri_maintenance';//   \r\n");
-
-		fwrite($fsi," $" . "tkher['coin_view_table']= KAPP_TABLE_PREFIX.'coin_view';//   \r\n");  // add 2024-05-03
-		fwrite($fsi," $" . "tkher['url_group_table']= KAPP_TABLE_PREFIX.'url_group';//   \r\n");  // add 2024-05-03
-		fwrite($fsi," $" . "tkher['log_info_table']= KAPP_TABLE_PREFIX.'log_info';//   \r\n");  // add 2024-05-21
-		fwrite($fsi," $" . "tkher['bbs_history_table']= KAPP_TABLE_PREFIX.'bbs_history';//   \r\n");  // add 2024-05-21
+		fwrite($fsi," $" . "tkher['coin_view_table']= KAPP_TABLE_PREFIX.'coin_view';// point pay table  \r\n");
+//		fwrite($fsi," $" . "tkher['url_group_table']= KAPP_TABLE_PREFIX.'url_group';    //   \r\n");
+		fwrite($fsi," $" . "tkher['log_info_table']= KAPP_TABLE_PREFIX.'log_info';      //   \r\n");
+		fwrite($fsi," $" . "tkher['bbs_history_table']= KAPP_TABLE_PREFIX.'bbs_history';//   \r\n");
 
 		fwrite($fsi,"?>                                                 \r\n");
 
@@ -702,7 +702,7 @@
 		*/
 
 		fclose($fsi);
-		m_("file : " . $kapp_dbcon . " 을 생성 하였습니다.");
+		m_("file : " . $kapp_dbcon . " created. ");
 		//echo "<br><a href='./DB_Table_CreateA.php?admin=modumoa' ><b>Table info list - Click here!!!</b></a>";
 		//echo "<script> href='./DB_Table_CreateA.php'; </script>"; //DB_Table_CreateA.php , SQL_Create_Table.php
 	}
@@ -739,9 +739,9 @@ function Login($t_head, $tab){
 }
 
 function Config($t_head, $tab) {
-		global $admin_email, $table_prefix;
+	global $admin_email, $table_prefix, $admin_id;
     $tab = $t_head.$tab;
-		$admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
+	//$admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
 
     $SQL = "
         CREATE TABLE ".$t_head."config (
@@ -882,8 +882,8 @@ function Config($t_head, $tab) {
         $query = "
         INSERT INTO `".$t_head."config` (`kapp_title`, `kapp_theme`, `kapp_admin`, `kapp_admin_email`, `kapp_admin_email_name`, `kapp_add_script`, `kapp_admin_level`, `kapp_use_point`, `kapp_point_term`, `kapp_use_copy_log`, `kapp_use_email_certify`, `kapp_login_point`, `kapp_cut_name`, `kapp_nick_modify`, `kapp_new_skin`, `kapp_new_rows`, `kapp_search_skin`, `kapp_connect_skin`, `kapp_faq_skin`, `kapp_read_point`, `kapp_write_point`, `kapp_comment_point`, `kapp_download_point`, `kapp_write_pages`, `kapp_mobile_pages`, `kapp_link_target`, `kapp_delay_sec`, `kapp_filter`, `kapp_possible_ip`, `kapp_intercept_ip`, `kapp_analytics`, `kapp_add_meta`, `kapp_syndi_token`, `kapp_syndi_except`, `kapp_member_skin`, `kapp_use_homepage`, `kapp_req_homepage`, `kapp_use_tel`, `kapp_req_tel`, `kapp_use_hp`, `kapp_req_hp`, `kapp_use_addr`, `kapp_req_addr`, `kapp_use_signature`, `kapp_req_signature`, `kapp_use_profile`, `kapp_req_profile`, `kapp_register_level`, `kapp_register_point`, `kapp_icon_level`, `kapp_use_recommend`, `kapp_recommend_point`, `kapp_leave_day`, `kapp_search_part`, `kapp_email_use`, `kapp_email_wr_super_admin`, `kapp_email_wr_group_admin`, `kapp_email_wr_board_admin`, `kapp_email_wr_write`, `kapp_email_wr_comment_all`, `kapp_email_mb_super_admin`, `kapp_email_mb_member`, `kapp_email_po_super_admin`, `kapp_prohibit_id`, `kapp_prohibit_email`, `kapp_new_del`, `kapp_memo_del`, `kapp_visit_del`, `kapp_popular_del`, `kapp_optimize_date`, `kapp_use_member_icon`, `kapp_member_icon_size`, `kapp_member_icon_width`, `kapp_member_icon_height`, `kapp_login_minutes`, `kapp_image_extension`, `kapp_flash_extension`, `kapp_movie_extension`, `kapp_formmail_is_member`, `kapp_page_rows`, `kapp_mobile_page_rows`, `kapp_visit`, `kapp_max_po_id`, `kapp_stipulation`, `kapp_privacy`, `kapp_open_modify`, `kapp_memo_send_point`, `kapp_mobile_new_skin`, `kapp_mobile_search_skin`, `kapp_mobile_connect_skin`, `kapp_mobile_faq_skin`, `kapp_mobile_member_skin`, `kapp_captcha_mp3`, `kapp_editor`, `kapp_cert_use`, `kapp_cert_ipin`, `kapp_cert_hp`, `kapp_cert_kcb_cd`, `kapp_cert_kcp_cd`, `kapp_lg_mid`, `kapp_lg_mert_key`, `kapp_cert_limit`, `kapp_cert_req`, `kapp_sms_use`, `kapp_sms_type`, `kapp_icode_id`, `kapp_icode_pw`, `kapp_icode_server_ip`, `kapp_icode_server_port`, `kapp_googl_shorturl_apikey`, `kapp_facebook_appid`, `kapp_facebook_secret`, `kapp_twitter_key`, `kapp_twitter_secret`, `kapp_kakao_js_apikey`, `kapp_naver_client_id`, `kapp_naver_client_secret`, `kapp_shop_code`, `kapp_shop_name`, `kapp_shop_delivery_cost`, `kapp_pay_point`, `kapp_slide_time`) 
 		VALUES
-		('K-App', 'https://fation.net/kapp', '".$admin_id."', '".$admin_email."', 'K-App', '', 8, 1, 0, 1, 1, 100, 10, 60, 'basic', 15, 'basic', 'basic', 'basic', 100, 3000, 1000, -3000, 10, 5, '_blank', 30, '18아,18놈,18새끼,18뇬,18노,18것,18넘,개년,개놈,개뇬,개새,개색끼,개세끼,개세이,개쉐이,개쉑,개쉽,개시키,개자식,개좆,게색기,게색끼,광뇬,뇬,눈깔,뉘미럴,니귀미,니기미,니미,도촬,되질래,뒈져라,뒈진다,디져라,디진다,디질래,병쉰,병신,뻐큐,뻑큐,뽁큐,삐리넷,새꺄,쉬발,쉬밸,쉬팔,쉽알,스패킹,스팽,시벌,시부랄,시부럴,시부리,시불,시브랄,시팍,시팔,시펄,실밸,십8,십쌔,십창,싶알,쌉년,썅놈,쌔끼,쌩쑈,썅,써벌,썩을년,쎄꺄,쎄엑,쓰바,쓰발,쓰벌,쓰팔,씨8,씨댕,씨바,씨발,씨뱅,씨봉알,씨부랄,씨부럴,씨부렁,씨부리,씨불,씨브랄,씨빠,씨빨,씨뽀랄,씨팍,씨팔,씨펄,씹,아가리,아갈이,엄창,접년,잡놈,재랄,저주글,조까,조빠,조쟁이,조지냐,조진다,조질래,존나,존니,좀물,좁년,좃,좆,좇,쥐랄,쥐롤,쥬디,지랄,지럴,지롤,지미랄,쫍빱,凸,퍽큐,뻑큐,빠큐,ㅅㅂㄹㅁ', '', '', '', '', '', '', 'basic', 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 30000, 2, 1, 1000, 30, 1000, 1, 0, 0, 0, 0, 0, 1, 1, 0, 'admin,administrator,webmaster,sysop,manager,root,su,guest', '', 30, 180, 365, 180, '2022-12-08', 2, 5000, 22, 22, 10, 'gif|jpg|jpeg|png', 'swf', 'asx|asf|wmv|wma|mpg|mpeg|mov|avi|mp3', 1, 15, 10, 'today:2, yestday:, max:2, Total:2', 0, 'A. K-App No Coding System website terms and conditions\r\nThe following terms apply to all use of the website \r\n\r\nPLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING OR USING THE WEBSITE. By accessing or using any portion of the website, you agree to the terms of this Agreement. If you do not agree to all of the terms and conditions of this Agreement, you will not be able to access the Website or use the Services. If these Terms of Use are considered an offer of U-link System, you expressly agree to these Terms and Conditions. This website is only available to individuals who are at least 13 years old.\r\n\r\n1. Ownership\r\nOwnership, copyright and ownership of software developed by U-link System must always remain in U-link System. You may not acquire, directly, indirectly, or implicitly, ownership, copyright or ownership of the software or any part thereof. We do not claim ownership of any information you submit to the U-link System application itself, and your code is yours.\r\n\r\n2. Your account and website\r\nWhen you create an account on the website, you are responsible for maintaining the security of your account, and you are solely responsible for all activities related to your account and other actions related to your account. You must promptly notify U-link System of any unauthorized use of your account or any other security breach. U-link System is not liable for any act or negligence by you, including any damages of any kind arising out of such acts or omissions.\r\n\r\n3. Acceptable use of your account and website\r\nBy agreeing to this Agreement, you agree that you will not use, recommend, promote or facilitate the use of the Website or your account by others in a manner that is harmful to others (“Acceptable Use”). Examples of harmful uses include illegal or fraudulent activities, infringement of the intellectual property rights of others, defamation, obscene content, violent content, violent content, infringement of privacy, or distributing content that is harassing. The security or integrity of a network or communication system, a taxable resource for activities such as cryptocurrency mining. External scans of the U-link System infrastructure cannot be performed without the written permission of the U-link System.\r\n\r\n4.Payment and renewal for subscriptions purchased through the website\r\nBy choosing a subscription, you agree to pay the U-link System a designated annual subscription fee for that service. Subscription fees are non-refundable within the first 45 days of subscription. The subscription fee is stated on the invoice. Your subscription will automatically renew unless you notify the U-link System you wish to cancel your subscription before the end of the subscription period. U-link System reserves the right to adjust rates at the time of renewal. You have the right to collect the applicable annual subscription fee using the credit card or other payment method recorded by us. All subscriptions are subject to the terms and conditions of the U-link System Subscription Terms.\r\n\r\n5.U-link System newsletter\r\nBy creating an account on U-link System, you will be given the right to add your email address to the U-link System newsletter. You can unsubscribe at any time using the link at the bottom of the newsletter.\r\n\r\n6. Responsibilities of website visitors\r\nU-link System does not review \r\n\r\n7. Content posted on other websites\r\nWe have not reviewed \r\n\r\n8. Copyright Infringement and DMCA Policy\r\nU-link System respects the intellectual property rights of others because it asks others to respect their intellectual property rights. If you believe that any material on the U-link System infringes your copyright, please notify U-link System in accordance with DMCA policy.\r\n\r\n9.Data privacy\r\nYou must ensure that any inf\r\n\r\n(U-link System Contribut\r\n\r\n10. Intellectual property rights\r\nThis Agreement does not transfer the intellectual property rights of the U-link System or any third party to you by the U-link System, and all rights, titles and interests in such property remain (between the parties) with the U-link System. U-link System, the U-link System logo, and all other trademarks, service marks, graphics and logos or websites associated with the U-link System are trademarks or registered trademarks of U-link System BV or U-link System licensors. Use of the \"U-link System\" is under license. Other trademarks, service marks, graphics and logos used in connection with the website may be trademarks of other third parties. Use of the website does not give you any right or license to reproduce or otherwise use the U-link System or any third party trademarks.\r\n\r\n11. Changes\r\nWhile most changes may be min\r\n\r\n12. General Representative\r\nYou will (i) strictly comply with this Agreement \r\n\r\n13. End\r\nThe U-link System may terminate your access to all \r\n\r\n14. Limitation of Liability\r\nU-link System or its affiliates, suppliers or licensors shall not be liable for any contract, negligence, strict liability or any other liability in relation to the subject matter of this Agreement under any law or impartial theory. (i) U-link System, or consequential damages; (ii) Cost of procurement for a replacement product or service; (iii) Use or loss of data or discontinuation of data; Or (iv) we are not liable for any damages. U-link System cannot be held liable for failures or delays due to issues beyond its reasonable control.\r\n\r\n15. Warranty\r\nYou agree that U-link System, its affiliates, contract\r\n\r\n16. Disclaimer of Warranty\r\nThe website is provided \"as is\". U-link System \r\n\r\n17. Partial void\r\nIf a court of competent jurisdiction claims any provision of this document as invalid, invalid or unenforceable, the remaining provisions will remain in full effect without being damaged or invalidated in any way.\r\n\r\n18. Execution failure\r\n\r\n19. Dispute Resolution\r\nBoth parties will enter into good faith negotiations to resolve the dispute for 10 business days after written notice of the dispute or written matter has been provided to the other party. Within such 10 business days, the representatives of each party will participate in negotiations to resolve the dispute, and these individuals will meet in person via video conference or telephone to attempt to resolve the dispute or problem informally. If such parties are unable to resolve the dispute within 10 such business days, the parties may exercise their rights to use this Agreement or otherwise, unless the parties mutually agree to extend the negotiation period.\r\n\r\n20. Arbitration\r\nAny dispute, controversy, or allegation arising in connection with this Agreement, including the formation, interpretation, breach or termination of this Agreement, including whether any claims not resolved through the procedures set forth in Dispute Resolution may be asserted, shall be governed by the Arbitration Rules of the Republic of Korea Arbitration Service. Subject to arbitration and final decision. The arbitral tribunal consists of one arbitrator. The place of arbitration shall be the Republic of Korea. A ruling on an award made by an arbitrator may be filed with a court having jurisdiction.\r\n\r\n21. Governing Law\r\nThis Agreement is governed and construed in accordance with the laws of the Republic of Korea.\r\n', 'Purpose item retention period\r\nIdentification of the user, contact for contract execution, handling of complaints related to the use of the service Until the e-mail service is canceled.\r\nHowever, when it is necessary to retain the transaction-related rights and obligations for a certain period of time,\r\nFor the period set by the relevant laws or for the period set forth below\r\n1) Record of consumer complaints or disputes: 3 years\r\n2) Records on the collection, processing and use of credit information: 3 years  3) Record of payment and goods supply: 5 years\r\n4) Record of contract or withdrawal of subscription: 5 years\r\n5) Login record: 3 months\r\n', 0, 100, 'basic', 'basic', 'basic', 'basic', 'basic', 'basic', 'cheditor5', 0, '', '', '', '', '', '', 5, 1, 'icode', '', 'K-APP', '778855', '211.172.232.124', '7295', '', '', '', '', '', '', '', '', '', '', 3000, 1, 6000)
-        "; // naver add 2024-04-24
+		('K-App', 'https://fation.net/kapp', '".$admin_id."', '".$admin_email."', 'K-App', '', 8, 1, 0, 1, 1, 100, 10, 60, 'basic', 15, 'basic', 'basic', 'basic', 100, 3000, 1000, -3000, 10, 5, '_blank', 30, '18아,18놈,18새끼,18뇬,18노,18것,18넘,개년,개놈,개뇬,개새,개색끼,개세끼,개세이,개쉐이,개쉑,개쉽,개시키,개자식,개좆,게색기,게색끼,광뇬,뇬,눈깔,뉘미럴,니귀미,니기미,니미,도촬,되질래,뒈져라,뒈진다,디져라,디진다,디질래,병쉰,병신,뻐큐,뻑큐,뽁큐,삐리넷,새꺄,쉬발,쉬밸,쉬팔,쉽알,스패킹,스팽,시벌,시부랄,시부럴,시부리,시불,시브랄,시팍,시팔,시펄,실밸,십8,십쌔,십창,싶알,쌉년,썅놈,쌔끼,쌩쑈,썅,써벌,썩을년,쎄꺄,쎄엑,쓰바,쓰발,쓰벌,쓰팔,씨8,씨댕,씨바,씨발,씨뱅,씨봉알,씨부랄,씨부럴,씨부렁,씨부리,씨불,씨브랄,씨빠,씨빨,씨뽀랄,씨팍,씨팔,씨펄,씹,아가리,아갈이,엄창,접년,잡놈,재랄,저주글,조까,조빠,조쟁이,조지냐,조진다,조질래,존나,존니,좀물,좁년,좃,좆,좇,쥐랄,쥐롤,쥬디,지랄,지럴,지롤,지미랄,쫍빱,凸,퍽큐,뻑큐,빠큐,ㅅㅂㄹㅁ', '', '', '', '', '', '', 'basic', 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 2, 30000, 2, 1, 1000, 30, 1000, 1, 0, 0, 0, 0, 0, 1, 1, 0, 'admin,administrator,webmaster,sysop,manager,root,su,guest', '', 30, 180, 365, 180, '2022-12-08', 2, 5000, 22, 22, 10, 'gif|jpg|jpeg|png', 'swf', 'asx|asf|wmv|wma|mpg|mpeg|mov|avi|mp3', 1, 15, 10, 'today:2, yestday:, max:2, Total:2', 0, 'A. K-APP is No Coding System website terms and conditions\r\nThe following terms apply to all use of the website \r\n\r\nPLEASE READ THIS AGREEMENT CAREFULLY BEFORE ACCESSING OR USING THE WEBSITE. By accessing or using any portion of the website, you agree to the terms of this Agreement. If you do not agree to all of the terms and conditions of this Agreement, you will not be able to access the Website or use the Services. If these Terms of Use are considered an offer of U-link System, you expressly agree to these Terms and Conditions. This website is only available to individuals who are at least 13 years old.\r\n\r\n1. Ownership\r\nOwnership, copyright and ownership of software developed by U-link System must always remain in U-link System. You may not acquire, directly, indirectly, or implicitly, ownership, copyright or ownership of the software or any part thereof. We do not claim ownership of any information you submit to the U-link System application itself, and your code is yours.\r\n\r\n2. Your account and website\r\nWhen you create an account on the website, you are responsible for maintaining the security of your account, and you are solely responsible for all activities related to your account and other actions related to your account. You must promptly notify U-link System of any unauthorized use of your account or any other security breach. U-link System is not liable for any act or negligence by you, including any damages of any kind arising out of such acts or omissions.\r\n\r\n3. Acceptable use of your account and website\r\nBy agreeing to this Agreement, you agree that you will not use, recommend, promote or facilitate the use of the Website or your account by others in a manner that is harmful to others (“Acceptable Use”). Examples of harmful uses include illegal or fraudulent activities, infringement of the intellectual property rights of others, defamation, obscene content, violent content, violent content, infringement of privacy, or distributing content that is harassing. The security or integrity of a network or communication system, a taxable resource for activities such as cryptocurrency mining. External scans of the U-link System infrastructure cannot be performed without the written permission of the U-link System.\r\n\r\n4.Payment and renewal for subscriptions purchased through the website\r\nBy choosing a subscription, you agree to pay the U-link System a designated annual subscription fee for that service. Subscription fees are non-refundable within the first 45 days of subscription. The subscription fee is stated on the invoice. Your subscription will automatically renew unless you notify the U-link System you wish to cancel your subscription before the end of the subscription period. U-link System reserves the right to adjust rates at the time of renewal. You have the right to collect the applicable annual subscription fee using the credit card or other payment method recorded by us. All subscriptions are subject to the terms and conditions of the U-link System Subscription Terms.\r\n\r\n5.U-link System newsletter\r\nBy creating an account on U-link System, you will be given the right to add your email address to the U-link System newsletter. You can unsubscribe at any time using the link at the bottom of the newsletter.\r\n\r\n6. Responsibilities of website visitors\r\nU-link System does not review \r\n\r\n7. Content posted on other websites\r\nWe have not reviewed \r\n\r\n8. Copyright Infringement and DMCA Policy\r\nU-link System respects the intellectual property rights of others because it asks others to respect their intellectual property rights. If you believe that any material on the U-link System infringes your copyright, please notify U-link System in accordance with DMCA policy.\r\n\r\n9.Data privacy\r\nYou must ensure that any inf\r\n\r\n(U-link System Contribut\r\n\r\n10. Intellectual property rights\r\nThis Agreement does not transfer the intellectual property rights of the U-link System or any third party to you by the U-link System, and all rights, titles and interests in such property remain (between the parties) with the U-link System. U-link System, the U-link System logo, and all other trademarks, service marks, graphics and logos or websites associated with the U-link System are trademarks or registered trademarks of U-link System BV or U-link System licensors. Use of the \"U-link System\" is under license. Other trademarks, service marks, graphics and logos used in connection with the website may be trademarks of other third parties. Use of the website does not give you any right or license to reproduce or otherwise use the U-link System or any third party trademarks.\r\n\r\n11. Changes\r\nWhile most changes may be min\r\n\r\n12. General Representative\r\nYou will (i) strictly comply with this Agreement \r\n\r\n13. End\r\nThe U-link System may terminate your access to all \r\n\r\n14. Limitation of Liability\r\nU-link System or its affiliates, suppliers or licensors shall not be liable for any contract, negligence, strict liability or any other liability in relation to the subject matter of this Agreement under any law or impartial theory. (i) U-link System, or consequential damages; (ii) Cost of procurement for a replacement product or service; (iii) Use or loss of data or discontinuation of data; Or (iv) we are not liable for any damages. U-link System cannot be held liable for failures or delays due to issues beyond its reasonable control.\r\n\r\n15. Warranty\r\nYou agree that U-link System, its affiliates, contract\r\n\r\n16. Disclaimer of Warranty\r\nThe website is provided \"as is\". U-link System \r\n\r\n17. Partial void\r\nIf a court of competent jurisdiction claims any provision of this document as invalid, invalid or unenforceable, the remaining provisions will remain in full effect without being damaged or invalidated in any way.\r\n\r\n18. Execution failure\r\n\r\n19. Dispute Resolution\r\nBoth parties will enter into good faith negotiations to resolve the dispute for 10 business days after written notice of the dispute or written matter has been provided to the other party. Within such 10 business days, the representatives of each party will participate in negotiations to resolve the dispute, and these individuals will meet in person via video conference or telephone to attempt to resolve the dispute or problem informally. If such parties are unable to resolve the dispute within 10 such business days, the parties may exercise their rights to use this Agreement or otherwise, unless the parties mutually agree to extend the negotiation period.\r\n\r\n20. Arbitration\r\nAny dispute, controversy, or allegation arising in connection with this Agreement, including the formation, interpretation, breach or termination of this Agreement, including whether any claims not resolved through the procedures set forth in Dispute Resolution may be asserted, shall be governed by the Arbitration Rules of the Republic of Korea Arbitration Service. Subject to arbitration and final decision. The arbitral tribunal consists of one arbitrator. The place of arbitration shall be the Republic of Korea. A ruling on an award made by an arbitrator may be filed with a court having jurisdiction.\r\n\r\n21. Governing Law\r\nThis Agreement is governed and construed in accordance with the laws of the Republic of Korea.\r\n', 'Purpose item retention period\r\nIdentification of the user, contact for contract execution, handling of complaints related to the use of the service Until the e-mail service is canceled.\r\nHowever, when it is necessary to retain the transaction-related rights and obligations for a certain period of time,\r\nFor the period set by the relevant laws or for the period set forth below\r\n1) Record of consumer complaints or disputes: 3 years\r\n2) Records on the collection, processing and use of credit information: 3 years  3) Record of payment and goods supply: 5 years\r\n4) Record of contract or withdrawal of subscription: 5 years\r\n5) Login record: 3 months\r\n', 0, 100, 'basic', 'basic', 'basic', 'basic', 'basic', 'basic', 'editor', 0, '', '', '', '', '', '', 5, 1, 'icode', '', 'K-APP', '1234567', '127.0.0.1', '7295', '', '', '', '', '', '', '', '', '', '', 3000, 1, 6000)
+        ";
 
 		//`kapp_as_thema`, `kapp_as_color`, `kapp_as_mobile_thema`, `kapp_as_mobile_color`, `kapp_as_admin`, `kapp_as_intro`, `kapp_as_intro_skin`, `kapp_as_mobile_intro_skin`, `kapp_as_tag_skin`, `kapp_as_mobile_tag_skin`, `kapp_as_misc_skin`, `kapp_as_lang`, `kapp_as_gnu`, `kapp_as_xp`, `kapp_as_mp`) 
 		//, 'Basic', 'Basic', 'Basic', 'Basic', '', '', '', '', 'basic', 'basic', 'basic', 'english', 0, 'XP', 'MP')
@@ -925,7 +925,7 @@ function Aboard_admin($t_head, $tab) {
         //m_("Create Success : $tab");
 
         $query = "
-        INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 0, '전체관리')
+        INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 9, 'total manager')
         ";
 
         $result = sql_query( $query );
@@ -940,6 +940,7 @@ function Aboard_admin($t_head, $tab) {
 }
 
 function Aboard_infor($t_head, $tab) {
+	global $admin_id, $admin_email, $home_url;
     $tab = $t_head.$tab;
     $SQL = "
         CREATE TABLE ".$t_head."aboard_infor (
@@ -1007,7 +1008,151 @@ function Aboard_infor($t_head, $tab) {
         m_("$tab Table Create Invalid query: " . $SQL);
         m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
     } else {
-        echo " - Create  Success : $tab";
+		$notice_nm = $t_head ."notice";
+		$news_nm   = $t_head ."news";
+		$qna_nm    = $t_head ."qna";
+		$free_nm   = $t_head ."free";
+	//$day = date("Y-m-d H:i", time());
+	$day = time();
+
+$query = "
+	INSERT INTO `".$t_head."aboard_infor` 
+(`name`, `table_name`, `fileup`, `in_date`, `memo_gubun`, `ip_gubun`, `html_gubun`, `imember`, `home_url`, `table_width`, `list_table_set`, `list_title_bgcolor`, `list_title_font`, `list_text_bgcolor`, `list_text_font`, `list_size`, `detail_table_set`, `detail_title_bgcolor`, `detail_title_font`, `detail_text_bgcolor`, `detail_text_font`, `detail_memo_bgcolor`, `detail_memo_font`, `input_table_set`, `input_title_bgcolor`, `input_title_font`, `icon_home`, `icon_prev`, `icon_next`, `icon_insert`, `icon_update`, `icon_delete`, `icon_reply`, `icon_list`, `icon_search_list`, `icon_search`, `icon_submit`, `icon_new`, `icon_list_reply`, `icon_memo`, `icon_admin`, `list_gubun`, `connection_gubun`, `top_html`, `bottom_html`, `grant_view`, `grant_write`, `movie`, `title_color`, `title_text_color`, `security`, `lev`, `make_id`, `make_club`, `sunbun`, `memo`) VALUES
+('Notice', '".$notice_nm."', 3, ".$day.", 1, 0, 0, '".$admin_id."', '".$home_url."', '500', 'align=center border=0 cellpadding=1 cellspacing=0', '#ffffff', '#000000', '#FFFFFF', '#000000', 20, 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#c0c0c0', '#ffffff', '#000000', '#ffffff', '#000000', 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#000000', 'home.gif', 'e_prev.gif', 'e_next.gif', 'e_insert.gif', 'e_update.gif', 'e_delete.gif', 'e_reply.gif', 'e_list.gif', 'search_list.gif', 'search.gif', 'e_submit.gif', 'new.gif', 'list_reply.gif', 'memo.gif', 'e_admin.gif', 1, 1, '', '', 1, 8, '5', '#FFFFFF', '#000000', '0', '2', '".$admin_id."', '".$home_url."', 1, 'K-APP setup Notice'),
+('News', '".$news_nm."', 3, ".$day.", 1, 0, 0, '".$admin_id."', '".$home_url."', '500', 'align=center border=0 cellpadding=1 cellspacing=0', '#ffffff', '#000000', '#FFFFFF', '#000000', 20, 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#c0c0c0', '#ffffff', '#000000', '#ffffff', '#000000', 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#000000', 'home.gif', 'e_prev.gif', 'e_next.gif', 'e_insert.gif', 'e_update.gif', 'e_delete.gif', 'e_reply.gif', 'e_list.gif', 'search_list.gif', 'search.gif', 'e_submit.gif', 'new.gif', 'list_reply.gif', 'memo.gif', 'e_admin.gif', 1, 1, '', '', 1, 8, '5', '#FFFFFF', '#000000', '0', '2', '".$admin_id."', '".$home_url."', 2, 'K-APP setup News'),
+('Q&A', '".$qna_nm."', 3, ".$day.", 1, 0, 0, '".$admin_id."', '".$home_url."', '500', 'align=center border=0 cellpadding=1 cellspacing=0', '#ffffff', '#000000', '#FFFFFF', '#000000', 20, 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#c0c0c0', '#ffffff', '#000000', '#ffffff', '#000000', 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#000000', 'home.gif', 'e_prev.gif', 'e_next.gif', 'e_insert.gif', 'e_update.gif', 'e_delete.gif', 'e_reply.gif', 'e_list.gif', 'search_list.gif', 'search.gif', 'e_submit.gif', 'new.gif', 'list_reply.gif', 'memo.gif', 'e_admin.gif', 1, 1, '', '', 1, 2, '5', '#FFFFFF', '#000000', '0', '2', '".$admin_id."', '".$home_url."', 3, 'K-APP setup QnA'),
+('Free Board', '".$free_nm."', 3, ".$day.", 1, 0, 0, '".$admin_id."', '".$home_url."', '500', 'align=center border=0 cellpadding=1 cellspacing=0', '#ffffff', '#000000', '#FFFFFF', '#000000', 20, 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#c0c0c0', '#ffffff', '#000000', '#ffffff', '#000000', 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#000000', 'home.gif', 'e_prev.gif', 'e_next.gif', 'e_insert.gif', 'e_update.gif', 'e_delete.gif', 'e_reply.gif', 'e_list.gif', 'search_list.gif', 'search.gif', 'e_submit.gif', 'new.gif', 'list_reply.gif', 'memo.gif', 'e_admin.gif', 1, 1, '', '', 1, 1, '5', '#FFFFFF', '#000000', '0', '2', '".$admin_id."', '".$home_url."', 4, 'K-APP setup free board')
+";
+
+        $result = sql_query( $query );
+
+        if( !$result ){
+            m_("$tab Table Insert Invalid query: " . $query);
+            //m_("Please check if the $tab table already exists.");//table이 이미 존재하는지 확인 바랍니다
+        } else {
+            echo "Create Success and Record Create  Success : $tab";
+        }
+		echo " - Create  Success : $tab";
+
+		$sql = "
+        CREATE TABLE `aboard_".$t_head."notice` (
+			  `no` int(11) auto_increment NOT NULL,
+			  `infor` int(11) DEFAULT NULL,
+			  `id` varchar(30) DEFAULT NULL,
+			  `name` varchar(30) DEFAULT NULL,
+			  `email` varchar(100) DEFAULT NULL,
+			  `home` varchar(200) DEFAULT NULL,
+			  `ip` varchar(15) DEFAULT NULL,
+			  `in_date` int(11) DEFAULT NULL,
+			  `subject` varchar(100) DEFAULT NULL,
+			  `context` text DEFAULT NULL,
+			  `html` int(11) DEFAULT NULL,
+			  `password` varchar(10) DEFAULT NULL,
+			  `file_name` varchar(250) DEFAULT NULL,
+			  `file_wonbon` varchar(250) DEFAULT NULL,
+			  `file_size` int(11) DEFAULT NULL,
+			  `file_type` char(4) DEFAULT NULL,
+			  `file_path` varchar(200) DEFAULT NULL,
+			  `cnt` int(11) DEFAULT NULL,
+			  `target` int(11) DEFAULT NULL,
+			  `step` int(11) DEFAULT NULL,
+			  `re` int(11) DEFAULT NULL,
+			  `security` varchar(10) DEFAULT NULL
+			, primary key(no) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		";
+        $result = sql_query( $sql );
+		echo "<br>aboard_".$t_head."notice, --- ";
+		if( $result ) echo " - Create  Success : aboard_".$t_head."notice";
+
+		$sql = "
+			CREATE TABLE `aboard_".$t_head."news` (
+			  `no` int(11) auto_increment NOT NULL,
+			  `infor` int(11) DEFAULT NULL,
+			  `id` varchar(30) DEFAULT NULL,
+			  `name` varchar(30) DEFAULT NULL,
+			  `email` varchar(100) DEFAULT NULL,
+			  `home` varchar(200) DEFAULT NULL,
+			  `ip` varchar(15) DEFAULT NULL,
+			  `in_date` int(11) DEFAULT NULL,
+			  `subject` varchar(100) DEFAULT NULL,
+			  `context` text DEFAULT NULL,
+			  `html` int(11) DEFAULT NULL,
+			  `password` varchar(10) DEFAULT NULL,
+			  `file_name` varchar(250) DEFAULT NULL,
+			  `file_wonbon` varchar(250) DEFAULT NULL,
+			  `file_size` int(11) DEFAULT NULL,
+			  `file_type` char(4) DEFAULT NULL,
+			  `file_path` varchar(200) DEFAULT NULL,
+			  `cnt` int(11) DEFAULT NULL,
+			  `target` int(11) DEFAULT NULL,
+			  `step` int(11) DEFAULT NULL,
+			  `re` int(11) DEFAULT NULL,
+			  `security` varchar(10) DEFAULT NULL
+			, primary key(no) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		";
+        $result = sql_query( $sql );
+		echo "<br>aboard_".$t_head."news, --- ";
+		if( $result ) echo " - Create  Success : aboard_".$t_head."news";
+
+		$sql = "
+			CREATE TABLE `aboard_".$t_head."qna` (
+			  `no` int(11) auto_increment NOT NULL,
+			  `infor` int(11) DEFAULT NULL,
+			  `id` varchar(30) DEFAULT NULL,
+			  `name` varchar(30) DEFAULT NULL,
+			  `email` varchar(100) DEFAULT NULL,
+			  `home` varchar(200) DEFAULT NULL,
+			  `ip` varchar(15) DEFAULT NULL,
+			  `in_date` int(11) DEFAULT NULL,
+			  `subject` varchar(100) DEFAULT NULL,
+			  `context` text DEFAULT NULL,
+			  `html` int(11) DEFAULT NULL,
+			  `password` varchar(10) DEFAULT NULL,
+			  `file_name` varchar(250) DEFAULT NULL,
+			  `file_wonbon` varchar(250) DEFAULT NULL,
+			  `file_size` int(11) DEFAULT NULL,
+			  `file_type` char(4) DEFAULT NULL,
+			  `file_path` varchar(200) DEFAULT NULL,
+			  `cnt` int(11) DEFAULT NULL,
+			  `target` int(11) DEFAULT NULL,
+			  `step` int(11) DEFAULT NULL,
+			  `re` int(11) DEFAULT NULL,
+			  `security` varchar(10) DEFAULT NULL
+			, primary key(no) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		";
+        $result = sql_query( $sql );
+		echo "<br>aboard_".$t_head."qna, --- ";
+		if( $result ) echo " - Create  Success : aboard_".$t_head."qna";
+
+		$sql = "
+			CREATE TABLE `aboard_".$t_head."free` (
+			  `no` int(11) auto_increment NOT NULL,
+			  `infor` int(11) DEFAULT NULL,
+			  `id` varchar(30) DEFAULT NULL,
+			  `name` varchar(30) DEFAULT NULL,
+			  `email` varchar(100) DEFAULT NULL,
+			  `home` varchar(200) DEFAULT NULL,
+			  `ip` varchar(15) DEFAULT NULL,
+			  `in_date` int(11) DEFAULT NULL,
+			  `subject` varchar(100) DEFAULT NULL,
+			  `context` text DEFAULT NULL,
+			  `html` int(11) DEFAULT NULL,
+			  `password` varchar(10) DEFAULT NULL,
+			  `file_name` varchar(250) DEFAULT NULL,
+			  `file_wonbon` varchar(250) DEFAULT NULL,
+			  `file_size` int(11) DEFAULT NULL,
+			  `file_type` char(4) DEFAULT NULL,
+			  `file_path` varchar(200) DEFAULT NULL,
+			  `cnt` int(11) DEFAULT NULL,
+			  `target` int(11) DEFAULT NULL,
+			  `step` int(11) DEFAULT NULL,
+			  `re` int(11) DEFAULT NULL,
+			  `security` varchar(10) DEFAULT NULL
+			, primary key(no) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		";
+        $result = sql_query( $sql );
+		echo "<br>aboard_".$t_head."free, --- ";
+		if( $result ) echo " - Create  Success : aboard_".$t_head."free";
     }
 }
 
