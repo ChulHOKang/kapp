@@ -69,9 +69,11 @@ if( $mode == 'A_login') {
     $set_point = $config['kapp_register_point'];
     $g_email_check = Record_check($g_email); // check GOOGLE first login
     if( !$g_email_check) {
-        Record_create_member($g_email, $g_fullname, $g_image, $level, $set_point);
-		$id = str_replace( "@", "_", $g_email);
-        Record_create_point_info($id, $set_point);
+		$emailA = explode(".", $g_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0);
+        Record_create_member_google( $userid, $g_email, $g_fullname, $g_image, $level, $set_point);
+        Record_create_point_info( $userid, $set_point);
         $member = get_urllink_memberE($g_email);
         connect_count('K-App login : Create Google_account', $g_email, 1, $referer);
         Create_Session('Google_Login_K', $member, $remote_addr, $user_agent);
@@ -80,7 +82,7 @@ if( $mode == 'A_login') {
         if($g_email_check == 'Kakao' || $g_email_check == 'Naver') { // duplicate email 
             m_(" dup ---Google");
         } else {
-            Record_update_google($g_email, $g_fullname, $g_image);
+            Record_update_google( $g_email, $g_fullname, $g_image);
             $member = get_urllink_memberE($g_email);
             connect_count('K-App login : Login Google', $g_email, 1, $referer);
         }
@@ -99,9 +101,11 @@ if( $mode == 'A_login') {
     $kakao_email_check = Record_check($k_email); // check KAKAO first login
 
     if( !$kakao_email_check) {
-        Record_create_member_kakao($k_email, $k_nickname, $k_image, $level, $set_point);
-		$id = str_replace( "@", "_", $k_email);
-        Record_create_point_info($id, $set_point);
+		$emailA = explode(".", $k_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); 
+        Record_create_member_kakao( $userid, $k_email, $k_nickname, $k_image, $level, $set_point);
+        Record_create_point_info( $userid, $set_point);
         $member = get_urllink_memberE($k_email);
         connect_count('K-App login : Create Kakao_account', $k_email, 1, $referer);
         Create_Session('Kakao_Login_K', $member, $remote_addr, $user_agent);
@@ -126,7 +130,8 @@ if( $mode == 'A_login') {
 	$state = $_GET["state"];
     $returnURL = $state;
 	$redirectURI = urlencode( KAPP_URL_T_ . "/login_checkT.php");
-	$n_url = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=".$client_id."&client_secret=".$client_secret."&redirect_uri=".$redirectURI."&code=".$code."&state=".$state."&returnURLX=".$_REQUEST["returnURLX"];
+//	$n_url = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=".$client_id."&client_secret=".$client_secret."&redirect_uri=".$redirectURI."&code=".$code."&state=".$state."&returnURLX=".$_REQUEST["returnURLX"];
+	$n_url = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=".$client_id."&client_secret=".$client_secret."&redirect_uri=".$redirectURI."&code=".$code."&state=".$state;
 	$is_post = false;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $n_url);
@@ -157,13 +162,16 @@ if( $mode == 'A_login') {
 			$n_id = $responseData2['response']['id'];
 			$n_email = $responseData2['response']['email'];
 			$n_name = $responseData2['response']['name'];
-			$n_mobile = $responseData2['response']['mobile'];
+			if( isset($responseData2['response']['mobile']) ) $n_mobile = $responseData2['response']['mobile'];
+			else $n_mobile = "";
 			$n_profile_image = $responseData2['response']['profile_image'];
 			$n_nickname = $responseData2['response']['nickname'];
 			$n_gender = $responseData2['response']['gender'];
-			$n_age = $responseData2['response']['age'];
+			if( isset($responseData2['response']['age']) ) $n_age = $responseData2['response']['age'];
+			else $n_age = "";
 			$n_birthday = $responseData2['response']['birthday'];
-			$n_birthyear = $responseData2['response']['birthyear'];
+			if( isset($responseData2['response']['birthyear']) ) $n_birthyear = $responseData2['response']['birthyear'];
+			else $n_birthyear = "";
 
 		} else {
 			echo "Error:".$response2;
@@ -180,15 +188,18 @@ if( $mode == 'A_login') {
     $naver_email_check = Record_check($n_email); // check NAVER first login
 
     if( !$naver_email_check) { // first
-        Record_create_member_naver($n_email, $n_name, $n_nickname, $n_profile_image, $level, $n_gender, $n_birth, $n_hp, $set_point);
-		$id = str_replace( "@", "_", $n_email);
-        Record_create_point_info($id, $set_point);
+		$emailA = explode(".", $n_email);
+		$email0 = $emailA[0];
+		$userid = str_replace( "@", "_", $email0); 
+        Record_create_member_naver($userid, $n_email, $n_name, $n_nickname, $n_profile_image, $level, $n_gender, $n_birth, $n_hp, $set_point);
+		//$id = str_replace( "@", "_", $n_email);
+        Record_create_point_info($userid, $set_point);
         $member = get_urllink_memberE($n_email);
         connect_count('K-App login : Create Naver_account', $n_email, 1, $referer);
         Create_Session('Naver_Login_K', $member, $remote_addr, $user_agent);
 
 	} else { // 로그인
-        if( $kakao_email_check == 'Google' || $kakao_email_check == 'Kakao') { // email duplicate
+        if( $naver_email_check == 'Google' || $naver_email_check == 'Kakao') { // email duplicate
             m_("이미 등록된 계정입니다.---Naver");
         } else {
             Record_update_naver( $n_email, $n_name, $n_nickname, $n_profile_image, $n_hp);
@@ -208,7 +219,7 @@ if( $config['kapp_use_point']) {
     $sql= " update {$tkher['tkher_member_table']} set mb_point = '$sum_point' where mb_id = '{$member['mb_id']}' ";
     sql_query($sql);
 }
-
+/*
 if( $url) { // url 체크
     check_url_host($url);
     $link = urldecode($url);   // (다른 변수들을 넘겨주기 위함)
@@ -228,8 +239,9 @@ if( $url) { // url 체크
 	if( isset($_POST['runpage']) ) $link = $_POST['runpage'];
     else $link = "./";
 }
+*/
 
-$url = $returnURL;
+$url = "./"; //$returnURL;
 echo "<script>window.open( '$url' , '_top', ''); </script>";
 exit;
 
@@ -248,11 +260,8 @@ function Record_check($_email) {
     else return false;
 }
 
-function Record_create_member($_g_email, $_g_fullname, $_g_image, $_level, $_set_point) { // google info
+function Record_create_member_google( $userid, $_g_email, $_g_fullname, $_g_image, $_level, $_set_point) { // google info
     global $tkher;
-	$emailA = explode(".", $_g_email);
-	$email0 = $emailA[0];
-	$userid = str_replace( "@", "_", $email0);
 
     $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$userid."' , mb_sn = 'Google'  , mb_name = '".$_g_fullname."'  , mb_nick = '".$_g_fullname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_g_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."' , mb_photo = '".$_g_image."' , mb_level = '".$_level."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
     $ret=sql_query($query);
@@ -261,11 +270,8 @@ function Record_create_member($_g_email, $_g_fullname, $_g_image, $_level, $_set
     }
 }
 
-function Record_create_member_kakao($_k_email, $_k_nickname, $_k_image, $_level, $_set_point) { // kakao
+function Record_create_member_kakao($userid, $_k_email, $_k_nickname, $_k_image, $_level, $_set_point) { // kakao
     global $tkher;
-	$emailA = explode(".", $_k_email);
-	$email0 = $emailA[0];
-	$userid = str_replace( "@", "_", $email0);
 
     $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$userid."' , mb_sn = 'Kakao'  , mb_name = '".$_k_nickname."'  , mb_nick = '".$_k_nickname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_k_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."'  , mb_photo = '".$_k_image."' , mb_level = '".$_level."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
     $ret=sql_query($query);
@@ -274,11 +280,8 @@ function Record_create_member_kakao($_k_email, $_k_nickname, $_k_image, $_level,
     }
 }
 
-function Record_create_member_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_level, $_gender, $_birth, $_hp, $_set_point) {
+function Record_create_member_naver($userid, $_n_email, $_n_name, $_n_nickname, $_n_image, $_level, $_gender, $_birth, $_hp, $_set_point) {
     global $tkher;
-	$emailA = explode(".", $_n_email);
-	$email0 = $emailA[0];
-	$userid = str_replace( "@", "_", $email0); 
 
     $query = " INSERT {$tkher['tkher_member_table']} SET mb_id = '".$userid."' , mb_sn = 'Naver'  , mb_name = '".$_n_name."'  , mb_nick = '".$_n_nickname."' , mb_nick_date = '".date('Y-m-d')."' , mb_email = '".$_n_email."', mb_certify='".date('Y-m-d H:i:s')."', mb_email_certify='".date('Y-m-d H:i:s')."'  , mb_photo = '".$_n_image."' , mb_level = '".$_level."' , mb_sex = '".$_gender."' , mb_birth = '".$_birth."' , mb_hp = '".$_hp."' , mb_point = '".$_set_point."'  , mb_today_login = '".date('Y-m-d H:i:s')."'  , mb_login_ip = '".$_SERVER['REMOTE_ADDR']."'  , mb_datetime = '".date('Y-m-d H:i:s')."' , mb_ip = '".$_SERVER['REMOTE_ADDR']."' ";
     $ret=sql_query($query);
