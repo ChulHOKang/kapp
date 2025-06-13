@@ -1168,9 +1168,9 @@ function Visit($t_head, $tab) {
         vi_agent varchar(255) DEFAULT NULL,
         vi_browser varchar(255) DEFAULT NULL,
         vi_os varchar(255) DEFAULT NULL,
-        vi_device varchar(255) DEFAULT NULL,
+        vi_device varchar(255) NOT NULL,
         PRIMARY KEY (vi_id),
-        UNIQUE KEY index1 (vi_ip,vi_date),
+        UNIQUE KEY index1 (vi_device,vi_date),
         KEY index2 (vi_date)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
