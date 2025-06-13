@@ -262,12 +262,6 @@ else
     $user_agent  = is_mobileX(); //escape_trim(clean_xss_tags($_SERVER['HTTP_USER_AGENT']));
 	$remote_addr = escape_trim($_SERVER['REMOTE_ADDR']);
 	$kapp_host   = isset( $_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
-	if( isset($member['mb_id']) ) $H_ID_IPADDR = $kapp_host . "_" . $member['mb_id']. "_" . $remote_addr;
-	else $H_ID_IPADDR = $kapp_host . "_" . $remote_addr;
-
-    $referer = "";
-    if( isset($_SERVER['HTTP_REFERER']))
-        $referer = escape_trim(clean_xss_tags($_SERVER['HTTP_REFERER'])). " : " . $H_ID_IPADDR;
 
 	$H_ID = "";
 
@@ -290,11 +284,13 @@ else
 			}
 		}
 	} else {
-			if( !strpos( $_SERVER['SCRIPT_NAME'], "indexTT.php")  ) {
-				connect_count( $host_script, "Guest", 1, $referer);	// count -  1: log_info 생성, 관리자ip log 생성, 0:미생성.
-			} else {
-				//m_("else - SCRIPT_NAME: " . $referer);
-			}
+		$referer = "";
+		if( isset($_SERVER['HTTP_REFERER'])) $referer = escape_trim(clean_xss_tags($_SERVER['HTTP_REFERER']));
+		if( !strpos( $_SERVER['SCRIPT_NAME'], "indexTT.php")  ) {
+			connect_count( $host_script, "Guest", 1, $referer);	// count -  1: log_info 생성, 관리자ip log 생성, 0:미생성.
+		} else {
+			//m_("else - SCRIPT_NAME: " . $referer);
+		}
 		
 		if( $tmp_mb_id = get_cookie('kapp_mb_id')) { // auto login 
 
@@ -404,7 +400,15 @@ $_SESSION['ss_is_mobile'] = $is_mobile;
 define('KAPP_IS_MOBILE', $is_mobile);
 define('KAPP_DEVICE_BUTTON_DISPLAY', $set_device);
 
-if( get_cookie('kapp_ck_visit_ip') != $H_ID_IPADDR ) {
+//$H_ID_IPADDR = $kapp_host . "_" . $member['mb_id']. "_" . $remote_addr;
+if( isset($member['mb_id']) ) $H_ID_IPADDR = KAPP_TIME_YMD . "_" . $member['mb_id'] . "_" . $_SERVER['REMOTE_ADDR'];
+else $H_ID_IPADDR = $kapp_host . "_" . $remote_addr;
+
+$referer = "";
+if( isset($_SERVER['HTTP_REFERER']))
+	$referer = escape_trim(clean_xss_tags($_SERVER['HTTP_REFERER'])). " : " . $H_ID_IPADDR;
+
+if( get_cookie('kapp_ck_visit_ip') != $H_ID_IPADDR && $member['mb_id'] !== '') {
 	include_once( KAPP_PATH_T_ .'/kapp_visit_insert.php'); // include_once('./visit/visit_insert.inc.php'); // 로그인 log 사용
 }
 
