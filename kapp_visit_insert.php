@@ -27,35 +27,34 @@ if( get_cookie('kapp_ck_visit_ip') != $H_ID_IPADDR ) {
 	if( !isset($tmp_row['vi_device']) ){ // vi_ip
 		$sql = " insert {$tkher['visit_table']} ( vi_ip, vi_date, vi_time, vi_referer, vi_agent, vi_browser, vi_os, vi_device ) values (  '{$remote_addr}', '".KAPP_TIME_YMD."', '".KAPP_TIME_HIS."', '{$referer}', '{$user_agent}', '{$vi_browser}', '{$vi_os}', '{$vi_device}' ) ";
 		$result = sql_query( $sql ); //sql_query($sql, FALSE);
-		if( !$result) {
+		$sqlA = " select * from {$tkher['visit_sum_table']} where vs_date='".KAPP_TIME_YMD."' ";
+		$t_row = sql_fetch( $sqlA );
+		if( !isset($t_row['vs_date']) ){
 			$sql = " insert {$tkher['visit_sum_table']} ( vs_count, visit_all,  vs_date) values ( 1, 1, '".KAPP_TIME_YMD."' ) ";
-			$rt = sql_query( $sql ); //sql_query($sql, FALSE);
-			if( !$rt) { // DUPLICATE
-				$sql = " update {$tkher['visit_sum_table']} set vs_count = vs_count + 1, visit_all = visit_all + 1 where vs_date = '".KAPP_TIME_YMD."' ";
-				$result = sql_query($sql);
-			}
-			// today
-			$sql = " select vs_count as cnt from {$tkher['visit_sum_table']} where vs_date = '".KAPP_TIME_YMD."' ";
-			$row = sql_fetch($sql);
-			$vi_today = $row['cnt'];
-			// yesterday
-			$sql = " select vs_count as cnt from {$tkher['visit_sum_table']} where vs_date = DATE_SUB('".KAPP_TIME_YMD."', INTERVAL 1 DAY) ";
-			$row = sql_fetch($sql);
-			if( isset($row['cnt']) ) $vi_yesterday = $row['cnt'];
-			else $vi_yesterday = 0;
-			// max
-			$sql = " select max(visit_all) as cnt from {$tkher['visit_sum_table']} ";
-			$row = sql_fetch($sql);
-			$vi_max = $row['cnt'];
-			// total
-			$sql = " select sum(vs_count) as total from {$tkher['visit_sum_table']} ";
-			$row = sql_fetch($sql);
-			$vi_sum = $row['total'];
-			$visit = 'today:'.$vi_today.', yestday:'.$vi_yesterday.', max:'.number_format($vi_max).', Total:'.number_format($vi_sum);
-			sql_query(" update {$tkher['config_table']} set kapp_visit = '{$visit}' ");
-			
-		} else { // id + ip + date dup
+			sql_query( $sql ); //sql_query($sql, FALSE);
+		} else {
+			$sql="update {$tkher['visit_sum_table']} set vs_count = vs_count + 1, visit_all = visit_all + 1 where vs_date = '".KAPP_TIME_YMD."' ";
+			sql_query($sql);
 		}
+		// today
+		$sql = " select vs_count as cnt from {$tkher['visit_sum_table']} where vs_date = '".KAPP_TIME_YMD."' ";
+		$row = sql_fetch($sql);
+		$vi_today = $row['cnt'];
+		// yesterday
+		$sql = " select vs_count as cnt from {$tkher['visit_sum_table']} where vs_date = DATE_SUB('".KAPP_TIME_YMD."', INTERVAL 1 DAY) ";
+		$row = sql_fetch($sql);
+		if( isset($row['cnt']) ) $vi_yesterday = $row['cnt'];
+		else $vi_yesterday = 0;
+		// max
+		$sql = " select max(visit_all) as cnt from {$tkher['visit_sum_table']} ";
+		$row = sql_fetch($sql);
+		$vi_max = $row['cnt'];
+		// total
+		$sql = " select sum(vs_count) as total from {$tkher['visit_sum_table']} ";
+		$row = sql_fetch($sql);
+		$vi_sum = $row['total'];
+		$visit = 'today:'.$vi_today.', yestday:'.$vi_yesterday.', max:'.number_format($vi_max).', Total:'.number_format($vi_sum);
+		sql_query(" update {$tkher['config_table']} set kapp_visit = '{$visit}' ");
 	}
 
 }
