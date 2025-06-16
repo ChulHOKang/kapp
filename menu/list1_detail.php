@@ -182,8 +182,8 @@
 
 	}
 	$mq		= sql_query($query);
-	$mf		= sql_fetch_row($mq); //m_("mf-12 img:". $mf[12] . ", 2:" . $mf_infor[2]); // mf-12 img:dao_1549589819.jpg, 2:tkher126
-	$mid	= $mf[2];
+	$mf		= sql_fetch_row($mq);
+	$mid	= $mf_infor[53]; // 53['makeid'] = 8['imember'] 
 	$fsize	= GetFileSize_func($mf[14]);	//파일싸이즈 get_size
 	/*if( strpos( $mf[16], "../" ) !== false) {
 		$fpath	= $mf[16];       // new data format
@@ -321,15 +321,14 @@
 <?php
 
 if( $mf[12]){	// file_name
-	$width  = 0;//1000;
-	$height = 0;//800;
+	$width  = 0;
+	$height = 0;
 
 	if( $mf[15]=='.bmp' || $mf[15]=='.gif' || $mf[15]=='.jpg' || $mf[15]=='.png'){
-		//$file="<a href='down.php?infor=$infor&no=$mf[0]&wonbon=$mf[13]' \"><img src='" . KAPP_URL_T_ . "/icon/subject.gif' border='0'><font color='".$mf_infor[21]."'>".$mf[13]."(".$fsize.")</a>";
 		$file="<a href='#' \"><img src='" . KAPP_URL_T_ . "/icon/subject.gif' border='0'><font color='".$mf_infor[21]."'>".$mf[13]."(".$fsize.")</a>";
 			$tmp = get_size($mf[12], $mf_infor[2]); 
 			$size = explode("X", $tmp); 
-			$imgA = "../file/".$mid."/aboard_".$mf_infor[2]."/".$mf[12];
+			$imgA = "../file/".$mf_infor[53]."/aboard_".$mf_infor[2]."/".$mf[12]; // 53['makeid'] = 8['imember']
 			$imgs= "<img src='".$imgA."' border='0' width='".$size[0]."' height='".$size[1]."' >";
 
 	}elseif($mf[15]=='.zip'||$mf[15]=='.rar'||$mf[15]=='.mp3'||$mf[15]=='.txt'){
