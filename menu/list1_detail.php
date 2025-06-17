@@ -9,6 +9,7 @@
 		$H_NICK = 'Guest';
 		$H_NAME = 'Guest';
 	}
+	$call_pg = 'list1_detail.php';
 	/*
 	  list1_detail.php : image type board - list1.php 에서 call
 					   : list1_detail_update.php - admin_detail_func() , admin : board_list3_update.php - 속성 설정 old type
@@ -256,7 +257,6 @@
 		return $x_size."X".$y_size;
 	} // func end
 
-	$call_pg = 'list1_detail';
 	if( isset($_POST['view_line'])) $view_line =$_POST['view_line']; 
 	else $view_line =2;
 	if( isset($_POST['view_count'])) $view_count =$_POST['view_count']; 

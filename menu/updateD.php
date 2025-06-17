@@ -24,7 +24,6 @@
 		if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
 		else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 		else $mode  = "";
-
 		if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 		else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 
@@ -34,39 +33,24 @@
 
 		if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 		else if( isset($_POST['page']) ) $page = $_POST['page'];
-
-		//m_(" board_data_updateTT  -- list_no:$list_no");
-		// board_data_updateTT  -- list_no:11
 		if( $mode != 'updateTT' || !$infor ) {
 			m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); //mode: , You do not have permission to reply. infor:1
 			//mode: , You do not have permission to reply. no:21
 			echo "<script>history.back(-1);</script>"; exit;
 		}
-
 		$email			= $member['mb_email'];  
-//		m_("email:$email");//email:solpakan59@gmail.com
-
 		$in_day = date("Y-m-d H:i");
 
-	//-----------------------------------------------------------------------------------------------------
-	$infor = $_POST['infor']; //m_("infor: ".$infor);
 	include "./infor.php";
 
 	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password from aboard_" . $mf_infor[2] . " where no=".$list_no;
-	//echo "sql:" . $query; exit;
-	//sql:select no, name, context, target, step, re, subject, file_name, file_wonbon, password from aboard_dao1701135418 where no=259
-	$mq = sql_query($query);
-	//m_("--- mq:");
+	$mq = sql_query($query);	//m_("--- mq:");
 
 	$mf = sql_fetch_row($mq);
-	$mf[6] = htmlspecialchars($mf[6]); //subject
-	//$mf[2] = htmlspecialchars($mf[2]);//			$rs[title] = htmlspecialchars($rs[title]);
-	$content = $mf[2];
-	//m_("-----------, 2 content: " . $content);
+	$mf[6] = htmlspecialchars($mf[6]);
+	$content = $mf[2];	//m_("-----------, 2 content: " . $content);
 
 	if( $mf_infor[47]=='0' and !$H_ID ) $H_NAME = $mf[1];
-	//m_("H_NAME:$H_NAME, H_ID:$H_ID, mf_infor[47]:$mf_infor[47]");
-	//mode: , You do not have permission to reply. no:21
 
 	switch( $mf_infor[47] ){
 		case '0': break;
@@ -254,7 +238,7 @@
 			<input type='hidden' name='infor' 			value='<?=$infor?>' > 
 			<input type='hidden' name='list_no'			value='<?=$list_no?>'>
 			<input type='hidden' name='page' 			value='<?=$page?>'>
-			<input type='hidden' name='security_' 		value='1'>
+			<!-- <input type='hidden' name='security_' 		value='1'> -->
 			<input type='hidden' name='security_yn' 	value='<?=$mf_infor[51]?>'>
 			<input type='hidden' name='fileup_yn' 		value='<?=$mf_infor[3]?>'><!-- upload file size -->
 			<input type='hidden' name='html_yn' 		value='<?=$mf_infor[7]?>'>
@@ -384,8 +368,6 @@
 					<div class="cradata_check">
 						<!-- <a href="javascript:update_func('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a> -->
 						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a>
-						<!-- <div><button onclick='saveContent()'>SAMPLE - submit contents</button></div> -->
-
 					</div>
 				</div>
 			</div>
