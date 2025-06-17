@@ -150,9 +150,9 @@ function Aboard_memo($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."aboard_memo (
         no int(11) auto_increment NOT NULL,
-        board_name varchar(30) NOT NULL DEFAULT '',
+        board_name varchar(50) NOT NULL DEFAULT '',
         list_no int(11) NOT NULL DEFAULT 0,
-        name varchar(20) NOT NULL,
+        name varchar(50) NOT NULL,
         memo text DEFAULT NULL,
         in_date varchar(20) DEFAULT NULL,
         password varchar(15) DEFAULT NULL,

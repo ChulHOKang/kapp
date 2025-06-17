@@ -673,7 +673,6 @@
 		fwrite($fsi," $" . "tkher['menuskin_table']			= KAPP_TABLE_PREFIX.'menuskin';     // board menuskin   \r\n");
 		fwrite($fsi," $" . "tkher['ap_bbs_table']			= KAPP_TABLE_PREFIX.'ap_bbs';       // Bulletin Board Collect All Data   \r\n");
 /*
-		fwrite($fsi," $" . "tkher['memo_table']			= KAPP_TABLE_PREFIX.'memo_table';   // X Manage note transfer between administrators and users  \r\n");
 		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_table']		= KAPP_TABLE_PREFIX.'coin_group';   // 게시판 그룹 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_member_table']	= KAPP_TABLE_PREFIX.'group_member'; // 게시판 그룹+회원 테이블   \r\n");
@@ -1156,9 +1155,9 @@ function Aboard_memo($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."aboard_memo (
         no int(11) auto_increment NOT NULL,
-        board_name varchar(30) NOT NULL DEFAULT '',
+        board_name varchar(50) NOT NULL DEFAULT '',
         list_no int(11) NOT NULL DEFAULT 0,
-        name varchar(20) NOT NULL,
+        name varchar(50) NOT NULL,
         memo text DEFAULT NULL,
         in_date varchar(20) DEFAULT NULL,
         password varchar(15) DEFAULT NULL,
