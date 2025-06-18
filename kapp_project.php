@@ -1,11 +1,11 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	 $H_ID	= get_session("ss_mb_id"); 
-	if( isset($H_ID) && !$H_ID && $H_ID !=='' ){
+	if( isset($H_ID) && $H_ID && $H_ID !=='' ){
 		$H_ID	= get_session("ss_mb_id");    //"ss_mb_id";	//connect_count('ulist', $H_ID, 0);	// log count
 		$_LEVEL	= get_session("ss_mb_level"); //m_($H_ID . ", _LEVEL: " . $_LEVEL);
 	} else {
-		m_("login please!");
+		m_("login please! - $H_ID");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
