@@ -19,7 +19,7 @@
 <html> 
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Board - AppGeneratorSystem. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -37,46 +37,13 @@
 
 	$mid = $mf_infor[53];
 
-/*
-`no`, `name`, `table_name`, `fileup`, `in_date`, 4
-`memo_gubun`, `ip_gubun`, `html_gubun`, `imember`, `home_url`, `table_width`, `list_table_set`, `list_title_bgcolor`, `list_title_font`, `list_text_bgcolor`, `list_text_font`, `list_size`, 
-`detail_table_set`, `detail_title_bgcolor`, `detail_title_font`, `detail_text_bgcolor`, `detail_text_font`, `detail_memo_bgcolor`, `detail_memo_font`, `input_table_set`, `input_title_bgcolor`, `input_title_font`, `icon_home`, `icon_prev`, `icon_next`, `icon_insert`, `icon_update`, `icon_delete`, `icon_reply`, 25
-`icon_list`, `icon_search_list`, `icon_search`, `icon_submit`, `icon_new`, 30
-`icon_list_reply`, `icon_memo`, `icon_admin`, `list_gubun`, `connection_gubun`, `top_html`, 36
-`bottom_html`, `grant_view`, 38
-`grant_write`, `movie`, `title_color`, `title_text_color`, `security`, `lev`, `make_id`, 45
-`make_club`, `sunbun`, `memo`
-	$infor_0 = $mf_infor_['no'];
-	$infor_1 = $mf_infor_['name'];
-	$infor_2 = $mf_infor_[table_name];
-	$infor_3 = $mf_infor_[fileup];
-	$infor_4 = $mf_infor_['in_date'];
-	$infor_5 = $mf_infor_[memo_gubun];
-	$infor_16 = $mf_infor_[list_size];
-	$infor_38 = $mf_infor_[grant_view];
-	$infor_40 = $mf_infor_[movie];
-	$infor_45 = $mf_infor_[make_id];
-	$infor_46 = $mf_infor_[grant_view];
-
-
-	
-	$infor_0 = $mf_infor[0];
-	$infor_1 = $mf_infor[1];
-	$infor_2 = $mf_infor[2];
-	$infor_3 = $mf_infor[3];
-	$infor_4 = $mf_infor[4];
-	$infor_5 = $mf_infor[5];
-	$infor_16 = $mf_infor[16];
-	$infor_38 = $mf_infor[38];
-	$infor_40 = $mf_infor[40];
-	$infor_45 = $mf_infor[45];
-	$infor_46 = $mf_infor[46];
-
-	$tab = "aboard_" . $mf_infor[2];
-	*/
-	//m_("tab:$tab , infor_0: $infor_1, $infor_2, $infor_16 ");
-	//tab:aboard_ , infor_0: , ,  
-	//tab:aboard_monibul58 , infor_0:  게시판, monibul58, 10 
+	$content = '';
+	if( isset($_REQUEST['search_choice']) ) $search_choice=$_REQUEST['search_choice'];
+	else $search_choice='';
+	if( isset($_REQUEST['search_text']) ) $search_text=$_REQUEST['search_text'];
+	else $search_text='';
+	if( isset($_REQUEST['del_admin']) ) $del_admin=$_REQUEST['del_admin'];
+	else $del_admin='';
 ?>
 
   
@@ -212,6 +179,7 @@ function edit_reply_func(lev, t, s, r, num, subject)
 		$win_height = $size0[1] + 30; 
 		return $x_size."X".$y_size;
 	} // func end
+
 	$orderby = " order by no desc, target desc , step ";
 	$where_  = " where step ='0' and re ='0' ";
 	$query   = " SELECT * from $tab " . $where_ . $orderby;
@@ -220,7 +188,8 @@ function edit_reply_func(lev, t, s, r, num, subject)
 	$now = time();
 ?>
 	<SCRIPT src="<?=KAPP_URL_T_?>/include/js/contents_resize_bbs.js" type=text/javascript></SCRIPT>
-	<script src="//cdn.ckeditor.com/4.9.2/full/ckeditor.js"></script>
+	<!-- <script src="//cdn.ckeditor.com/4.9.2/full/ckeditor.js"></script> -->
+	<script src="//cdn.ckeditor.com/4.25.1/full/ckeditor.js"></script>
 </head>
 
 <body bgcolor='black' bgProperties='fixed' leftmargin="0" topmargin="0" "> 
@@ -230,13 +199,13 @@ function edit_reply_func(lev, t, s, r, num, subject)
 		include_once "../menu_run.php"; 
 ?>
 
-	<td width="100%" valign="top">
+	<!-- <td width="100%" valign="top">
      <table width="100%" cellspacing="0" cellpadding="0" bgcolor="#000000">
       <tr>
-        <td align="center">
+        <td align="center"> -->
 <!-------------------------공지사항 테이블 시작--------------------------------->    
-        <table width="560" cellspacing="0" cellpadding="0">
-		<form name="makeform" action='query_ok_new.php' method='post' enctype="multipart/form-data">
+        <table width="800" cellspacing="0" cellpadding="0">
+			<form name="makeform" action='query_ok_new.php' method='post' enctype="multipart/form-data">
 			<input type='hidden' name='mode'   value=''>
 			<input type='hidden' name='insert' value=''>
 			<input type='hidden' name='infor'  value='<?=$infor?>'>
@@ -249,29 +218,28 @@ function edit_reply_func(lev, t, s, r, num, subject)
 		   <strong>[<?=$infor_1?>]</strong> - tot:<?=$tot?> &nbsp;&nbsp;&nbsp;<strong>[<?=$H_NAME?>]</strong></td>
           </tr>
           <tr>
-            <td><table width="600" cellspacing="1" cellpadding="10" bgcolor="#c6c6c6">              
+            <td><table width="100%" cellspacing="1" cellpadding="10" bgcolor="#c6c6c6">              
               <tr>
                 <td bgcolor="#FFFFFF">
 				<table>
 					<div>subject:<input type="text" name="subject" style="background-color:#f2f2f2;border:1px solid #62a9e4;width:90%;" class="input01"> </div>
 					<div><input type='file' name='file' ></div>
                 </table>
-					<DIV id='editctrlX' align='' style='background-color:yellow;ime-mode:active; background-image:; width:100%; height:100%; '>
-					<textarea name="content" id="EditCtrl" ><?=$content?></textarea>
+					<DIV id='EditCtrl' >
+					<textarea name="content" style='background-color:yellow;ime-mode:active; background-image:; width:100%; height:100%; '><?=$content?></textarea>
 					</DIV>
-					<script>
-						//CKEDITOR.replace( 'EditCtrl' );//처음것. 아래것은:화면크기조정 가능.
+					<!-- <script>
 						CKEDITOR.replace(
-						'EditCtrl',
-						{
-						toolbar : 'standard',
-						width : '100%',
-						height : '250'
-						}
+							'EditCtrl',
+							{
+							toolbar : 'standard',
+							width : '100%',
+							height : '250'
+							}
 						);
-					</script>
+					</script> -->
 					
-				<input type='button' value='Confirm' onClick="save_memo_('<?=$H_LEV?>', '<?=$infor?>')" align="absmiddle">
+				<input type='button' value='Submit' onClick="save_memo_('<?=$H_LEV?>', '<?=$infor?>')" align="absmiddle">
 				</td>
               </tr>
 			</form>
@@ -317,16 +285,16 @@ function edit_reply_func(lev, t, s, r, num, subject)
 
 <?php
 $aaa = 0;
+$cnt = 0;
+$j = 0;
 //m_("mf2:$mf_infor[2]");//tkher112
-while( $mf = sql_fetch_array( $mq ) )
-{
+while( $mf = sql_fetch_array( $mq ) ) {
 	if( !$cnt ){ $cnt = 1; }
 	$j++;
 	$date=strftime("%m/%d",$mf['in_date']);	// 4
 	//글자르기
-	$mf['subject']=Shorten_String($mf['subject'],"45","...");		// 3
+	//$mf['subject']=Shorten_String($mf['subject'],"45","...");		// 3
 	//$mf[1]=Shorten_String($mf[1],"4","...");
-
 	//답변들여쓰기
 	for($i=0; $i< $mf['re'];$i++){ $dep=$dep . "&nbsp;&nbsp;";}		// 6
 
@@ -338,22 +306,21 @@ while( $mf = sql_fetch_array( $mq ) )
 	$today=$now - $mf['in_date'];	// 4
 	if( $today <= 86400 ) { $new = "<img src='". $infor_38."' border=0>"; }
 	//검색어 표시
-//	if( $search_text ){ $mf['subject'] = eregi_replace("($search_text)","<font color=blue>\\1</font>",$mf['subject']);}	//3
-//	if( $search_text ){ $mf['subject'] = preg_replace("($search_text)","<font color=blue>\\1</font>",$mf['subject']);}	//3
-
+	//	if( $search_text ){ $mf['subject'] = eregi_replace("($search_text)","<font color=blue>\\1</font>",$mf['subject']);}	//3
+	//	if( $search_text ){ $mf['subject'] = preg_replace("($search_text)","<font color=blue>\\1</font>",$mf['subject']);}	//3
 	// 일반 게시판일경우
 	//if( $mf_infor[48] == "0" ) {
 
 	$aaa = $aaa +1;
-	$mf['subject'] =Shorten_StringX( $mf['subject'],"80","...");		// my_func 3
+	//$mf['subject'] =Shorten_StringX( $mf['subject'],"80","...");		// my_func 3
 
 	?>
           <tr>
             <td>
-            <table width="560" cellspacing="1" cellpadding="10" bgcolor="#c6c6c6"> 
+            <table width="800" cellspacing="1" cellpadding="10" bgcolor="#c6c6c6"> 
 <?php
-$w_day = date("Y-m-d H:i", $mf['in_date']); // ("Y-m-d-H:i:s",time()); = $mf['in_date'];
-		$tg = $mf['target'];
+	$w_day = date("Y-m-d H:i", $mf['in_date']); // ("Y-m-d-H:i:s",time()); = $mf['in_date'];
+	$tg = $mf['target'];
 ?>
               <tr>
                 <td bgcolor="#FFFFFF">
@@ -401,7 +368,7 @@ $w_day = date("Y-m-d H:i", $mf['in_date']); // ("Y-m-d-H:i:s",time()); = $mf['in
          </tr>
 		 
 <?php 
-	} // if($mf['file_name'])  END  -----------------------------------------------------------------
+	} // if($mf['file_name'])
 ?>
 			<tr>
 				<td colspan="4">
@@ -415,28 +382,23 @@ $w_day = date("Y-m-d H:i", $mf['in_date']); // ("Y-m-d-H:i:s",time()); = $mf['in
 			 </table>
 			 </td>
 		  </tr>
-
-              <tr>
-                <td bgcolor="#FFFFFF"> 
+          <tr>
+             <td bgcolor="#FFFFFF"> 
 				<table cellspacing="0" cellpadding="0">
-
-
                   <tr>
-                    <td width="70">[Comment]</td>
-                    <td width="393">
-						<textarea name="xcontext_<?=$aaa?>" style="border:1px solid #62a9e4;" class="input01" cols="60" rows="1" style="border:1px solid #62a9e4;"></textarea></td>
-                    <td width="70">
-						<input type='button' value='Confirm' title='memo answer t:<?=$mf['target']?>, step:<?=$mf['step']?>, re:<?=$mf['re']?>, aaa:<?=$aaa?>, subject:<?=$mf['subject']?>' onClick="edit_reply_func('<?=$H_LEV?>','<?=$mf['target']?>','<?=$mf['step']?>','<?=$mf['re']?>','<?=$aaa?>','<?=$mf['subject']?>')" style="cursor:hand;"></td>
+                    <td width="15%">[Comment]</td>
+                    <td width="70%">
+						<textarea name="xcontext_<?=$aaa?>" style="border:1px solid #62a9e4;width:100%" class="input01" rows="1"></textarea></td>
+                    <td width="15%">
+						<input type='button' value='Submit' title='memo answer t:<?=$mf['target']?>, step:<?=$mf['step']?>, re:<?=$mf['re']?>, aaa:<?=$aaa?>, subject:<?=$mf['subject']?>' onClick="edit_reply_func('<?=$H_LEV?>','<?=$mf['target']?>','<?=$mf['step']?>','<?=$mf['re']?>','<?=$aaa?>','<?=$mf['subject']?>')" style="cursor:hand;"></td>
                   </tr>
-
-
-                  <tr>
+				 </table>
+                  <!-- <tr>
                     <td colspan="3" height="1"></td>
-                  </tr>
-
+                  </tr> -->
+				<table cellspacing="0" cellpadding="0">
                   <tr>
-                    <td colspan="3" align="right">
-					<table cellspacing="0" cellpadding="5">
+                    <!-- <td colspan="3" align="right"><table cellspacing="0" cellpadding="5"> -->
 <?php
 	$xquery="SELECT * from aboard_" . $mf_infor[2] . " where target = '".$mf['target']."' and step > '0' and re > '0' order by target desc , step";
 	$xmq = sql_query($xquery);
@@ -444,77 +406,63 @@ $w_day = date("Y-m-d H:i", $mf['in_date']); // ("Y-m-d-H:i:s",time()); = $mf['in
 	$cntx = 0;
 
 	while( $xmf = sql_fetch_array( $xmq ) ){
-		if ( $xtotal > $cntx ){
+		if( $xtotal > $cntx ){
 ?>
-                      <tr>
+						<tr>
+							<td width="85%" align='left'><?=$xmf['context']?>
+							
 <?php
-				if( $H_ID == $xmf['id'] ){	
-					$xno = $xmf['no'];
-					$day = date("Y-m-d H:i", $xmf['in_date']);
+			if( $H_ID == $xmf['id'] ){	
+				$xno = $xmf['no'];
+				$day = date("Y-m-d H:i", $xmf['in_date']);
 ?>
-                    <td width="410"><?=$day?>:<?=$xmf['context']?>
-					<a href="javascript:del_func('<?=$xno?>', '<?=$infor?>')" style='color:red' title='Answer delete'><b>[Del]</b></a>
-					</td>
+					<a href="javascript:del_func('<?=$xno?>', '<?=$infor?>')" style='color:red' title='Answer delete'><b>[Del]</b></a></td>
 <?php
-				}
-				$nm = $xmf['name'];
+			}
+			$nm = $xmf['name'];
 ?>
-                    <td align="right" ><font color="#0170aa">(<?=$nm?>)</font></td>
-                    </tr>
+						
+						<td width="15%" align='right'><font color="#0170aa"><?=$day?><br><?=$nm?></font></td>
+						</tr>
 <?php
 		}
 		$cntx = $cntx + 1;
 	} //while
 ?>
 
-                   </table></td>
-                  </tr>
+                    </tr></table>
+                  </td></tr>
+
                 </table>
 				</td>
               </tr>
             </table>
             </td>
           </tr>
-          <tr>
+          
+		  <tr>
             <td height="1"></td>
           </tr>
 
 <?php			
 	$no--;
 	//if($cnt==$size){break;}
-	$cnt+=1;$dep="";$file="";$new="";$memo_cnt="";
+	$cnt++; $dep=""; $file=""; $new=""; $memo_cnt="";
 }	// while
 ?>
 </form>
           <tr>
 				<td width="100%" align='center'>
-					<?php  
-					paging("board_list_memo.php?infor=$infor&search_choice=$search_choice&search_text=$search_text&del_admin=$del_admin",$tot,$page,$line_size); 
-					?>            
+<?php  
+	paging("board_list_memo.php?infor=$infor&search_choice=$search_choice&search_text=$search_text&del_admin=$del_admin",$tot,$page,$line_size,10); 
+?>            
 				</td>
-		  
-           <!-- <td height="30" align="center"><font color="#FF3333"><strong>1</strong></font> 2 3 4</td>-->
-<?php
-//	paging("list_old.php?infor=$infor&search_choice=$search_choice&search_text=$search_text&del_admin=$del_admin",$mn,$page,$line_size); 
-//	paging("board_list_memo.php?infor=$infor&search_choice=$search_choice&search_text=$search_text&del_admin=$del_admin",$tot,$page,$line_size); 
-?>
           </tr>
-		   
-          <!--<tr>
-            <td height="20">------------- end ------------ 
-			
-			</td>
-          </tr>-->
         </table>
-            
-<!-------------------------공지사항 테이블 끝--------------------------------->        
-<!-- ------------------------- -->
-
-
-        </td>
+<!------------------공지사항 테이블 끝--------------------------------->        
+        <!-- </td>
       </tr>
-
 	  </table>
-	</td> 
+	</td>  -->
 	
  <?=$mf_infor[45]?> <!--  bottom_html -->
