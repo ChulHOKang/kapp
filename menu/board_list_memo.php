@@ -48,7 +48,7 @@
 
   
 <!-- <link href="<?=KAPP_URL_T_?>/include/css/style1.css" rel="stylesheet" type="text/css"> -->
-<link href="<?=KAPP_URL_T_?>/menu/css/editor.css" rel="stylesheet" type="text/css">
+<!-- <link href="<?=KAPP_URL_T_?>/menu/css/editor.css" rel="stylesheet" type="text/css"> -->
 
 <script language="JavaScript"> 
 <!--
@@ -96,6 +96,7 @@ function save_memo_(lev, infor)
 		var form = document.makeform;
 		ff= form.file.value;
 		alert("infor:" + infor + ", ff: " + ff); //infor:112, ff: C:\fakepath\새해인사.jpg
+		//infor:13, ff: C:\fakepath\guggi.png
 		if( form.file.value != ""){
 			idx_path = form.file.value.lastIndexOf("."); 
 			if( idx_path < 0 ) {
@@ -187,9 +188,9 @@ function edit_reply_func(lev, t, s, r, num, subject)
 	$tot = sql_num_rows($mq);
 	$now = time();
 ?>
-	<SCRIPT src="<?=KAPP_URL_T_?>/include/js/contents_resize_bbs.js" type=text/javascript></SCRIPT>
+	<!-- <SCRIPT src="<?=KAPP_URL_T_?>/include/js/contents_resize_bbs.js" type=text/javascript></SCRIPT> -->
 	<!-- <script src="//cdn.ckeditor.com/4.9.2/full/ckeditor.js"></script> -->
-	<script src="//cdn.ckeditor.com/4.25.1/full/ckeditor.js"></script>
+	<!-- <script src="//cdn.ckeditor.com/4.25.1/full/ckeditor.js"></script> -->
 </head>
 
 <body bgcolor='black' bgProperties='fixed' leftmargin="0" topmargin="0" "> 
@@ -203,7 +204,7 @@ function edit_reply_func(lev, t, s, r, num, subject)
      <table width="100%" cellspacing="0" cellpadding="0" bgcolor="#000000">
       <tr>
         <td align="center"> -->
-<!-------------------------공지사항 테이블 시작--------------------------------->    
+<!------------------------- table --------------------------------->    
         <table width="800" cellspacing="0" cellpadding="0">
 			<form name="makeform" action='query_ok_new.php' method='post' enctype="multipart/form-data">
 			<input type='hidden' name='mode'   value=''>
@@ -360,7 +361,7 @@ while( $mf = sql_fetch_array( $mq ) ) {
 		}
 		if( $down_img) { 
 			$bnm = "aboard_" . $mf_infor[2]; // $mf_infor[2] : board name
-			$click_data = "window.open('pic2.php?infor=".$infor."&mid=".$mid."&bnm=".$bnm."&fnm=".$mf[12]."', '', 'width=$width, height=$height, top=0, left=0, scrollbars=yes')";
+			$click_data = "window.open('pic2.php?infor=".$infor."&mid=".$mid."&bnm=".$bnm."&fnm=".$mf['file_name']."', '', 'width=$width, height=$height, top=0, left=0, scrollbars=yes')";
 		}
 ?>
           <tr>

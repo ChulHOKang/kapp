@@ -29,10 +29,12 @@
 		? infor:126, mode:memo_insert
 	*/
 
-	include "./infor.php";
+	//include "./infor.php";
 
 	if( isset($_POST['search_choice'])) $search_choice=$_POST["search_choice"]; 
 	else $search_choice ='';
+	if( isset($_POST['search_text'])) $search_text=$_POST["search_text"]; 
+	else $search_text ='';
 	if( isset($_POST['update_pass'])) $update_pass  =$_POST['update_pass']; 
 	else $update_pass ='';
 	
@@ -66,8 +68,6 @@
 	if( isset($_POST['no'])) $no= $_POST['no'];
 	else $no ='';
 
-	$table_name = $mf_infor[2];
-	$upload_file_size_limit = $mf_infor[3]*1000000;
 	/*
 	switch( $mf_infor[47] ){ // 47:grant_write
 		case '0': break;
@@ -217,8 +217,8 @@
 
 			$mq2 = sql_query( $query );  
 			if( $mq2 ){
-					$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
-					$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];
+					$f_path1	= KAPP_PATH_T_ . "/file/" . $H_ID;    //$mf_infor[53];
+					$f_path2	= $f_path1 . "/aboard_". $table_name; //$mf_infor[2];
 					if ( !is_dir($f_path1) ) {
 						if ( !@mkdir( $f_path1, 0755 ) ) {
 							echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
@@ -246,6 +246,7 @@
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_name, 'aboard@query_ok_new', $name, $table_name, $table_name);
 				echo "<script>alert( 'name:" . $name . " : " . $table_name . ", infor: " .$board_num ."- The bulletin board has been created.');</script>";
 			}
+			//echo("<meta http-equiv='refresh' content=0;url='board_list3.php?infor=$board_num&page=$page'>");
 			//exit;
 			echo "<script>history.back(-1);</script>"; exit;
 		} else {
@@ -253,6 +254,7 @@
 			echo "create sql: " . $query; exit;
 		}
 	} else if( $mode=='memo_insert'){ //call:list1_detail.php : comment , reply.php .
+
 		$context    = $_POST['context'];
 		if( isset($_POST['list_no'])) $list_no = $_POST['list_no'];
 		else $list_no ='';
@@ -271,6 +273,9 @@
 		echo "<meta http-equiv='refresh' content=0;url='".$gourl."?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 
 	} else if( $mode == 'del_funcA' ) {
+		
+		include "./infor.php";
+
 		$target_no = $_POST['target_no'];
 		if( $H_LEV > 7 ) $chkpass = " ";
 		else if( $H_ID == $mf_infor[53] ) $chkpass = " ";
@@ -293,12 +298,15 @@
 		echo "<meta http-equiv='refresh' content=0;url='board_list_memo.php?infor=$infor'>";
 		exit;
 	} else if( $mode=='memo_reply_func'){
-		if( strlen( $_POST['file']) > 0 ){
+		include "./infor.php";
+		$upload_file_size_limit = $mf_infor[3]*1000000;
+		$upfile_name= '';
+		$upfile_size= 0;
+
+		//if( strlen( $_POST['file']) > 0 ){
+		if( isset($_FILES["file"]["name"]) ){
 			$upfile_name= $_FILES["file"]["name"];
 			$upfile_size= $_FILES["file"]["size"];
-		} else {
-			$upfile_name= '';
-			$upfile_size= 0;
 		}
 		$upfile2	= "";
 		$file_ext	= "";
@@ -335,6 +343,12 @@
 		$re     = $_POST['re'];
 		$subject= $_POST['subject'];
 		$context= $_POST['context'];
+		$home = KAPP_URL_T_;
+		if( isset($_POST['password']) ) $pass = $_POST['password'];
+		else $pass = '';
+		if( isset($_POST['security']) ) $security = $_POST['security'];
+		else $security = '';
+
 		$re   = $re+1;
 		$step = $step+1;
 		$query = "select no from aboard_". $mf_infor[2] ." where target=$target and step=$step";
@@ -347,13 +361,13 @@
 		infor = $infor,
 		id = '$H_ID',
 		name = '$H_NICK',
-		email = '$email',
+		email = '$H_EMAIL',
 		home = '$home',
 		ip = '$ip',
 		in_date = '$in_date',
 		subject = '$subject',
 		context = '$context',
-		password = '".$_POST['password']."',
+		password = '".$pass."',
 		file_name = '$upfile2',
 		file_wonbon = '$upfile_name',
 		file_size = $upfile_size,
@@ -363,7 +377,7 @@
 		target = $target,
 		step = $step,
 		re = $re,
-		security = '".$_POST['security']."' ";
+		security = '".$security."' ";
 		
 		$mqA = sql_query( $queryA);
 		if( $mqA ){
@@ -372,8 +386,9 @@
 			echo "sql: " . $queryA; exit;
 		}
 		echo("<meta http-equiv='refresh' content=0;url='board_list_memo.php?infor=$infor&no=$no&page=$page&search_choice=$search_choice&search_text=$search_text'>");
-		
+		exit;
 	} else if( $mode == "del_func_") { 
+		include "./infor.php";
 
 		$del_no = $_POST['xmf_no'];
 		$sql    = "delete from " . "aboard_". $mf_infor[2] . " where no=$del_no and infor= $infor and id='$H_ID' ";
@@ -412,6 +427,8 @@
 			exit;
 
 	} else if( $mode == "insert_form_image") {
+		include "./infor.php";
+		$upload_file_size_limit = $mf_infor[3]*1000000;
 
 		if( strlen( $_FILES["file"]["name"] ) > 0 ){
 			$upfile_name= $_FILES["file"]["name"];
@@ -490,6 +507,9 @@
 		echo "<meta http-equiv='refresh' content=0;url='list1.php?infor=$infor'>";
 		exit;
 	} else if( $mode == "memo_insert_form_") {	// board_list_memo.php : call. 
+		include "./infor.php";
+		$upload_file_size_limit = $mf_infor[3]*1000000;
+
 		if( strlen( $_FILES["file"]["name"] ) > 0 ){
 			$upfile_name= $_FILES["file"]["name"];
 			$upfile_size= $_FILES["file"]["size"];
@@ -569,5 +589,4 @@
 		m_("? infor:$infor, mode:$mode");
 		echo("<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>"); 
 	}
-
 ?>
