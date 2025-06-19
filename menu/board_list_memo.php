@@ -1,20 +1,20 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-
-	$ss_mb_id	= get_session("ss_mb_id");
-	$H_ID	= $ss_mb_id;	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	/*
 		board_list_memo.php : memo type board
 		run : query_ok_new.php
 	*/
-	$H_NAME = $member['mb_nick'];
-	if( !$H_NAME ) $H_NAME='GUEST';
-	/*if( !$H_ID || $H_LEV < 2 ) {
-		m_("Login Please!");
-			$url='/';	//$PHP_SELF;
-			echo("<meta http-equiv='refresh' content='0; URL=$url'>");
-			exit;
-	}*/
+	$ss_mb_id = get_session("ss_mb_id");
+	if( isset($ss_mb_id) && $ss_mb_id !=='' ) {
+		$H_ID	= $ss_mb_id;
+		$H_LEV	= $member['mb_level'];
+		$H_NAME = $member['mb_name'];
+	} else {
+		$H_NAME='GUEST';
+		$H_ID	= '';
+		$H_LEV	= 1;
+	}
+	$ip = $_SERVER['REMOTE_ADDR'];
 ?>
 <html> 
 <head> 
@@ -27,7 +27,9 @@
 <meta name="robots" content="ALL">
 
 <?php
-	$infor=$_REQUEST['infor'];	//m_("infor: $infor ------- ");
+	if( isset($_REQUEST['infor']) ) $infor=$_REQUEST['infor'];	//m_("infor: $infor ------- ");
+	else if( isset($_POST['infor']) ) $infor=$_POST['infor'];
+	else $infor ='';
 
 	include "./paging.php";
 	include "./string.php";
