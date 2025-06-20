@@ -15,40 +15,21 @@ $content	= $line['context'];
 $in_dir		= $line['file_path'];	//substr($line[in_date],0,7);
 $ff			= $line['file_name'];
 $afile		= $line['file_wonbon'];	//원본화일명칭.
+$file_size	= $line['file_size'];
 
 //$fileDir = $in_dir;	//	"./".$in_dir;
 $fullPath = $line['file_path'] . "/" . $line['file_name'];	//$fileDir."/".$ff;
 
-/*
-$length = filesize($fullPath);
-
-//$length = $line[file_size];	//filesize($fullPath);
-//m_(" $fullPath : $length ,  --- no:$no, infor:$infor , $afile, $ff");
-// ./file/dao/dao_1549071466.jpg : 1307087 ,  --- no:8, infor:115 , IMG_00263.jpg, dao_1549071466.jpg
-header("Content-Type: application/octet-stream");
-header("Content-Length: $length");
-header("Content-Disposition: attachment; filename=".$afile);
-//header("Content-Disposition: attachment; filename=".iconv('utf-8','euc-kr',$afile));
-//header("Content-Disposition: attachment; filename=".iconv('euc-kr','utf-8',$afile));
-header("Content-Transfer-Encoding: binary");
-*/
-
-	$length = filesize($fullPath);
-
+	header("Pragma: public");
 	header("Content-Type: application/octet-stream");
-	header("Content-Length: $length");
-	header("Content-Disposition: attachment; filename=".iconv('utf-8','euc-kr',$afile));
+	header("Content-Disposition: attachment; filename=$afile");
+//	header("Content-Disposition: attachment; filename=".iconv('utf-8','euc-kr',$afile));
 	header("Content-Transfer-Encoding: binary");
+	header("Content-Length: $file_size");
 
-
-$fh = fopen($fullPath, "r");
-fpassthru($fh);
-
-
-
-
-
+	ob_clean();
+	flush();
+	readfile($fullPath);
 
 exit;
-
 ?>
