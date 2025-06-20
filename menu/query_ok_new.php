@@ -427,9 +427,11 @@
 			exit;
 
 	} else if( $mode == "insert_form_image") {
+
 		include "./infor.php";
 		$upload_file_size_limit = $mf_infor[3]*1000000;
 
+		$fileup_yn	= $_POST['fileup_yn'];
 		if( strlen( $_FILES["file"]["name"] ) > 0 ){
 			$upfile_name= $_FILES["file"]["name"];
 			$upfile_size= $_FILES["file"]["size"];
@@ -440,30 +442,28 @@
 		$upfile2	= "";
 		$file_ext	= "";
 		$f_path2	= "";
-		if ( $upfile_name && strlen($_POST['file_ext']) > 3) {
+		if( $fileup_yn > 0 && isset($upfile_name) && $upfile_name !== '') {
 			$file_ext		= $_POST['file_ext'];
-			if ( $upfile_size >  $upload_file_size_limit ) {
+			if( $upfile_size >  $upload_file_size_limit ) {
 				echo "<script>history.go(-1);</script>";
 				exit;
 			}
-			$upfile_name	= str_replace(" ", "", $upfile_name);
-			$f_url	= KAPP_URL_T_ . "/file/" . $mf_infor[53]; // 53['make_id'] = 8['imember']
-			$f_path_url	= $f_url . "/aboard_".$mf_infor[2];
 			$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
 			$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];
-			if ( !is_dir($f_path1) ) {
-				if ( !@mkdir( $f_path1, 0755 ) ) {
+			if( !is_dir($f_path1) ) {
+				if( !@mkdir( $f_path1, 0755 ) ) {
 					echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
 					echo "<script>history.go(-1); </script>";exit;
 				}
 			}
-			if ( !is_dir($f_path2) ) {
-				if ( !@mkdir( $f_path2, 0755 ) ) {
+			if( !is_dir($f_path2) ) {
+				if( !@mkdir( $f_path2, 0755 ) ) {
 					echo " Error: f_path2 : " . $f_path2 . " Failed to create directory. ";
 					echo "<script>history.go(-1); </script>";exit;
 				}
 			}
-			$upfile2 = $H_ID . "_" . time() . $file_ext; //$ext_name;
+			$upfile_name = str_replace(" ", "", $upfile_name);
+			$upfile2 = $H_ID . "_" . time() ."_" . $upfile_name; // . $file_ext;
 			move_uploaded_file( $_FILES["file"]["tmp_name"], $f_path2 . "/" . $upfile2 );
 		}
 		$cnt=0;		$step=0;		$re=0;

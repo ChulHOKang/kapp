@@ -254,7 +254,7 @@ else if( !$H_LEV and ($mf_infor[47] != '4')) {
 				 
 				 <table border='0' cellspacing='0' cellpadding='5' width='100%' bgcolor='Silver'>
 					<tr>
-					  <td height='22' title='pg:insert1.php'><font color="#FFFFFF"><?=$mf_infor[1]?></font></td>
+					  <td height='22' title='pg:insert1.php, tab:<?=$mf_infor[2]?>'><font color="#FFFFFF"><?=$mf_infor[1]?></font></td>
 					</tr>
 				 </table>
 

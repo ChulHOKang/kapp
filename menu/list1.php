@@ -179,10 +179,8 @@
 	 
  					<table border='0' cellspacing='0' cellpadding='5' width='100%' bgcolor='Silver'>
     						<tr> 
-      						<td height='22'><font color="#FFFFFF"><?=$mf_infor[1]?></font></td>
+      						<td height='22' title="tab:<?=$mf_infor[2]?>"><font color="#FFFFFF"><?=$mf_infor[1]?></font></td>
     						</tr>
-
-					
 					<div><!--  class="fl" fr -->
 						<span>Total: <strong><?=$total?></strong>, 
 						&nbsp;view line : <select id='view_lineS' name='view_lineS' onChange="Change_view_line(this.options[selectedIndex].value, <?=$page?>, <?=$view_count?>)" style='height:20;'>
@@ -211,9 +209,9 @@
 <?php //관리자 아이콘표시
 if( isset($_REQUEST['del_admin']) ) $del_admin = $_REQUEST['del_admin'];
 else $del_admin = '';
-
+$tab = $mf_infor[2];// title=tab:$tab
 if( !$del_admin ){
-	echo "<a href=\"javascript:admin_func('$H_LEV', '" . $infor . "')\")>Insert</a>"; //<img src='$mf_infor[41]' border=0>
+	echo "<a href=\"javascript:admin_func('$H_LEV', '" . $infor . "')\" title='tab:$tab')>Insert</a>"; //<img src='$mf_infor[41]' border=0>
 }
 ?>
 						</td>

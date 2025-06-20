@@ -323,16 +323,14 @@
 if( $mf[12]){	// file_name
 	$width  = 0;
 	$height = 0;
-
+	
 	if( $mf[15]=='.bmp' || $mf[15]=='.gif' || $mf[15]=='.jpg' || $mf[15]=='.png'){
-		$file="<a href='#' \"><img src='" . KAPP_URL_T_ . "/icon/subject.gif' border='0'><font color='".$mf_infor[21]."'>".$mf[13]."(".$fsize.")</a>";
+		$file="<a href='down.php?infor=$infor&no=$mf[0]&wonbon=$mf[13]' <img src=../icon/subject.gif border='0'> <font color='$mf_infor[21]'>$mf[13]($fsize)</a>";
 			$tmp = get_size($mf[12], $mf_infor[2]); 
 			$size = explode("X", $tmp); 
 			$imgA = "../file/".$mf_infor[53]."/aboard_".$mf_infor[2]."/".$mf[12]; // 53['makeid'] = 8['imember']
 			$imgs= "<img src='".$imgA."' border='0' width='".$size[0]."' height='".$size[1]."' >";
 
-	}elseif($mf[15]=='.zip'||$mf[15]=='.rar'||$mf[15]=='.mp3'||$mf[15]=='.txt'){
-		$file="<a href='#' ><img src='". KAPP_URL_T_ ."/icon/file/default.gif' border=0> <font color=$mf_infor[21]>$mf[13]($fsize)</a>";
 	}else{
 		$file="<a href='#' ><img src='".KAPP_URL_T_."/icon/file/default.gif' border=0> <font color=$mf_infor[21]>$mf[13]($fsize)</a>";
 	}
