@@ -19,7 +19,9 @@
 		m_("You need to login. ");exit;
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
-	if( $H_POINT < $dn_minus_point ) { //$dn_minus_point = 1000:my_func
+	$dn_minus_point = $config['kapp_download_point'];
+	$dn_add_point = -$config['kapp_download_point'];
+	if( $H_POINT < abs($dn_minus_point) ) { //$dn_minus_point = 1000:my_func
 		m_("There are not enough points. point:$H_POINT");exit;
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
