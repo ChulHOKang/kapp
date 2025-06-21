@@ -88,36 +88,17 @@ $(function () {
 		document.view_form.search_choice.value=c_sel;
 		document.view_form.c_sel3.value=c_sel;
 	}
-
 	function Change_Csel2(c_sel){
 		var obj = document.getElementById("c_sel3");
 		var c = c_sel.split("|");
 		document.view_form.search_fld.value = c[0];
 		document.view_form.mode.value = 'search';
-
-		//document.view_form.search_fld_type.value = c[1];
-		/*
-		if( c[1] =='INT' || c[1] =='BIGINT' || c[1] =='TINYINT' || c[1] =='SMALLINT' || c[1] =='MEDIUMINT' || c[1] =='DECIMAL' || c[1] =='FLOAT' || c[1] =='DOUBLE') {
-					obj.length=3;
-					view_form.c_sel3.options[0].text = "=";
-					view_form.c_sel3.options[1].text = ">";
-					view_form.c_sel3.options[2].text = "<";
-					document.view_form.search_choice.value = "=";
-		} else if ( c[1] =='CHAR' || c[1] =='VARCHAR' || c[1] =='TEXT' || c[1] =='DATE' || c[1] =='DATETIME'){
-					obj.length=2;
-					view_form.c_sel3.options[0].text = "like";
-					view_form.c_sel3.options[1].text = "=";
-					document.view_form.search_choice.value = "like";
-		}*/
-
 	}
-
 	function pg_record_view( seqno ){
 		document.view_form.seqno.value=seqno;
 		document.view_form.action='tkher_program_data_view.php'; 
 		document.view_form.submit();
 	}
-
     function table_record_view(enm,hnm)
 	{
 		document.view_form.pg_code.value=enm;
@@ -125,9 +106,7 @@ $(function () {
 		document.view_form.action='tkher_program_data_list.php?pg_code='+enm; 
 		document.view_form.submit();
 	}
-	//function table_record_write(mode){ 
 	function table_record_write(pg_code){ 
-		//document.view_form.mode.value = mode; 
 		document.view_form.action='tkher_program_run.php?pg_code='+pg_code; 
 		document.view_form.submit();
 	}
@@ -139,7 +118,6 @@ $(function () {
 		document.view_form.action='down_excel_file.php';
 		document.view_form.submit();
 	}
-
 	function Change_line_cnt( $pg_code, $line){
 		
 		document.view_form.page.value = 1;
@@ -151,7 +129,6 @@ $(function () {
 		if( !document.view_form.id.value ) {
 			alert('Login Please!'); return false;
 		}
-			//alert('UrlLinCoin Point :'+ $coin);
 		if( $coin < 1000 ) {
 			alert('Requires more than 1000 points. Point is low. You must do activities to accumulate points. point:'+ $coin);//UrlLinCoin Point가 부족합니다. point를 축적해야합니다.
 			document.view_form.action='<?=KAPP_URL_T_?>/manual/user_manual.php';
@@ -168,20 +145,16 @@ $(function () {
 			}
 		}
 	}
-
 	$(function() {
 		$('.search_btn').on('click', function() {
 			var c_sel = document.getElementById("c_sel");
 			i = c_sel.selectedIndex;
 			c_sel = c_sel.options[i].value;
-
 			var c_sel3 = document.getElementById("c_sel3");
 			i = c_sel3.selectedIndex;
 			c_sel3 = c_sel3.options[i].value;
-
 			var searchT = document.getElementById("searchT");
 			searchT = searchT.value;
-
 			pg_code = document.view_form.pg_code.value;
 			document.view_form.mode.value = 'search';
 			document.view_form.search_fld.value = c_sel;
@@ -194,12 +167,10 @@ $(function () {
 	
 	function group_code_change_func(cd,pg_code){
 		index = document.view_form.group_code.selectedIndex;
-		//alert('index: ' + index );
 		nm = document.view_form.group_code.options[index].text;
 		document.view_form.group_name.value = nm;
 		vv = document.view_form.group_code.options[index].value;
 		document.view_form.group_codeX.value = vv;
-		//alert('cd: ' + cd + ', nm: ' + nm + ', pg_code: ' + pg_code);
 		document.view_form.mode.value = "project_search";
 		document.view_form.action ="tkher_program_data_list.php?pg_code="+pg_code;
 		document.view_form.submit();
@@ -239,8 +210,6 @@ $(function () {
 	if( isset($_POST['group_name']) ) $group_name		= $_POST['group_name'];
 	else  $group_name = "";
 
-	//$pg_code	=	$_SESSION['pg_code']; // 2023-08-03 변경. program_list3.php에서도 사용 중 변경 불가. 중요.
-	//m_("data_list pg_code:" . $pg_code);
 	if( !$pg_code ) {
 		$pg_name	= $_SESSION["pg_name"];	 //table_item_run70_r.php 
 		$pg_code	= $_SESSION["pg_code"];
@@ -248,9 +217,8 @@ $(function () {
 		$_SESSION['pg_name']	= '';
 	}
 	if( !$pg_code  ) {
-			my_msg(" program name ----------- ERROR : pg_name:$pg_name , pg_code:$pg_code "); exit;//
+			m_(" program name ----------- ERROR : pg_name:$pg_name , pg_code:$pg_code "); exit;//
 	}
-//	$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$pg_code' ";
 	$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$resultPG	= sql_query($sqlPG);
 	$table10_pg= sql_num_rows($resultPG);
@@ -265,8 +233,7 @@ $(function () {
 		$fld_cnt		= $rsPG['item_cnt'];
 		$pg_name	= $rsPG['pg_name']; 
 	} else {
-			my_msg(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
-			// program name ERROR : table10_pg , pg_name:ITBANK , pg_code:chuh_1543674259 NO Found! 
+			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
 	}
 	$fld_enm= array();
 	$fld_hnm= array();
@@ -278,27 +245,23 @@ $(function () {
 	$list		= explode("@", $item_array);
 	for ( $i=0; $list[$i] != ""; $i++ ){
 		$ddd				= $list[$i];
-		$item				= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+		$item				= explode("|", $ddd);
 		$fld_enm[$i]	= $item[1];
 		$fld_hnm[$i]	= $item[2];
 		$fld_type[$i]	= $item[3];
 		$fld_len[$i]		= $item[4];
-		if( $i==0 && !$search_fld) $search_fld = $item[1];	 // 검색용 첫필드 디폴트 설정.
+		if( $i==0 && !$search_fld) $search_fld = $item[1];
 	}
 	$item_cnt	= $fld_cnt=$i;
-	
 	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
-	else $page = 1; //m_("page: " . $page);
+	else $page = 1;
 	$in_day		= date("Y-m-d H:i");
-
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=="" ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
-	
-	if( $line_cnt < 10  ) $line_cnt	= 10;					// $line_cnt; // page line cnt
-	$page_cnt	= 10;										// #[1] [2] [3] 갯수
-
+	if( $line_cnt < 10  ) $line_cnt	= 10;
+	$page_cnt	= 10;
 	$SQL1 = "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
 	if ( ($result = sql_query( $SQL1 ) )==false )
 	{
@@ -310,11 +273,10 @@ $(function () {
 	}
 	$levR		= $my_rs['grant_view']; 
 	$levW	= $my_rs['grant_write']; 
-	//m_("pg_code:" . $pg_code);
 ?>
 			<br>
 			<div>
-				<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='Go Home : table code:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
+				<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table code:<?=$pg_code?>:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
 			</div>
 <?php
 			$SQL1 = "SELECT * from $tab_enm ";
@@ -346,13 +308,10 @@ $(function () {
 			}
 ?>
 		<form name='view_form' method='post' enctype="multipart/form-data" >
-
 			<div style='width:99%;'>
 				<div class="fl">
 						<tr>
 							<td align='left'>
-
-
 								<script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
 								<p align="left" style="margin-top: 0px" title='pg: Project List '>
 
@@ -372,53 +331,44 @@ $(function () {
 					}
 ?>
 			</select>
-
-								
-								<a href="#" id="contentlink" rel="subcontent2">
-								<!-- <font color='#000ccc' size='4'> ▤ <font color='green' size='2'><b>Program List[▼]</b></font> -->
-								<font color='black' ><b>&#9776; Program List [▼]</b></font>
-
-								</a><?php if( isset($H_ID) ) echo "id:$H_ID, lev:$H_LEV"; ?> 
-								</p>
-
+				<a href="#" id="contentlink" rel="subcontent2">
+				<font color='black' ><b>&#9776; Program List [▼]</b></font>
+				</a><?php if( isset($H_ID) ) echo "id:$H_ID, lev:$H_LEV"; ?> 
+				</p>
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
 	if( isset($_POST['group_codeX']) ) $group_codeX = $_POST['group_codeX'];
 	else $group_codeX = "";
-
-			if( isset($H_ID) ) { 	//m_("gX:". $group_codeX . ", g:" . $_POST['group_code']);
-					if( isset( $group_codeX) ){
-						$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_codeX . "' order by upday desc ";
-						//$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
-					} else {
-						 $sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
-					}
-					$result = sql_query( $sql );			//echo "Invalid query sql:" . $sql;
-					if( $result == false ){
-						m_(" 2 Select Error ");
-						echo "Invalid query sql:" . $sql; exit;
-					}
-			}	else {
-					m_(" -----------Please login"); exit;
-			}
-			//echo "sql:" . $sql; 				m_(" -----------Please l");
-			while ( $rs = sql_fetch_array( $result )  ) {
-				$pg_codeA = $rs['pg_code'];
-				$pg_nameA = $rs['pg_name'];
-				//m_("pg_nameA: " . $pg_nameA);
+	if( isset($H_ID) ) {
+		if( isset( $group_codeX) ){
+			$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_codeX . "' order by upday desc ";
+		} else {
+			 $sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
+		}
+		$result = sql_query( $sql );
+		if( $result == false ){
+			m_(" 2 Select Error ");
+			echo "Invalid query sql:"; exit;
+		}
+	}	else {
+			m_(" -----------Please login"); exit;
+	}
+	while ( $rs = sql_fetch_array( $result )  ) {
+		$pg_codeA = $rs['pg_code'];
+		$pg_nameA = $rs['pg_name'];
 ?>
-					<tr>
-					<td width='130' height='24' background='./icon/admin_submenu.gif'>&nbsp;<img src='./icon/left_icon.gif'>
-					<a href="javascript:table_record_view('<?=$pg_codeA?>','<?=$pg_nameA?>');" target='_self'><?=$pg_nameA?></a>
-					</td>
-					</tr>
+			<tr>
+			<td width='130' height='24' background='./icon/admin_submenu.gif'>&nbsp;<img src='./icon/left_icon.gif'>
+			<a href="javascript:table_record_view('<?=$pg_codeA?>','<?=$pg_nameA?>');" target='_self'><?=$pg_nameA?></a>
+			</td>
+			</tr>
 <?php
-			}
+	}
 ?>
 				</TABLE>
 							<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
-							</DIV><!-- subcontent2 -->
+							</DIV>
 								<script type="text/javascript">
 									dropdowncontent.init("searchlink", "left-bottom", 300, "mouseover")
 									dropdowncontent.init("contentlink", "right-bottom", 300, "click")
@@ -437,7 +387,6 @@ $(function () {
 								<option value='100' <?php if($line_cnt=='100')  echo " selected" ?>  >100</option>
 							</select>
 						</span>
-					 <!-- <input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>');" class="Btn_List01A"> -->
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
@@ -458,7 +407,6 @@ $(function () {
 						<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
 						<input type="hidden" name='group_codeX'		value="<?=$group_codeX?>" />
 						<input type="hidden" name='group_name'		value="<?=$group_name?>" />
-
 						<input type="hidden" name='fld_enm'		value='<?=$fld_enm?>' />
 						<input type="hidden" name='fld_hnm'		value='<?=$fld_hnm?>' />
 						<input type="hidden" name='fld_type'		value='<?=$fld_type?>' />
@@ -469,8 +417,8 @@ $(function () {
 <?php
 				for( $i=0;$i<$item_cnt;$i++){
 ?>
-						<input type='hidden' name="iftype[<?=$i?>]"		value='<?=$iftype[$i]?>' >
-						<input type='hidden' name="if_data[<?=$i?>]"		value='<?=$if_data[$i]?>' > 
+						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$iftype[$i]?>' >
+						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
 <?php
 				}
 ?>
@@ -499,7 +447,6 @@ $(function () {
 				else	 $SQL = $SQL . " where $search_fld like '%$searchT%' ";
 			} 
 			$SQL = $SQL . $OrderBy . $SQL_limit;
-			//echo "sql: " . $SQL; //sql: SELECT * from dao_1744251268 order by seqno desc limit 0, 1
 			if ( ($result = sql_query( $SQL ) )==false )
 			{
 				printf("Record 0 : query: %s\n", $SQL);
@@ -546,8 +493,6 @@ $(function () {
 					}
 ?>
 						</select>
-						<!-- <input type="hidden" name='search_fld_type' value='<?=$search_fld_type?>' /> -->
-
 						<select id='c_sel3' name='c_sel3' onChange='Change_Csel3(this.options[this.selectedIndex].value)' style='height:30;'>
 							<option value='like' <?php if($search_choice=='like' ) echo " selected " ?> >like</option>
 							<option value='=' <?php if($search_choice=='=' ) echo " selected " ?> >=</option>

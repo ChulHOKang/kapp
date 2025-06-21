@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>AppGeneratorSystem. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Made in Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -14,7 +14,7 @@
 	$H_ID			= get_session("ss_mb_id");   
 	$H_LEV		= $member['mb_level'];  
 	if( !$H_ID || !$H_LEV ) {
-		//my_msg("You need to login. ");exit;
+		//m_("You need to login. ");exit;
 	}
 
 	$H_POINT	= $member['mb_point'];
@@ -27,13 +27,12 @@
 	$if_data		= $_POST['if_data'];
 	$iftype		= $_POST['iftype'];
 	$item_cnt	= $_POST['item_cnt'];
-
 	$pg_name	= $_POST['pg_name'];
 	$pg_code	= $_REQUEST['pg_code'];
 	$line_cnt	= $_POST['line_cnt'];
 
 	if( !$pg_name || !$pg_code  ) {
-			my_msg(" program name ----------- ERROR : pg_code:$pg_code , pg_name:$pg_name ");exit;
+			m_(" program name ----------- ERROR : pg_code:$pg_code , pg_name:$pg_name ");exit;
 	}
 
 	$str  = "abcdefghijklmnopqrstuvwxyz";
@@ -56,7 +55,6 @@
 		$mid				= $row['userid'];
 		$pg_title			= $tab_hnm;
 	} 
-
 	$menu1TWPer=15;
 	$menu1AWPer=100 - $menu1TWPer;
 	$menu2TWPer=10;
@@ -69,17 +67,6 @@
 	$Xwidth='100%';
 	$Xheight='100%';
 ?>
-
-<?php
-//		$pw = $_REQUEST[pw];
-//		$cra = $_REQUEST[cra];
-//		$cate[] = $_REQUEST[cate];
-?>
-<!--
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script>
--->
 
 <style>
 * {
@@ -349,10 +336,6 @@
 	margin-right: 10px;
 	}
 .btn_T03T{width:84px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}
-/*
-.viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:right;}
-.viewHeader span{position:absolute;left:0;top:12px;font-size:14px;color:#686868;}
-*/
 .viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}
 .viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}
 
@@ -394,17 +377,15 @@
 .paging a.on{font-weight:bold;color:#d01c27;}
 .paging a.prev{margin-right:20px;}
 .paging a.next{margin-left:20px;}
-
 </style>
 
- <script type="text/javascript">
+<script type="text/javascript">
 	
 	function table_data_list(tab) {
 		document.form_view.action="tkher_program_data_list.php";
 		document.form_view.target='_self';
 		document.form_view.submit();
 	}
-
 	function popimage(imagesrc,winwidth,winheight){
 		var look='width=800,height=600,'
 		popwin=window.open("","",look)
@@ -412,7 +393,6 @@
 		popwin.document.write('<title>urllinkcoin.com</title><body bgcolor="white" topmargin=0 leftmargin=0 marginheight=0 marginwidth=0><a href="javascript:window.close()"><img src="'+imagesrc+'" border=0></a></body>')
 		popwin.document.close()
 	}
-
 	function data_delete(uid, seqno){
 		if( !document.form_view.Hid.value ) {
 			alert('Login Please!'); return false;
@@ -422,54 +402,35 @@
 			document.form_view.seqno.value=seqno;
 			document.form_view.action='tkher_program_data_view.php';
 			document.form_view.submit();
-		} else {
-			//alert('NNN---------------');
 		}
 	}
-
 	function record_update(){
 		if( !document.form_view.Hid.value ) {
 			alert('Login Please!'); return false;
 		}
 		document.form_view.mode.value='modify';
 		document.form_view.action='tkher_program_data_update.php';
-//		document.form_view.action='tkher_program_data_updateT.php'; // test
 		document.form_view.target = '_self';
 		document.form_view.submit();
 	}
-
 	function tab_pg_view() {
 		document.form_view.action='tkher_program_data_list.php';
 		document.form_view.target = '_self';
 		document.form_view.submit();
 
 	}
-
 	function home_func(){
 		view_form.mode='home_func';
 		view_form.action='tkher_program_data_list.php';
 		view_form.submit();
 	}
-	/*function tkher_source_create($coin, seq){
-		if( confirm("Are you sure you want to Create? seq:" + seq) ) {
-			document.form_view.mode.value = 'view';
-			document.form_view.action='tkher_php_programDNV.php';
-			document.form_view.target = '_blank';
-			document.form_view.submit();
-		} else {
-			alert('Cancel!');
-		}
-	}*/
 	function tkher_source_create($coin, seq){
 		if( !document.form_view.Hid.value ) {
 			alert('Login Please!'); return false;
 		}
 		if( $coin < 1000 ) {
-			alert('UrlLinCoin Point is low. You must do activities to accumulate points. point:'+ $coin);//UrlLinCoin Point가 부족합니다. point를 축적해야합니다.
+			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);
 			return false;
-			//document.form_view.action='/t/manual.php';
-			//document.form_view.target = '_blank';
-			//document.form_view.submit();
 		} else {
 			if( confirm("Are you sure you want to Create? ") ) {
 				document.form_view.mode.value = 'view';
@@ -501,7 +462,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		include_once "./menu_run.php"; 
 ?>
 		<div>
-			<P onclick="javascript:home_func()" class="HeadTitle03AX" title='Go Home : table code:<?=$tab_enm?> , program name:<?=$pg_name?>' align='center'><?=$pg_name?></P>
+			<P onclick="javascript:home_func()" class="HeadTitle03AX" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>' align='center'><?=$pg_name?></P>
 		</div>
 			<form name='form_view' action='tkher_program_data_view.php?id=<?=$H_ID?>#update_page' method='post' enctype="multipart/form-data" onsubmit='return check(this)'>
 				<input type="hidden" name='mode'		value='' />
@@ -520,8 +481,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 
 	<div class="boardViewX">
 		<div class="viewHeader">
-			<span title='tkher_program_data_view'>Tkher_Code:<?=$pg_code?>(<?=$pg_name?>) &nbsp;&nbsp;&nbsp; Date : <?=date("Y-m-d H:i:s" ); ?></span>
-			<!-- <input type=button value='List' onclick="javascript:table_data_list();" class="Btn_List01A"> -->
+			<span title='tkher_program_data_view'>pg:<?=$pg_code?>(<?=$pg_name?>) &nbsp;&nbsp;&nbsp; Date : <?=date("Y-m-d H:i:s" ); ?></span>
 		</div>
 		<div class="viewSubjX"><span title='(<?=$pg_code?>:<?=$tab_hnm?>)'><?=$pg_name?></span> </div>
 		<div class='blankA'> </div>
@@ -540,23 +500,12 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		}
 ?>
 			<form name=form3 action='' method=post enctype="multipart/form-data" onsubmit='return check(this)'>
-				<!--<input type="hidden" name='mode'		value='' />
-				<input type="hidden" name='tab_hnm'	value='<?=$tab_hnm?>' />
-				<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
-				<input type="hidden" name='seqno'			value='<?=$seqno?>' />
-				<input type="hidden" name='id'			value='<?=$H_ID?>' />
-				<input type="hidden" name='page'		value='<?=$page?>' />
-				<input type="hidden" name='c_sel'		value='<?=$c_sel?>' />
-				<input type="hidden" name='target_'		value='<?=$target_?>' />-->
 <?php
-//				$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$pg_code' ";
 				$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 				$resultPG = sql_query($sqlPG);
 				if ( $resultPG == false ) { my_msg(" tab_view_pg70 pg_name:$pg_name select ERROR "); exit; }
-
 				$table10_pg = sql_num_rows($resultPG);
 				$rsPG = sql_fetch_array($resultPG);
-
 				$list = array();
 				$ddd = "";
 				$qqq = "";
@@ -567,54 +516,38 @@ if ( ($result = sql_query( $SQLX ) )==false )
 				$iftype		= explode("|", $iftypeX);
 				$ifdataX		= $rsPG['if_data'];
 				$ifdata		= explode("|", $ifdataX);
-
 			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-						$ddd  = $list[$i];
-						if( isset($iftype[$j]) ) $typeX= $iftype[$j];
-						else $typeX= '';
-						if( isset($ifdata[$j]) ) $if_fld = explode(":", $ifdata[$j]); 
-						else $if_fld = '';
+				$ddd  = $list[$i];
+				if( isset($iftype[$j]) ) $typeX= $iftype[$j];
+				else $typeX= '';
+				if( isset($ifdata[$j]) ) $if_fld = explode(":", $ifdata[$j]); 
+				else $if_fld = '';
 				$fld = explode("|", $ddd); 
-					$fldenm= $fld[1];
-					$fldhnm= $fld[2];
+				$fldenm= $fld[1];
+				$fldhnm= $fld[2];
 				if ( $fld[3] == "TEXT" ) {
 					echo "<p>$fldhnm</p>";
 					echo "<div class='viewWriteBox' ><textarea name='$fldenm' >$row[$fldenm]</textarea></div>";
-				} else if ( $typeX == '9' ) {	// 첨부화일 ../cratree/ 을 ./file/ 로 모두 바꿈 2023-08-24 kan
-						//m_(" typeX = '9' : row[fldenm]:" . $row[$fldenm]);
+				} else if ( $typeX == '9' ) { // add file
 						if( $row[$fldenm] != '' ) {
 								$ifile = explode( ".", $row[$fldenm] );
-								//$image_size = GetImageSize("../cratree/$mid/$row[$fldenm]");
-								//$im = "../cratree/" . $mid . "/". $row[$fldenm];
-								//$img_path = "./file/".$mid."/".$row[$fldenm];
 								$row_fnm = $row[$fldenm];
 								$im = "./file/" . $mid . "/". $row_fnm;
 								$image_size = GetImageSize( $im );
 								if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
-									//$image_size = GetImageSize("../cratree/$mid/$row[$fldenm]");
-									//$im = "../cratree/" . $mid . "/". $row[$fldenm];
-									//$image_size = GetImageSize($im);
-									//$im = "./file/" . $mid . "/". $row[$fldenm];
 									echo"<p>$fldhnm</p>";
 									echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='$img_size[0]' height='100' border='0'></a> </div>";
 								} else {
 									echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 									echo " <div class='data1A'><a href='./file/$mid/$row[$fldenm]'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 									echo " <div class='blankA'> </div> ";
-								}	// 첨부화일
+								}
 						}else{
-								/*$ifile[1] = "";
-								$ifile[0] = "";
-								$image_size[0] = "";
-								$image_size[1] = "";
-								$im = "";*/
 								echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 								echo " <div class='data1A'> <img src='./icon/file/default.gif' border='0'> </div> ";
 								echo " <div class='blankA'> </div> ";
 						}
-
-				} else {	// 9
-					
+				} else {
 					echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 					echo " <div class='data1A'>$row[$fldenm]</div> ";
 					echo " <div class='blankA'> </div> ";

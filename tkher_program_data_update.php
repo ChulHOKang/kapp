@@ -47,33 +47,32 @@
 	if( isset($_POST['if_data']) ) $if_data=$_POST['if_data'];
 	$tab_hnm		=	$_POST['tab_hnm'];
 	$tab_enm		=	$_POST['tab_enm'];
-
 	if( $mode == 'CHG_MODE' ){
 		$item_array		= $_POST['item_array'];
 		$item_cnt		= $_POST['item_cnt'];
 		$iftypeX			= $_POST['iftypeX'];
-		$iftype			= explode("|", $iftypeX);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+		$iftype			= explode("|", $iftypeX);
 		$query			= " UPDATE $tab_enm SET  ";
 		$list				= array();
 		$ddd				= "";
 		$list				= explode("@", $item_array);
 		$upfileX = "";
 		$ff_nm = time() . '_';
-		$f_path	="./file/" .  $mid . "/"; //$f_path="./file/" .$mid . "/" . $ff_nm; 
+		$f_path	="./file/" .  $mid . "/";
 
 		for ( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
 				$ddd  = $list[$i];
 				if( isset($iftype[$j]) ) $typeX = $iftype[$j];
 				else $typeX = '';
-				$fld = explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				$fld = explode("|", $ddd);
 					$nm = $fld[1]; 
 					$fld_data = $_POST[$nm]; 
 					$fld_enm= $fld[1];
-					IF( $i==($item_cnt-1) ) {				//마지막 컬럼 확인.
-							if( $typeX=='3' ) {				// 3:체크박스 배열 처리
+					IF( $i==($item_cnt-1) ) {
+							if( $typeX=='3' ) {
 								$aa = @implode(",",$_POST[$fld[1]]);
 								$query = $query . $fld[1] . "= '" . $aa . "' ";
-							} else if( $typeX=='9' ) { 									// 첨부화일이 
+							} else if( $typeX=='9' ) {// add file
 									$nm = $fld[1]; 
 									$upfileX = $_FILES["$nm"]["name"]; 
 									$fld_enm = $_FILES["$nm"]["name"]; 
@@ -84,7 +83,7 @@
 											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
 										} else { // dup file no found
 											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
-											echo "Stored in: " . $f_path.$ff_nm.$_FILES["$nm"]["name"];	// upload 폴더에 저장된 파일의 내용
+											echo "Stored in: " . $f_path.$ff_nm.$_FILES["$nm"]["name"];	// upload 
 										}
 									}
 									if( $upfileX ) $query = $query . $fld[1] ."= '" . $ff_nm . $_FILES["$nm"]["name"] . "' ";
@@ -94,7 +93,7 @@
 									$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
 							}
 					} ELSE {
-							if( $typeX=='3' ) {				// 3:체크박스 배열 처리
+							if( $typeX=='3' ) {				// 3: checkbox
 								$aa = @implode("," , $_POST[$fld[1]] ); 
 								$query = $query . $fld[1] . "= '" . $aa . "', ";
 							} else if( $typeX=='9' ) { 
@@ -102,7 +101,7 @@
 									$fld_enm = $_FILES["$nm"]["name"]; 
 									$upfileX = $_FILES["$nm"]["name"]; 
 									if ( $_FILES["$nm"]["error"] > 0){
-										echo " $nm : Return Code: " . $_FILES["$nm"]["error"] . "<br>";
+										echo " $nm : Return Code: " .$ff_nm. $_FILES["$nm"]["error"] . "<br>";
 									} else { // none error
 										if( file_exists( $f_path.$ff_nm.$_FILES["$nm"]["name"])) {// dup file check
 											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
@@ -124,15 +123,12 @@
 							}
 					}	// $i
 		}	// for
-
 		$query = $query . " where seqno=$seqno ";
 		$ret = sql_query( $query );
 		if( $ret ) {
 			m_(" Change completed! ");
 			if( $upfileX && $upfile) exec ("rm $upfile");	// upfileX: 첨부화일이 있으면 기존화일을 삭제 없으면 기존화일을 보존.
 		} else m_(" Change Error! ");
-		//echo "sql:", $query; exit;
-
 	}
 
 	$str  = "abcdefghijklmnopqrstuvwxyz";
@@ -142,16 +138,11 @@
 	$shuffled_str = str_shuffle($str);
 	$auto_char=substr($shuffled_str, 0, 6);
 
-	//echo $shuffled_str;
-
 	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
-	if ( ($result = sql_query( $SQL ) )==false )
-	{
-		//m_( "Error seqno:$seqno" );
+	if ( ($result = sql_query( $SQL ) )==false ){
 		printf("11111  Invalid query: %s\n", $SQL);
 		exit();
 	} else {
-
 		$row = sql_fetch_array($result);
 		$tab_hnm		= $row['tab_hnm'];
 		$grant_write	= $row['grant_write'];
@@ -159,16 +150,6 @@
 		$mid				= $row['userid'];
 		$pg_title		= $tab_hnm;
 	} 
-?>
-
-<?php
-		//$pw = $_REQUEST['pw'];
-		//$cra = $_REQUEST['cra'];
-		//$cate[] = $_REQUEST['cate'];
-			//$cate[2] = $_REQUEST[cate[]];
-
-	
-
 ?>
 
 <style>
@@ -428,10 +409,6 @@
 	background:#d01d27;
 	margin-right: 10px;
 	}
-/*
-.viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:right;}
-.viewHeader span{position:absolute;left:0;top:12px;font-size:14px;color:#686868;}
-*/
 .viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}
 .viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}
 
@@ -475,25 +452,16 @@
 .paging a.on{font-weight:bold;color:#d01c27;}
 .paging a.prev{margin-right:20px;}
 .paging a.next{margin-left:20px;}
-
 </style>
-
 </head>
 
 <body bgcolor='#ffffff'>
-
 <center>
-<!-- 
-<div class="wrapper">
-	<div class="container"> -->
 
 <?php
-	$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
-//	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
-
-if ( ($result = sql_query( $SQLX ) )==false )
+$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
+if( ($result = sql_query( $SQLX ) )==false )
 {
-		//m_( "Error seqno:$seqno" );
 		printf("SQLX Invalid query: %s\n", $SQLX);
 		exit();
 } else {
@@ -534,20 +502,17 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		$list	= array();
 		$ddd = "";
 		$qqq = "";
-		//-------- 계산  처리용.
 		$kkk="off";
 		$kkk0 = "document.makeform.fld_1.value";
 		$kkk1 = "document.makeform.fld_1.value";
 		$kkk2 = "document.makeform.fld_2.value";
 		$kkk3 = "+";
 		$kkk5 = 1; //func seq number
-		//--------------------------------------------
 		$pg_name	= $rsPG['pg_name'];
 		$tab_enm	= $rsPG['tab_enm'];
 		$tab_hnm	= $rsPG['tab_hnm'];
 		$group_code	= $rsPG['group_code'];
 		$group_name	= $rsPG['group_name'];
-		
 		$item_cnt	= $rsPG['item_cnt'];
 		$item_array = $rsPG['item_array'];
 		$iftypeX	= $rsPG['if_type'];
@@ -559,7 +524,6 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		$ifdata		= explode("|", $ifdataX);
 		$popdata	= explode("^", $pop_dataPG);
 		$mid			= $rsPG['userid'];
-
 		$_SESSION['iftype_db']		= $iftypeX;
 		$_SESSION['ifdata_db']		= $ifdataX;
 		$_SESSION['if_dataPG']		= $ifdataX;	
@@ -587,18 +551,18 @@ if ( ($result = sql_query( $SQLX ) )==false )
 					<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
 
 <?php
-		$list= explode("@", $item_array);// 게시판단위별구분 분류 '구분자=||'
+		$list= explode("@", $item_array);
 		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd		= $list[$i];
 				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
 				else $typeX	= '';
 				if( isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
 				else $dataX	= '';
-				if( isset($popdata[$j]) ) $popX	= $popdata[$j]; // 2022-02-19 add
+				if( isset($popdata[$j]) ) $popX	= $popdata[$j]; 
 				else $popX	= '';
-				if( isset($ifdata[$j]) ) $if_fld= explode(":", $ifdata[$j]);	//$ifdata[$i];
+				if( isset($ifdata[$j]) ) $if_fld= explode(":", $ifdata[$j]);
 				else $if_fld	= '';
-				$fld = explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				$fld = explode("|", $ddd);
 				$fldenm= $fld[1];
 				$fldhnm= $fld[2];
 				if ( $fld[3] == "TEXT" ) {
@@ -647,9 +611,9 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						} else if( $typeX == "11" ) { // calc
 							$kkk=$fld[1];
 							$idata = explode(":", $dataX);
-							$datax = $idata[1];	// 1:한글필드계산식.
-							$datay = $idata[0];	// 0:영문필드계산식.
-							$ff = explode(" ", $datay);	 //datay:fld_4 = fld_2 * fld_3, ff:fld_4 = fld_2 * fld_3 
+							$datax = $idata[1];
+							$datay = $idata[0];
+							$ff = explode(" ", $datay);
 							$f0 = $ff[0];
 							$f1 = $ff[1];
 							$f2 = $ff[2];
@@ -661,10 +625,10 @@ if ( ($result = sql_query( $SQLX ) )==false )
 							$kkk3 = $f3;
 							$kkk5++; // = $func_cnt;
 
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> "; // 2024-01-08 add
+							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
 						} else {
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> "; // 2024-01-08 add
+							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type=number name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
 						}
 							echo " <div class='blankA'> </div> ";
@@ -674,14 +638,14 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 						echo " <div class='menu1A'><input type=text name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$ifdataX', '$pop_dataPG')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
 						echo " <div class='blankA'> </div> ";
+
 				} else if ( $typeX == '9' ) {	// add file
-						
 					$upfile = "./file/" . $mid . "/". $row[$fldenm];
 					if( $row[$fldenm] != '' ) {
 							$ifile = explode( ".", $row[$fldenm] );
 							$image_size = GetImageSize( $upfile );
 							$im = "./file/" . $mid . "/". $row[$fldenm];
-							if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
+							if( strtolower($ifile[1]) == 'jpg' || strtolower($ifile[1]) == 'png' || strtolower($ifile[1]) == 'gif' ) {
 								echo"<p>$fldhnm</p>";
 								echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='$img_size[0]' height='100' border=0></a> </div>";
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
@@ -739,7 +703,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						}
 							echo " </span></div> ";
 							echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '1' ) {	// radio 버턴.
+				} else if ( $typeX == '1' ) {	// radio .
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
 						for ( $k=0; $if_fld[$k] != ""; $k++ ){
@@ -758,35 +722,29 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						echo " <div class='menu1A'><input type='$fld[3]' name='$fldenm' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fldenm.'></div> ";
 						echo " <div class='blankA'> </div> ";
 				}	//if
-			} // while  // for
+			} //  for
 ?>
-					<input type="hidden" name='upfile'		value='<?=$upfile?>' />
-
+				<input type="hidden" name='upfile'		value='<?=$upfile?>' />
 				<div class="viewHeader">
 					<a href="javascript:record_modify('<?=$seqno?>');" class="btn_bo02">Save</a>
 					<a href="javascript:tab_pg_list();" class="btn_bo02">List</a>
 				</div>
-
-					</form>
+			</form>
 			</div>
 <?php
-
 		$day	= date("Y-m-d");
 		$up_day = date("Y-m-d h:i:s");
 
 }  //query false
 ?>
-
 </body>
 
  <script type="text/javascript">
-	
 	function table_data_list() {
 		document.tkher_form.action="tkher_program_data_list.php";
 		document.tkher_form.target='tab_pg_list';
 		document.tkher_form.submit();
 	}
-
 	function popimage(imagesrc,winwidth,winheight){
 		var look='width='+winwidth+',height='+winheight+','
 		popwin=window.open("","",look)
@@ -794,14 +752,12 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		popwin.document.write('<title>urllinkcoin.com</title><body bgcolor="white" topmargin=0 leftmargin=0 marginheight=0 marginwidth=0><a href="javascript:window.close()"><img src="'+imagesrc+'" border=0></a></body>')
 		popwin.document.close()
 	}
-
 	function board_delete(uid, no){
 		if( confirm("Are you sure you want to delete?") ) {
 			document.tkher_form.mode.value="bbs_delete";
 			document.tkher_form.submit();
 		}
 	}
-
 	function record_modify( seqno ){
 		if( confirm("Do you want to change it? seqno:"+seqno) ) {
 			document.makeform.seqno.value=seqno;
@@ -810,11 +766,9 @@ if ( ($result = sql_query( $SQLX ) )==false )
 			document.makeform.submit();
 		}
 	}
-
 	function bbs_update(){
 		document.makeform.submit();
 	}
-
 	function tab_pg_list() {
 		document.tkher_form.action='tkher_program_data_list.php';
 		document.tkher_form.target='_top';
@@ -836,7 +790,5 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		<?=$kkk0?> = v1;
 	}
 <?php } ?>
-
 </script>
-
 </html>
