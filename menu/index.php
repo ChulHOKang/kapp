@@ -1,6 +1,5 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-
 	$H_ID  = get_session("ss_mb_id");
 	if( isset($H_ID) && strlen($H_ID) > 2) {
 		$H_LEV  = $member['mb_level'];
@@ -12,19 +11,9 @@
 		$H_EMAIL= '';
 	}
 	$ip     = $_SERVER['REMOTE_ADDR'];
-	// solpakan@naver.com, 9, 100, solpakan@naver.com
-	//$from_session_id  = $H_ID;	//HTTP_SESSION_VARS['from_session_id'];
 	/*
-		/t/menu/index.php - cratree_my_list_menu.php를 복사하여 사용 - /t/tree_menu_list_guest.php copy
-		/t/tree_menu_list_guest.php : /t/menu/tree_menu_list.php copy Guest용 tree list
-		/t/menu/tree_menu_list.php : /t/menu/index.php copy 모바일용 통합 tree list
-		2021-05-30 : 모바일용 생성
-		include menu_run.php - search call : ulist.php
-		tree 생성 : 'New Create'버턴클릭시 /t/menu/index.php 'Creates'버턴 클릭시 cratreebook_make_create_menu.php  call
-
-		--------------------------
-		DB: {$tkher['sys_menu_bom_table']}, webeditor, webeditor_comment, job_link_table, aboard_info, aboard_memo, aboard_admin, menuskin
-		중요! - /t/tree_menu_guest.php -> /t/menu/index_menu.php로 전환함 2023-11-17 -> 2023-11-21: 'tree_run.php' 로 사용.
+		DB: {$tkher['sys_menu_bom_table']}, webeditor, webeditor_comment,
+		     job_link_table, aboard_info, aboard_memo, aboard_admin, menuskin
 	*/
 ?>
 <html>
@@ -44,7 +33,6 @@
 </style>  
 
 <script language="javascript">
-
 	function big(x){
 		x.style.color='#ffffff';
 	}
@@ -52,18 +40,12 @@
 		x.style.color='#000000';
 	}
 
-	function contents_del(num, page) {
-		//if( confirm('Are you sure you want to delete this document? '+num) ) {
-			//location.href='tree_menu_list.php?mode=delete&num='+num + '&page=' +page;
-		//}
-	}
 	function new_create(Anum) {
-		//if( confirm('Are you sure you want to create? ') ) {
+		if( confirm('Are you sure you want to create? ') ) {
 			location.href='index_create.php';
-		//}
+		}
 	}
 	function tree_func(mid, sys_pg, run_mode ){
-		//alert("tree mid:"+mid + ", sys_pg:" + sys_pg + ", run_mode:" + run_mode);
 		document.sys_form.mid.value     = mid;
 		document.sys_form.sys_pg.value  = sys_pg;
 		document.sys_form.run_mode.value= "cratree_book_remake";//run_mode;
@@ -72,7 +54,6 @@
 		document.sys_form.submit();
 	}
 	function popup_func(mid, sys_pg, run_mode ){
-		//alert("popup mid:"+mid + ", sys_pg:" + sys_pg + ", run_mode:" + run_mode);
 		document.sys_form.mid.value     = mid;
 		document.sys_form.sys_pg.value  = sys_pg;
 		document.sys_form.run_mode.value= run_mode;
@@ -87,7 +68,6 @@
 			alert("There are not enough points. point:" + point);
 			return  false;
 		}
-		//alert("treeDN_func mid:"+mid + ", sys_pg:" + sys_pg + ", run_mode:" + run_mode+ ", point:" + point);
 		document.sys_form.mid.value     = mid;
 		document.sys_form.sys_pg.value  = sys_pg;
 		document.sys_form.run_mode.value= 'tree_menu_createDN';
@@ -103,7 +83,6 @@
 			alert("There are not enough points. point:" + point);
 			return  false;
 		}
-		//alert("popup mid:"+mid + ", sys_pg:" + sys_pg + ", run_mode:" + run_mode+ ", point:" + point);
 		document.sys_form.mid.value     = mid;
 		document.sys_form.sys_pg.value  = sys_pg;
 		document.sys_form.run_mode.value= 'dropdown_menu_createDN';
@@ -112,11 +91,10 @@
 		document.sys_form.submit();
 	}
 </script>
-<!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
 
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
-<link rel='stylesheet' href='../include/css/kancss.css' type='text/css'><!-- 중요! -->
+<link rel='stylesheet' href='../include/css/kancss.css' type='text/css'>
 
 <script>
 $(function () {
@@ -149,14 +127,9 @@ $(function () {
   });
 });
 </script>
-<!-- --- login -->
 <script type="text/javascript">
 var $grid;
 $(function(){
-	/*$(window).on("load resize",function(){
-		visualHeight();
-		$('#videoBg').vide({'mp4': '../video/tkherMovie'});
-	});*/
 	$(".visualSlide ").slick({
 		dots: false, slidesToShow: 1,slidesToScroll: 1, autoplay:true ,autoplaySpeed:<?=$slide_time?>,pauseOnHover : false
 	});
@@ -227,21 +200,15 @@ common = {
 	},
 }
 </script>
-
-
-<!--   ------ -->
-
 <?php
-
 	if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
 	else $mode="";
 	if( isset($_REQUEST['mid']) ) $mid  = $_REQUEST['mid'];
 	else $mid = $H_ID;
 	if( isset($_REQUEST['page']) ) $page  = $_REQUEST['page'];
 	else $page =1;
-
-	$limite		= 15;	// 한페이지에 나타낼 글자 갯수
-	$page_num	= 10;	// [1] [2] [3] 갯수
+	$limite		= 15;	// page line
+	$page_num	= 10;	// page 
 	$total  = 0;
 	$limit = "";
 	$no = 0;
@@ -259,12 +226,10 @@ common = {
 	$total_page = 0;
 	$first = 1;
 	$last = 1;
-
-if( $total > 0 ) {	//if(!$page) $page=1;
+if( $total > 0 ) {
 	$total_page = intval(($total-1) / $limite)+1;
 	$first = ($page-1)*$limite;
 	$last = $limite;
-
 	if( $total < $last) $last = $total;
 	$limit = "limit $first,$last";
 	if( $page == 1)
@@ -272,73 +237,55 @@ if( $total > 0 ) {	//if(!$page) $page=1;
 	else {
 		$no = $total - ($page - 1) * $limite;
 	}
-	if( strlen($sdata) > 0 ){	//if( $sel=='like') $data = '%' . $data . '%';
+	if( strlen($sdata) > 0 ){
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' order by tit_gubun desc, up_day desc, sys_subtit $limit";
 	} else {
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_level='mroot' and sys_menu = sys_submenu order by tit_gubun desc, up_day desc, sys_subtit $limit";
 	}
 	$result = sql_query( $query);
 } else $total = 0;
-
-	if( isset($_POST['Search_Mode']) ) $Search_Mode = $_POST['Search_Mode']; //'cratree_my_list_menu'; // index.php search run mode
+	if( isset($_POST['Search_Mode']) ) $Search_Mode = $_POST['Search_Mode'];
 	else $Search_Mode = "";
 ?>
 
 <body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
 <center>
-
 	<FORM method='post' name='sys_form' >
-		<!-- <input type='hidden' name='Search_Mode' value='<?=$Search_Mode?>' /> --> <!-- menu_run.php : Search_Mode :cratree_my_list_menu  2023-10-27 -->
 		<input type='hidden' name='Hid' value='<?=$H_ID?>' > 
 		<input type='hidden' name='mid' value='<?=$mid?>' > 
 		<input type='hidden' name='sys_pg'	 value='<?=$sys_pg?>' > 
 		<input type='hidden' name='run_mode' value='' > 
 	</form>
-
 	<div class="header"><!-- start : header -->
-	
 <?php
 	$runpage='./index.php';
 	$cur='C';
 	include "../menu_run.php";
-	
 	if( $mid) $madeid = $mid;
 	else      $madeid ='All';
 	echo "id:" . $H_ID .", total: " . $total . ", total-page: " . $total_page;
 ?>
-<!-- <DIV style='color:yellow' title='cratree_my_list_menu'><?=$H_ID?>, point:<?=$H_POINT?></DIV> -->
 <table class='floating-thead' >
-
 <thead>
 <tr style='background-color:#499BDA;color:black;'>
-	<!-- <th>NO</th> -->
 	<th>type</th>
 	<th>Title</th>
-	<!-- <th>maker</th> -->
-	<!-- <th>click</th> -->
 	<th>Pop Run</th>
 	<th title='Tree Menu Source Code Download.' style='color:black;'>Down-Load</th>
 	<th title='Popup Menu Source Code Download.' style='color:black;'>Down-Load</th>
-
-	<!-- 2021-10-09: <th title='Create a tree menu..' style='color:black;'>Recreate</th>
-	<th title='Create a popup menu.' style='color:black;'>Recreate</th> -->
 </tr>
-
- </thead>
+</thead>
 <tbody>
-
 <?php
 $number = ($page - 1) * $limite;
 $ln = $no;
 if( $result ){
 	while( $line = sql_fetch_array( $result )) {
-
 		$number = $number + 1;
 		$num		= $line['book_num'];
 		$mid	= $line['sys_userid'];
 		$sys_pg = $line['sys_pg'];
-		
-		$runM = './' . $mid . '/' . $sys_pg . '_menu.html'; //$runM = './menu/' . $mid . '/' . $sys_pg . '_menu.html';
+		$runM = './' . $mid . '/' . $sys_pg . '_menu.html';
 		$tit_gubun_ = $line['tit_gubun'];
 		if( $line['tit_gubun']=='G') { // board
 			$sys_jong = 'board';
@@ -356,21 +303,18 @@ if( $result ){
 			$run_mode = 'cratree_remake';
 			$iconX="<img src='../icon/berry.png' width='20' height='15' title='tit_gubun: $tit_gubun_ '>";
 		} else if( $line['tit_gubun']=='M'  ) { // Note, tree
-			$sys_jong = 'note'; //$sys_jong = 'link';
+			$sys_jong = 'note';
 			$bb='yellow';
 			$run_mode = 'cratree_remake';
 			$iconX="<img src='../icon/pizza.png' width='20' height='15' title='M tit_gubun: $tit_gubun_ '>";
 		} else {
-			//m_("- gubun: " . $line['tit_gubun']);
 			$sys_jong = 'link';
 			$run_mode = 'cratree_remake';
 			$iconX="";
 		}
-
 		$day = substr($line['up_day'], 0 , 10);
 		$subtit = $line['sys_subtit'];
 		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num ;
-
 		if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
 			echo "
 			<tr>
@@ -392,7 +336,6 @@ if( $result ){
 				<input type='button' value='Popup Create' onclick=\"popup_func('$mid', '$sys_pg', '$run_mode');\" style='background-color:black;color:yellow;' title='Recreate the popup menu of $subtit'>
 				</td> -->
 			</tr>";
-
 		} else {
 			echo "
 			<tr>
@@ -418,20 +361,16 @@ if( $result ){
 	echo "</tbody> </table>";
 	echo "<TABLE border='0' align='center' width='100%'>";
 	echo "<tr><td align='center' style='font-size:22px;'>";
-
 	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
 	$last_page = $first_page+($page_num-1);
 	if($last_page > $total_page) $last_page = $total_page;
-
 	$prev = $first_page-1;
-
 	if($page > $page_num) echo"[<a href=$PHP_SELF?page=$prev>Prev</a>] ";
 	for($i = $first_page; $i <= $last_page; $i++)
 	{
 		if($page == $i) echo" $i ";
 		else echo"<a href=$PHP_SELF?page=$i style='font-size:22px;'>[$i]</a>";
 	}
-
 	$next = $last_page+1;
 	if($next <= $total_page) echo"[<a href=$PHP_SELF?page=$next>Next</a>]";
 	echo "</td></tr></table>";
@@ -440,7 +379,6 @@ if( $result ){
 <td align='right'>
 </td>
 </tr></table>
-
 <?php if($H_ID){ ?>
 		<form name='form_view' method='post' enctype='multipart/form-data' >
 			<input type='hidden' name='mode' value='' />						
@@ -448,7 +386,5 @@ if( $result ){
 		<input type='button' value='New Create' onclick="javascript:new_create('ailinkapp');" class='HeadTitle01AX' title='New create Menu Tree' onmouseover='big(this);' onmouseout='small(this);'>      
 		</form>
 <?php } ?>
-
-	</div><!-- end : header -->
-
+</div><!-- end : header -->
 </body></html>
