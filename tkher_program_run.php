@@ -43,15 +43,16 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>AppGeneratorSystem. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="/logo/appmaker.jpg">
+<TITLE>K-APP. Made in Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="./logo/appmaker.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 </head>
 
-<!-- <link rel="stylesheet" href="/t/include/css/program_insert.css" type="text/css" /> -->
+
+<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/program_insert.css" type="text/css" /> -->
 
 <style>
 * {
@@ -308,10 +309,6 @@
 	background:#d01d27;
 	margin-right: 10px;
 	}
-/* 2024-01-05
-.viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:right;}
-.viewHeader span{position:absolute;left:0;top:12px;font-size:14px;color:#686868;}
-*/
 .viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}
 .viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}
 
@@ -330,18 +327,24 @@
 		//$url="/";
 		//echo "<script>window.open( '$url' , '_top', ''); </script>";//echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
 		//exit;
-	}
-
-	$H_POINT	= $member['mb_point'];
-	define('KAPP_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony');
+	} else	$H_POINT	= $member['mb_point'];
+	//define('KAPP_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony');
 
 	$is_mobile = false;
 	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
 
-	$pg_code	=$_REQUEST['pg_code'];
+
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else $page = 1;
+
+	if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
+	else $line_cnt = 1;
+
+	if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
+	else $pg_code = 1;
 
 	if( !$pg_code  ) {
-			my_msg(" Abnormal approach. $mode, $pg_code ");
+			m_(" Abnormal approach. $mode, $pg_code ");
 	}
 
 	$in_day = date("Y-m-d H:i");
@@ -352,7 +355,7 @@
 
 	$table10_pg = sql_num_rows($resultPG);
 	if( !$table10_pg  ) {
-			my_msg(" Abnormal approach. program no found! : $pg_code"); exit();
+			m_(" Abnormal approach. program no found! : $pg_code"); exit();
 	}
 	
 	$rsPG		= sql_fetch_array($resultPG);
@@ -386,10 +389,9 @@
 		$cur='B';
 		include_once "./menu_run.php"; 
 ?>
-
-<div class="HeadTitle01AX">
-	<P href="#" class="on" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>, pg_code:<?=$pg_code?>'><?=$pg_name?></P>
-</div>
+	<div>
+		<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle02AX" title='pg:<?=$pg_code?>, tab:<?=$tab_enm?> '><?=$pg_name?></P>
+	</div>
 
 	<div class="boardViewX">
 		<div class="viewHeader">
@@ -400,8 +402,8 @@
 		<div class="viewSubjX"><span title='(<?=$pg_code?>:<?=$tab_hnm?>)'><?=$pg_name?></span> </div>
 		<div class='blankA'> </div>
 		<form name="makeform" method = "post" action="" enctype="multipart/form-data">
-				<input type="hidden" name='page'		value="<?=$_REQUEST['page']?>" />
-				<input type="hidden" name='line_cnt'	value="<?=$_REQUEST['line_cnt']?>" />
+				<input type="hidden" name='page'		value="<?=$page?>" />
+				<input type="hidden" name='line_cnt'	value="<?=$line_cnt?>" />
 
 <?php
 		$kkk="off";
@@ -417,7 +419,7 @@
 		$kkk1 = "document.makeform.fld_1.value";
 		$kkk2 = "document.makeform.fld_2.value";
 		$kkk3 = "+";	// 계산식 연산자.
-		$kkk5 = 1;//func seq number
+		$kkk5 = 1;  //func seq number
 		//--------------------------------------------
 		$item_array = $rsPG['item_array'];
 		$iftypeX	= $rsPG['if_type'];
@@ -431,46 +433,43 @@
 				//my_msg("iftypeX:$iftypeX, ifdataX:$ifdataX");		
 				//iftypeX:|13|||11|||, ifdataX:|dao_1538180041:상품정보|||fld_4 = fld_2 * fld_3:금액 = 수량 * 단가|||
 
-		$list = explode("@", $item_array);
+		if( isset($item_array) ) $list = explode("@", $item_array);
+		else  $list = "";
 		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-
 				$ddd  = $list[$i];
-				$typeX	= $iftype[$j];
-				$dataX	= $ifdata[$j];
-				$popX	= $popdata[$j]; // 2022-02-19 add
-				$if_fld = explode(":", $dataX);	//$ifdata[$i];
-
-				$fld = explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
+				else $typeX	= "";
+				if( isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				else $dataX	= "";
+				if( isset($popdata[$j]) ) $popX	= $popdata[$j];
+				else $popX	= "";
+				if( isset($dataX) ) $if_fld = explode(":", $dataX);	//$ifdata[$i];
+				else $if_fld = "";
+				if( isset($ddd) ) $fld = explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				else $fld="";
 									//my_msg("seqno: ddd : list[ $i ]= $ddd");	// ddd : item[ 2 ]= 36|fld_2|전화폰|2
-
 			if( $fld[1] !== "seqno") { 
 				$fld_enm= $fld[1];
 				$fld_enmX= $fld[1];
-
 				if( $fld[3] == "TEXT" ) {
 					//echo"<p>$fld[2]</p>";
 					echo " <div class='menu1Area' ><p>$fld[2]</p><textarea name='$fld[1]' placeholder='Please enter your $fld[2]!' style='width:$Xwidth;height:$Text_height;'></textarea></div>";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "TIME" ) {  // 2024-01-05 add
 							$tday=date("H:i:s");
-
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$tday' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "DATE" ) { 
 							$day=date("Y-m-d");
-
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$day' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP" ) { 
-
 							$day=date("Y-m-d H:i");
-
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$day' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
-
 				} else if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ) { 
 							//echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 
@@ -482,9 +481,7 @@
 							}
 								echo " </span></div> ";
 								echo " <div class='blankA'> </div> ";
-
 						} else if( $typeX == "3" ) { //check box
-
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='radio1A'><span>";
 							for ( $k=0; $if_fld[$k] != ""; $k++ ){
@@ -494,22 +491,18 @@
 								echo " <div class='blankA'> </div> ";
 						
 						} else if( $typeX == "5" ) { // list box
-
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='ListBox1A'>";
 								echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
-
 							for ( $k=0; $if_fld[$k] != ""; $k++ ){
 								echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
 							}
 								echo "</SELECT>";
 								echo " </div> ";
 								echo " <div class='blankA'> </div> ";
-						
-						
 						} else if( $typeX == "11" ) { // calc
 							$kkk=$fld[1];
-							$func_cnt++;
+							//$func_cnt++;
 							$idata=explode(":", $dataX);
 							$datax = $idata[1];	// 1:한글필드계산식.
 							$datay = $idata[0];	// 0:영문필드계산식.
@@ -524,7 +517,7 @@
 							$kkk1 = "document.makeform." . $f2 . ".value";
 							$kkk2 = "document.makeform." . $f4 . ".value";
 							$kkk3 = $f3;
-							$kkk5 = $func_cnt;
+							$kkk5++; // = $func_cnt;
 
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> "; // 2024-01-08
 							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
@@ -617,7 +610,7 @@
 		}//for
 
 	//set_session('fld_session',  $fld_session);	// 팝업창 테이블 위치 : if_dataPG
-	$_SESSION['fld_session']	= $fld_session;
+	//$_SESSION['fld_session']	= $fld_session;
 
 ?>
 
@@ -654,6 +647,11 @@
 
 <script language="JavaScript"> 
 <!--
+	function home_func(pg_code){
+		view_form.mode='home_func';
+		view_form.action='tkher_program_data_list.php?pg_code='+pg_code;
+		view_form.submit();
+	}
 	/*function tkher_source_create($coin){
 		if( confirm("Are you sure you want to Create? ") ) {
 			document.makeform.mode.value = 'write_r';

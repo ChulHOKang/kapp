@@ -27,7 +27,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>AppGeneratorSystem. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP. Made in Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -44,7 +44,7 @@
 	$pg_name		= $_POST['pg_name'];
 	$pg_code		= $_POST['pg_code'];
 	$if_data			= array();
-	$if_data			=$_POST['if_data'];
+	if( isset($_POST['if_data']) ) $if_data=$_POST['if_data'];
 	$tab_hnm		=	$_POST['tab_hnm'];
 	$tab_enm		=	$_POST['tab_enm'];
 
@@ -57,13 +57,14 @@
 		$list				= array();
 		$ddd				= "";
 		$list				= explode("@", $item_array);
-
+		$upfileX = "";
 		$ff_nm = time() . '_';
 		$f_path	="./file/" .  $mid . "/"; //$f_path="./file/" .$mid . "/" . $ff_nm; 
 
 		for ( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
 				$ddd  = $list[$i];
-				$typeX = $iftype[$j];
+				if( isset($iftype[$j]) ) $typeX = $iftype[$j];
+				else $typeX = '';
 				$fld = explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
 					$nm = $fld[1]; 
 					$fld_data = $_POST[$nm]; 
@@ -76,18 +77,17 @@
 									$nm = $fld[1]; 
 									$upfileX = $_FILES["$nm"]["name"]; 
 									$fld_enm = $_FILES["$nm"]["name"]; 
-									if ( $_FILES["$nm"]["error"] > 0){// 에러가 있는지 검사하는 구문
-										echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";	// 에러가 있으면 어떤 에러인지 출력함
-									} else {// 에러가 없다면
-										if ( file_exists( $f_path . $_FILES["$nm"]["name"])) 
-										{	// 같은 이름의 파일이 존재하는지 체크를 함
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $_FILES["$nm"]["name"] );
-										} else {														// 동일한 파일이 없다면
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $_FILES["$nm"]["name"] );
-											echo "Stored in: " . $f_path . $_FILES["$nm"]["name"];	// upload 폴더에 저장된 파일의 내용
+									if( $_FILES["$nm"]["error"] > 0){ // error check
+										echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
+									} else { // none error
+										if( file_exists( $f_path.$ff_nm.$_FILES["$nm"]["name"])){ //dup file check
+											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
+										} else { // dup file no found
+											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
+											echo "Stored in: " . $f_path.$ff_nm.$_FILES["$nm"]["name"];	// upload 폴더에 저장된 파일의 내용
 										}
 									}
-									if( $upfileX ) $query = $query . $fld[1] ."= '" . $_FILES["$nm"]["name"] . "' ";
+									if( $upfileX ) $query = $query . $fld[1] ."= '" . $ff_nm . $_FILES["$nm"]["name"] . "' ";
 							} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 									$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
 							} ELSE {
@@ -96,27 +96,22 @@
 					} ELSE {
 							if( $typeX=='3' ) {				// 3:체크박스 배열 처리
 								$aa = @implode("," , $_POST[$fld[1]] ); 
-								//$sql = $sql . " '" . $aa . "', ";
 								$query = $query . $fld[1] . "= '" . $aa . "', ";
-								//echo "<tr>  <td>$fld[2]</td>  <td>$fld[1] : $aa</td> </tr>";
 							} else if( $typeX=='9' ) { 
 									$nm = $fld[1]; 
 									$fld_enm = $_FILES["$nm"]["name"]; 
 									$upfileX = $_FILES["$nm"]["name"]; 
-									//if( !$upfileX ) continue;
-									//m_("path:$f_path, fld_enm:$nm, data:$fld_enm");
-									if ( $_FILES["$nm"]["error"] > 0){								// 에러가 있는지 검사하는 구문
-										echo " $nm : Return Code: " . $_FILES["$nm"]["error"] . "<br>";	// 에러가 있으면 어떤 에러인지 출력함
-									} else {														// 에러가 없다면
-										if ( file_exists( $f_path . $_FILES["$nm"]["name"])) 
-										{																// 같은 이름의 파일이 존재하는지 체크를 함
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $_FILES["$nm"]["name"] );
-										} else {														// 동일한 파일이 없다면
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $_FILES["$nm"]["name"] );
-											echo "Stored in: " . $f_path . $_FILES["$nm"]["name"];	// upload 폴더에 저장된 파일의 내용
+									if ( $_FILES["$nm"]["error"] > 0){
+										echo " $nm : Return Code: " . $_FILES["$nm"]["error"] . "<br>";
+									} else { // none error
+										if( file_exists( $f_path.$ff_nm.$_FILES["$nm"]["name"])) {// dup file check
+											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
+										} else { // none dup
+											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
+											echo "Stored in: " . $f_path.$ff_nm . $_FILES["$nm"]["name"];// upload file
 										}
 									}
-									if( $upfileX ) $query = $query . $fld[1] ."= '" . $_FILES["$nm"]["name"] . "', ";
+									if( $upfileX ) $query = $query . $fld[1] ."= '" .$ff_nm.$_FILES["$nm"]["name"]. "', ";
 
 							} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 									
@@ -134,7 +129,7 @@
 		$ret = sql_query( $query );
 		if( $ret ) {
 			m_(" Change completed! ");
-			if ($upfileX && $upfile) exec ("rm $upfile");	// upfileX: 첨부화일이 있으면 기존화일을 삭제 없으면 기존화일을 보존.
+			if( $upfileX && $upfile) exec ("rm $upfile");	// upfileX: 첨부화일이 있으면 기존화일을 삭제 없으면 기존화일을 보존.
 		} else m_(" Change Error! ");
 		//echo "sql:", $query; exit;
 
@@ -167,9 +162,9 @@
 ?>
 
 <?php
-		$pw = $_REQUEST['pw'];
-		$cra = $_REQUEST['cra'];
-		$cate[] = $_REQUEST['cate'];
+		//$pw = $_REQUEST['pw'];
+		//$cra = $_REQUEST['cra'];
+		//$cate[] = $_REQUEST['cate'];
 			//$cate[2] = $_REQUEST[cate[]];
 
 	
@@ -510,89 +505,42 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		include_once "./menu_run.php"; 
 ?>
 
-			<!--<div class="listTabs01">
-				<a href="./tkher_program_data_view.php?tab_enm=<?=$tab_enm?>&page=<?=$page?>" class="on"><?=$tab_hnm?></a>
-			</div> -->
-<div class="HeadTitle01AX">
-	<P href="#" class="on" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
+<div>
+	<P href="#" class="HeadTitle03AX" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
 </div>
-
 			<form name='tkher_form' action='tkher_program_data_update.php' method='post' enctype="multipart/form-data" onsubmit='return check(this)'>
 				<input type="hidden" name='mode'		value='' />
 				<input type="hidden" name='tab_enm'	value='<?=$tab_enm?>' />
 				<input type="hidden" name='tab_hnm'	value='<?=$tab_hnm?>' />
-
 				<input type="hidden" name='seqno'			value='<?=$seqno?>' />
 				<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
 				<input type="hidden" name='pg_code'		value='<?=$pg_code?>' />
-
 				<input type="hidden" name='page'			value='<?=$page?>' />
 				<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
 			</form>
 
-<!--
-			<div class="boardView">
-				<div class="viewHeader">
-					<span title='tab_update_pg70'>Date : <?=date("Y-m-d H:s:i" ); ?></span>
-					<a href="javascript:tab_pg_list();" class="btn_bo02">List</a>
-				</div>
-				<div class="viewSubj"> <?=$tab_hnm?></div>-->
 	<div class="boardViewX">
 		<div class="viewHeader">
 			<span title='tab_update_pg70'>Date : <?=date("Y-m-d H:i:s" ); ?></span>
-			<!-- <input type='button' value='List' onclick="javascript:table_data_list();" class="Btn_List01A"> 2024-01-05 -->
 		</div>
-				
 		<div class="viewSubjX"><span><?=$pg_name?>(<?=$pg_code?>:<?=$tab_hnm?>)</span> </div>
 		<div class='blankA'> </div>
-
 <?php
-//						$htt = substr($row[url], 0,4);
-//					if( $htt == 'http' ) $url = $row[url];
-//					else $url = "http://" . $row[url];
-?>
-
-				<!--<ul class="viewForm">
-					<li class="autom_tit">
-						<span class="t01">Title [제목]</span>
-						<span class="t02">
-							<input type="text" name="title"   value='<?=$tab_hnm?>' readonly>
-						</span>
-					</li>
-				</ul>-->
-
-
-<?php
-//		$query = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm!='seqno' ";
-
-//		if ( ($result = sql_query( $query ) )==false )
-//		{
-//			//m_( "Error seqno:$seqno" );
-//			printf("Invalid query: %s\n", $SQL);
-//			exit();
-//		} else {
-
-
-//		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$mid' and pg_name='$pg_name' ";
-//		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$pg_code' ";
 		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 		$resultPG = sql_query($sqlPG);
 		if ( $resultPG == false ) { m_(" tkher_program_data_update pg_name:$pg_name select ERROR "); exit; }
-
 		$table10_pg = sql_num_rows($resultPG);
 		$rsPG		= sql_fetch_array($resultPG);
-
 		$list	= array();
 		$ddd = "";
 		$qqq = "";
-
-		//--------------------------------------------계산필드 처리용.
+		//-------- 계산  처리용.
 		$kkk="off";
 		$kkk0 = "document.makeform.fld_1.value";
 		$kkk1 = "document.makeform.fld_1.value";
 		$kkk2 = "document.makeform.fld_2.value";
-		$kkk3 = "+";	// 계산식 연산자.
-		$kkk5 = 1;//func seq number
+		$kkk3 = "+";
+		$kkk5 = 1; //func seq number
 		//--------------------------------------------
 		$pg_name	= $rsPG['pg_name'];
 		$tab_enm	= $rsPG['tab_enm'];
@@ -604,29 +552,23 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		$item_array = $rsPG['item_array'];
 		$iftypeX	= $rsPG['if_type'];
 		$ifdataX	= $rsPG['if_data'];
-
 		$pop_dataPG	= $rsPG['pop_data'];
-
 		$relation_dataPG = $rsPG['relation_data'];
-		$relation_typePG = $rsPG['relation_type']; // add : 2022-02-11
-
+		$relation_typePG = $rsPG['relation_type'];
 		$iftype		= explode("|", $iftypeX);
 		$ifdata		= explode("|", $ifdataX);
-		$popdata	= explode("^", $pop_dataPG); // 2022-02-19 add
-
+		$popdata	= explode("^", $pop_dataPG);
 		$mid			= $rsPG['userid'];
 
-	$_SESSION['iftype_db']		= $if_typePG;
-	$_SESSION['ifdata_db']		= $if_dataPG;
-	$_SESSION['if_dataPG']		= $if_dataPG;	
-	$_SESSION['pop_dataPG']		= $pop_dataPG;
-	$_SESSION['relation_dataPG']	= $relation_dataPG;
-	$_SESSION['relation_typePG']	= $relation_typePG; // add : 2022-02-11
-	$_SESSION['pg_name']			= $pg_name;
-	$_SESSION['pg_code']			= $pg_code;
+		$_SESSION['iftype_db']		= $iftypeX;
+		$_SESSION['ifdata_db']		= $ifdataX;
+		$_SESSION['if_dataPG']		= $ifdataX;	
+		$_SESSION['pop_dataPG']		= $pop_dataPG;
+		$_SESSION['relation_dataPG']	= $relation_dataPG;
+		$_SESSION['relation_typePG']	= $relation_typePG;
+		$_SESSION['pg_name']			= $pg_name;
+		$_SESSION['pg_code']			= $pg_code;
 ?>
-		<!-- <form name="makeform" method = "post" action="" enctype="multipart/form-data"> -->
-		<!-- <form name='makeform' action='' method='post' enctype="multipart/form-data" onsubmit='return check(this)'> -->
 		<form name='makeform' action='' method='post' enctype="multipart/form-data">
 					<input type="hidden" name='mode'			value='' />
 					<input type="hidden" name='mid'				value='<?=$mid?>' />
@@ -645,28 +587,25 @@ if ( ($result = sql_query( $SQLX ) )==false )
 					<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
 
 <?php
-		$list		= explode("@", $item_array);	// 게시판단위별구분 분류 '구분자=||',    52|GCOM01!:0!:4!,4!,4!,7!,7!,0!,X!,|사항|0||
+		$list= explode("@", $item_array);// 게시판단위별구분 분류 '구분자=||'
 		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd		= $list[$i];
-				$typeX	= $iftype[$j];
-
-				$dataX	= $ifdata[$j];
-				$popX	= $popdata[$j]; // 2022-02-19 add
-
-				$if_fld	= explode(":", $ifdata[$j]);	//$ifdata[$i];
+				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
+				else $typeX	= '';
+				if( isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				else $dataX	= '';
+				if( isset($popdata[$j]) ) $popX	= $popdata[$j]; // 2022-02-19 add
+				else $popX	= '';
+				if( isset($ifdata[$j]) ) $if_fld= explode(":", $ifdata[$j]);	//$ifdata[$i];
+				else $if_fld	= '';
 				$fld = explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
 				$fldenm= $fld[1];
 				$fldhnm= $fld[2];
-
 				if ( $fld[3] == "TEXT" ) {
 					echo"<p>$fldhnm</p>";
-					//echo"<div class='viewWriteBox' ><textarea name='$fldenm' >$row[$fldenm]</textarea></div>";
 					echo " <div class='menu1Area' ><textarea name='$fld[1]' placeholder='Please enter your $fld[2]!' style='width:$Xwidth;height:$Text_height;'>$row[$fldenm]</textarea></div>";
 					echo " <div class='blankA'> </div> ";
-					
 				} else if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ) { 
-
-						//echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 
 						if ( $typeX == '5' ) {	// list box
 									echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
@@ -707,11 +646,9 @@ if ( ($result = sql_query( $SQLX ) )==false )
 									echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "11" ) { // calc
 							$kkk=$fld[1];
-							$func_cnt++;
 							$idata = explode(":", $dataX);
 							$datax = $idata[1];	// 1:한글필드계산식.
 							$datay = $idata[0];	// 0:영문필드계산식.
-							//                                                                               0    1   2    3   4
 							$ff = explode(" ", $datay);	 //datay:fld_4 = fld_2 * fld_3, ff:fld_4 = fld_2 * fld_3 
 							$f0 = $ff[0];
 							$f1 = $ff[1];
@@ -722,7 +659,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 							$kkk1 = "document.makeform." . $f2 . ".value";
 							$kkk2 = "document.makeform." . $f4 . ".value";
 							$kkk3 = $f3;
-							$kkk5 = $func_cnt;
+							$kkk5++; // = $func_cnt;
 
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> "; // 2024-01-08 add
 							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
@@ -732,18 +669,17 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						}
 							echo " <div class='blankA'> </div> ";
 
-				} else if ( $typeX == '13' ) {	// 팝업창.
-						$fld_session = $i;	// 팝압창의 테이블정보가있는 위치.
+				} else if ( $typeX == '13' ) {	// popup window
+						$fld_session = $i;	// popup column 
 						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-						echo " <div class='menu1A'><input type=text name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$if_dataPG', '$pop_dataPG')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
+						echo " <div class='menu1A'><input type=text name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$ifdataX', '$pop_dataPG')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
 						echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '9' ) {	// 첨부화일
+				} else if ( $typeX == '9' ) {	// add file
 						
 					$upfile = "./file/" . $mid . "/". $row[$fldenm];
 					if( $row[$fldenm] != '' ) {
 							$ifile = explode( ".", $row[$fldenm] );
-							$image_size = GetImageSize( $upfile ); // 2023-0905 
-
+							$image_size = GetImageSize( $upfile );
 							$im = "./file/" . $mid . "/". $row[$fldenm];
 							if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
 								echo"<p>$fldhnm</p>";
@@ -762,7 +698,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 								echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fldenm.' style='width:$Xwidth;height:$Xheight;'> ";
 								echo " </div> ";
 								echo " <div class='blankA'> </div> ";
-							}	// 첨부화일
+							}
 					} else {
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 								echo " <div class='File1A'>";
@@ -833,16 +769,6 @@ if ( ($result = sql_query( $SQLX ) )==false )
 
 					</form>
 			</div>
-				
-
-
-<!--
-	</div> end : container 
-</div>  end : wrapper
--->
-
-
-
 <?php
 
 		$day	= date("Y-m-d");
@@ -851,15 +777,11 @@ if ( ($result = sql_query( $SQLX ) )==false )
 }  //query false
 ?>
 
-
-
-
 </body>
 
  <script type="text/javascript">
 	
 	function table_data_list() {
-		//alert('table: ' + tab);
 		document.tkher_form.action="tkher_program_data_list.php";
 		document.tkher_form.target='tab_pg_list';
 		document.tkher_form.submit();
@@ -874,25 +796,19 @@ if ( ($result = sql_query( $SQLX ) )==false )
 	}
 
 	function board_delete(uid, no){
-		if( confirm("Are you sure you want to delete?") ) { //삭제 하시겠습니까?
+		if( confirm("Are you sure you want to delete?") ) {
 			document.tkher_form.mode.value="bbs_delete";
 			document.tkher_form.submit();
-				//location.href="customer_update.php?uid="+uid +"&no="+no;
-		} else {
-			//alert('NNN---------------');
 		}
 	}
 
 	function record_modify( seqno ){
-		if( confirm("Do you want to change it? seqno:"+seqno) ) { //  \n변경 하시겠습니까? 
+		if( confirm("Do you want to change it? seqno:"+seqno) ) {
 			document.makeform.seqno.value=seqno;
 			document.makeform.mode.value = "CHG_MODE";
 			document.makeform.action = 'tkher_program_data_update.php';
 			document.makeform.submit();
-		} else {
-			//alert('NNN---------------');
 		}
-
 	}
 
 	function bbs_update(){
@@ -903,20 +819,11 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		document.tkher_form.action='tkher_program_data_list.php';
 		document.tkher_form.target='_top';
 		document.tkher_form.submit();
-
 	}
 	function Change_Csel_(c_sel){
-			//alert(' Change_Csel ' + c_sel);
 		document.makeform.c_sel.value=c_sel;
 	}
 	function popup_call(if_dataPG, pop_dataPG ) {
-		//alert('--------------------');
-
-		//alert( if_dataPG + ' , pop_dataPG:'+pop_dataPG);
-		//|||dao_1538180041:상품정보|| , pop_dataPG:$fld_1:상품명|fld_3:제품명$fld_8:재고|fld_4:수량@fld_1:상품명@fld_2:규격@fld_3:원가@fld_4:판매가@fld_5:구분@fld_6:거래처@fld_8:재고@ ---------- pg70_write.php
-		//|dao_1538180041:상품정보|||fld_4 = fld_2 * fld_3:금액 = 수량 * 단가||| , 
-		//pop_dataPG:$fld_1:상품명|fld_1:상품$fld_4:판매가|fld_3:단가@fld_1:상품명@fld_2:규격@fld_3:원가@fld_4:판매가@fld_5:구분@fld_6:거래처@
-
 		window.open("<?=KAPP_URL_T_?>/popup_call.php","","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
 		return true;  
 	}

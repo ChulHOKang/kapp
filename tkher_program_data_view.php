@@ -570,8 +570,10 @@ if ( ($result = sql_query( $SQLX ) )==false )
 
 			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 						$ddd  = $list[$i];
-						$typeX	= $iftype[$j];
-						$if_fld = explode(":", $ifdata[$j]); 
+						if( isset($iftype[$j]) ) $typeX= $iftype[$j];
+						else $typeX= '';
+						if( isset($ifdata[$j]) ) $if_fld = explode(":", $ifdata[$j]); 
+						else $if_fld = '';
 				$fld = explode("|", $ddd); 
 					$fldenm= $fld[1];
 					$fldhnm= $fld[2];
