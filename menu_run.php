@@ -2,14 +2,16 @@
  <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
-    <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
+
+	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
 
     <link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'><!-- 중요! -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script type='text/javascript'>
     <!--
-    function Kakao_Login_func() {
-        kakao_login('<?=Decrypt($config['kapp_kakao_js_apikey'], 'modumoa', '~!@#$%^&*()_+')?>');
+    function Kakao_Login_func($kapp_kakao_js_apikey) {
+		alert(" Kakao_Login_func --- " + $kapp_kakao_js_apikey);
+        //kakao_login("<?=Decrypt('$kapp_kakao_js_apikey', 'modumoa', '~!@#$%^&*()_+')?>");
     }
 
     function Kout_func() {
@@ -608,9 +610,7 @@ if( isset($H_ID) && $H_LEV > 1 ) {
         });
     });
     function kakao_login($Kakao_APP_KEY) {
-        //alert("kakao_login 486");
         Kakao.init($Kakao_APP_KEY);
-
         Kakao.Auth.loginForm({
             success: function(authObj) {
                 Kakao.API.request({
