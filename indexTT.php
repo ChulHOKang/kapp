@@ -77,11 +77,12 @@
         }
         return zero + n;
     }
+	/*
     function Kakao_Login_funcA($kapp_kakao_js_apikey) {
 		alert(" Kakao_Login_func --- " + $kapp_kakao_js_apikey);
-        kakao_login( $kapp_kakao_js_apikey );
+        kakao_login( $kapp_kakao_js_apikey ); // menu_run
         //kakao_login("<?=Decrypt('$kapp_kakao_js_apikey', 'modumoa', '~!@#$%^&*()_+')?>");
-    }
+    }*/
 </script>
 
 <?php
@@ -137,12 +138,8 @@
 	if( get_session("urllink_login_type") == "" ){ 
 		if( isset($config['kapp_kakao_js_apikey'])) $kapp_kakao_js_apikey = $config['kapp_kakao_js_apikey'];
 		else $kapp_kakao_js_apikey = '';
-		//echo "<table><tr><td><img height='36' src='".KAPP_URL_T_ . "/icon/kakao.jpg' onclick='javascript:Kakao_Login_func($kapp_kakao_js_apikey)' title='A Kakao-Login:$day' />&nbsp;&nbsp;&nbsp;</td>";
-
 		echo "<table><tr><td><a id='kakao_ligin' href='javascript:kakao_login(\"".$kapp_kakao_js_apikey."\");'><img src='./icon/kakao.jpg' style='height:38px;' /></a>&nbsp;&nbsp;&nbsp;</td>";
-		
 		echo '<td><div class="g_id_signin" data-type="standard"></div></td>';
-		
 		$n_client_id = $config['kapp_naver_client_id'];
 		$N_reurl = KAPP_URL_T_ . "/login_checkT.php?mode=N_login";
         $redirectURI = urlencode( $N_reurl );

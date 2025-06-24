@@ -387,10 +387,10 @@
 		document.form_view.submit();
 	}
 	function popimage(imagesrc,winwidth,winheight){
-		var look='width=800,height=600,'
+		var look='width='+winwidth+',height='+winheight+','
 		popwin=window.open("","",look)
 		popwin.document.open()
-		popwin.document.write('<title>urllinkcoin.com</title><body bgcolor="white" topmargin=0 leftmargin=0 marginheight=0 marginwidth=0><a href="javascript:window.close()"><img src="'+imagesrc+'" border=0></a></body>')
+		popwin.document.write('<title>K-APP</title><body bgcolor="white" topmargin=0 leftmargin=0 marginheight=0 marginwidth=0><a href="javascript:window.close()"><img src="'+imagesrc+'" border=0></a></body>')
 		popwin.document.close()
 	}
 	function data_delete(uid, seqno){
@@ -532,14 +532,15 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						if( $row[$fldenm] != '' ) {
 								$ifile = explode( ".", $row[$fldenm] );
 								$row_fnm = $row[$fldenm];
-								$im = "./file/" . $mid . "/". $row_fnm;
-								$image_size = GetImageSize( $im );
+								$im = "./file/" . $mid . "/". $pg_code . "/" . $row_fnm;
+								$imP= KAPP_PATH_T_ . "/file/" . $mid . "/". $pg_code . "/" . $row_fnm;
+								$image_size = @GetImageSize( $imP );
 								if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
 									echo"<p>$fldhnm</p>";
-									echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='$img_size[0]' height='100' border='0'></a> </div>";
+									echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im' width='400' height='300' border='0'></a> </div>";
 								} else {
 									echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-									echo " <div class='data1A'><a href='./file/$mid/$row[$fldenm]'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
+									echo " <div class='data1A'><a href='./file/$mid/$pg_code/$row[$fldenm]'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 									echo " <div class='blankA'> </div> ";
 								}
 						}else{

@@ -1,16 +1,12 @@
 <?php
-	include_once('./tkher_start_necessary.php');
-	/*
+include_once('./tkher_start_necessary.php');
+/*
     tkher_program_data_update.php						: data update system program
     tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
     tkher_program_data_updateT.php						: data update test - system program
 	tkher_program_data_view.php							: data view   system program
 	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
-
-	  2021-02-04 : function popup_call(if_dataPG, pop_dataPG ) 추가 : 데이터 변경시 팝업창출력.
-	             : form name을 makeform으로 변경. 모든 팝업창의 폼명칭은 동일하게 해야한다.
-
-	*/
+*/
 	$menu1TWPer=15;
 	$menu1AWPer=100 - $menu1TWPer;
 	$menu2TWPer=10;
@@ -19,7 +15,6 @@
 	$menu3AWPer=33.3 - $menu3TWPer;
 	$menu4TWPer=10;
 	$menu4AWPer=25 - $menu4TWPer;
-
 	$Xwidth='100%';
 	$Xheight='100%';
 	$Text_height='60px';
@@ -52,82 +47,80 @@
 		$item_cnt		= $_POST['item_cnt'];
 		$iftypeX			= $_POST['iftypeX'];
 		$iftype			= explode("|", $iftypeX);
-		$query			= " UPDATE $tab_enm SET  ";
 		$list				= array();
 		$ddd				= "";
 		$list				= explode("@", $item_array);
 		$upfileX = "";
-		$ff_nm = time() . '_';
-		$f_path	="./file/" .  $mid . "/";
 
-		for ( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
-				$ddd  = $list[$i];
-				if( isset($iftype[$j]) ) $typeX = $iftype[$j];
-				else $typeX = '';
-				$fld = explode("|", $ddd);
+		$query			= " UPDATE $tab_enm SET  ";
+		for( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
+			$ddd  = $list[$i];
+			if( isset($iftype[$j]) ) $typeX = $iftype[$j];
+			else $typeX = '';
+			$fld = explode("|", $ddd);
+			$fld_enm= $fld[1];
+			IF( $i==($item_cnt-1) ) { // 마지막 컬럼 체크 "," 처리를 위해...sql a=1, b=2 
+				if( $typeX=='3' ) {
+					$aa = @implode(",",$_POST[$fld[1]]);
+					$query = $query . $fld[1] . "= '" . $aa . "' ";
+				} else if( $typeX=='9' ) { // add file
 					$nm = $fld[1]; 
-					$fld_data = $_POST[$nm]; 
-					$fld_enm= $fld[1];
-					IF( $i==($item_cnt-1) ) {
-							if( $typeX=='3' ) {
-								$aa = @implode(",",$_POST[$fld[1]]);
-								$query = $query . $fld[1] . "= '" . $aa . "' ";
-							} else if( $typeX=='9' ) {// add file
-									$nm = $fld[1]; 
-									$upfileX = $_FILES["$nm"]["name"]; 
-									$fld_enm = $_FILES["$nm"]["name"]; 
-									if( $_FILES["$nm"]["error"] > 0){ // error check
-										echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
-									} else { // none error
-										if( file_exists( $f_path.$ff_nm.$_FILES["$nm"]["name"])){ //dup file check
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
-										} else { // dup file no found
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
-											echo "Stored in: " . $f_path.$ff_nm.$_FILES["$nm"]["name"];	// upload 
-										}
-									}
-									if( $upfileX ) $query = $query . $fld[1] ."= '" . $ff_nm . $_FILES["$nm"]["name"] . "' ";
-							} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
-									$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
-							} ELSE {
-									$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
-							}
-					} ELSE {
-							if( $typeX=='3' ) {				// 3: checkbox
-								$aa = @implode("," , $_POST[$fld[1]] ); 
-								$query = $query . $fld[1] . "= '" . $aa . "', ";
-							} else if( $typeX=='9' ) { 
-									$nm = $fld[1]; 
-									$fld_enm = $_FILES["$nm"]["name"]; 
-									$upfileX = $_FILES["$nm"]["name"]; 
-									if ( $_FILES["$nm"]["error"] > 0){
-										echo " $nm : Return Code: " .$ff_nm. $_FILES["$nm"]["error"] . "<br>";
-									} else { // none error
-										if( file_exists( $f_path.$ff_nm.$_FILES["$nm"]["name"])) {// dup file check
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
-										} else { // none dup
-											move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$ff_nm.$_FILES["$nm"]["name"] );
-											echo "Stored in: " . $f_path.$ff_nm . $_FILES["$nm"]["name"];// upload file
-										}
-									}
-									if( $upfileX ) $query = $query . $fld[1] ."= '" .$ff_nm.$_FILES["$nm"]["name"]. "', ";
+					$upfileX = $_FILES["$nm"]["name"]; 
+					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $pg_code. "/";
+					$upfile_name = $_FILES["$nm"]["name"];
+					$upfile_name = str_replace(" ", "", $upfile_name);
+					$upfile_name = $mid . "_" . time() ."_" . $upfile_name;
 
-							} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
-									
-									$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
+					if( $_FILES["$nm"]["error"] > 0){ // error check
+						echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
+					} else { // none error
+						move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
+						echo "Stored in: " . $f_path.$upfile_name;	// upload 
+					}
+					if( isset($upfileX) && $upfileX !=='' ) $query = $query . $fld[1] ."= '" .$upfile_name. "' ";
+				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
+						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
+				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME") {
+						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
+				} ELSE {
+						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . " ";
+				}
+			} ELSE {
+				if( $typeX=='3' ) {				// 3: checkbox
+					$aa = @implode("," , $_POST[$fld[1]] ); 
+					$query = $query . $fld[1] . "= '" . $aa . "', ";
+				} else if( $typeX=='9' ) { 
+					$nm = $fld[1]; 
+					$upfileX = $_FILES["$nm"]["name"]; 
+					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $pg_code. "/";
+					$upfile_name = $_FILES["$nm"]["name"];
+					$upfile_name = str_replace(" ", "", $upfile_name);
+					$upfile_name = $mid . "_" . time() ."_" . $upfile_name;
 
-							} ELSE {
+					if( $_FILES["$nm"]["error"] > 0){ // error check
+						echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
+					} else { // none error
+						move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
+					}
+					if( isset($upfileX) && $upfileX !=='' ) $query = $query . $fld[1] ."= '" .$upfile_name. "', ";
 
-									$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
-
-							}
-					}	// $i
+				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
+						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
+				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME") {
+						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
+				} ELSE {
+						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . ", ";
+				}
+			}	// $i
 		}	// for
 		$query = $query . " where seqno=$seqno ";
 		$ret = sql_query( $query );
 		if( $ret ) {
 			m_(" Change completed! ");
-			if( $upfileX && $upfile) exec ("rm $upfile");	// upfileX: 첨부화일이 있으면 기존화일을 삭제 없으면 기존화일을 보존.
+			if( isset($_POST['up_file']) ) {
+				$up_file = $_POST['up_file'];
+				if( $upfileX !=='' && $up_file && $up_file !=='' ) exec ("rm $up_file");// 첨부화일이 있으면 기존화일을 삭제
+			} else $up_file = '';
 		} else m_(" Change Error! ");
 	}
 
@@ -460,15 +453,12 @@
 
 <?php
 $SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
-if( ($result = sql_query( $SQLX ) )==false )
-{
+if( ($result = sql_query( $SQLX ) )==false ) {
 		printf("SQLX Invalid query: %s\n", $SQLX);
 		exit();
 } else {
 		$row	= sql_fetch_array($result);
-?>
 
-<?php
 		$cur='B';
 		include_once "./menu_run.php"; 
 ?>
@@ -640,14 +630,15 @@ if( ($result = sql_query( $SQLX ) )==false )
 						echo " <div class='blankA'> </div> ";
 
 				} else if ( $typeX == '9' ) {	// add file
-					$upfile = "./file/" . $mid . "/". $row[$fldenm];
-					if( $row[$fldenm] != '' ) {
+					if( $row[$fldenm] !== '' ) {
+							$upfile = KAPP_PATH_T_ . "/file/" . $mid . "/" . $pg_code . "/". $row[$fldenm];
+							echo "<input type='hidden' name='up_file' value='$upfile' >"; // delete - use
 							$ifile = explode( ".", $row[$fldenm] );
-							$image_size = GetImageSize( $upfile );
-							$im = "./file/" . $mid . "/". $row[$fldenm];
+							$image_size = @GetImageSize( $upfile );
+							$im = "./file/" . $mid. "/" . $pg_code . "/". $row[$fldenm];
 							if( strtolower($ifile[1]) == 'jpg' || strtolower($ifile[1]) == 'png' || strtolower($ifile[1]) == 'gif' ) {
 								echo"<p>$fldhnm</p>";
-								echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='$img_size[0]' height='100' border=0></a> </div>";
+								echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='400' height='300' border=0></a> </div>";
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 								echo " <div class='File1A'>";
 								echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fld[2].' style='width:$Xwidth;height:$Xheight;'> ";
@@ -655,7 +646,7 @@ if( ($result = sql_query( $SQLX ) )==false )
 								echo " <div class='blankA'> </div> ";
 							} else {
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='data1A'><a href='./file/$mid/$row[$fldenm]'><img src=./icon/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
+								echo " <div class='data1A'><a href='./file/$mid/$pg_code/$row[$fldenm]'><img src=./icon/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 								echo " <div class='blankA'> </div> ";
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 								echo " <div class='File1A'>";
@@ -759,6 +750,7 @@ if( ($result = sql_query( $SQLX ) )==false )
 		}
 	}
 	function record_modify( seqno ){
+		up_file=document.makeform.up_file.value;
 		if( confirm("Do you want to change it? seqno:"+seqno) ) {
 			document.makeform.seqno.value=seqno;
 			document.makeform.mode.value = "CHG_MODE";
