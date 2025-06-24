@@ -12,11 +12,12 @@
 <meta name="robots" content="ALL">
 <?php
 	$H_ID			= get_session("ss_mb_id");   
-	$H_LEV		= $member['mb_level'];  
 	if( !$H_ID || !$H_LEV ) {
-		//m_("You need to login. ");exit;
+		m_("You need to login. ");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
 	}
 
+	$H_LEV		= $member['mb_level'];  
 	$H_POINT	= $member['mb_point'];
 	$mode		= $_POST['mode'];
 	$seqno		= $_POST['seqno'];

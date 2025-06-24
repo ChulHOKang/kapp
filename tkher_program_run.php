@@ -1,19 +1,15 @@
 <?php
 	include_once('./tkher_start_necessary.php');
-
 	/* ----------------------------------------------------------------------------------------------------------------------------
     tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
     tkher_program_data_update.php						: data update system program
 	tkher_program_data_view.php							: data view   system program
 	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
-
 	** 프로그램:table_item_run70.php : 프로그램 속성을 저장한 table10_pg 테이블을 생성한다.
 	** table_pg70_write.php와 다른점 : item_array를 table10_pg테이블을 사용한다. 
 		: tab_list_pg70.php에서콜. 
 		: table10_pg_create, table_relation_pglist.php, table_search_list.php 에서도 콜.
-
 		javascript:submit_run2( '/t/tkher_program_data_list.php?pg_code=dao_1535240830', 'dao_1535240830', 'my_solpa_user_r');
-
 		http://tkher.com/test/css_pg_run.php?pg_code=dao_1540779796
 		http://tkher.com/test/css_pg_run.php?pg_code=dao_1537158930 : 각종 입력 필드 타입 . pg_505.
 
@@ -37,6 +33,15 @@
 	$Xwidth='100%';
 	$Xheight='100%';
 	$Text_height='60px';
+
+	$H_ID	= get_session("ss_mb_id");
+	if( !$H_ID || !$H_LEV ) {
+		m_("You need to login. ");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
+	} else if( isset($H_ID) && $H_ID !=='' ) {
+		$H_POINT	= $member['mb_point'];
+		$H_LEV=$member['mb_level'];
+	}
 ?>
 <html>
 <head>
@@ -288,21 +293,12 @@
 	}
 .viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}
 .viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}
-
 .boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}
 .boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}
 </style>
 
 <?php
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$H_ID	= get_session("ss_mb_id");
-	if( !$H_ID || $H_LEV < 2 )
-	{
-		//exit;
-	} else{
-		$H_POINT	= $member['mb_point'];
-		$H_LEV=$member['mb_level'];
-	}
 	$is_mobile = false;
 	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
 	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];

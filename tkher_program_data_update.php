@@ -17,7 +17,12 @@ include_once('./tkher_start_necessary.php');
 	$menu4AWPer=25 - $menu4TWPer;
 	$Xwidth='100%';
 	$Xheight='100%';
+	$H_ID				= get_session("ss_mb_id");   
 	$Text_height='60px';
+	if( !$H_ID || !$H_LEV ) {
+		m_("You need to login. ");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
+	}
 ?>
 <html>
 <head>
@@ -30,7 +35,6 @@ include_once('./tkher_start_necessary.php');
 <meta name="robots" content="ALL">
 
 <?php
-	$H_ID				= get_session("ss_mb_id");   
 	$H_LEV			= $member['mb_level'];  
 	$mode			= $_POST['mode'];
 	$mid				= $_POST['mid'];

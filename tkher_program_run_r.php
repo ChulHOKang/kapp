@@ -11,12 +11,14 @@
 		my_msg("Abnormal approach. ");
 		$rungo = "./";
 		echo "<script>window.open( '$rungo' , '_self', ''); </script>";
+		exit;
 	}
 	$H_ID = get_session("ss_mb_id"); 
 	if( isset($H_ID) && $H_ID !== '' ) {
 		$H_LEV = $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	} else {
 		my_msg("You need to login.");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";
 		exit;
 	}
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
