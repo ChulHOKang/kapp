@@ -17,6 +17,7 @@
 	https://appgenerator.net/t/table_item_run50.php
 	https://appgenerator.net/t/tkher_program_run.php
 	https://appgenerator.net/t/table_pg70_write.php
+	group_code: solpakanA_naver_1750725492, if_line: 1
 	---------------------------------------------------------------------------- */
 ?>
 <html>
@@ -50,15 +51,14 @@
 		$item_cnt		= $_POST['item_cnt'];
 		$group_code		= $_POST['group_code'];
 		$group_name		= $_POST['group_name'];
-
 		$pg_code		= $_POST['pg_code'];
 		$pg_name		= $_POST['pg_name'];
 
 		$iftype			= array();
 		$if_data		= array();
-		$popdata		= array(); // 컬럼이동식
+		$popdata		= array();
 
-		$popdata		= $_POST['popdata']; // add 2022-02-19
+		$popdata		= $_POST['popdata'];
 		$if_data		= $_POST['if_data'];
 		$iftype			= $_POST['iftype'];
 		
@@ -76,7 +76,7 @@
 			exit;
 	}
 
-	$hostnameA = getenv('HTTP_HOST');
+	$hostnameA = KAPP_URL_T_;
 	$tabData['data'][][] = array();
 	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
 	else $pg_codeS = '';
@@ -90,8 +90,7 @@
 		$tabData['data'][$cnt]['userid']     = $H_ID;
 		$tabData['data'][$cnt]['group_code'] = $group_code;
 		$tabData['data'][$cnt]['group_name'] = $group_name;
-
-		$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostnameA;
+		$tabData['data'][$cnt]['host']       = $hostnameA;
 		$tabData['data'][$cnt]['email']      = $H_EMAIL;
 
 		$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
@@ -103,14 +102,10 @@
 		$tabData['data'][$cnt]['relation_type']   = $rel_type;
 		$tabData['data'][$cnt]['item_array'] = $item_array;
 		
-		//$count = count($tabData['data']);	//m_( "--- count:" . $count ); // 10
-
 		$key = 'appgenerator';
 		$iv = "~`!@#$%^&*()-_=+";
-
 		$sendData = encryptA( $tabData , $key, $iv);
-
-		$url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL
+		$url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // Server URL
 
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
@@ -169,10 +164,12 @@
 		$query = "UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$item_cnt, item_array='$item_array', if_type='$iftype_db', if_data='$ifdata_db', pop_data='$popdata_db' WHERE userid='$H_ID' and pg_code='$pg_code' ";
 		sql_query($query);
 
+		$query = "UPDATE {$tkher['table10_table']} SET if_type='$iftype_db' WHERE tab_enm='$tab_enm' and fld_enm='seqno' ";
+		sql_query($query);
+
 		$sys_pg_root	= $pg_code;
 		$sys_subtit		= $pg_name;
 		$sys_link		= "tkher_program_data_list.php?pg_code=" . $pg_code;
-		//$pg_sys_link	= "https://" . $hostnameA . "/t/tkher_program_data_list.php?pg_code=" . $pg_code;
 		$pg_sys_link	= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
 		$aboard_no		= $pg_code;
 		$job_group		= "appgenerator";

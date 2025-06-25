@@ -1,7 +1,7 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		app_pg50RU.php   : table_pg50RU.php을 Copy : 기존의 table_pg50R.php copy하여 backup 보관.
+		app_pg50RU.php   : table_item_run50_pg50RU.php, table_pg50RU.php을 Copy : 기존의 table_pg50R.php copy하여 backup 보관.
 						 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
 						 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
 						 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
@@ -10,45 +10,33 @@
 						 : program_list3.php - call : upgrade
 
 	*/
-	$ss_mb_id	= get_session("ss_mb_id");
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	if( !$H_ID || $H_LEV < 2 )
-	{
+	$H_ID	= get_session("ss_mb_id");
+	if( !$H_ID || $H_ID =='' ){
 		m_("You need to login. ");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	
+	$H_LEV =$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
-
-	if( !isset($_SESSION['mode_session_ok']) ) $_SESSION['mode_session_ok']= 'ok';  // 막으면 : point 지급완료 확인용. 1일 1번만 적용.
-
+	if( !isset($_SESSION['mode_session_ok']) ) $_SESSION['mode_session_ok']= 'ok';
 	if( isset($_POST['project_nmS']) ) $project_nmS = $_POST['project_nmS'];
 	else $project_nmS = "";
-
 	if( isset($_POST['project_code']) ) $project_code = $_POST['project_code'];
 	else $project_code = "";
-
-	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS']; //$_POST['pg_codeS']
-	else $pg_codeS = '';	 // pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
-	
+	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
+	else $pg_codeS = '';
 	if( isset($_POST['tab_hnmS']) ) $tab_hnmS = $_POST['tab_hnmS'];
 	else $tab_hnmS = '';
-
 	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS'];
 	else $pop_tabS = '';
-
 	if( isset($_POST['lev']) ) $lev = $_POST['lev'];
-	else $lev = '';	//m_('pg50 - lev:$lev'); // program level:3
-	
+	else $lev = '';
 	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
 	else $seqno = '';
-	
 	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
 	else $tab_enm = '';
-
 	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
 	else $tab_hnm = '';
 ?>
@@ -70,9 +58,19 @@
 	var delList		= ''
 	var smode		=false
 	var start, end, grpStr
+
+	function change_project_func(cd){
+		prj = cd.split(':');
+		document.makeform.project_code.value = prj[0];
+		document.makeform.project_name.value = prj[1];
+		document.makeform.project_nmSX.value = cd;
+		document.makeform.mode.value = "project_search";
+		document.makeform.action ="app_pg50RU.php";
+		document.makeform.submit();
+		return;
+	}
 	function fnclist_onclick() {
-		for (var k=0 ; k < makeform.fnclist.options.length ; k++)
-		{
+		for (var k=0 ; k < makeform.fnclist.options.length ; k++){
 		 if (makeform.fnclist.options[k].text != "" && makeform.fnclist.options[k].selected) {
 				var fid = makeform.fnclist.options[k].value
 				fid = fid.substring(0,fid.indexOf("!:"))
@@ -87,7 +85,6 @@
 		return str
 	}
 
-	//-----------------
 	function upItem() {
 		var tmpValue, tmpText
 		var selectIndex = makeform.column_list.selectedIndex;
@@ -103,7 +100,6 @@
 			document.makeform["popdata[" + i + "]"].value = document.makeform["popdata[" + selectIndex + "]"].value;
 			document.makeform["if_data[" + i + "]"].value = document.makeform["if_data[" + selectIndex + "]"].value;
 			document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + selectIndex + "]"].value;
-
 			document.makeform["popdata[" + selectIndex + "]"].value   = tmppopdata;
 			document.makeform["if_data[" + selectIndex + "]"].value   = tmpifdata;
 			document.makeform["iftype[" + selectIndex + "]"].value    = tmpiftype;
@@ -124,7 +120,6 @@
 		}
 		makeform.item_array.value = str_array;
 	}
-	//-------------------
 	function downItem() {
 		var tmpValue, tmpText
 		var selectIndex = makeform.column_list.selectedIndex;
@@ -133,14 +128,13 @@
 			tmpText  = makeform.column_list[selectIndex +1].text;
 			i = selectIndex +1;
 
-			tmppopdata = document.makeform["popdata[" + i + "]"].value; // add 2022-02-19
+			tmppopdata = document.makeform["popdata[" + i + "]"].value;
 			tmpifdata = document.makeform["if_data[" + i + "]"].value;
 			tmpiftype = document.makeform["iftype[" + i + "]"].value;
 
 			document.makeform["popdata[" + i + "]"].value	= document.makeform["popdata[" + selectIndex + "]"].value;
 			document.makeform["if_data[" + i + "]"].value	= document.makeform["if_data[" + selectIndex + "]"].value;
 			document.makeform["iftype[" + i + "]"].value		= document.makeform["iftype[" + selectIndex + "]"].value;
-
 			document.makeform["popdata[" + selectIndex + "]"].value		= tmppopdata;
 			document.makeform["if_data[" + selectIndex + "]"].value		= tmpifdata;
 			document.makeform["iftype[" + selectIndex + "]"].value		= tmpiftype;
@@ -205,20 +199,16 @@
 		document.makeform.mode.value='SearchTAB';
 		document.makeform.column_attribute.value='';
 		document.makeform.action="app_pg50RU.php";
-		document.makeform.target='table_main'; // _top, 'runf_main';
+		document.makeform.target='table_main';
 		document.makeform.submit();
-		//makeform.item_array.value = str_array;
 	}
 
 	function change_program_func(pg) {
-		//alert('pg: '+pg); //pg: dao_1645837697:판매정보:dao_1645837697:판매정보:cccc:판매
 		pn = pg.split(":");
-		//pg = document.makeform.pg_codeS.value;
-		//document.makeform.project_name.value = pn[5];
 		document.makeform.mode.value='SearchPG';
 		document.makeform.column_attribute.value='';
 		document.makeform.action="app_pg50RU.php";
-		document.makeform.target='_self';// run_menu, '_self'; , table_main
+		document.makeform.target='_self';
 		document.makeform.submit();
 		return;
 	}
@@ -266,70 +256,80 @@
 		here.innerHTML=ss;
 	} 
 	function rr_func( ss, qna ){
-		//alert('rr:'+ ss );
 		if(!ss) r_func('A', qna);
 		else here.innerHTML = ss;
 	}
-	//------------------------------------
+	//------------------------------------------------------------
 	/*
-	   중요! 클릭위치가 button point에 정확하면 column_list_onclickA( ss, j )을 실행다음, column_list_onclickAA( j )을 실행한다.
+	   중요! 클릭위치가 button point에 정확히 클릭 하면 column_list_onclickA( ss, j )을 실행한 다음, column_list_onclickAA 실행한다.
 	   그렇지 않으면 여기만 실행을 한다. 주의 해야한다! 
-	   그래서 여기에 column_list_onclickAA( j )에 필요한 로직을 설정해야만 한다. 중요! 2024-01-03
+	   그래서 여기에 column_list_onclickAA 에 필요한 로직을 설정해야만 한다. 중요! 2024-01-03
 	*/
-	function column_list_onclickAA( j ){  // column_list_onclickA( ss, j )을 실행한 다음에 실행을 한다. 
-		document.getElementById('column_list'+j).checked=true; //이붑분외 column_list_onclickA(ss,j)와동일함.
-		ss = document.getElementById('column_list'+j).value;   //alert('ss:'+ss);//ss:|fld_1|상품코드|CHAR|20
-		var test = ss.split('|'); 
-		
-		//alert('column_list_onclickAA - test1:'+test[1] + ', test3:'+test[3]);
-		// column_list_onclickAA - test1:fld_5, test3:CHAR
+	function column_list_onclickAA( j ){
+		document.getElementById('column_list'+j).checked=true;
+		ss = document.getElementById('column_list'+j).value;
+		var col_attr = ss.split('|'); 
 		
 		document.makeform.column_index.value = j;
-		document.makeform.column_name_change.value = test[2];
-		document.makeform.column_data_type.value   = test[3]; // 2024-01-03 add
+		document.makeform.column_name_change.value = col_attr[2];
+		document.makeform.column_data_type.value   = col_attr[3];
 
 		iftype  = document.makeform["iftype[" + j + "]"].value;
-		if_data = document.makeform["if_data[" + j + "]"].value; //alert('if_data:'+if_data); //if_data:dao_1634976807:상품정보 iftype:1:if_data:공정1:공정2:공정3, if_data:fld_5 = fld_3 * fld_4:금액 = 수량 * 단가
+		if_data = document.makeform["if_data[" + j + "]"].value;
 
-		if(iftype==0)	document.makeform.ifcheck[0].checked=true;
-		else if(iftype==1)	document.makeform.ifcheck[1].checked=true;
-		else if(iftype==3)	document.makeform.ifcheck[2].checked=true;
-		else if(iftype==5)	document.makeform.ifcheck[3].checked=true;
-		else if(iftype==9)	document.makeform.ifcheck[4].checked=true; 
-		else if(iftype==7)	document.makeform.ifcheck[6].checked=true; 
-		else if(iftype==11)	document.makeform.ifcheck[5].checked=true; 
-		else if(iftype==13)	document.makeform.ifcheck[7].checked=true; 
-		else				document.makeform.ifcheck[0].checked=true;
-
-		if( iftype == 11) { // Formula
-			jj = if_data.split(":");
-			document.makeform.column_attribute.value = jj[1]; // 컬럼 조건 정의 
-			document.makeform.calc.value = jj[0];	 
-		} else if( iftype == 13) { // Popup
+		switch( iftype ) {
+			case '0':
+				document.makeform.ifcheck[0].checked=true;
+				break;
+			case '1':
+				document.makeform.ifcheck[1].checked=true;
+				break;
+			case '3':
+				document.makeform.ifcheck[2].checked=true;
+				break;
+			case '5':
+				document.makeform.ifcheck[3].checked=true;
+				break;
+			case '7':
+				document.makeform.ifcheck[6].checked=true;
+				break;
+			case '9': // add file
+				document.makeform.ifcheck[4].checked=true;
+				break;
+			case '11': // Calculation formula 
+				document.makeform.ifcheck[5].checked=true;
+				jj = if_data.split(":");
+				document.makeform.column_attribute.value = jj[1];
+				document.makeform.calc.value = jj[0];	 
+				break;
+			case '13': // popup window
+				document.makeform.ifcheck[7].checked=true;
 				jj = if_data.split(":");
 				document.makeform.column_attribute.value = jj[1]; 
-		} else  document.makeform.column_attribute.value = if_data; // 컬럼 조건 정의
+				break;
+			default:
+				document.makeform.ifcheck[0].checked=true;
+				break;
+		}
+
+
+
 	}
 	//------------------------------------
 	/*
-	   중요! 클릭위치가 button point에 정확하면 column_list_onclickA( ss, j )을 실행다음, column_list_onclickAA( j )을 실행한다.
-	   그렇지 않으면 여기를 실행하지 않는다. 주의 해야한다! 그래서 column_list_onclickAA( j )에서도 필요한 로직을 설정해야만 한다. 중요! 2024-01-03
+	   중요! 클릭위치가 button point에 정확하면 column_list_onclickA( ss, j )을 실행다음, column_list_onclickAA( j )을 자동으로 실행한다.
+	   그렇지 않으면 여기를 실행하지 않는다. 주의 해야한다! 그래서 column_list_onclickAA( j )에서도 필요한 로직을 설정해야만 한다. 중요!
 	   이 함수는 필요 하지않다 column_list_onclickAA( j )여기에서 모든 처리하도록 한다.
 	*/
 	function column_list_onclickA( ss, j ){ 
-		//alert( "column_list_onclickA j: "+ j+', ss: '+ ss ); //column_list_onclickA j: 4:rrA: |fld_5|성별|CHAR|2
-		var test = ss.split('|');
+		var col_attr = ss.split('|');
 		document.makeform.column_index.value = j;
-		document.makeform.column_name_change.value = test[2];
-		document.makeform.column_data_type.value   = test[3]; // 2024-01-03 add
+		document.makeform.column_name_change.value = col_attr[2];
+		document.makeform.column_data_type.value   = col_attr[3];
 
 		iftype = document.makeform["iftype[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
 
-		//alert( 'iftype:' + iftype+':if_data:'+ if_data );//iftype:1:if_data:공정1:공정2:공정3
-		//document.getElementById(relation_key_old_+sel_num).value = Insert + : + : + :;
-		//document.getElementById( ifcheck[+iftype+]).checked = true;
-		//document.makeform["ifcheck[" + iftype + "]"].checked=true;
 		if(iftype==0)	document.makeform.ifcheck[0].checked=true;
 		else if(iftype==1)	document.makeform.ifcheck[1].checked=true;
 		else if(iftype==3)	document.makeform.ifcheck[2].checked=true;
@@ -342,12 +342,12 @@
 
 		if( iftype == 11) { // Formula
 			jj = if_data.split(":");
-			document.makeform.column_attribute.value = jj[1]; // 컬럼 조건 정의 
+			document.makeform.column_attribute.value = jj[1];
 			document.makeform.calc.value = jj[0];	 
 		} else if( iftype == 13) { // Popup
 				jj = if_data.split(":");
 				document.makeform.column_attribute.value = jj[1]; 
-		} else document.makeform.column_attribute.value = if_data; // 컬럼 조건 정의
+		} else document.makeform.column_attribute.value = if_data;
 	}
 
 function downItemA() {
@@ -369,34 +369,33 @@ function downItemA() {
 		alert(' Please select a column! ' );
 		return false;
 	}
-		i = j*1 +1;
-		tmppopdataJ = document.makeform["popdata[" + j + "]"].value; // 2022-02-19
-		tmpifdataJ = document.makeform["if_data[" + j + "]"].value;  // 선택한 컬럼의 다음 컬럼 백업.
-		tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;   //alert( 'tmpifdataJ:' +tmpifdataJ + ' , tmpiftypeJ:'+tmpiftypeJ );
+	i = j*1 +1;
+	tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
+	tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
+	tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;
 
-		tmppopdataK = document.makeform["popdata[" + i + "]"].value; // 2022-02-19
-		tmpifdataK = document.makeform["if_data[" + i + "]"].value;  // 선택한 컬럼의 다음 컬럼 백업.
-		tmpiftypeK = document.makeform["iftype[" + i + "]"].value;   //alert( 'tmpifdataK:' +tmpifdataK + ' , tmpiftypeK:'+tmpiftypeK );
+	tmppopdataK = document.makeform["popdata[" + i + "]"].value;
+	tmpifdataK = document.makeform["if_data[" + i + "]"].value;
+	tmpiftypeK = document.makeform["iftype[" + i + "]"].value;
 
-		document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value; // 2022-02-19 add
-		document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value; //선택한 컬럼의 내용을 다음컬럼 위치에 저장.
-		document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + j + "]"].value;
+	document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value;
+	document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value;
+	document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + j + "]"].value;
+	document.makeform["popdata[" + j + "]"].value= tmppopdataK;
+	document.makeform["if_data[" + j + "]"].value= tmpifdataK;
+	document.makeform["iftype[" + j + "]"].value = tmpiftypeK;
 
-		document.makeform["popdata[" + j + "]"].value= tmppopdataK; // 2022-02-19
-		document.makeform["if_data[" + j + "]"].value= tmpifdataK; //백업컬럼 내용을 선택한 컬럼위치에 저장
-        document.makeform["iftype[" + j + "]"].value = tmpiftypeK;
+	tmpValueJ = colnm[j].value;
+	tmpValueI = colnm[i].value;
 
-		tmpValueJ = colnm[j].value;
-		tmpValueI = colnm[i].value;  //alert( 'tmpValueJ:' +tmpValueJ + ' , tmpValueI:' +tmpValueI );
-
-		document.getElementById('column_list'+j).value = tmpValueI;
-		document.getElementById('column_list'+i).value = tmpValueJ;
-		tmpValueJ = document.getElementById('column_list'+j).value;  //colnm[j].value;
-		tmpValueI = document.getElementById('column_list'+i).value;  //alert( '-- tmpValueJ:' +tmpValueJ + ' , tmpValueI:' +tmpValueI );
+	document.getElementById('column_list'+j).value = tmpValueI;
+	document.getElementById('column_list'+i).value = tmpValueJ;
+	tmpValueJ = document.getElementById('column_list'+j).value;
+	tmpValueI = document.getElementById('column_list'+i).value;
 	var str_array = '';
     for (k = 0; k < colnm.length; k++) {
 		colnm_value = colnm[k].value;
-		st = colnm_value.split('|');       //val:275|fld_2|작업공정|CHAR|10
+		st = colnm_value.split('|');
 		str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
 		document.getElementById('columnR'+k).innerHTML = st[2];//컬럼 내용 화면출력.
 	}
@@ -405,7 +404,6 @@ function downItemA() {
 	document.makeform.column_index.value = i; // click point set
 
 }
-//------------------
 function upItemA() {
 	var j = document.makeform.column_index.value;
 	if ( j < 0 ){	// column 선택 확인.
@@ -415,9 +413,7 @@ function upItemA() {
 	var colnm = document.getElementsByName('column_list');
 	var colnm_value='';
 	var len = colnm.length;
-
     var tmpValue, tmpText
-
 	var top_line = 0;
 	var end_line = len -1;
 	if (j == top_line ) {
@@ -428,28 +424,27 @@ function upItemA() {
 		alert(' Please select a column! ' );
 		return false;
 	}
-		i = j*1 -1;	//alert( 'j:' +j +' : len:'+len + ', i:' + i);
-		tmppopdataJ = document.makeform["popdata[" + j + "]"].value; // 선택한 컬럼의 다음 컬럼 백업.
-		tmpifdataJ = document.makeform["if_data[" + j + "]"].value; // 선택한 컬럼의 다음 컬럼 백업.
-		tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;	//alert( 'tmpifdataJ:' +tmpifdataJ + ' , tmpiftypeJ:'+tmpiftypeJ );
+	i = j*1 -1;
+	tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
+	tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
+	tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;
 
-		tmppopdataK = document.makeform["popdata[" + i + "]"].value; // 선택한 컬럼의 다음 컬럼 백업.
-		tmpifdataK = document.makeform["if_data[" + i + "]"].value; // 선택한 컬럼의 다음 컬럼 백업.
-		tmpiftypeK = document.makeform["iftype[" + i + "]"].value;
-		document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value; // 2022-02-19
-		document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value; //선택한 컬럼의 내용을 다음컬럼 위치에 저장.
-		document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + j + "]"].value;
+	tmppopdataK = document.makeform["popdata[" + i + "]"].value;
+	tmpifdataK = document.makeform["if_data[" + i + "]"].value;
+	tmpiftypeK = document.makeform["iftype[" + i + "]"].value;
+	document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value;
+	document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value;
+	document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + j + "]"].value;
+	document.makeform["popdata[" + j + "]"].value= tmppopdataK;
+	document.makeform["if_data[" + j + "]"].value= tmpifdataK;
+	document.makeform["iftype[" + j + "]"].value = tmpiftypeK;
 
-		document.makeform["popdata[" + j + "]"].value= tmppopdataK;  // 2022-02-19 add
-		document.makeform["if_data[" + j + "]"].value= tmpifdataK; //백업컬럼 내용을 선택한 컬럼위치에 저장
-        document.makeform["iftype[" + j + "]"].value = tmpiftypeK;
-
-		tmpValueJ = colnm[j].value;
-		tmpValueI = colnm[i].value;  //alert( 'tmpValueJ:' +tmpValueJ + ' , tmpValueI:' +tmpValueI );
-		document.getElementById('column_list'+j).value = tmpValueI;
-		document.getElementById('column_list'+i).value = tmpValueJ;
-		tmpValueJ = document.getElementById('column_list'+j).value;//colnm[j].value;
-		tmpValueI = document.getElementById('column_list'+i).value;//colnm[i].value;
+	tmpValueJ = colnm[j].value;
+	tmpValueI = colnm[i].value;
+	document.getElementById('column_list'+j).value = tmpValueI;
+	document.getElementById('column_list'+i).value = tmpValueJ;
+	tmpValueJ = document.getElementById('column_list'+j).value;
+	tmpValueI = document.getElementById('column_list'+i).value;
 
 	var str_array = '';
     for (k = 0; k < colnm.length; k++) {
@@ -462,7 +457,6 @@ function upItemA() {
 	document.getElementById('column_list'+i).checked=true;
 	document.makeform.column_index.value = i; // click point set
 } 
-//-------------------
 function del_func() {
 	var pg = document.makeform.pg_codeS.value;
 	var tab = document.makeform.tab_hnmS.value;
@@ -470,7 +464,6 @@ function del_func() {
 		alert(' Please select a table or program! ' );
 		return false;
 	}
-	//selind = makeform.column_list.selectedIndex;
 	var j = document.makeform.column_index.value;
 	if( j == '' ) {
 		alert(' Please select a column! ' );
@@ -479,19 +472,15 @@ function del_func() {
 	resp = confirm(' Be careful when deleting columns! \n Are you sure you want to exclude columns?'); // \n 컬럼을 제외 하시겠습니까?
 	if( !resp ) return false; 
 
-	//var item_cnt = makeform.column_list.options.length;	 // table item 수.
 	var colnm = document.getElementsByName('column_list');
-	var item_cnt = colnm.length;  //alert('item_cnt:'+item_cnt); //연속삭제시 숫자 감소 변경됨
-
+	var item_cnt = colnm.length;
 	var end_line = colnm.length-1;
 	var colnm_value='';
-
 	var str_array="";
 	var chk = 0;
-	//alert('colnm.length:'+ colnm.length);
+
 	for(var i=0, j=1; i < colnm.length; i++, j++){
 			colnm_value = colnm[i].value;
-			//alert(i+':colnm_value:'+colnm_value);
 		if( colnm[i].checked ){
 			if( i == end_line ){
 				document.makeform.column_name_change.value = '';
@@ -500,80 +489,54 @@ function del_func() {
 				colnm[i].checked=false;
 				colnm_value = colnm[j].value;
 				st = colnm_value.split('|');
-				document.makeform.column_name_change.value = '';//st[2];
+				document.makeform.column_name_change.value = '';
 				document.makeform.column_attribute.value = '';
 			}
 			chk = 1;
 		}
 		if( chk == 1){
 			if( i == end_line ){
-				document.makeform["popdata[" + i + "]"].value = '';  //  2022-02-19 add
+				document.makeform["popdata[" + i + "]"].value = '';
 				document.makeform["if_data[" + i + "]"].value = '';
 				document.makeform["iftype[" + i + "]"].value = '';
 			} else {
 				colnm_value = colnm[j].value;
 				document.getElementById('column_list'+i).value = colnm_value;
 				st = colnm_value.split('|');
-				document.getElementById('columnR'+i).innerHTML = st[2];// 컬럼명출력.
-				//--------------------------------------------------------
+				document.getElementById('columnR'+i).innerHTML = st[2];
 				tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
 				tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
 				tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;
-
 				document.makeform["popdata[" + i + "]"].value = tmppopdataJ;
 				document.makeform["if_data[" + i + "]"].value = tmpifdataJ;
 				document.makeform["iftype[" + i + "]"].value = tmpiftypeJ;
 			}
-			//alert(i+':st2:'+st[2]);
 		} else {
 			//colnm_value = colnm[i].value;
-			//document.getElementById('column_list'+i).value = colnm_value; // 컬럼명출력.
-			//st = colnm_value.split('|');
-			//document.getElementById('columnR'+i).innerHTML = st[2];// 컬럼명출력.
 		}
-		//alert('---item_cnt:'+item_cnt + ', i:' +i +':colnm_value:'+colnm_value);
 	}	
 	var kk = item_cnt -1;
 	document.makeform.item_cnt.value = kk;
 	fld_msg = document.getElementById('column_list'+kk).value
-	//alert('kk:'+kk + ', item_cnt:' + item_cnt + ', end line fld msg:' + fld_msg);
-
 	document.getElementById('column_list'+kk).value = '';
 	document.getElementById('columnRX'+kk).innerHTML = ''; // 컬럼 label 출력화면에서 제거..
 	document.makeform.column_index.value = '';
-    //------------------	
 	var str_array = '';
     for (k = 0; k < kk; k++) {
 		colnm_value = colnm[k].value;
 		st = colnm_value.split('|');       //val:275|fld_2|작업공정|CHAR|10
 		str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
 	}
-	//alert('str_array:' +str_array);//str_array:277|fld_1|상품|CHAR@275|fld_2|작업공정K|CHAR@276|fld_3|작업자k|CHAR@279|fld_5|메모|TEXT@
 	makeform.item_array.value = str_array;
-
 	return;
 }
-//----------------------------------- add seq:2021-05-07 ----
-function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribute click
-
+function ifcheck_onclickA(r, seq) {
 	var selind = document.makeform.column_index.value; // colunm index
-	/* INT data type 도 radio button, checkbox, listbox 사용 가능 하도록 한다.  해제하면 사용을 못하게 막는다. 2024-01-03
-	if( seq=='1' || seq=='2'|| seq=='3'){ // 2024-01-03
-		if( document.makeform.column_data_type.value !== "CHAR" ) {
-			alert("The data type must be CHAR. Please check! data type:" + document.makeform.column_data_type.value );
-			// data type이 CHAR가 아니면 안됩니다. 확인하세요!
-			document.makeform.column_attribute.value		= '';
-			document.makeform["iftype[" + selind + "]"].value = 0;
-			document.makeform.ifcheck[0].checked=true;
-			return false;
-		}
-	} */
-	if ( selind == '' ){	// column 선택 확인.
+	if( selind == '' ){
 		alert(r+' : Please select a column! ' );
 		document.makeform.ifcheck[seq].checked=false;
 		return false;
 	}
-
 	var pg = document.makeform.pg_codeS.value; 
 	var tab = document.makeform.tab_hnmS.value;
 	var pg_name = document.makeform.pg_name.value;
@@ -586,79 +549,85 @@ function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribut
 		alert(' Please select a table!' );
 		return false;
 	}
-
-	document.makeform.if_line.value = selind;	//column line 중요. table_popup.php에 전달.
-
+	document.makeform.if_line.value = selind;
 	var colnm = document.getElementsByName('column_list');
-	var colnm_value = colnm[selind].value; // column val=275|fld_2|작업공정|CHAR|10
-	st = colnm_value.split('|');	//alert('colnm_value:'+colnm_value); //colnm_value:|fld_1|상품코드|CHAR|20
+	var colnm_value = colnm[selind].value; //colnm_value: |fld_2|fld2|VARCHAR|15
+	st = colnm_value.split('|');
+	var col_len = st[4];
 	document.makeform.if_column.value = st[1];
-    /*
-	listbox(sellist)를 radio button(colnm_value)으로 바꾸면서 변화된것으로 
-	sellist를 column_list로 명칭을 변경하여 발생함.
-	hidden 으로 추가함. sellist : 275|fld_2|작업공정|CHAR|10 -> table_popup.php에서 사용하므로 전달해야함.
-	app_pg50RU, table_pg50RU.php -> colnm_value = 275|fld_2|작업공정|CHAR|10
-	*/
 	document.makeform.sellist.value = colnm_value;// 기존에 sellist:listbox에서 사용하던 것 hidden 추가.
 
-	if( r == 0 )		{ msge="General Input"; } //msgh=" 일반입력 속성 ";
-	else if( r == 1 )	{ msge="Radio Button"; }  //msgh=" 라디오버턴 속성 ";	
-	else if( r == 3 )	{ msge="Check Box Button"; } //msgh=" 체크박스버턴 속성 ";	
-	else if( r == 5 )	{ msge="List Box"; }         //msgh=" 리스트박스 속성 ";	
-	else if( r == 7 )	{ msge="Password Type"; } //msgh=" 암호입력 속성 ";		
-	else if( r == 9 )	{ msge="Attached file"; } //msgh=" 첨부화일 속성 ";		
-	else if( r == 11 )	{ msge="Formula."; }      //msgh=" 계산식 속성 ";		
-	else if( r == 13 )	{ msge="Pop-up Window"; } //msgh=" 팝업창 속성 ";		
-	else				{ msge="General Input"; } //msgh=" 일반입력 속성 ";		
-
     var obj1 = document.makeform.ifcheck.value; 
-	var obj2 = document.makeform.column_attribute.value;	 // 컬럼 조건 정의
+	var obj2 = document.makeform.column_attribute.value;
     var obj3 = document.makeform.column_name_change.value; 
 
-		if(r==0) { // General Input
-				document.makeform.column_attribute.value		= '';
-				document.makeform["iftype[" + selind + "]"].value = r;
-		} else if( r==13)	{ // POPUP Window
-
-				document.makeform["iftype[" + selind + "]"].value = r;
-				document.makeform.action          = 'table_popupRM.php'; //최종 mobile:table_popupR.php,table_popup.php, old:table_popup_new.php
-				document.makeform.mode.value      = ''; // popup seup go
-				document.makeform.mode_call.value = 'app_pg50RU'; // table_item_run50R
-				document.makeform.target          = '_self';      // table_main, tab_pg_list
-				document.makeform.submit();
-		} else if( r==11)	{ // Formula.
-				document.makeform["iftype[" + selind + "]"].value = r;
-				document.makeform.target          = '_self';
-				document.makeform.action          = 'table_formulaM.php';
-				document.makeform.mode.value      = 'run13';
-				document.makeform.mode_call.value = 'app_pg50RU'; //document.makeform.mode_call.value = 'table_item_run50R';
-				document.makeform.submit();
-		} else if( r==1 || r==3 || r==5){	 // 1:라디오버턴,3:체크박스,5:리스트박스.
+	switch( r ) {
+		case 0: //	msge="General Input";
+			document.makeform.column_attribute.value		= '';
+			document.makeform["iftype[" + selind + "]"].value = r;
+			break;
+		case 1: //	msge="Radio Button";
+			document.makeform["iftype[" + selind + "]"].value = r;
 			if( !obj2 ) {
-				alert(" Enter column processing items using delimiter ':' as in a:b:c:d"); // \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
-				document.makeform["iftype[" + selind + "]"].value = r;
 				document.makeform.column_attribute.focus();
-				return false;
-			} else {
-				//document.makeform["if_data[" + selind + "]"].value = obj2; // 막음 2022-02-19 확인필요.
-				document.makeform["iftype[" + selind + "]"].value = r;
+				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+				// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
 			}
-		} else {	// r=9-첨부화일, r=7-password
-				document.makeform.column_attribute.value		= '';
-				document.makeform["iftype[" + selind + "]"].value = r;
-		}
+			break;
+		case 3: //	msge="Check Box Button";
+			document.makeform["iftype[" + selind + "]"].value = r;
+			if( !obj2 ) {
+				document.makeform.column_attribute.focus();
+				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+			}
+			break;
+		case 5: //	msge="List Box";
+			document.makeform["iftype[" + selind + "]"].value = r;
+			if( !obj2 ) {
+				document.makeform.column_attribute.focus();
+				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+			}
+			break;
+		case 7: //	msge="Password Type";
+			document.makeform.column_attribute.value = '';
+			document.makeform["iftype[" + selind + "]"].value = r;
+			break;
+		case 9: // add file msge="Attached file";
+			document.makeform.column_attribute.value = '';
+			document.makeform["iftype[" + selind + "]"].value = r;
+			if( col_len < 100 ) {
+				alert("colnm: " + st[1] + ", col_len: " + col_len + ", 컬럼의 길이가 작습니다.");
+			}
+			break;
+		case 11: // Calculation formula msge="Formula.";
+			document.makeform["iftype[" + selind + "]"].value = r;
+			document.makeform.target          = '_self';
+			document.makeform.action          = 'table_formulaM.php';
+			document.makeform.mode.value      = 'run13';
+			document.makeform.mode_call.value = 'app_pg50RU'; //document.makeform.mode_call.value = 'table_item_run50R';
+			document.makeform.submit();
+			break;
+		case 13: // popup window msge="Pop-up Window";
+			document.makeform["iftype[" + selind + "]"].value = r;
+			document.makeform.action          = 'table_popupRM.php';
+			document.makeform.mode.value      = '';
+			document.makeform.mode_call.value = 'app_pg50RU';
+			document.makeform.target          = '_self';
+			document.makeform.submit();
+			break;
+		default:
+			alert("error default r: " + r);
+			msge="General Input";
+			break;
+	}
 } 
-//------------------------------
 	function Apply_button() {
-		//var selind = makeform.column_list.selectedIndex;
 		var selind = document.makeform.column_index.value; // column position
-
-		if ( selind < 0 ){	// column 선택 확인.
+		if ( selind < 0 ){
 			alert(' Select column!');
 			return;
 		}
 		var chgStr = document.makeform.column_attribute.value;
-
 		if( !chgStr ) {
 			alert(' Please enter a property! ' );
 			return false;
@@ -666,7 +635,6 @@ function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribut
 		var pg      = document.makeform.pg_codeS.value; 
 		var tab     = document.makeform.tab_hnmS.value;
 		var pg_name = document.makeform.pg_name.value;
-
 		if( !tab ) {
 			alert(' Please select a table! ' );
 			return false;
@@ -676,24 +644,17 @@ function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribut
 			document.makeform.pg_name.focus();
 			return false;
 		}
-
 		var colnm = document.getElementsByName('column_list');
-		//col_selind = selind - 1;
-		var colnm_value = colnm[selind].value; // column val=275|fld_2|작업공정|CHAR|10
-		var test = colnm_value.split('|'); //val:275|fld_2|작업공정|CHAR|10
-		colnm_hnm = test[2];
-
-		//ifselind = selind;
+		var colnm_value = colnm[selind].value;
+		var col_attr = colnm_value.split('|');
+		colnm_hnm = col_attr[2];
 		ii = document.makeform["iftype[" + selind + "]"].value;
-
-		if(ii==1 || ii==3 || ii==5 ){ // 1:radio button, 3:check box, 5:listbox, 만적용한다.
-		    
+		if( ii==1 || ii==3 || ii==5 ){ // 1:radio button, 3:check box, 5:listbox, 만적용한다.
 			if(ii==1) msg='1:radio button';
 			else if(ii==3) msg='3:check box';
 			else if(ii==5) msg='5:list box';
-			// chgStr.indexOf("^")>=0 || ----> '^' 만 가능하도록한다.
 			if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
-			{ // chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 ||  제거함. 2021-10-13
+			{
 				alert(' You used a special character that is not allowed. \n Please enter it again.');
 				// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
 				return false;
@@ -708,9 +669,7 @@ function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribut
 		}
 	}
 	function titlechange_btncfm_onclickA() {
-		
-		var chgStr = makeform.column_name_change.value;	//alert('chgStr:' + chgStr); return;
-		// chgStr.indexOf("^")>=0 || '^' 만 가능하도록 한다.
+		var chgStr = makeform.column_name_change.value;
 		if( chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
 		{
 			alert(' You used a special character that is not allowed. \n Please enter it again.');
@@ -726,43 +685,32 @@ function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribut
 
 		var colnm_value = "";
 		var colnm = document.getElementsByName('column_list');
-		var test = "";
+		var col_attr = "";
 		var new_column = "";
 
 		for(var i = 0, j=0; i < colnm.length; i++, j++){
 			colnm_value = colnm[i].value;
-			test = colnm_value.split('|'); //val:275|fld_2|작업공정|CHAR|10
-			fld_hnm = test[2];
-			// 같은 이름이 있는지?
-			
-			//alert('chgStr:'+chgStr+ ', fld_hnm:' + fld_hnm);
-
+			col_attr = colnm_value.split('|'); //val:275|fld_2|작업공정|CHAR|10
+			fld_hnm = col_attr[2];
+			// 같은 name check?
 			if (chgStr == fld_hnm ) {
 				alert("This name already exists.");
 				return false;
 			}
 			if( colnm[i].checked ){
-				new_column = test[0]+'|'+test[1]+'|'+chgStr+'|'+test[3]+'|'+test[4];
-				//alert('new_column:' + new_column);
-				//colnm[i].value = new_column;
-				//document.getElementsByName('column_list'+i).value = new_column;
+				new_column = col_attr[0]+'|'+col_attr[1]+'|'+chgStr+'|'+col_attr[3]+'|'+col_attr[4];
 				document.getElementById('column_list'+j).value = new_column;
 				var cnm = document.getElementById('column_list'+j).value;
-				
 				document.getElementById('columnR'+j).innerHTML = chgStr;//ㅋ컬럼변경내용 화면출력.
-				//$("label").text(your value);
-				//alert('cnm:' + cnm);
 			}
 		}	
-		//alert('chgStr:' + chgStr);
-		colnm = document.getElementsByName('column_list');		//alert('colnm.length:' + colnm.length);
+		colnm = document.getElementsByName('column_list');
 		str_array = "";
 		for (i = 0; i < colnm.length; i++) {
 			colnm_value = colnm[i].value;
 			st = colnm_value.split('|');//val:275|fld_2|작업공정|CHAR|10// seqno+enm+hnm+type+len
 			str_array = str_array + st[0] +'|'+ st[1] +'|'+ st[2] +'|'+ st[3]+'|'+ st[4]+'@';	
 		} 
-		//alert('item_array str_array:'+str_array);
 		document.makeform.item_array.value = str_array;
 		return;
 	}
@@ -807,58 +755,7 @@ function Save_and_Run(pg)
 	document.makeform.target='_blank';
 	document.makeform.submit();
 }
-//--- 사용 하지않는다. --------
-/*
-function Create_button(pg)
-{
-	pg_name = document.makeform.pg_name.value;
-	if( !pg_name ) {
-		alert(" Please enter the program name!");
-		document.makeform.pg_name.focus();
-		return false;
-	}
-	var tab_selind = makeform.tab_hnmS.selectedIndex; 
-	var tab_val    = makeform.tab_hnmS.options[tab_selind].value;
-	var tabnm      = makeform.tab_hnmS.options[tab_selind].text;
 
-	if( !tab_selind && !tabnm) {
-		alert(tab_selind+" :  Please select a table! ");
-		document.makeform.pg_name.focus();
-		return false;
-	}
-	if( !pg_dup_check() ) return false;  // 프로그램명 중복 입니다.
-	
-	//var item_cnt = makeform.column_list.options.length; 
-	var str_array="";
-	var colnm = document.getElementsByName('column_list');
-	var st = "";
-	var item_cnt = colnm.length;
-	for (i = 0; i < item_cnt; i++) {
-		colnm_value = colnm[i].value;
-		st = colnm_value.split('|');//val:275|fld_2|작업공정|CHAR|10// seqno+enm+hnm+type+len
-		str_array = str_array + st[0] +'|'+ st[1] +'|'+ st[2] +'|'+ st[3]+'|'+ st[4]+'@';	
-	} 
-	document.makeform.item_array.value = str_array;
-	document.makeform.mode.value = 'pg_update'; // pg_new_create
-	document.makeform.mode_call.value = 'app_pg50RU'; // table_pg50R, 'table_item_run50';
-	//document.makeform.action='table_item_run50.php';  // tkher_program_run
-	document.makeform.action='tkher_program_run.php';  // tkher_program_run
-	document.makeform.target='tab_pg_list';
-	document.makeform.submit();
-}*/
-
-	function change_project_func(cd){
-		prj = cd.split(':');
-		//index = document.makeform.project_nmS.selectedIndex;	//alert('index: ' + index );
-		//nm = document.makeform.project_nmS.options[index].text;
-		document.makeform.project_code.value = prj[0]; //nm;
-		document.makeform.project_name.value = prj[1]; //vv = document.makeform.project_nmS.options[index].value;
-		document.makeform.project_nmSX.value = cd;	//alert('cd: ' + cd + ', nm: ' + prj[1]+ ', vv: ' + vv);
-		document.makeform.mode.value = "project_search";
-		document.makeform.action ="app_pg50RU.php";
-		document.makeform.submit();
-		return;
-	}
 //-->
 </script>
 
@@ -869,24 +766,24 @@ function Create_button(pg)
 	//$uid = explode('@', $H_ID);
 	//$pg_code = $uid[0] . "_" . time();
 	//$pg_code = $H_ID . "_" . time();
-	
-	if( isset($_POST['project_name']) )  $project_name = $_POST['project_name'];
+	if( isset($_POST['project_name']) && $_POST['project_name'] !=='' )  $project_name = $_POST['project_name'];
 	else $project_name = '';
+	//m_("project_name: " . $project_name);
 
-	if( isset($_POST['pg_code']) )  $pg_code = $_POST['pg_code'];
+	if( isset($_POST['pg_code']) && $_POST['pg_code'] !=='' )  $pg_code = $_POST['pg_code'];
 	else $pg_code = '';
 	
-	if( isset($_POST['mode_session']) ) $mode_session   = $_POST['mode_session'];
+	if( isset($_POST['mode_session']) && $_POST['mode_session'] !=='' ) $mode_session   = $_POST['mode_session'];
 	$mode_session   = '';
 
-	if( isset($_POST['item_array']) ) $post_item_array   = $_POST['item_array'];
+	if( isset($_POST['item_array']) && $_POST['item_array'] !=='') $post_item_array   = $_POST['item_array'];
 	else $post_item_array   = '';
 
-	if( isset($_POST['if_column']) ) $if_column   = $_POST['if_column'];
+	if( isset($_POST['if_column']) && $_POST['if_column'] !=='' ) $if_column   = $_POST['if_column'];
 	else $if_column   = '';
 
 
-	if( isset($_POST['iftype_db']) ) $iftype_db = $_POST['iftype_db'];
+	if( isset($_POST['iftype_db']) && $_POST['iftype_db'] !=='') $iftype_db = $_POST['iftype_db'];
 	else $iftype_db = '';
 
 	$if_line_session= 0; $j=0;
@@ -894,71 +791,57 @@ function Create_button(pg)
 	$pg_name = '';
 
 	$column_attribute = ''; 
-
-	//m_('mode: ' . $mode . ', mode_session:' . $mode_session); //mode: project_search, mode_session:, mode: SearchPG, mode_session:
+	if( isset($_POST['if_line']) ) $if_line = $_POST['if_line'];
+	else $if_line = '';
+	
 	if( $mode_session == 'POPUP') {
-
-		if( isset($_POST['if_line']) ) $if_line_session	= $_POST['if_line'];    //get_session('if_line');
-
+		if( isset($_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j= $if_line_session+1;
-		//$pg_codeS			= $_POST['pg_codeS'];   //$pg_codeS_session; // 2023-1005
-		//$tab_hnmS				= $_POST['tab_hnmS']; //$tab_hnmS_session;
 		$mode					= 'SearchPG';
 		$aa						= explode(':', $pop_tabS );
-		if( isset($aa[1]) &&  $aa[1] !=='' ) $column_attribute	= $aa[1]; 
+		if( isset( $aa[1]) &&  $aa[1] !=='' ) $column_attribute	= $aa[1]; 
 		else  $column_attribute = ''; 
 		$at						= explode('|', $iftype_db );
-		if( isset($at[$j]) ) $fld_sel_type	= $at[$j]; 
+		if( isset( $at[$j]) && $at[$j] !=='' ) $fld_sel_type	= $at[$j]; 
 		else  $fld_sel_type	 = '';
 		$ar						= explode('@', $post_item_array ); 
-		if( isset($ar[$if_line_session]) ) $arr = $ar[$if_line_session];
+		if( isset( $ar[$if_line_session]) && $ar[$if_line_session] !=='' ) $arr = $ar[$if_line_session];
 		else  $arr = '';
-		$flda					= explode('|', $arr);
-		if( isset($flda[1]) ) $fld_sel				= $flda[1]; 
+		$flda = explode('|', $arr);
+		if( isset( $flda[1]) && $flda[1] !=='' ) $fld_sel = $flda[1]; 
 		else  $fld_sel = '';; 
-		$mode_session       = ''; set_session('mode_session',  '');
-
+		$mode_session = ''; set_session('mode_session',  '');
 	} else if( $mode_session == 'Formula') {
-
-		//$if_line_session	= $_POST['if_line'];       //get_session('if_line');
-		if( isset($_POST['if_line']) ) $if_line_session	= $_POST['if_line'];    //get_session('if_line');
+		if( isset( $_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j	 = $if_line_session+1;
-
-		//$pg_codeS			= $_POST['pg_codeS'];      //$pg_codeS_session;
-		//$tab_hnmS			= $_POST['tab_hnmS'];      //$tab_hnmS_session;
 		$mode				='SearchPG';
-		if( isset($_POST['formula_data']) ) $calc = explode(':', $_POST['formula_data'] ); //$formula_data_session
+		if( isset($_POST['formula_data']) && $_POST['formula_data'] !=='' ) $calc = explode(':', $_POST['formula_data'] );
 		else $calc = array();
-		if( isset($calc[1]) ) $column_attribute	= $calc[1];
+		if( isset( $calc[1]) && $calc[1] !=='' ) $column_attribute	= $calc[1];
 		else $column_attribute	= '';
-		$at					= explode('|', $iftype_db ); //$iftype_db_session
+		$at = explode('|', $iftype_db );
+		if( isset( $at[$j]) && $at[$j] !=='' ) $fld_sel_type= $at[$j]; 
+		else $fld_sel_type= '';
 
-		if( isset($at[$j]) ) $fld_sel_type		= $at[$j]; 
-		else $fld_sel_type		= '';
-
-		$ar					= explode('@', $post_item_array ); //$item_array_session
+		$ar= explode('@', $post_item_array );
 		if( isset($ar[$if_line_session]) ) $arr = $ar[$if_line_session];
 		else $arr = '';
 		$flda				= explode('|', $arr);
-		if( isset($flda[1]) ) $fld_sel			= $flda[1]; 
-		else  $fld_sel ='';; 
-		$mode_session       = ''; set_session('mode_session',  '');
+		if( isset($flda[1]) && $flda[1] !=='' ) $fld_sel= $flda[1]; 
+		else  $fld_sel =''; 
+		$mode_session= ''; set_session('mode_session',  '');
 	}
 	if( $mode == 'SearchPG' ){
-		//m_('mode: ' . $mode . ', pg_codeS:' . $pg_codeS); //mode: SearchPG, pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
-		$aa= explode(':', $pg_codeS);
-		if( isset($aa[0]) ) $pg_code    = $aa[0];
-		else $pg_code    = '';
-		if( isset($aa[1]) ) $pg_name    = $aa[1];
-		else $pg_name    ='';
-		if( isset($aa[2]) ) $tab_enm    = $aa[2];
-		else $tab_enm    = '';
-		if( isset($aa[3]) ) $tab_hnm    = $aa[3];
-		else $tab_hnm    = '';
-		if( isset($aa[4]) ) $group_code	= $aa[4];
-		else $group_code	= '';
-		if( isset($aa[5]) ) $group_name	= $aa[5];
+		$pj= explode(':', $project_nmS);
+		$group_code	= $pj[0];
+		$group_name	= $pj[1];
+		if( isset($aa[5]) && $aa[0] !=='' ) $group_name	= $aa[5];
 		else $group_name	= '';
+		$aa= explode(':', $pg_codeS);
+		if( isset($aa[0]) && $aa[0] !=='') $pg_code = $aa[0];
+		else $pg_code = '';
+		if( isset($aa[1]) && $aa[0] !=='' ) $pg_name = $aa[1];
+		else $pg_name ='';
 
 		$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
 		$resultPG		= sql_query($sqlPG);
@@ -972,9 +855,11 @@ function Create_button(pg)
 		$pop_data		= $rsPG['pop_data'];
 		$rel_data		= $rsPG['relation_data'];
 		$rel_type		= $rsPG['relation_type'];
+		$tab_enm		= $rsPG['tab_enm'];
+		$tab_hnm		= $rsPG['tab_hnm'];
 		$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
 	
-	} else if( $mode == 'program_upgrade' ){ // call: program_list3.php 
+	} else if( $mode == 'program_upgrade' ){
 		if( isset($_POST['pg_code']) ) {
 			$pg_code = $_POST['pg_code'];
 			$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
@@ -999,10 +884,7 @@ function Create_button(pg)
 			$pg_codeS		= $pg_code.":".$pg_name.":".$tab_enm.":".$tab_hnm.":".$group_code.":".$group_name;
 		}
 	}
-
-	//m_("mode_session_ok: $mode_session_ok");
 	$mode_session_ok = get_session("mode_session_ok");
-
 ?>
 <center>
 <div id='menu_normal'>
@@ -1030,10 +912,7 @@ function Create_button(pg)
 	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
 
 			<option value=''>1.Select Project</option>
-			<!-- <option value='ETC:ETC' selected>ETC</option> -->
-
 <?php
-//m_(": " . $project_nmS);
 				$pcd_nm = array();
 				if( isset($project_nmS) && $project_nmS !=="" ){
 					$pcd_nm = explode(":", $project_nmS );
@@ -1064,13 +943,11 @@ function Create_button(pg)
 <?php
 				}
 				$sql = "SELECT * from {$tkher['table10_pg_table']} where group_code='". $pcd_nm[0] ."' order by upday desc , pg_name ";
-//				$sql = "SELECT * from {$tkher['table10_pg_table']} where pg_code='". $pg_code ."' order by upday desc , pg_name ";
-//				$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='". $H_ID ."' order by upday desc , pg_name ";
 				$result = sql_query( $sql );
 
 				while( $rs = sql_fetch_array($result)) {
 ?>
-					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" ><?=$rs['pg_name']?></option>
+					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" title="cd:<?=$pcd_nm[0]?>, nm:<?=$pcd_nm[1]?>"><?=$rs['pg_name']?></option>
 <?php
 				}
 ?>
@@ -1078,9 +955,9 @@ function Create_button(pg)
 </td>
 </tr>
 			  <tr>
-				<td align="left" <?php echo" title='Program Upgrade \n 1:Select Project \n 2:Select Program \n 3:Select column \n 4: Column attribute definition \n 5:Click Save and RUN button'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">Table to use in the program:
+				<td align="left" <?php echo" title='Program Upgrade \n 1:Select Project \n 2:Select Program \n 3:Select column \n 4: Column attribute definition \n 5:Click Save and RUN button'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">use table:
 				<input type='hidden' name='tab_hnmS' value="<?=$tab_hnmS?>" ><?=$tab_enm?><br>
-				<input type='text'   name='tab_hnm'  value="<?=$tab_hnm?>" style="border-style:;background-color:#666666;color:yellow;width:100%; height:27px;font-size:15px;" readonly >
+				<input type='text'   name='tab_hnm'  value="<?=$tab_hnm?>" title="tab_hnmS:<?=$tab_hnmS?>" style="border-style:;background-color:#666666;color:yellow;width:100%; height:27px;font-size:15px;" readonly >
 				</td>
 			  </tr>
 			  <tr>
@@ -1088,16 +965,17 @@ function Create_button(pg)
 	<div id="here">
 <?php
 	$ss = "";
-	$ckv = "";	//m_("if_line:" . $_POST["if_line"]);
-	if( isset($table10_pg) ){ 
+	$ckv = "";	
+	if( isset( $table10_pg) && $table10_pg !=='' ){ 
 			$itX = explode("@",$item_array);
 			for( $i=0, $j=0; $i < $item_cnt; $i++, $j++){
 				if( $mode_session == 'POPUP' || $mode_session == 'Formula' ) {
 					if( $if_line_session == $j) $ckv = " checked "; 
 					else $ckv = "";
 				}
-				$it = explode("|",$itX[$i]);	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
-				$val = $it[0]."|".$it[1]."|".$it[2]."|".$it[3]."|".$it[4];
+				$it = explode("|", $itX[$i] );	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
+				$val = $it[0]."|". $it[1] ."|". $it[2] ."|". $it[3] ."|". $it[4];
+				
 				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA(this.value, " .$j. " )' value='".$it[0]."|".$it[1]."|".$it[2]."|".$it[3]."|".$it[4]."'><label title='".$val."' id='columnR".$j."'>".$it[2]."</label></label><br>";
 			} //for
 	} else {
@@ -1172,40 +1050,38 @@ function Create_button(pg)
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(13,7)" <?php if( $fld_sel_type=='13') echo " checked "; ?> >POPUPWindow <font color='blue'>[Setup]</font>
   <span class="checkmark"></span>
 </label>
-	   <!-- <textarea id=ifmsg name=ifmsg rows=3 cols=30 style="display:none;"></textarea> -->
 		<input type='hidden' id='column_attribute_index' name='column_attribute_index' >
-		<input type='hidden' id='column_index' name='column_index' ><!-- add 2021-05-01 -->
-		<!-- <input type='hidden' name='multy_menu_sel' > --><!-- 2023-10-05 close -->
+		<input type='hidden' id='column_index' name='column_index' >
 		<input type='hidden' name='tab_enm'  value='<?=$tab_enm?>' >
 		<input type='hidden' name='seqno'      value='<?=$seqno?>' >
 		<input type='hidden' name='item_cnt'   value='<?=$item_cnt?>' >
 		<input type='hidden' name='if_line'    value="<?=$if_line_session?>" >
-		<input type='hidden' name='if_column'  value="<?=$if_column?>" ><!-- 2023-10-10 add -->
+		<input type='hidden' name='if_column'  value="<?=$if_column?>" >
 		<input type='hidden' name='item_array' value='<?=$item_array?>' >
 <?php
-			if( isset($table10_pg) ) { // table10_pg 테이블에 pg_code 가 존재하면.//			if( $table10_pg>0 || $table10_tab>0 ) {
-					if( isset($if_type) ) $iftypeR = explode("|", $if_type );
+			if( isset($table10_pg) && $table10_pg !==''  ) { // table10_pg 테이블에 pg_code 가 존재하면.//if( $table10_pg>0 || $table10_tab>0 ) {
+					if( isset($if_type) && $if_type!=='' ) $iftypeR = explode("|", $if_type );
 					else $iftypeR = "";
-					if( isset($if_data) ) $ifdataR = explode("|", $if_data );
+					if( isset($if_data) && $if_data!=='' ) $ifdataR = explode("|", $if_data );
 					else $ifdataR = "";
-					if( isset($item_array) ) $itemR   = explode("@", $item_array );
+					if( isset($item_array) && $item_array!=='' ) $itemR   = explode("@", $item_array );
 					else $itemR   = "";
-					if( isset($pop_data) ) $popdataR= explode("^", $pop_data );               // add 2022-02-19
+					if( isset($pop_data) && $pop_data!=='' ) $popdataR= explode("^", $pop_data );               // add 2022-02-19
 					else $popdataR= "";
 
 					for( $i=0, $j=1; $i < $item_cnt; $i++, $j++){
-						if( isset($iftypeR[$j]) ) $ifT	= $iftypeR[$j];
+						if( isset($iftypeR[$j]) && $iftypeR[$j] !=='' ) $ifT = $iftypeR[$j];
 						else $ifT	= "";
-						if( isset($ifdataR[$j]) ) $ifD	= $ifdataR[$j];
+						if( isset($ifdataR[$j]) && $ifdataR[$j] !=='' ) $ifD = $ifdataR[$j];
 						else $ifD	= "";
-						if( isset($itemR[$i]) ) $it		= $itemR[$i];
+						if( isset($itemR[$i]) && $itemR[$j] !=='' ) $it= $itemR[$i];
 						else $it		=  "";
-						if( isset($popdataR[$j]) ) $pop	= $popdataR[$j];  // add 2022-02-19
+						if( isset($popdataR[$j]) && $popdataR[$j] !=='' ) $pop= $popdataR[$j];
 						else $pop	= "";
 ?>
 						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$ifT?>' >
 						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$ifD?>' > 
-						<input type='hidden' name="popdata[<?=$i?>]" value='<?=$pop?>' > <!-- add 2022-02-19 -->
+						<input type='hidden' name="popdata[<?=$i?>]" value='<?=$pop?>' >
 <?php
 					}			
 			} else {
@@ -1222,9 +1098,6 @@ function Create_button(pg)
 						<input type='hidden' name='group_code' value="<?=$group_code?>" >
 						<input type='hidden' name='group_name' value="<?=$group_name?>" >
 						<input type='hidden' name='iftype_db'  value="<?=$iftype_db?>" >
-						<!-- 
-						<input type='hidden' name='ifdata_db'  value='<?=$if_dataX?>' >
-						<input type='hidden' name='popdata_db' value='<?=$pop_dataX?>' > -->
 		</form>
 	</table>
 </div>

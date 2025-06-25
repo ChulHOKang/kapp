@@ -13,7 +13,7 @@
 	else $H_LEV = 0;
 	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
 	else $H_EMAIL = '';
-
+	//m_("HTTP_HOST: " . getenv('HTTP_HOST') ); //HTTP_HOST: fation.net
 	if( !isset($H_ID) || $H_LEV < 2 ){
 		m_("You need to login.");
 		$url= KAPP_URL_T_;
@@ -40,9 +40,9 @@
 	else $del_mode = '';
 
 	if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
-	else  $group_code	= "ETC";
+	else  $group_code	= "";
 	if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
-	else  $group_name	= "ETC";
+	else  $group_name	= "";
 
 	if( $mode == "table_name_change" && isset($tab_enm) ) {
 			$aa = explode(':', $tab_hnmS);
@@ -60,6 +60,7 @@
 				else m_("Error! Changed name of Table : " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
 			}
 	}
+	/*
 	if( $mode=='group_name_add'){
 		$uid = explode('@', $H_ID); // id is email
 		$group_code	= $uid[0] . "_" . time();
@@ -71,12 +72,12 @@
 		} else  m_("Project added! ");
 		$resultT = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID'  and tab_enm='$tab_enm' " );
 		$total		= sql_num_rows( $resultT );
-	}
+	}*/
 ?>
 
 <html>
 <head>
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -160,29 +161,6 @@
 		return;
 	}
 
-	function group_name_add_func(){
-		nm = document.insert.group_name.value;
-		if(nm=='ETC') {
-			alert(' Group name ETC can not be registered as duplicate.');// \n 그룹명 ETC를 중복으로 등록할 수없습니다.
-			return false;
-		}
-		var item_cnt = insert.group_code.options.length;
-		for (i = 0; i < item_cnt; i++) {
-				var gr_txt = insert.group_code.options[i].text;
-				if( nm == gr_txt ) {
-					alert('There are duplicate groups. Use another group name!' );//중복된 그룹이 있습니다. 다른그룹명을 사용하세요!
-					return false;
-				}
-		}
-		msg = " Do you want to register the group name of "+nm+"?";
-		if ( window.confirm( msg ) )
-		{
-			document.insert.mode.value			="group_name_add";
-			document.insert.action					="table30m_A.php";
-			document.insert.submit();
-		} else return false;
-	}
-
 	function group_name_change_func(nm){
 		index=document.insert.group_code.selectedIndex;
 		gnm = document.insert.group_code.options[index].text;
@@ -204,7 +182,29 @@
 		} else return false;
 	}
 
-	function column_modify_mode_func( no,  table_yn, colunm_cnt ) {
+	function column_modify_mode_func( no,  table_yn, colunm_cnt, len ) {
+		Alen = document.insert["Afld_len[" + no + "]"].value;
+		len = document.insert["fld_len[" + no + "]"].value;
+		Ahnm = document.insert["Afld_hnm[" + no + "]"].value;
+		hnm = document.insert["fld_hnm[" + no + "]"].value;
+		Aftype = document.insert["Afld_type[" + no + "]"].value;
+		ftype = document.insert["fld_type[" + no + "]"].value;
+		alert("Alen: " + Alen + ", len: " + len + ", Ahnm: " + Ahnm + ", hnm: " + hnm+ ", Aftype: " + Aftype + ", ftype: " + ftype);
+		//Alen: 15, len: 255, Ahnm: fld3, hnm: fld3, Aftype: VARCHAR, ftype: TEXT
+		//return;
+
+		if( document.insert["Afld_len[" + no + "]"].value == len && document.insert["fld_hnm[" + no + "]"].value == hnm){
+			alert(" name and length is same, You can only change the column name and length. ");
+			return false;
+		}
+		if( document.insert["fld_hnm[" + no + "]"].value == hnm )
+		/*
+		  Program을 Upgrade 했다면 컬럼 변경은 하지 않는것이 좋다. 잘못하면 속성이 엉컬어 질 수 있다.
+		  컬럼 속성을 선언 하였다면 컬럼 길이만 변경 가능
+		  컬럼 타입을 변경하는 것은 프로그램 Upgrade 하기전에 하는것이 좋다
+		  컬럼의 속성이 선언 되었다면 컬럼 타입을 변경 하지 않는 것이 좋다. VARCHAR 를 INT 로의 변경 즉 문자 타입을 숫자 타입으로 변경은 오류를 유발한다.
+
+		*/
 		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
 		if( fld_hnm == "seqno"){
 			alert(' Can not use column name seqno.');// \n 컬럼명 seqno를 사용할수 없습니다.
@@ -220,10 +220,9 @@
 				}
 		}
 		msg = " Modify " + fld_hnm + " entry? "; //컬럼을 변경할까요?
-		if ( window.confirm( msg ) )
-		{
-			document.insert.del_mode.value		="column_modify_mode";
-			document.insert.mode.value			="Search";
+		if( window.confirm( msg ) ) {
+			document.insert.del_mode.value="column_modify_mode";
+			document.insert.mode.value="Search";
 			document.insert.table_yn.value = table_yn;
 			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
 			document.insert.add_column_enm.value = document.insert["fld_enm[" + no + "]"].value;
@@ -231,7 +230,7 @@
 			document.insert.add_column_len.value = document.insert["fld_len[" + no + "]"].value;
 			document.insert.add_column_memo.value = document.insert["memo[" + no + "]"].value;
 			document.insert.del_seqno.value = document.insert["seqno[" + no + "]"].value;
-			document.insert.action					="table30m_A.php";
+			document.insert.action="table30m_A.php";
 			document.insert.submit();
 		}
 	}
@@ -607,7 +606,7 @@
 			}//while
 			$disno = $ARR +1;
 
-			if( $pg_mode=="on" ){
+			/*if( $pg_mode=="on" ){
 				$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$tab_enm' ";
 				$resultPG = sql_query($sqlPG);
 				$table10_pg = sql_num_rows($resultPG);
@@ -617,11 +616,11 @@
 				} else {
 					$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt,  userid='$H_ID' ";
 					sql_query($query);
-					$link_ = KAPP_URL_T_ . "table30m_A.php";
+					$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
 					//insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10_pg@table30m' ); //PG create point
 				}
 				$pg_mode="";
-			}
+			}*/
 	} else if( $mode == "line_set" ) {
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
@@ -697,7 +696,7 @@
 		<td bgcolor='#ffffff'>
 		<SELECT id='group_code' name='group_code' onchange="Project_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered. ' "; ?> >
 				<option value=''>Select project</option>
-				<option value='ETC' selected>ETC</option>
+				<!-- <option value='ETC' selected>ETC</option> -->
 <?php
 			$SQLG = "SELECT * from {$tkher['table10_group_table']} where userid='".$H_ID."' order by group_name ";
 			$result = sql_query( $SQLG );
@@ -708,24 +707,8 @@
 			}
 ?>
 			</select>
-<?php
-		if ( isset($H_ID) && $H_ID !== "" ) {
-?>
-		</td><td bgcolor='#ffffff' >&nbsp;<input type='text' name='group_name' size='15' value='<?=$group_name?>' style='height:25px;background-color:#666666;color:yellow;border:1 solid black' title='project name' readonly></td>
-		<td bgcolor='#ffffff'><!-- <input type='button' onclick="javascript:group_name_add_func();" value='Project Create' style='height:25px;background-color:cyan;border-radius:20px;border:1 solid black' title='Add a new Project!' > --></td>
-<?php
-			if( $H_LEV > 7 or $H_ID == $userid) { //테이블의 프로젝트를 변경 하거나 또는 테이블의 프로젝트의 코드와 명칭을 모두 변경합니다.
-?>
-					<!-- 프로젝트명을 변경할 수없도록함. 2023-08-22
-					<input type='button' value='Project Change' onclick="javascript:group_name_change_func('<?=$group_name?>');" style='height:25px;background-color:red;color:yellow;border:1 solid black' <?php echo "title='Change the project of the table or change both the code and the name of the project of the table.' "; ?> > -->
-<?php
-			}
-		} else {
-?>
-				You can register after login.
-<?php
-		}
-?>
+		</td>
+		<td bgcolor='#ffffff' >&nbsp;<input type='text' name='group_name' size='15' value='<?=$group_name?>' style='height:25px;background-color:#666666;color:yellow;border:1 solid black' title='project name' readonly></td>
 </tr>
 <tr>
 	<td bgcolor='#f4f4f4' <?php echo "title='Select a table from the list of registered tables.' "; ?>>Table Name</td>
@@ -905,15 +888,15 @@
 			  <select type='text' name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
 				  <option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> value="CHAR" <?php if($fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
 				  <option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> value="VARCHAR" <?php if($fld_type == 'VARCHAR') echo " selected ";  ?> >VARCHAR</option>
+				  <option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> value="TEXT" <?php if($fld_type == 'TEXT') echo " selected ";  ?>>TEXT</option>
+				  <option <?php echo "title='INT The range of 4-byte integer types is 2147483647 with -2,147,483,647 when there is a sign, and 4,294,967,295 when there is no sign.' "; ?> value="INT" <?php if ( $i==0 ) { echo "selected"; } ?> <?php if($fld_type == 'INT') echo " selected ";  ?> >INT</option>
+				  <option <?php echo "title='FLOAT A small floating-point number, acceptable values are -3.402823466E + 38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E + 38.' "; ?> value="FLOAT" <?php if($fld_type == 'FLOAT') echo " selected ";  ?>>FLOAT</option>
+				  <option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> value="DOUBLE" <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
 				  <option <?php echo "title='TINYINT The range of a 1-byte integer type is from -128 to 127 when it is signed, and from 0 to 255 when it is not signed.' "; ?> value="TINYINT" <?php if($fld_type == 'TINYINT') echo " selected ";  ?> >TINYINT</option>
 				  <option <?php echo "title='SMALLINT The range of a 2-byte integer is -32,768 to 32,767 if signed and 0 to 65,355 if unsigned.' "; ?> value="SMALLINT" <?php if($fld_type == 'SMALLINT') echo " selected ";  ?> >SMALLINT</option>
 				  <option <?php echo "title='MEDIUMINT The range of 3-byte integers is -8388608 to 8388607 if signed, and 0 to 16,777,215 if not signed.' "; ?> value="MEDIUMINT" <?php if($fld_type == 'MEDIUMINT') echo " selected ";  ?> >MEDIUMINT</option>
-				  <option <?php echo "title='INT The range of 4-byte integer types is 2147483647 with -2,147,483,647 when there is a sign, and 4,294,967,295 when there is no sign.' "; ?> value="INT" <?php if ( $i==0 ) { echo "selected"; } ?> <?php if($fld_type == 'INT') echo " selected ";  ?> >INT</option>
 				  <option <?php echo "title='BIGINT An 8-byte integer type range is from -9,223,372,036,854,775,808 to +9,223,372,036,854,775,808 when there is a sign, and 18,446,744,073,709,551,615 when there is no sign.' "; ?> value="BIGINT" <?php if($fld_type == 'BIGINT') echo " selected ";  ?>>BIGINT</option>
 				  <option <?php echo "title='DECIMAL Fixed-point number (M, D): The maximum number of digits (M) is 65 (default is 10) and the maximum number of decimal places (D is 30)' "; ?> value="DECIMAL" <?php if($fld_type == 'DECIMAL') echo " selected ";  ?>>DECIMAL</option>
-				  <option <?php echo "title='FLOAT A small floating-point number, acceptable values are -3.402823466E + 38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E + 38.' "; ?> value="FLOAT" <?php if($fld_type == 'FLOAT') echo " selected ";  ?>>FLOAT</option>
-				  <option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> value="DOUBLE" <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
-				  <option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> value="TEXT" <?php if($fld_type == 'TEXT') echo " selected ";  ?>>TEXT</option>
 				  <option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
 				  <option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
 				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if($fld_type == 'TIME') echo " selected ";  ?>>TIME</option><!-- 2024-01-04 kan -->
@@ -937,18 +920,18 @@
 			?> >
 	   </td>
 	<?php
-		if($mode=='Search') {
+		if( $mode=='Search') {
 	?>
 			<td align='left'>
 	<?php
-			if ( $i > 0 ) {
-				if ($m_line) {
+			if( $i > 0 ) {
+				if( $m_line) {
 					echo " <input type='button' name='add' onclick=\"javascript:column_add_mode_func('$i', '$table_yn', '$dis_cnt');\"  value='column add' style='height:22px;background-color:blue;color:yellow;border-radius:20px;border:1 solid black' title=' Add a column.'>";
-				}else {
+				} else {
 					echo " <div id='manager_".$i.">' class='manager_".$i."' style='display: ;' > ";
-
 					echo " <input type='button' name='del' onclick=\"javascript:delete_column_func('$seqno', '$fld_hnm', '$fld_enm', '$i');\"  value='delete' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Delete a column.'>";
-					// 변경버턴 막아둔다 20230920 - echo " <input type='button' name='modify' onclick=\"javascript:column_modify_mode_func('$i', '$table_yn', '$dis_cnt');\"  value='modify' style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Modify a column.'>";
+					// 헤제 2025-06-25, 변경버턴 막아둔다 20230920 - 
+					echo " <input type='button' name='modify' onclick=\"javascript:column_modify_mode_func('$i', '$table_yn', '$dis_cnt', '$fld_len');\"  value='modify' style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Modify a column.'>";
 
 					echo "</div>";
 				}
@@ -1065,7 +1048,7 @@
 		$tabData['data'][$cnt]['group_code'] = $group_code;
 		$tabData['data'][$cnt]['group_name'] = $group_name;
 		$tabData['data'][$cnt]['memo']       = $memo;
-		$hostname = getenv('HTTP_HOST');
+		$hostname = KAPP_URL_T_; //getenv('HTTP_HOST');
 		$tabData['data'][$cnt]['host']       = $hostname;
 		$tabData['data'][$cnt]['email']      = $H_EMAIL;
 		$tabData['data'][$cnt]['sqltable']   = $Asqltable;
@@ -1087,12 +1070,12 @@
 		if( $table_yn =='y' ) {
 			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL";
-			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
+			} else if( $fld_type== 'INT' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' ) {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
 			} else {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type ;
 			}
-			$mq1	=sql_query($query);
+			$mq1=sql_query($query);
 			if( $mq1 ) {
 				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where userid='$H_ID' and seqno=$seqno " );
 				m_(" column update OK!! ");
@@ -1235,7 +1218,7 @@
 	}
 	//==========================================
 	function create_func(){
-		global $H_ID, $tab_enm, $table_yn, $mode, $line_set;
+		global $H_ID, $tab_enm, $table_yn, $mode, $line_set, $ip;
 		global $config;
 		global $tkher;
 		$item_list = " create table ". $tab_enm . " ( ";
@@ -1309,9 +1292,10 @@
 				m_("c3 $tab_hnm table creation failed.");
 				exit;
 			} else {
-				m_("c  Successful creation of the $tab_hnm table.");
+				//m_("c  Successful creation of the $tab_hnm table.");
 				$table_yn = 'y';
-				$link_ = KAPP_URL_T_ . "table30m_A.php";
+				//$link_ = KAPP_URL_T_ . "table30m_A.php";
+				$link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10@table30m' );
 			}
 		}
@@ -1323,9 +1307,21 @@
 			sql_query($query);
 		} else {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
-			sql_query($query);
-				$link_ = KAPP_URL_T_ . "/table30m_A.php";
-				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );// PG create point
+			$ret = sql_query($query);
+			if( $ret ){
+				$pg_url = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
+				$job_name = $tab_hnm;
+				$aboard_no = $tab_enm;
+				$job_group = "KAPP-Program";
+				job_link_table_add( $tab_hnm, $tab_hnm, $pg_url, $aboard_no, $job_group, $job_name, 'P' );//curl 함께처리.
+				m_(" $tab_hnm - pg create OK!");
+				//$kapp_server = KAPP_URL_T_;
+				//$up_day = date("Y-m-d H:i:s");
+				//$memo = 'Table create and PG create';
+				//Link_Table_curl_send( $tab_hnm, $pg_url, 'P', $kapp_server, $ip, $memo, $up_day );
+			}
+			//$link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
+			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );// PG create point
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
@@ -1387,7 +1383,7 @@
 			m_( $tab_hnm . "x1 table creation failed.");
 		} else {
 			m_("  Successful creation of the ".$tab_hnm." table.");
-			$link_ = KAPP_URL_T_ . "table30m_A.php";
+			$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
 			insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10@table30m' );//re make copy
 			TAB_curl_send( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
 		}
@@ -1399,7 +1395,7 @@
 			$rsPG = sql_fetch_array($resultPG);
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].",  userid='$H_ID' ";
 			sql_query($query);	// 중요.		//coin_add_func( $H_ID, 200 ); //OK !!!
-			$link_ = KAPP_URL_T_ . "/table30m_A.php";
+			$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10_pg@table30m' );// PG create point
 		} else {
 			m_(" Copy ERROR : mode:".$mode.", pg_code:".$enm );
@@ -1422,13 +1418,17 @@
 
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
+		$item_array = '';
+		$if_type = '';
+		$if_data = '';
 		For( $ARR=1; $_POST["fld_hnm"][$ARR] ; $ARR++ ) {
 			$fld_enmO	=	$_POST["Afld_enm"][$ARR];
 			$fld_hnmO	=	$_POST["Afld_hnm"][$ARR];
 			$fld_typeO	=	$_POST["Afld_type"][$ARR];
 			$fld_lenO	=	$_POST["Afld_len"][$ARR];
 			$fld_O      = "|". $fld_enmO ."|". $fld_hnmO  ."|". $fld_typeO ."|". $fld_lenO . "@";
-			$memoO		=	$_POST["Amemo"][$ARR];
+			if( isset($_POST["Amemo"][$ARR]) ) $memoO=$_POST["Amemo"][$ARR];
+			else $memoO ='';
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 			if( $fld_hnm ) {
 				$seqno		=	$_POST["seqno"][$ARR];
@@ -1482,17 +1482,18 @@
 			echo "sql:" . $item_list; exit;
 		} else m_( $tab_enm . ", Successful creation of the " . $tab_hnm . " table.");
 
-		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$tab_enm."' ";
+		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$tab_enm."' ";
 		$resultPG = sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
-			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+			m_(" ok pg - update 1");
+			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array' WHERE pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
 			sql_query($query);
-				$link_ = KAPP_URL_T_ . "/table30m_A.php";
-				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point - update_remake_func()
+			//$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
+			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point - update_remake_func()
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
