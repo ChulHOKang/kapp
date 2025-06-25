@@ -11,9 +11,9 @@
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 <?php
-	$H_ID			= get_session("ss_mb_id");   
-	if( !$H_ID || !$H_LEV ) {
-		m_("You need to login. ");
+	$H_ID= get_session("ss_mb_id");   
+	if( $H_ID == '' ) {
+		m_("You need to login. $H_ID");
 		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
 	}
 

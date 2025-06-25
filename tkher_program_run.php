@@ -35,7 +35,7 @@
 	$Text_height='60px';
 
 	$H_ID	= get_session("ss_mb_id");
-	if( !$H_ID || !$H_LEV ) {
+	if( $H_ID == '' ) {
 		m_("You need to login. ");
 		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
 	} else if( isset($H_ID) && $H_ID !=='' ) {
