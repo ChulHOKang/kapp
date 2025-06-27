@@ -1,5 +1,8 @@
 <?php
-		include_once('./tkher_start_necessary.php');
+include_once('./tkher_start_necessary.php');
+/*
+	program_list3u.php
+*/
 
 	$ss_mb_id	= get_session("ss_mb_id");
 	$H_ID	= $ss_mb_id;	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
@@ -405,7 +408,7 @@ $(function () {
 <thead  width="100%">
 	<tr>
 	<th>NO</th>
-	<th>Run</th>
+	<!-- <th>Run</th> -->
 	<th>manager</th>
 	<th>Program</th>
 	<th>Table</th>
@@ -419,7 +422,7 @@ $(function () {
 	<th>Cnt</th>
 	<th>Memo</th> -->
 	<th>Project</th>
-	<th>P-code</th>
+	<!-- <th>P-code</th> -->
 	<th>Date</th>
 <?php if($mode!=='Search') { ?>
 	<!-- <th>Delete</th> -->
@@ -451,16 +454,13 @@ $(function () {
 		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 		<TR bgcolor='<?=$bgcolor?>' width='900' >
 		<td width='1%'><?=$line?></td>
-		<td width='2%'>
-		<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
+		<!-- <td width='2%'><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td> -->
 		<td  width='3%'><?=$rs['userid']?> </td>
-		<td  width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td> 
-		<td width='5%' title='Data List program run'>
-			<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
+		<td  width='15%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:cyan;color:black;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) - Run</a></td> 
+		<td width='15%'><a href="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</a>
 		</td> 
-		<td width='2%'><?=$group_name?></td>
-		<td width='2%'><?=$group_code?></td>
-		<td width='5%'><?=substr($rs['upday'], 0,10)?></td>
+		<td width='12%'><?=$group_name?> (<?=$group_code?>)</td>
+		<td width='5%'><?=$rs['upday']?></td><!-- substr($rs['upday'], 0,10) -->
 		</TR>
  <?php
 		$i++;
