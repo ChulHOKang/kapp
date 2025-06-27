@@ -1414,8 +1414,8 @@ function Table10($t_head, $tab) {
         memo text NOT NULL,
         upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL,
-        grant_write varchar(3) DEFAULT NULL,
-        grant_view varchar(3) DEFAULT NULL,
+        grant_write int(2) DEFAULT 0,
+        grant_view int(2) DEFAULT 0,
         table_yn varchar(3) DEFAULT NULL,
         sqltable text DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1452,6 +1452,8 @@ function Table10_pg($t_head, $tab) {
         upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL,
         del varchar(1) DEFAULT NULL,
+        grant_write int(2) DEFAULT 0,
+        grant_view int(2) DEFAULT 0,
         del_date datetime DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
@@ -1557,8 +1559,8 @@ function Table10_curl($t_head, $tab) {
   `memo` text DEFAULT NULL,
   `upday` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `userid` varchar(50) NOT NULL,
-  `grant_write` varchar(3) DEFAULT NULL,
-  `grant_view` varchar(3) DEFAULT NULL,
+  `grant_write` int(2) DEFAULT 0,
+  `grant_view` int(2) DEFAULT 0,
   `table_yn` varchar(3) DEFAULT NULL,
   `sqltable` text DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1597,6 +1599,8 @@ function Table10_pg_curl($t_head, $tab) {
   `userid` varchar(50) NOT NULL,
   `email` varchar(30) NOT NULL,
   `del` varchar(1) DEFAULT NULL,
+  `grant_write` int(2) DEFAULT 0,
+  `grant_view` int(2) DEFAULT 0,
   `del_date` datetime DEFAULT NULL,
   `sys_link` varchar(255) NOT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
