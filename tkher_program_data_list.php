@@ -16,11 +16,44 @@
 	include "./table_paging.php";
 
 	$H_ID  = get_session("ss_mb_id"); 
-	$H_LEV = $member['mb_level']; 
-	if( !$H_ID ) {
-		//my_msg("You need to login. ");
+	if( isset($H_ID) && $H_ID !=='' ) {
+		//m_("You need to login. ");
+		$H_LEV = $member['mb_level']; 
+		$H_POINT	= $member['mb_point']; 
+	} else {
+		$H_LEV = 1; 
+		$H_POINT= 0; 
 	}
-	if( isset($member['mb_point']) ) $H_POINT	= $member['mb_point']; 
+	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
+	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
+	else $pg_code = "";
+	if( !$pg_code ) {
+		$pg_name	= $_SESSION['pg_name'];	 //table_item_run70_r.php 
+		$pg_code	= $_SESSION['pg_code'];
+		$_SESSION['pg_code']	= '';
+		$_SESSION['pg_name']	= '';
+	}
+	if( !$pg_code ) {
+		m_("pg code - ERROR : pg_code: $pg_code "); exit;//
+	}
+	$mid= ''; 
+	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+	$rsPG =sql_fetch($sqlPG);
+	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
+		$item_array = $rsPG['item_array'];
+		$if_data = $rsPG['if_data'];
+		$iftype = $rsPG['if_type'];
+		$tab_enm = $rsPG['tab_enm'];
+		$tab_hnm = $rsPG['tab_hnm'];
+		$item_cnt = $rsPG['item_cnt'];
+		$fld_cnt = $rsPG['item_cnt'];
+		$pg_name = $rsPG['pg_name']; 
+		$mid= $rsPG['userid']; 
+		$grant_view= $rsPG['grant_view']; 
+		$grant_write= $rsPG['grant_write']; 
+	} else {
+			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
+	}
 ?>
 <html> 
 <head> 
@@ -189,52 +222,25 @@ $(function () {
 	$cur='B';
 	include "./menu_run.php";
 
-	if( isset($_REQUEST['mode']) ) $mode		= $_REQUEST['mode'];
+	if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else  $mode = "";
-	if( isset($_REQUEST['c_sel']) ) $c_sel		= $_REQUEST['c_sel'];
+	if( isset($_REQUEST['c_sel']) ) $c_sel= $_REQUEST['c_sel'];
 	else  $c_sel = "";
-	if( isset($_REQUEST['c_sel3']) ) $c_sel3		= $_REQUEST['c_sel3'];
+	if( isset($_REQUEST['c_sel3']) ) $c_sel3= $_REQUEST['c_sel3'];
 	else  $c_sel3 = "";
-	if( isset($_REQUEST['searchT']) ) $searchT		= $_REQUEST['searchT'];
+	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
 	else  $searchT = "";
-	if( isset($_REQUEST['search_fld']) ) $search_fld		= $_REQUEST['search_fld'];
+	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld'];
 	else  $search_fld = "";
-	if( isset($_REQUEST['search_choice']) ) $search_choice		= $_REQUEST['search_choice'];
+	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice'];
 	else  $search_choice = "";
 
-	if( isset($_REQUEST['pg_name']) ) $pg_name		= $_REQUEST['pg_name'];
+	if( isset($_REQUEST['pg_name']) ) $pg_name= $_REQUEST['pg_name'];
 	else  $pg_name = "";
-	if( isset($_REQUEST['pg_code']) ) $pg_code		= $_REQUEST['pg_code'];
-	else  $pg_code = "";
 
-	if( isset($_POST['group_name']) ) $group_name		= $_POST['group_name'];
+	if( isset($_POST['group_name']) ) $group_name= $_POST['group_name'];
 	else  $group_name = "";
 
-	if( !$pg_code ) {
-		$pg_name	= $_SESSION["pg_name"];	 //table_item_run70_r.php 
-		$pg_code	= $_SESSION["pg_code"];
-		$_SESSION['pg_code']	= '';
-		$_SESSION['pg_name']	= '';
-	}
-	if( !$pg_code  ) {
-			m_(" program name ----------- ERROR : pg_name:$pg_name , pg_code:$pg_code "); exit;//
-	}
-	$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-	$resultPG	= sql_query($sqlPG);
-	$table10_pg= sql_num_rows($resultPG);
-	if( $table10_pg > 0 )	 {
-		$rsPG			= sql_fetch_array($resultPG);
-		$item_array= $rsPG['item_array'];
-		$if_data		= $rsPG['if_data'];
-		$iftype		= $rsPG['if_type'];
-		$tab_enm	= $rsPG['tab_enm'];
-		$tab_hnm	= $rsPG['tab_hnm'];
-		$item_cnt	= $rsPG['item_cnt'];
-		$fld_cnt		= $rsPG['item_cnt'];
-		$pg_name	= $rsPG['pg_name']; 
-	} else {
-			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
-	}
 	$fld_enm= array();
 	$fld_hnm= array();
 	$fld_type= array();
@@ -262,35 +268,39 @@ $(function () {
 	} else  $line_cnt	= 10;
 	if( $line_cnt < 10  ) $line_cnt	= 10;
 	$page_cnt	= 10;
-	$SQL1 = "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
-	if ( ($result = sql_query( $SQL1 ) )==false )
-	{
+	
+	/*$SQL1 = "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
+	if( ( $result = sql_query( $SQL1 ) )==false ){
 		printf("Invalid query: %s\n", $SQL1);
-		my_msg("sql Error ");
+		m_("sql Error ");
 		exit();
 	} else {
 		$my_rs = sql_fetch_array($result);
 	}
-	$levR		= $my_rs['grant_view']; 
-	$levW	= $my_rs['grant_write']; 
+	$levR= $my_rs['grant_view']; 
+	$levW= $my_rs['grant_write']; 
+	*/
 ?>
 			<br>
 			<div>
 				<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table code:<?=$pg_code?>:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
 			</div>
 <?php
+	$total_count = 0;
+	$view_msg ='';
+	if( $grant_view < $H_LEV || $mid == $H_ID ) {
 			$SQL1 = "SELECT * from $tab_enm ";
 			if( $mode=='search' ){
 				if( $c_sel3 == "like")		$SQL1 = $SQL1 . " where $search_fld $c_sel3 '%$searchT%' ";
 				else if( $c_sel3 == "=")	$SQL1 = $SQL1 . " where $search_fld $c_sel3 '$searchT' ";
 				else if( $c_sel3 == ">")	$SQL1 = $SQL1 . " where $search_fld $c_sel3 '$searchT' ";
 				else if( $c_sel3 == "<")	$SQL1 = $SQL1 . " where $search_fld $c_sel3 '$searchT' ";
-				else	 $SQL1 = $SQL1 . " where $search_fld like '%$searchT%' ";
+				else $SQL1 = $SQL1 . " where $search_fld like '%$searchT%' ";
 			}
 			if ( ($result = sql_query( $SQL1 ) )==false )
 			{
 				printf("Invalid query: %s\n", $SQL1);
-				my_msg(" 4 Select Error ");
+				m_(" 4 Select Error ");
 				$total_count = 0;
 			} else {
 				$total_count = sql_num_rows($result);
@@ -306,6 +316,10 @@ $(function () {
 				$last = $line_cnt;										// 뽑아올 게시물 [끝]
 				if( $total_count < $last) $last = $total_count;
 			}
+	} else {
+		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. ';//자료를 볼수 있는 권한이 없습니다. 볼수있는 권한은 생성자 이상의 레벨입니다.
+	}
+
 ?>
 		<form name='view_form' method='post' enctype="multipart/form-data" >
 			<div style='width:99%;'>
@@ -377,16 +391,48 @@ $(function () {
 						</td>
 					</tr>
 				</DIV> 
-
+<?php
+	$level_msg8 = "Only system manager";
+	$level_msg3 = "Only me";
+	$level_msg2 = "Member";
+	$level_msg1 = "Guest";
+	$read_level = '1';
+	$write_level= '1';
+?>
 				<div class="viewHeaderT">
-						<span>&nbsp;&nbsp;K-APP : <?=$pg_code?> &nbsp;&nbsp;&nbsp;&nbsp;Total: <strong><?=$total_count?> &nbsp;&nbsp;&nbsp;&nbsp; Page:<?=$page?></strong>
-							<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
-								<option value='10'  <?php if($line_cnt=='10' )  echo " selected " ?> >10</option>
-								<option value='30'  <?php if($line_cnt=='30' )  echo " selected " ?> >30</option>
-								<option value='50'  <?php if($line_cnt=='50')   echo " selected" ?>  >50</option>
-								<option value='100' <?php if($line_cnt=='100')  echo " selected" ?>  >100</option>
-							</select>
-						</span>
+					<span>&nbsp;&nbsp;K-APP:<?=$pg_code?>&nbsp;&nbsp;&nbsp;&nbsp;Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
+						<strong title='View page count'>Page:<?=$page?></strong>
+						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
+							<option value='10'  <?php if($line_cnt=='10')  echo " selected" ?> >10</option>
+							<option value='30'  <?php if($line_cnt=='30')  echo " selected" ?> >30</option>
+							<option value='50'  <?php if($line_cnt=='50')  echo " selected" ?> >50</option>
+							<option value='100' <?php if($line_cnt=='100') echo " selected" ?> >100</option>
+						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+					</span>
+<?php
+if( $H_ID==$mid ) {
+?>
+					<span>
+						<strong title='Set data view level'>Read Level: </strong>
+						<select id='read_level' name='read_level' onChange="Change_read_level('<?=$read_level?>', this.options[selectedIndex].value)" style='height:20;'>
+							<option value='1' <?php if($read_level=='1')  echo " selected" ?> title="<?=$level_msg1?>">Guest</option>
+							<option value='2' <?php if($read_level=='2')  echo " selected" ?> title="<?=$level_msg2?>">Member</option>
+							<option value='3' <?php if($read_level=='3')  echo " selected" ?> title="<?=$level_msg3?>">Only me</option>
+							<option value='8' <?php if($read_level=='8')  echo " selected" ?> title="<?=$level_msg8?>">System</option>
+						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+						<strong title='Set data write level'>Write Level: </strong>
+						<select id='write_level' name='write_level' onChange="Change_write_level('<?=$write_level?>', this.options[selectedIndex].value)" style='height:20;'>
+							<option value='1' <?php if($write_level=='1')  echo " selected" ?> title="<?=$level_msg1?>">Guest</option>
+							<option value='2' <?php if($write_level=='2')  echo " selected" ?> title="<?=$level_msg2?>">Member</option>
+							<option value='3' <?php if($write_level=='3')  echo " selected" ?> title="<?=$level_msg3?>">Only me</option>
+							<option value='8' <?php if($write_level=='8')  echo " selected" ?> title="<?=$level_msg8?>">System</option>
+						</select>
+					</span>
+<?php
+} else echo " user: " . $mid;
+						echo "<br>".$view_msg;
+?>
+
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
@@ -436,6 +482,7 @@ $(function () {
 		</thead>
 		<tbody width=100%>
 <?php
+	if( $grant_view < $H_LEV || $mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
 			$OrderBy	= " order by seqno desc ";
@@ -447,7 +494,7 @@ $(function () {
 				else	 $SQL = $SQL . " where $search_fld like '%$searchT%' ";
 			} 
 			$SQL = $SQL . $OrderBy . $SQL_limit;
-			if ( ($result = sql_query( $SQL ) )==false )
+			if( ($result = sql_query( $SQL ) )==false )
 			{
 				printf("Record 0 : query: %s\n", $SQL);
 			} else {
@@ -475,7 +522,8 @@ $(function () {
 					</tr>
 <?php
 				}	//while
-			}
+			}// 
+	} // grant_view
 ?>
 		</tbody>
 	</table>				
