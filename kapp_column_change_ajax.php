@@ -1,7 +1,12 @@
 <?php 
 	include_once('./tkher_start_necessary.php');
 	/*
-		kapp_column_change_ajax.php : app_pg50RU.php 에서 콜 사용.
+		kapp_column_change_ajax.php : 
+			- app_pg50RU.php 에서 콜 사용.
+			- tkher_program_data_list 에서 콜 사용.
+			 : grant_view, grant_write check
+				- if( $grant_write == $H_LEV || $grant_write < $H_LEV || $mid == $H_ID )
+
 		- image data name column length change - image name length:255
 	*/
 	$H_ID	= get_session("ss_mb_id"); 

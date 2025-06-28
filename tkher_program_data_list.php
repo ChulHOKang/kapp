@@ -2,10 +2,10 @@
 	include_once('./tkher_start_necessary.php');
 
 	/* ----------------------------------------------------------------------
+	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
     tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
     tkher_program_data_update.php						: data update system program
 	tkher_program_data_view.php							: data view   system program
-	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
 
 		tkher_program_data_list.php : table data list.
 		- call : tkher_program_run.php : data insert program.
@@ -522,12 +522,11 @@ if( $H_ID==$mid ) {
 						<input type="hidden" name='pg_title'		value='<?=$tit?>' />
 						<input type="hidden" name='seqno'			value='' />
 						<input type="hidden" name='no'				value='' />
-						<input type="hidden" name='levR'			value='<?=$levR?>' />
-						<input type="hidden" name='levW'			value='<?=$levW?>' />
 						<input type="hidden" name='id'				value='<?=$H_ID?>' />
 						<input type="hidden" name='c_sel'			value='<?=$c_sel?>' />
 						<input type="hidden" name='c_sel3'			value='<?=$c_sel3?>' />
 						<input type="hidden" name='target_'		value='<?=$target_?>' />
+						<input type="hidden" name='mid'		value='<?=$mid?>' />
 						<input type="hidden" name='pg_code'		value='<?=$pg_code?>' />
 						<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
 						<input type="hidden" name='group_codeX'		value="<?=$group_codeX?>" />

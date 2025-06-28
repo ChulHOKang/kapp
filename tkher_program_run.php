@@ -17,7 +17,11 @@
 	tkher_program_run.php
 	table_item_run50.php
 	table_pg70_write.php
+	//--- Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36, KAPP_MOBILE_AGENT: phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony
 	----------------------------------------------------------------- */
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$is_mobile = false;
+	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
 	if( $is_mobile ) {
 		$menu1TWPer=36;
 	} else {
@@ -34,13 +38,13 @@
 	$Xheight='100%';
 	$Text_height='60px';
 
-	$H_ID	= get_session("ss_mb_id");
-	if( $H_ID == '' ) {
-		m_("You need to login. ");
-		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
-	} else if( isset($H_ID) && $H_ID !=='' ) {
+	$H_ID= get_session("ss_mb_id");
+	if( isset($H_ID) && $H_ID !=='' ) {
 		$H_POINT	= $member['mb_point'];
 		$H_LEV=$member['mb_level'];
+	} else {
+		m_("You need to login. ");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
 	}
 ?>
 <html>
@@ -298,26 +302,33 @@
 </style>
 
 <?php
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$is_mobile = false;
-	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
-	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	if( isset($_POST['page']) ) $page = $_POST['page'];
+	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else $page = 1;
-	if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
+	if( isset($_POST['line_cnt']) ) $line_cnt = $_POST['line_cnt'];
+	else if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
 	else $line_cnt = 1;
-	if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
+	if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
+	else if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
 	else $pg_code = 1;
 	if( !$pg_code  ) {
-			m_(" Abnormal approach. $mode, $pg_code ");
+			m_(" Abnormal approach. $mode, $pg_code "); exit;
 	}
 	$in_day = date("Y-m-d H:i");
 	$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-	$resultPG = sql_query($sqlPG);
-	$table10_pg = sql_num_rows($resultPG);
-	if( !$table10_pg  ) {
+	$rsPG = sql_fetch($sqlPG);
+	if( !$rsPG['pg_code']  ) {
 			m_(" Abnormal approach. program no found! : $pg_code"); exit();
 	}
-	$rsPG		= sql_fetch_array($resultPG);
+	$mid	= $rsPG['userid'];
+	$grant_write = $rsPG['grant_write'];
+	if( $grant_write == $H_LEV || $grant_write < $H_LEV || $mid == $H_ID ) {
+	} else{
+		$write_msg ='You do not have permission. Your permission level is higher than that of the creator. grant_write:'.$grant_write;
+		m_( $write_msg );//  권한이 없습니다. 권한은 생성자 이상의 레벨입니다.
+		echo "<script>window.open('tkher_program_data_list.php?pg_code=$pg_code','_self','')</script>";
+		exit;
+	}
 	$pg_name	= $rsPG['pg_name'];
 	$tab_enm	= $rsPG['tab_enm'];
 	$tab_hnm	= $rsPG['tab_hnm'];
@@ -329,6 +340,7 @@
 	$pop_dataPG	= $rsPG['pop_data'];
 	$relation_dataPG = $rsPG['relation_data'];
 	$relation_typePG = $rsPG['relation_type'];
+
 	$_SESSION['iftype_db']		= $if_typePG;
 	$_SESSION['ifdata_db']		= $if_dataPG;
 	$_SESSION['if_dataPG']		= $if_dataPG;	
@@ -526,8 +538,9 @@
 		<input type='hidden' name='pop_data'		value='<?=$pop_dataPG?>'>
 		<input type='hidden' name='relation_data'	value='<?=$relation_dataPG?>'>
 		<input type='hidden' name='column_cnt'	value=''>
-		<input type='hidden' name='mid'	value='<?=$H_ID?>'>
+		<input type='hidden' name='mid'	value='<?=$mid?>'>
 		<input type="hidden" name='Hid'		value='<?=$H_ID?>' />
+		<input type="hidden" name='grant_write'		value='<?=$grant_write?>' />
 		<input type="button" value="submit" onclick="program_run_pg('<?=$i?>','<?=$iftypeX?>')" class='Btn_List01A'>
 		<input type="reset" value="reset" class='Btn_List01A'>
 		<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="Btn_List03A" 
