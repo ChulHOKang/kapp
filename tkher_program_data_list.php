@@ -51,6 +51,8 @@
 		$mid= $rsPG['userid']; 
 		$grant_view= $rsPG['grant_view']; 
 		$grant_write= $rsPG['grant_write']; 
+		$group_code= $rsPG['group_code'];
+		$group_name= $rsPG['group_name'];
 	} else {
 			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
 	}
@@ -139,9 +141,14 @@ $(function () {
 		document.view_form.action='tkher_program_data_list.php?pg_code='+enm; 
 		document.view_form.submit();
 	}
-	function table_record_write(pg_code){ 
-		document.view_form.action='tkher_program_run.php?pg_code='+pg_code; 
-		document.view_form.submit();
+	function table_record_write(pg_code, grant_write, h_lev){ 
+		if( h_lev > 1 && h_lev > grant_write || h_lev == grant_write){
+			document.view_form.action='tkher_program_run.php?pg_code='+pg_code; 
+			document.view_form.submit();
+		} else {
+			alert("No permission. ");
+			return;
+		}
 	}
 	function excel_down(){
 		if( !document.view_form.id.value ) {
@@ -198,6 +205,89 @@ $(function () {
 		});
 	});
 	
+
+	function Change_grant_view(cd, grant_view, pg_code){
+		resp = confirm("Are you sure change? Y/N ");
+		if( resp === true ) {
+			jQuery(document).ready(function ($) {
+				$.ajax({
+					header:{"Content-Type":"application/json"},
+					method: "post",
+						url: 'kapp_column_change_ajax.php',
+						data: {
+							"mode": 'grant_view_change',
+							"pg_code": pg_code,
+							"grant_view": grant_view
+								
+						},
+					success: function(data) {
+						//console.log(data);
+						alert("OK change --- " + grant_view);
+						//location.replace(location.href);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+						return;
+					}
+				});
+			});
+		} else {
+			switch(cd){
+				case '0': 
+				case '1': old_cd = 0; msg='Guest'; break;
+				case '2': old_cd = 1; msg='Member'; break;
+				case '3': old_cd = 2; msg='For creators only'; break;
+				case '8': old_cd = 3; msg='Only system manager'; break;
+				default : old_cd = 0; msg='Guest'; break;
+			}
+			view_form.grant_view.selectedIndex = old_cd;
+			//view_form.grant_view[selectIndex].value   = cd;
+			//view_form.grant_view[selectIndex].text    = msg;
+		}
+	}	
+	function Change_grant_write(cd, grant_write, pg_code){
+		resp = confirm("Are you sure change? Y/N ");
+		if( resp === true) {
+			jQuery(document).ready(function ($) {
+				$.ajax({
+					header:{"Content-Type":"application/json"},
+					method: "post",
+						url: 'kapp_column_change_ajax.php',
+						data: {
+							"mode": 'grant_write_change',
+							"pg_code": pg_code,
+							"grant_write": grant_write
+								
+						},
+					success: function(data) {
+						//console.log(data);
+						alert("OK change --- " + grant_write);
+						//location.replace(location.href);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+						return;
+					}
+				});
+			});
+		} else {
+			switch(cd){
+				case '0': 
+				case '1': old_cd = 0; msg='Guest'; break;
+				case '2': old_cd = 1; msg='Member'; break;
+				case '3': old_cd = 2; msg='For creators only'; break;
+				case '8': old_cd = 3; msg='Only system manager'; break;
+				default : old_cd = 0; msg='Guest'; break;
+			}
+			view_form.grant_write.selectedIndex = old_cd;
+		}
+	}	
 	function group_code_change_func(cd,pg_code){
 		index = document.view_form.group_code.selectedIndex;
 		nm = document.view_form.group_code.options[index].text;
@@ -234,12 +324,6 @@ $(function () {
 	else  $search_fld = "";
 	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice'];
 	else  $search_choice = "";
-
-	if( isset($_REQUEST['pg_name']) ) $pg_name= $_REQUEST['pg_name'];
-	else  $pg_name = "";
-
-	if( isset($_POST['group_name']) ) $group_name= $_POST['group_name'];
-	else  $group_name = "";
 
 	$fld_enm= array();
 	$fld_hnm= array();
@@ -288,7 +372,7 @@ $(function () {
 <?php
 	$total_count = 0;
 	$view_msg ='';
-	if( $grant_view < $H_LEV || $mid == $H_ID ) {
+	if( $grant_view == $H_LEV || $grant_view < $H_LEV || $mid == $H_ID ) {
 			$SQL1 = "SELECT * from $tab_enm ";
 			if( $mode=='search' ){
 				if( $c_sel3 == "like")		$SQL1 = $SQL1 . " where $search_fld $c_sel3 '%$searchT%' ";
@@ -317,7 +401,7 @@ $(function () {
 				if( $total_count < $last) $last = $total_count;
 			}
 	} else {
-		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. ';//자료를 볼수 있는 권한이 없습니다. 볼수있는 권한은 생성자 이상의 레벨입니다.
+		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;//자료를 볼수 있는 권한이 없습니다. 볼수있는 권한은 생성자 이상의 레벨입니다.
 	}
 
 ?>
@@ -391,16 +475,11 @@ $(function () {
 						</td>
 					</tr>
 				</DIV> 
-<?php
-	$level_msg8 = "Only system manager";
-	$level_msg3 = "Only me";
-	$level_msg2 = "Member";
-	$level_msg1 = "Guest";
-	$read_level = '1';
-	$write_level= '1';
-?>
+
 				<div class="viewHeaderT">
-					<span>&nbsp;&nbsp;K-APP:<?=$pg_code?>&nbsp;&nbsp;&nbsp;&nbsp;Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
+					<span title='mid:<?=$mid?>, view level:<?=$grant_view?>'>&nbsp;&nbsp;
+					K-APP:<?=$pg_code?>(<?=$grant_view?>)&nbsp;&nbsp;&nbsp;&nbsp;
+					Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='View page count'>Page:<?=$page?></strong>
 						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
 							<option value='10'  <?php if($line_cnt=='10')  echo " selected" ?> >10</option>
@@ -413,23 +492,23 @@ $(function () {
 if( $H_ID==$mid ) {
 ?>
 					<span>
-						<strong title='Set data view level'>Read Level: </strong>
-						<select id='read_level' name='read_level' onChange="Change_read_level('<?=$read_level?>', this.options[selectedIndex].value)" style='height:20;'>
-							<option value='1' <?php if($read_level=='1')  echo " selected" ?> title="<?=$level_msg1?>">Guest</option>
-							<option value='2' <?php if($read_level=='2')  echo " selected" ?> title="<?=$level_msg2?>">Member</option>
-							<option value='3' <?php if($read_level=='3')  echo " selected" ?> title="<?=$level_msg3?>">Only me</option>
-							<option value='8' <?php if($read_level=='8')  echo " selected" ?> title="<?=$level_msg8?>">System</option>
+						<strong title='Set data view level'>Grant View: </strong>
+						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view('<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;'>
+							<option value='1' <?php if($grant_view=='0'||$grant_view=='1')  echo " selected"; ?> >Guest</option>
+							<option value='2' <?php if($grant_view=='2')  echo " selected"; ?> >Member</option>
+							<option value='3' <?php if($grant_view=='3')  echo " selected"; ?> >For creators only</option>
+							<option value='8' <?php if($grant_view=='8')  echo " selected"; ?> >Only system manager</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
-						<strong title='Set data write level'>Write Level: </strong>
-						<select id='write_level' name='write_level' onChange="Change_write_level('<?=$write_level?>', this.options[selectedIndex].value)" style='height:20;'>
-							<option value='1' <?php if($write_level=='1')  echo " selected" ?> title="<?=$level_msg1?>">Guest</option>
-							<option value='2' <?php if($write_level=='2')  echo " selected" ?> title="<?=$level_msg2?>">Member</option>
-							<option value='3' <?php if($write_level=='3')  echo " selected" ?> title="<?=$level_msg3?>">Only me</option>
-							<option value='8' <?php if($write_level=='8')  echo " selected" ?> title="<?=$level_msg8?>">System</option>
+						<strong title='Set data write level'>Grant Write: </strong>
+						<select id='grant_write' name='grant_write' onChange="Change_grant_write('<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;'>
+							<option value='1' <?php if($grant_write=='0'||$grant_write=='1')  echo " selected"; ?> >Guest</option>
+							<option value='2' <?php if($grant_write=='2')  echo " selected"; ?> >Member</option>
+							<option value='3' <?php if($grant_write=='3')  echo " selected"; ?> >For creators only</option>
+							<option value='8' <?php if($grant_write=='8')  echo " selected"; ?> >Only system manager</option>
 						</select>
 					</span>
 <?php
-} else echo " user: " . $mid;
+}// else echo " user: " . $mid;
 						echo "<br>".$view_msg;
 ?>
 
@@ -482,7 +561,7 @@ if( $H_ID==$mid ) {
 		</thead>
 		<tbody width=100%>
 <?php
-	if( $grant_view < $H_LEV || $mid == $H_ID ) {
+	if( $grant_view == $H_LEV || $grant_view < $H_LEV || $mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
 			$OrderBy	= " order by seqno desc ";
@@ -553,7 +632,7 @@ if( $H_ID==$mid ) {
 						<a href="#" class="search_btn">Search</a>
 						<br>
 							<div class="fr">
-							<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>');" class="btn_bo02T" title='table_pg70_write'>
+							<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="btn_bo02T" title='table_pg70_write'>
 
 						<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="Btn_List03A" title=' Download data as an Excel file'>
 						<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="Btn_List03A" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
