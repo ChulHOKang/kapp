@@ -118,6 +118,7 @@ $(function () {
 		//alert('data tab_hnm:'+tab_hnm);
 		var tab = document.insert_form.tab_hnmS.value;
 		document.insert_form.App_Page.value =1;
+		document.insert_form.modeMy.value='';
 		document.insert_form.mode.value='App_search';
 		document.insert_form.action="app_permission.php";
 		document.insert_form.target='_self'; // .htm
@@ -136,6 +137,8 @@ $(function () {
 	}
 	function my_data(){
 		//alert("-- my"); return;
+		document.insert_form.App_Page.value =1;
+		document.insert_form.mode.value=''; // Table_page click
 		document.insert_form.modeMy.value='My_List'; // Table_page click
 		document.insert_form.action		="app_permission.php";
 		document.insert_form.target='_self'; // .htm
