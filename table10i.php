@@ -6,13 +6,16 @@
 	$ip = $_SERVER['REMOTE_ADDR'];
 	connect_count($host_script, $H_ID, 0 ,$referer);
 	/*
-		2023-11-08 : 테이블 생성 소스(_table_index.php) 부분에서 숫자 컬럼 "default 0" 추가.
-		2021-04-08
 		table10i.php : table-{$tkher['table10_table']}
+		: Table list. 
+		- Download : Download data from db table to excel
+		- Upload : Upload excel data to table
+		- Delete : table and app all delete
+		- Update : table re design
+		- Data list : app data list
 	*/
 	$day = date("Y-m-d H:i:s");
-	$pg_		= 'table10i.php';
-
+	$pg_ = 'table10i.php';
 ?>
 <html>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
@@ -136,7 +139,7 @@ $(function () {
 		if( !$tab_enm ) {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " WHERE fld_enm='seqno' ";
-			$ls = $ls . " ORDER BY tab_hnm asc, seqno asc ";
+			$ls = $ls . " ORDER BY upday desc"; //tab_hnm asc, seqno asc ";
 		} else {
 			$result = sql_query( "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' " );
 			$rs		= sql_fetch_array( $result );
@@ -146,17 +149,17 @@ $(function () {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " where tab_enm='$tab_enm' ";
 			//$ls = $ls . " ORDER BY seqno asc ";
-			$ls = $ls . " ORDER BY disno";
+			$ls = $ls . " ORDER BY upday desc"; //disno";
 		}
-   } else if( $mode == 'Table_Search' || isset($data) ) {
+   } else if( $mode == 'Table_Search' && isset($data) ) {
 		if( isset($_POST['sel']) ) $sel =$_POST['sel'];
 		else $sel = "";
-		if($sel == 'like') {
+		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			if( isset($data) && $data !==""  ){
 				$ls = $ls . " where fld_enm='seqno' and $param like '%$data%' ";
 				$ls = $ls . " ORDER BY $param ";
-			} else  $ls = $ls . " where fld_enm='seqno' ";
+			} else  $ls = $ls . " where fld_enm='seqno' ORDER BY upday desc";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			if( isset($data) && $data !=="" ) {
@@ -164,13 +167,19 @@ $(function () {
 			} else {
 				$ls = $ls . " where fld_enm='seqno' ";
 			}
-			$ls = $ls . " ORDER BY $param ";
+			$ls = $ls . " ORDER BY upday desc"; //$param ";
 		}
+   } else if( $mode == 'My_List' ) {
+		$ls = " SELECT * from {$tkher['table10_table']} ";
+		$ls = $ls . " where fld_enm='seqno' and userid='$H_ID' ";
+		$ls = $ls . " ORDER BY upday desc"; //" ORDER BY upday desc, tab_hnm asc, seqno asc ";
    } else {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		$ls = $ls . " where fld_enm='seqno' ";
-		$ls = $ls . " ORDER BY upday desc, tab_hnm asc, seqno asc ";
+		$ls = $ls . " ORDER BY upday desc"; //" ORDER BY upday desc, tab_hnm asc, seqno asc ";
    }
+   //echo $param . ". " . $ls; exit;//tab_hnm. SELECT * from kapp_table10 where fld_enm='seqno' ORDER BY tab_hnm
+   //m_(" - $mode");
    //echo "sql: "  . $ls; exit; //sql: SELECT * from kapp_table10 where fld_enm='seqno' and tab_hnm '' ORDER BY tab_hnm
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
@@ -346,6 +355,13 @@ $(function () {
 		document.table_list.submit();
 
 	}
+	function my_data(){
+		//alert("-- my"); return;
+		document.table_list.mode.value='My_List'; // Table_page click
+		document.table_list.action		="table10i.php";
+		document.table_list.target='_self'; // .htm
+		document.table_list.submit();
+	}
 //-->
 </script>
 <body>
@@ -366,16 +382,17 @@ $(function () {
 	<input type='hidden' name='group_nameX' >
 <?php
 		if( $mode == "Search" ) $T_msg = "[ Table10i, Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
-		else $T_msg = "[ table10i ]";
+		else $T_msg = "[ ".$member['mb_id']." ]";
 		if( !isset($H_ID) || $H_ID == '' || !$H_ID ) {
 			$T_msg = $T_msg . " , " . $ip;
 		} else {
-			$T_msg = $T_msg . ", P:" . number_format($H_POINT). ", L:" . $member['mb_level'] . "," .$member['mb_email'];
+			$T_msg = $T_msg . ", Point:" . number_format($H_POINT). ", Lev:" . $member['mb_level'];
 		}
 ?>
 		<div><center>
 			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
 			<option value="tab_hnm">Table</option>
+			<option value="userid">User</option>
 			</select>
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
 			<option value="like">Like</option>
@@ -384,11 +401,9 @@ $(function () {
 			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
 			<input type='button' value='Search' onclick="javascript:table_search();" >
 		</div>
-<tr>
-	<td style='background-color:#f4f4f4;color:blue;' align='center' colspan='7'>
-         <?=$T_msg?>
-	</td>
-</tr>
+
+<span title='my data print - table10i.php'><strong><a onclick="javascript:my_data();" style="border-style:;background-color:black;color:yellow;height:28;border-radius:20px;"><?=$T_msg?></a></strong></span>
+
 <table class='floating-thead' width='100%'>
 <thead  width='100%'>
 	<tr align='center'>
@@ -396,14 +411,14 @@ $(function () {
 <?php
 if( $mode != 'Search') {
 ?>
-	<TH>userid</TH>
-	<TH>table name </TH>
-	<TH>table code </TH>
+	<TH>user</TH>
+	<TH>table title </TH>
+	<TH>table of DB</TH>
 	<TH>date</TH>
 	<TH>Excel</TH><!-- Excel Down -->
-	<TH>Excel</TH><!-- Excel Upload -->
+	<TH>Delete</TH><!-- Excel Upload -->
 <?php
-} else if($mode == 'Search'){ //table click
+} else if( $mode == 'Search'){ //table click
 ?>
 	<TH>column</TH>
 	<TH>column title</TH>
@@ -419,13 +434,13 @@ if( $mode != 'Search') {
 		$item_list = $item_list . " seqno int auto_increment not null, ";
     $line=0;
 	$i=1;
-	if($mode !== "Search") {
+	if( $mode !== "Search") {
 		$ls = $ls . " $limit ";
 	}
 	$resultT	= sql_query( $ls );
-	while ( $rs = sql_fetch_array( $resultT ) ) {
+	while( $rs = sql_fetch_array( $resultT ) ) {
 		$line=$limite*$Table_page + $i - $limite;
-			$bgcolor = "#eeeeee";
+		$bgcolor = "#eeeeee";
 ?>
 		<input type="hidden" name="tab_enmX[<?=$i?>]" value="<?=$rs['tab_enm']?>">
 		<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'>
@@ -469,7 +484,7 @@ if( $mode != 'Search') {
 					else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';	// 사용하지않는다.
 				}
 		}
-		if( $mode !== 'Search' && isset($H_ID) ){
+		if( $mode !== 'Search' && isset($H_ID) && $H_ID !=='' ){
 				echo " <TD align='center'><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
 
 				if($rs['userid'] == $H_ID) echo " <TD align='center'><input type='button' name='delete' onclick=\"javascript:delete_table_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."', '".$rs['userid']."', '".$H_ID."');\"  value=' Table Delete ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Table delete. ". $rs['tab_enm']. ":" . $rs['tab_hnm'] . "  '> </TD>";

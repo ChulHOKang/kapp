@@ -7,7 +7,7 @@
 	$ip = $_SERVER['REMOTE_ADDR'];
 	date_default_timezone_set("Asia/Seoul");
 	$day		= date("Y-m-d H:i:s");
-   /* ------------------------------------------ 최종 사용 프로그램 임다. 중요.
+   /* ----------------------------------------------------------------------
 	index.php
 	- include : kapp_start_necessary_TT.php , old: tkher_start_necessary.php
 	- iframe  : indexTT.php
@@ -18,7 +18,6 @@
 	3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
 	4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
 	5. 이것을 아는것은 힘이요, 원동력이다.
-	email id:solpakan, dir create OK : /var/www/html/t/file/solpakan
 	--------------------------------------------------
 	tkher_my_control, tkher_main_img
 	$sql = " SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
@@ -37,27 +36,19 @@
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
 	if( $mode == 'Google_Login') {
-	set_session("urllink_login_type", $_POST['modeG']);
+		set_session("urllink_login_type", $_POST['modeG']);
 	}
-
 	$r = explode("/", $_SERVER['SCRIPT_FILENAME'] );
-	$cnt = count($r);  //m_("count:" . $cnt . ", r:" . $r[$cnt-1]); // count:6, r:indexApp.php
+	$cnt = count($r);
 	$_url = "./" . $r[$cnt-1];
-
 	if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
 	else $mid = "";
-
 	if( $mode == 'SearchPG'){
-		$_SESSION['sys_pg'] = $_POST['sys_pg'];	//echo "<script>run_r1_func('r1.php');</script>";
+		$_SESSION['sys_pg'] = $_POST['sys_pg'];
 		$run_ = KAPP_URL_T_ . "/menu/tree_run.php?sys_pg=" . $_POST['sys_pg'] . "&open_mode=on". "&mid=".$mid;
 		echo "<script>window.open( '".$run_."' , '_top', ''); </script>";
 		exit;
 	}
-
-	//m_("KAPP_URL_T_: " . KAPP_URL_T_); //KAPP_URL_T_: https://moado.net/kapp
-	//m_( "PHP_VERSION: " . PHP_VERSION . ", index - userObject:" . $_POST['userObject'] . ", authObject:" . $_POST['authObject']);
-	//moado.net - PHP_VERSION: 7.3.33, index - userObject:, authObject:
-
 ?>
 <html>
 <head>
@@ -69,70 +60,6 @@
 <meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 </head>
-
-<script language="javascript">
-<!--
-function run_r1_func( run_program ){ // SearchPG 사용하지 않음,
-	//alert('----- run_program:'+run_program);
-	document.click_run.target='_top';
-	document.click_run.action='r1.php';
-	document.click_run.submit();
-}
-
-function submit_runX( mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_){
-
-	document.click_run.mid.value=mid;
-	document.click_run.sys_pg.value=sys_pg;
-	document.click_run.sys_menu.value=sys_menu;
-	document.click_run.sys_submenu.value=sys_submenu;
-	document.click_run.num.value=num;
-	document.click_run.pg.value=pg;
-	document.click_run.jong.value=jong;
-	document.click_run.title_.value=title_;
-	document.click_run.link_.value=link_;
-	if (pg.indexOf( 'https://')>=0 || pg.indexOf( 'https://naver')>=0 || pg.indexOf('https://google')>=0 )
-	{
-		document.click_run.target='_blank';
-		document.click_run.target_.value='_top'; //'_blank';
-		document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-		//'/cratree/cratree_coinadd.php';
-		document.click_run.submit();
-	}else if (link_.indexOf( 'contents_view_menu.php')>=0 ) {
-		document.click_run.target='run_menu';
-		document.click_run.target_.value='run_menu';
-		document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-		document.click_run.submit();
-	} else {
-		document.click_run.target='run_menu';   // target_
-		document.click_run.target_.value='_self'; //target_
-		document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-		// '/cratree/cratree_coinadd.php';
-		document.click_run.submit();
-	}
-	document.getElementById("mySidenav").style.width = "250px";
-	//document.getElementById("mySidenav").style.width = "0px";
-}
-
-/*
-function clickHandler() {
-	var  targetId, srcElement,  targetElement;
-	srcElement = window.event.srcElement;
-	if (srcElement.className == "solpa_tree_main") {
-		targetId = srcElement.id + "d";
-		targetElement = document.all( targetId);
-		if ( targetElement.style.display == "none") {
-			targetElement.style.display = "";
-			srcElement.src = "/cratree/skins_treeicon/as00/img11_l.gif";
-		} else {
-			targetElement.style.display = "none";
-			srcElement.src = "/cratree/skins_treeicon/as00/img12_r.gif";
-		}
-	}
-} */
-//document.onclick = clickHandler;
-
-//-->
-</script>
 
 <style>
 body {
@@ -212,25 +139,18 @@ body {
 </style>
 
 <script>
-
 	function openNav() {
 	  document.getElementById("mySidenav").style.width = "250px";
 	}
-
 	function closeNav() {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
 	function About(no) {
 	  document.getElementById("mySidenav").style.width = "0";
-	  alert('------ no:'+no);
 	}
-	//--------- runtype - Insert, Update, RUN --------------------
+	/*
 	function submit_run( mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_){
-
 		runtype = document.click_run.runtype.value;
-		//alert( 'tree_menu_guest - submit_run - sys_pg:' + sys_pg +','+runtype);
-		//tree_menu_guest - submit_run - sys_pg:dao_1612585805, runtype:, link_:http://urllinkcoin.com/t/t_sel.php
-
 		document.click_run.sys_menu.value    =sys_menu;
 		document.click_run.sys_submenu.value =sys_submenu;
 		document.click_run.num.value         =num;
@@ -238,33 +158,22 @@ body {
 		document.click_run.jong.value        =jong;
 		document.click_run.title_.value      =title_;
 		document.click_run.link_.value       =link_;
-
 		document.click_run.mid.value         =mid;
 		document.click_run.sys_pg.value      =sys_pg;
 		document.click_run.sys_pg_root.value =sys_pg;
-
 		document.click_run.mode.value        ='rowlevel'; /////////////////////////////////////////
-
-		document.click_run.make_type.value   ='booktreeupdateM2'; // newcratree
-		document.click_run.m_type.value   ='booktreeupdateM2'; // newcratree
-
+		document.click_run.make_type.value   ='booktreeupdateM2';
+		document.click_run.m_type.value   ='booktreeupdateM2';
 		document.click_run.data.value   =sys_menu;
 		document.click_run.data1.value  =sys_submenu;
 		document.click_run.target = 'run_menu';
-		//alert('runtype:'+runtype);
 		if( runtype=='update'){
-			//document.click_run.mode.value        ='mroot'; /////////////////////////////////////////
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; // root 하단 목록.
 			document.click_run.submit();
-			//document.getElementById("mySidenav").style.width = "250px";
-			//document.getElementById("mySidenav").style.width = "0px";
-
 		} else if( runtype=='insert'){
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php'; // root 하단 목록.
 			document.click_run.submit();
-
 		} else if( runtype=='' || runtype=='run'){
-				//alert('tree_menu_guest --- runtype:'+runtype);
 			if( pg.indexOf( 'contents_view_menu.php')>=0 ) {
 				document.click_run.target='run_menu';
 				document.click_run.target_.value='run_menu';
@@ -288,16 +197,12 @@ body {
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
 				document.click_run.submit();
 			} else {
-				//alert('tree_menu_guest --- ');
 				document.click_run.target='run_menu';
 				document.click_run.target_.value='_self';
-				//document.click_run.target='_blank';
-				//document.click_run.target_.value='run_menu';
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
 				document.click_run.submit();
 			}
 			document.getElementById("mySidenav").style.width = "250px";
-			//document.getElementById("mySidenav").style.width = "0px";
 		} else {
 			if (link_.indexOf( 'contents_view_menu.php')>=0 ) {
 				document.click_run.target='run_menu';
@@ -310,25 +215,20 @@ body {
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
 				document.click_run.submit();
 			}else if (pg.indexOf( 'https://')>=0 )  {
-				//alert('-- https');
 				document.click_run.target='_blank';
 				document.click_run.target_.value='_top'; //'_blank';
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
 				document.click_run.submit();
-			} else { // 일반 http://사이트
-				//document.click_run.target='run_menu';
+			} else {
 				document.click_run.target='_blank';
 				document.click_run.target_.value='run_menu';
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
 				document.click_run.submit();
 			}
 			document.getElementById("mySidenav").style.width = "250px";
-			//document.getElementById("mySidenav").style.width = "0px";
 		}
 	}
-
 	function arunG( r, sys_pg, tit ){
-		//alert('tit:'+tit);
 		f = document.click_run;
 		f.sys_pgS.value = sys_pg;
 		f.sys_subtitS.value = tit;
@@ -344,47 +244,48 @@ body {
 		document.getElementById("mySidenav").style.width = "0";
 	}
 
-	function arunA( runtype ){ //menu_change
-		document.click_run.make_type.value   ='booktreeupdateM2'; // newcratree
-		document.click_run.m_type.value   ='booktreeupdateM2'; // newcratree
+	function arunA( runtype ){
+		document.click_run.make_type.value   ='booktreeupdateM2';
+		document.click_run.m_type.value   ='booktreeupdateM2';
 		if( runtype=='insert' ){
-			document.click_run.mode.value    ='mroot'; ////////////// add 2021-09-19 - test OK
+			document.click_run.mode.value    ='mroot';
 			document.click_run.runtype.value = 'insert';
 			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php'; // root 하단 목록.
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
 			document.click_run.submit();
 		} else if( runtype=='update' ){
-			document.click_run.mode.value    ='mroot'; ////////////// add 2021-09-19 - test OK
+			document.click_run.mode.value    ='mroot';
 			document.click_run.runtype.value = 'update';
 			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; // root 하단 목록.
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php';
 			document.click_run.submit();
 		} else if( runtype=='run' ){
 			document.click_run.runtype.value = 'run';
 		} else if( runtype=='list' ){
 			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/index.php'; //cratree_my_list_menu.php
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/index.php';
 			document.click_run.submit();
 			click_run.menu_change[0].value   = 'list';
 			click_run.menu_change[0].text    = 'Tree list';
 			document.getElementById('click_run'+0).value = 'list';
-			document.getElementById('click_run'+0).innerHTML = 'Tree list'; // 출력.
+			document.getElementById('click_run'+0).innerHTML = 'Tree list';
 			document.getElementById("mySidenav").style.width = "0";
 		} else if( runtype=='design' ){
 			document.click_run.runtype.value = 'design';
-			document.click_run.make_type.value = 'booktreeupdateM2'; //alert('sys_pg:'+document.click_run.sys_pg.value);
+			document.click_run.make_type.value = 'booktreeupdateM2';
 			document.click_run.target='run_menu';
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_remake_book_menu.php';
 			document.click_run.submit();
 			click_run.menu_change[0].value   = 'design';
 			click_run.menu_change[0].text    = 'Tree design';
 			document.getElementById('click_run'+0).value = 'design';
-			document.getElementById('click_run'+0).innerHTML = 'Tree design'; // 출력.
+			document.getElementById('click_run'+0).innerHTML = 'Tree design';
 			document.getElementById("mySidenav").style.width = "0";
 		} else {
 			document.click_run.runtype.value = 'run';
 		}
 	}
+	*/
 	function run_on(){
 		document.getElementById("mySidenav").style.width = "0";
 	}
@@ -393,21 +294,11 @@ body {
 	    else document.getElementById("mySidenav").style.width = "0px";
 	}
 </script>
-
 </head>
 
-    <!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
-    <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
-	<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/commonO.js"></script> -->
-
-
-<!-- <body onLoad="init()" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white; overflow:hidden; margin-bottom: 30px;'>  -->
 <body onLoad="init('<?=$open_mode?>')" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white;'>
-
 <?php
-
-$sys_subtitS = 'K-App Generator';
-
+	$sys_subtitS = 'K-App Generator';
 	if( isset( $_REQUEST['sys_pg'] ) ) {
 		$sys_pg	= $_REQUEST['sys_pg'];
 		if( isset($_REQUEST['sys_subtitS']) ) $sys_subtitS = $_REQUEST['sys_subtitS'];
@@ -425,7 +316,6 @@ $sys_subtitS = 'K-App Generator';
 	} else {
 		$sys_pg	= get_session("sys_pg");
 	}
-
 	if( isset($sys_pg) && isset($mid) ) {
 		$sqlupdate = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg'";
 		$rtup = sql_query( $sqlupdate);
@@ -461,31 +351,15 @@ $sys_subtitS = 'K-App Generator';
 
 	<div class="header"><!-- start : header -->
 		<?php //include "./menu_run.php"; ?>
-
-		<!-- ------------------------- -->
-		<!-- <h1 style="background-color:black;">
-			<a href="#" onclick="openNav()" style="font-size:24px;cursor:pointer;color:cyan;background-color:black;">
-				&#9776; <?=$kapp?><img src="/t/logo/logo120-120.png" height='24' title='AppGenerator.net'>
-			</a>
-		</h1> -->
-		<!-- ------------------------- -->
-		<!-- </div> --> <!-- end : header -->
-
 		<div class="visualSlide">
 			<?php //echo $slide_msg; ?>
 		</div>
-
-		<!-- ------------------------------------ -->
-
 		<div id="mySidenav" class="sidenav">
-			  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a><!-- X 버턴 -->
+			  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 				<center>
 				<a href='<?=$_url?>' target='_top'><img src="<?=KAPP_URL_T_?>/logo/logo.png" title='K-APP - home'></a>
-
-			<?php
-				$run_target='run_menu'; // $run_target='url_link_tree_solpa_user_r';
-
-				//--  시작부분  <table border=0 > ------------------
+		<?php
+				$run_target='run_menu';
 				$img_v="<img src='".KAPP_URL_T_ . "/logo/pizza.png' width='22' height='22'>";
 			?>
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
@@ -494,16 +368,15 @@ $sys_subtitS = 'K-App Generator';
 <?php } else { ?>
 			<li align="center" style="color:cyan; background-color:black; height:21px; border:none">K-APP</li>
 <?php } ?>
-
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-
 			<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
-
 			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
 			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li>
+			<!-- <li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li> -->
 			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
 			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
+
+			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>App Permissions setting</a></li>
 
 			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_relationA.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seed.png' width='22' height='22'>Table Relationship</a></li>
 			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seedX.png' width='22' height='22'>Program List A</a></li>
@@ -512,42 +385,28 @@ $sys_subtitS = 'K-App Generator';
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 
 			<li style='font-size:9;color:#666666;height:9px;line-height:1'>
-			K-App
-			<!-- We call it mining to register in the tree menu.<br>
-			Points will be paid in coins in the future.<br>
-			If it does not work, <br>please unblock the pop-up window. -->
+			K-APP
 			</li>
-			<!--
-				우리는 트리 메뉴에 등록하는것을 채굴이라 한다
-				포인트는 향후에 코인으로 지급될것이다.
-				작동하지 않으면 팝업 창을 차단 해제하십시오.
-			-->
 		</div>
 	</div><!-- head -->
 </form>
 
 <div style="background-color:black;">
-	<span style="font-size:24px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='KAPP:<?=KAPP_URL_T_?>: tree menu list'>&#9776; K-APP<img src="<?=KAPP_URL_T_?>/logo/logo120-120.png" align='center' style="margin:0px auto;height:24px;" title='K-APP'></span><!-- 트리출력버턴 Url link system -->
+	<span style="font-size:26px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='KAPP:<?=KAPP_URL_T_?>: tree menu list'>&#9776; K-APP</span>&nbsp;&nbsp;&nbsp;&nbsp;
+	<a href='./' style="margin:3px auto 0px;"><img src="<?=KAPP_URL_T_?>/logo/logo120-120.png" style="margin:3px auto 0px;height:26px;" title='Home K-APP'></a>
 </div>
 
 <center>
-
 <?php
 	$src = KAPP_URL_T_ . '/indexTT.php';
 ?>
-
 <iframe src='<?=$src?>' title='url data' name='run_menu' width='100%' height='100%'></iframe>
-
-
 			<!-- <a href="javascript:common.openProj01()" class="btn_req">
 				<span>PROJECT REQUEST</span>
 				<img src="./include/img/ico/ico_arr01.png" />
 			</a> -->
-
 </body>
 </html>
-
-
 <?php
 	if( $open_mode == 'on' ) {
 	  echo "<script>document.getElementById('mySidenav').style.width = '250px';</script>";
