@@ -105,7 +105,7 @@ $(function () {
 	if( isset($_POST['param']) ) $param =$_POST['param'];
 	else $param = "tab_hnm";
 
-   if( $H_ID && $mode == 'Delete_mode' ) {
+   if( $H_ID !=='' && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
@@ -149,7 +149,7 @@ $(function () {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " where tab_enm='$tab_enm' ";
 			//$ls = $ls . " ORDER BY seqno asc ";
-			$ls = $ls . " ORDER BY upday desc"; //disno";
+			$ls = $ls . " ORDER BY disno "; //disno"; upday desc
 		}
    } else if( $mode == 'Table_Search' && isset($data) ) {
 		if( isset($_POST['sel']) ) $sel =$_POST['sel'];
@@ -221,14 +221,6 @@ $(function () {
 			document.table_list.submit();
 		} else return false;
 	}
-	function group_code_change_func( cd ){
-		index=document.table_list.group_code.selectedIndex;
-		nm = document.table_list.group_code.options[index].text;
-		document.table_list.group_nameX.value=nm;
-		document.table_list.group_codeX.value=cd;
-		document.table_list.group_name.value=nm;
-		return;
-	}
 	function excel_upload_func(tab_enm, tab_hnm){
 		document.table_list.mode.value		="Upload_mode_table10i";
 		document.table_list.tab_enm.value	=tab_enm;
@@ -251,6 +243,22 @@ $(function () {
 		}
 	}
 	//---------------------------------------------
+	function table_update_func(tab_enm, tab_hnm, group_code , mid) {
+		msg = "table are also update. \n Do you want to update the " + tab_hnm + " table? ";
+		if ( window.confirm( msg ) )
+		{
+			document.table_list.mode.value ="Search";
+			document.table_list.mid.value	=mid;
+			document.table_list.tab_enm.value	=tab_enm;
+			document.table_list.tab_hnm.value	=tab_hnm;
+			document.table_list.tab_hnmS.value	=tab_enm + ":"+tab_hnm;
+			document.table_list.group_code.value	=group_code;
+			document.table_list.action ="table_design_update.php";
+			document.table_list.submit();
+		} else {
+			return false;
+		}
+	}
 	function delete_table_func(tab_enm, tab_hnm ) {
 		msg = "When you delete a table, all the programs that used the table are also deleted. \n Data can not be recovered.\n Do you want to delete the " + tab_hnm + " table? ";
 		if ( window.confirm( msg ) )
@@ -372,14 +380,15 @@ $(function () {
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
 	<input type="hidden" name="mode" >
+	<input type="hidden" name="mid" >
 	<input type='hidden' name='Table_page' value="<?=$Table_page?>">
 	<input type="hidden" name="tab_hnmS" value=''> <!-- table10i_old.php  -->
 	<input type="hidden" name="pg_name" value=''>
 	<input type="hidden" name="pg_code" value='<?=$pg_code?>' >
 	<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
 	<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
-	<input type='hidden' name='group_codeX' >
-	<input type='hidden' name='group_nameX' >
+	<input type='hidden' name='group_code' >
+	<input type='hidden' name='group_name' >
 <?php
 		if( $mode == "Search" ) $T_msg = "[ Table10i, Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
 		else $T_msg = "[ ".$member['mb_id']." ]";
@@ -412,11 +421,12 @@ $(function () {
 if( $mode != 'Search') {
 ?>
 	<TH>user</TH>
+	<TH>Project</TH>
 	<TH>table title </TH>
 	<TH>table of DB</TH>
 	<TH>date</TH>
 	<TH>Excel</TH><!-- Excel Down -->
-	<TH>Delete</TH><!-- Excel Upload -->
+	<TH>Manage</TH><!-- Excel Upload -->
 <?php
 } else if( $mode == 'Search'){ //table click
 ?>
@@ -439,22 +449,27 @@ if( $mode != 'Search') {
 	}
 	$resultT	= sql_query( $ls );
 	while( $rs = sql_fetch_array( $resultT ) ) {
+		$group_code = $rs['group_code'];
+		$mid = $rs['userid'];
 		$line=$limite*$Table_page + $i - $limite;
 		$bgcolor = "#eeeeee";
+		if( $H_ID == $mid) $bcolor ="style='background-color:white;'";
+		else $bcolor='';
 ?>
 		<input type="hidden" name="tab_enmX[<?=$i?>]" value="<?=$rs['tab_enm']?>">
 		<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'>
-		<TD><?=$line?></TD>
+		<TD <?=$bcolor?> ><?=$line?></TD>
 		<!-- <TD><?=$rs['disno']?></TD> -->
 <?php
 		if( $mode !== 'Search') {
 ?>
-			<TD title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>'><?=$rs['userid']?></TD>
-			<TD <?php echo "title='Prints a list of columns.' "; ?> >
+			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>'><?=$rs['userid']?></TD>
+			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>'><?=$rs['group_name']?></TD>
+			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
 			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$Table_page?>' );"><?=$rs['tab_hnm']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></TD>
-			<TD <?php echo "title='Prints a list of columns.' "; ?> >
+			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
 			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$Table_page?>' );"><?=$rs['tab_enm']?></a></TD>
-			<TD><?=$rs['upday']?></TD>
+			<TD <?=$bcolor?> ><?=$rs['upday']?></TD>
 <?php
 		} else if( $mode == 'Search' ){
 ?>
@@ -485,10 +500,11 @@ if( $mode != 'Search') {
 				}
 		}
 		if( $mode !== 'Search' && isset($H_ID) && $H_ID !=='' ){
-				echo " <TD align='center'><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
+				echo " <TD align='center' $bcolor><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
 
-				if($rs['userid'] == $H_ID) echo " <TD align='center'><input type='button' name='delete' onclick=\"javascript:delete_table_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."', '".$rs['userid']."', '".$H_ID."');\"  value=' Table Delete ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Table delete. ". $rs['tab_enm']. ":" . $rs['tab_hnm'] . "  '> </TD>";
+				if($rs['userid'] == $H_ID) echo " <TD align='center' $bcolor><input type='button' name='delete' onclick=\"javascript:delete_table_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."', '".$rs['userid']."', '".$H_ID."');\"  value=' Table Delete ' style='height:24px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Table delete. ". $rs['tab_enm']. ":" . $rs['tab_hnm'] . "  '> ";
 				else echo "<TD>---</TD>";
+				if($rs['userid'] == $H_ID) echo "  <input type='button' name='table_update' onclick=\"javascript:table_update_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."', '".$rs['group_code']."', '".$rs['userid']."');\"  value=' Table Update ' style='height:24px;background-color:blue;color:white;border-radius:20px;border:1 solid black'  title=' Table delete. ". $rs['tab_enm']. ":" . $rs['tab_hnm'] . "  '> </TD>";
 		}
 ?>
 	</TR>

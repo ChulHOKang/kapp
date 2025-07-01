@@ -339,7 +339,7 @@ $(function () {
 		if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
 		if( isset($_POST['tab_hnm']) ) $tab_enm = $_POST['tab_hnm'];
 ?>
-<h2 title='pg:program_list3'>Program List (member:<?=$H_ID?>) - total:<?=$total?></h2>
+<h2 title='pg:program_list3'>Program List (total:<?=$total?>)</h2>
 		<form name="tkher_search" target="_self" method="post" action="program_list3u.php"  >
 			<input type='hidden' name='mode'    value='Program_Search'>
 			<input type='hidden' name='modeS'   value='Program_Search'>
@@ -383,14 +383,14 @@ $(function () {
 ?>
 			</select>
 <?php
-			echo "
+			/*echo "
 				<input type='button' value='Group Change(변경)' onclick=\"javascript:group_name_change_func('$tab_hnm');\" style='height:25px;background-color:red;color:yellow;border:1 solid black' title='Change the group of the $tab_hnm table.' > // \n $tab_hnm 테이블의 그룹을 변경합니다.
 				&nbsp;&nbsp;&nbsp;
 				<input type='text' name='group_name' size='15' value='$group_name' style='height:25px;background-color:#666666;color:yellow;border:1 solid black'  title='You can change or add the group name of the table.' > // \n테이블의 그룹명을 변경하거나 추가 할수 있습니다.
 					&nbsp; 
 				<input type=button onclick=\"javascript:group_name_add_func();\" value='Group Insert' style='height:25px;background-color:#FFDF6E;border:1 solid black' title='Add a group of tables.'> // \n테이블의 그룹을 추가합니다.
 					&nbsp; 
-			";
+			";*/
 		}
 ?>
 <input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
@@ -409,7 +409,8 @@ $(function () {
 	<tr>
 	<th>NO</th>
 	<!-- <th>Run</th> -->
-	<th>manager</th>
+	<th>Project</th>
+	<th>User</th>
 	<th>Program</th>
 	<th>Table</th>
 	<!-- <th>column type</th>
@@ -421,7 +422,6 @@ $(function () {
 	<th>Column</th>
 	<th>Cnt</th>
 	<th>Memo</th> -->
-	<th>Project</th>
 	<!-- <th>P-code</th> -->
 	<th>Date</th>
 <?php if($mode!=='Search') { ?>
@@ -436,12 +436,15 @@ $(function () {
 	if($mode == "" || $mode == "Program_Search")	$ls = $ls . " $limit "; // none table click 
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) { 
-		if( isset($rs['group_name']) ) $group_name = $rs['group_name'];
-		else $group_name = "";
-		if( isset($rs['group_code']) ) $group_code = $rs['group_code'];
-		else $group_code = "";
+		$mid=$rs['userid'];
+		$group_name = $rs['group_name'];
+		$group_code = $rs['group_code'];
 		$line=$limite*$page + $i - $limite;
+
 			$bgcolor = "#eeeeee";
+		if( $H_ID == $mid) $bcolor ="style='background-color:white;'";
+		else $bcolor='';
+		
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
@@ -453,14 +456,14 @@ $(function () {
   ?> 
 		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 		<TR bgcolor='<?=$bgcolor?>' width='900' >
-		<td width='1%'><?=$line?></td>
+		<td width='1%' <?=$bcolor?> ><?=$line?></td>
+		<td width='5%' <?=$bcolor?> title=" project code:<?=$group_code?>"><?=$group_name?></td>
 		<!-- <td width='2%'><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td> -->
-		<td  width='3%'><?=$rs['userid']?> </td>
-		<td  width='15%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:cyan;color:black;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) - Run</a></td> 
-		<td width='15%'><a href="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</a>
+		<td  width='3%' <?=$bcolor?> ><?=$rs['userid']?> </td>
+		<td  width='15%' <?=$bcolor?> ><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:cyan;color:black;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) - Run</a></td> 
+		<td width='15%' <?=$bcolor?> ><a href="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</a>
 		</td> 
-		<td width='12%'><?=$group_name?> (<?=$group_code?>)</td>
-		<td width='5%'><?=$rs['upday']?></td><!-- substr($rs['upday'], 0,10) -->
+		<td width='5%' <?=$bcolor?> ><?=$rs['upday']?></td><!-- substr($rs['upday'], 0,10) -->
 		</TR>
  <?php
 		$i++;

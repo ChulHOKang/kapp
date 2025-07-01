@@ -51,6 +51,7 @@
 <meta name="robots" content="ALL">
 </head>
 <link href="./include/css/admin.css" rel="stylesheet" type="text/css">
+<script src="//code.jquery.com/jquery.min.js"></script>
 <script language="JavaScript"> 
 <!--
 	var frealname	= ''
@@ -322,12 +323,15 @@
 	   이 함수는 필요 하지않다 column_list_onclickAA( j )여기에서 모든 처리하도록 한다.
 	*/
 	function column_list_onclickA( ss, j ){ 
-		var col_attr = ss.split('|');
+		var col_attr = ss.split('|'); //val:|fld_1|fld1|VARCHAR|15
 		document.makeform.column_index.value = j;
 		document.makeform.column_name_change.value = col_attr[2];
 		document.makeform.column_data_type.value   = col_attr[3];
 
+		col_attr_old = document.makeform.col_attr_old.value
 		iftype = document.makeform["iftype[" + j + "]"].value;
+		document.makeform.col_attr_old.value = iftype; // column attribute - old save
+
 		if_data = document.makeform["if_data[" + j + "]"].value;
 
 		if(iftype==0)	document.makeform.ifcheck[0].checked=true;
@@ -530,7 +534,10 @@ function del_func() {
 	makeform.item_array.value = str_array;
 	return;
 }
-function ifcheck_onclickA(r, seq) {
+function ifcheck_onclickA( r, seq) {
+	col_attr_old = document.makeform.col_attr_old.value; // old attribute
+	if( col_attr_old=='') col_attr_old=0;
+
 	var selind = document.makeform.column_index.value; // colunm index
 	if( selind == '' ){
 		alert(r+' : Please select a column! ' );
@@ -554,8 +561,9 @@ function ifcheck_onclickA(r, seq) {
 	var colnm_value = colnm[selind].value; //colnm_value: |fld_2|fld2|VARCHAR|15
 	st = colnm_value.split('|');
 	var col_len = st[4];
+	var new_column = st[0]+"|"+st[1]+"|"+st[2]+"|"+st[3]+"|" + "255";
 	document.makeform.if_column.value = st[1];
-	document.makeform.sellist.value = colnm_value;// 기존에 sellist:listbox에서 사용하던 것 hidden 추가.
+	document.makeform.sellist.value = new_column; //colnm_value;// 기존에 sellist:listbox에서 사용하던 것 hidden 추가.
 
     var obj1 = document.makeform.ifcheck.value; 
 	var obj2 = document.makeform.column_attribute.value;
@@ -566,12 +574,11 @@ function ifcheck_onclickA(r, seq) {
 			document.makeform.column_attribute.value		= '';
 			document.makeform["iftype[" + selind + "]"].value = r;
 			break;
-		case 1: //	msge="Radio Button";
+		case 1: //	msge="Radio Button";	//alert( st[3] + ", r: " + r + ", col_attr_old: " + col_attr_old);//INT, r: 1, col_attr_old: 0
 			document.makeform["iftype[" + selind + "]"].value = r;
 			if( !obj2 ) {
 				document.makeform.column_attribute.focus();
-				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
-				// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
+				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");	// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
 			}
 			break;
 		case 3: //	msge="Check Box Button";
@@ -589,23 +596,47 @@ function ifcheck_onclickA(r, seq) {
 			}
 			break;
 		case 7: //	msge="Password Type";
-			document.makeform.column_attribute.value = '';
-			document.makeform["iftype[" + selind + "]"].value = r;
+			if( st[3] == 'INT' || st[3] == 'FLOAT' || st[3] == 'DOUBLE' || st[3] == 'DECIMAL' || st[3] == 'BIGINT' || st[3] == 'MEDIUMINT' || st[3] == 'SMALLINT' || st[3] == 'TINYINT'){
+				alert( st[3] + ", Numeric type cannot be set" );
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
+			} else {
+				document.makeform.column_attribute.value = '';
+				document.makeform["iftype[" + selind + "]"].value = r;
+			}
 			break;
 		case 9: // add file msge="Attached file";
-			document.makeform.column_attribute.value = '';
-			document.makeform["iftype[" + selind + "]"].value = r;
-			if( col_len < 100 ) {
-				alert("colnm: " + st[1] + ", col_len: " + col_len + ", 컬럼의 길이가 작습니다.");
+			if( st[3] == 'INT' || st[3] == 'FLOAT' || st[3] == 'DOUBLE' || st[3] == 'DECIMAL' || st[3] == 'BIGINT' || st[3] == 'MEDIUMINT' || st[3] == 'SMALLINT' || st[3] == 'TINYINT'){
+				alert( st[3] + ", Numeric type cannot be set" );
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
+			} else {
+				document.makeform.column_attribute.value = '';
+				document.makeform["iftype[" + selind + "]"].value = r;
+				if( st[3] == "CHAR" || st[3] == "VARCHAR" ||st[3] == "TEXT" ){
+					if( col_len < 100 ) { //컬럼의 길이가 작습니다.
+						alert("colnm: " + st[1] + ", col_len: " + col_len + ", The column length is small. The length of column "+st[1]+" was set to 255.");
+						column_length_change( st[1], col_len, st[3] ); //colnm_value: |fld_2|fld2|VARCHAR|15, A 컬럼의 길이를 255로 설정 하였습니다.
+					}
+				} else {
+					alert(' ERROR - Data type is not string! The image name must be a string and must be at least 100 characters long. reset please');
+					return false
+				}
 			}
 			break;
 		case 11: // Calculation formula msge="Formula.";
-			document.makeform["iftype[" + selind + "]"].value = r;
-			document.makeform.target          = '_self';
-			document.makeform.action          = 'table_formulaM.php';
-			document.makeform.mode.value      = 'run13';
-			document.makeform.mode_call.value = 'app_pg50RU'; //document.makeform.mode_call.value = 'table_item_run50R';
-			document.makeform.submit();
+			if( st[3] == 'CHAR' || st[3] == 'VARCHAR' || st[3] == 'TEXT' || st[3] == 'DATE' || st[3] == 'DATETIME' || st[3] == 'TIME'){
+				alert( st[3] + ", You cannot set the text type" );
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
+			} else {
+				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform.target          = '_self';
+				document.makeform.action          = 'table_formulaM.php';
+				document.makeform.mode.value      = 'run13';
+				document.makeform.mode_call.value = 'app_pg50RU'; //document.makeform.mode_call.value = 'table_item_run50R';
+				document.makeform.submit();
+			}
 			break;
 		case 13: // popup window msge="Pop-up Window";
 			document.makeform["iftype[" + selind + "]"].value = r;
@@ -621,6 +652,49 @@ function ifcheck_onclickA(r, seq) {
 			break;
 	}
 } 
+function column_length_change( fld_enm, fld_len, fld_type) { // title click run
+	if( fld_type == 'CHAR' || fld_type == 'VARCHAR' || fld_type == 'TEXT') {
+		var pgS = document.makeform.pg_codeS.value; 
+		var tabS= document.makeform.tab_hnmS.value;
+		var tab = tabS.split(':');
+		tab_enm = tab[0];
+		var pg = pgS.split(':'); 
+		pg_enm = pg[0];
+		//alert( "pg_enm: "+pg_enm + ", tab_enm: " +tab_enm + ", fld_enm: "+fld_enm+ ", fld_len: "+fld_len ); return;
+		// pg_enm: solpakanA_naver_1750754624, tab_enm: solpakanA_naver_1750754624, fld_enm: fld_3, fld_len: 15
+		jQuery(document).ready(function ($) {
+			$.ajax({
+				header:{"Content-Type":"application/json"},
+				method: "post",
+					url: 'kapp_column_change_ajax.php',
+					data: {
+						"mode": 'column_change',
+						"pg_enm": pg_enm,
+						"tab_enm": tab_enm,
+						"fld_enm": fld_enm,
+						"fld_len": fld_len,
+						"fld_type": fld_type
+							
+					},
+				success: function(data) {
+					//console.log(data);
+					alert("OK --- " + tab_enm);
+					//location.replace(location.href);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
+					console.log(jqXHR);
+					console.log(textStatus);
+					console.log(errorThrown);
+					return;
+				}
+			});
+		});
+	} else {
+		alert(' ERROR - Data type is not string! The image name must be a string and must be at least 100 characters long.');
+		return false; //이미지 이름은 문자열이어야 합니다 그리고 길이기 충분하게 100이상이어야합니다
+	}
+}
 	function Apply_button() {
 		var selind = document.makeform.column_index.value; // column position
 		if ( selind < 0 ){
@@ -755,14 +829,12 @@ function Save_and_Run(pg)
 	document.makeform.target='_blank';
 	document.makeform.submit();
 }
-
 //-->
 </script>
 
 <body leftmargin="0" topmargin="0">
 
 <?php
-
 	//$uid = explode('@', $H_ID);
 	//$pg_code = $uid[0] . "_" . time();
 	//$pg_code = $H_ID . "_" . time();
@@ -781,7 +853,6 @@ function Save_and_Run(pg)
 
 	if( isset($_POST['if_column']) && $_POST['if_column'] !=='' ) $if_column   = $_POST['if_column'];
 	else $if_column   = '';
-
 
 	if( isset($_POST['iftype_db']) && $_POST['iftype_db'] !=='') $iftype_db = $_POST['iftype_db'];
 	else $iftype_db = '';
@@ -888,7 +959,6 @@ function Save_and_Run(pg)
 ?>
 <center>
 <div id='menu_normal'>
-   <table cellspacing='0' cellpadding='4' width='300' border='1' class="c1"> 
 		<form name="makeform" method="post" >
 			<input type="hidden" name="sellist"	        value="" >
 			<input type="hidden" name="program_level"	value="<?=$lev?>" >
@@ -903,13 +973,13 @@ function Save_and_Run(pg)
 			<input type="hidden" name="mode_session_ok" value='<?=$mode_session_ok?>'> 
 			<input type="hidden" name="project_nmSX"	value="<?=$project_nmS?>"> <!-- project_nmSX -->
 			<input type="hidden" name="project_code"	value="<?=$project_code?>"> 
+			<input type="hidden" name="col_attr_old"	value=""> 
+ <table cellspacing='0' cellpadding='4' width='300' border='1' class="c1"> 
  <tr>
-    <td height="30" style="border-style:;background-color:#666666;color:cyan;" title='Program Upgrade:app_pg50RU'
-	align='center'>Program Upgrade<br>
+    <td height="30" style="border-style:;background-color:#666666;color:cyan;" title='Program Upgrade:app_pg50RU'	align='center'>Program Upgrade<br>
 	<input type='hidden' name='project_name' value="<?=$project_name?>" readonly >
-	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" >
-<br><p align='left'>
-	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
+	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" ><br>
+	<p align='left'>Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
 
 			<option value=''>1.Select Project</option>
 <?php
@@ -967,16 +1037,15 @@ function Save_and_Run(pg)
 	$ss = "";
 	$ckv = "";	
 	if( isset( $table10_pg) && $table10_pg !=='' ){ 
-			$itX = explode("@",$item_array);
-			for( $i=0, $j=0; $i < $item_cnt; $i++, $j++){
+			$itX = explode("@", $item_array);
+			for( $j=0; $j < $item_cnt; $j++){
 				if( $mode_session == 'POPUP' || $mode_session == 'Formula' ) {
 					if( $if_line_session == $j) $ckv = " checked "; 
 					else $ckv = "";
 				}
-				$it = explode("|", $itX[$i] );	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
-				$val = $it[0]."|". $it[1] ."|". $it[2] ."|". $it[3] ."|". $it[4];
-				
-				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA(this.value, " .$j. " )' value='".$it[0]."|".$it[1]."|".$it[2]."|".$it[3]."|".$it[4]."'><label title='".$val."' id='columnR".$j."'>".$it[2]."</label></label><br>";
+				$it = explode("|", $itX[$j] );	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
+				$val = $itX[$j]; 	//m_( "itX: " . $itX[$j] . "  : $j, val:$val");	//itX: |fld_1|fld1|VARCHAR|15  : 0, val:|fld_1|fld1|VARCHAR|15
+				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA( this.value, " .$j. " )' value='".$val."'><label title='".$val."' id='columnR".$j."'>".$it[2] ."(".$it[3].")</label></label><br>";
 			} //for
 	} else {
 		//m_("1370 table10_pg NULL : tab_enm: " . $tab_enm);
@@ -1012,7 +1081,7 @@ function Save_and_Run(pg)
 							   <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
 <br>
 <label class="container" <?php echo "title='Only one selectable button. ' "; ?> >
-  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(0,0)" <?php if( !isset($fld_sel_type) ) echo " checked "; ?> >For general input
+  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA( 0,0)" <?php if( !isset($fld_sel_type) ) echo " checked "; ?> >For general input
   <span class="checkmark"></span> 
 </label>
 <br>
