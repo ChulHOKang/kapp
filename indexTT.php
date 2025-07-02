@@ -157,7 +157,7 @@
         echo "<table><tr><td><button onclick='naverLogout()' class=''>Naver_LogOut</button></td><tr></table>";
     }
     if( !$gsajin ) { 
-        if( isset($member['mb_photo']) ) $gsajin = $member['mb_photo']; 
+        if( isset($member['mb_photo']) && $member['mb_photo'] !=='' ) $gsajin = $member['mb_photo']; 
 		else $gsajin = KAPP_URL_T_ ."/logo/guggi.png";
     }
 ?>
