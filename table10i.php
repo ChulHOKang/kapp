@@ -86,9 +86,9 @@ $(function () {
 	$page_num = 10;
 	if( isset($_REQUEST["sdata"]) ) $sdata	= $_REQUEST["sdata"];
 	else $sdata	= "";
-	if( isset($_REQUEST['Table_page']) ) $Table_page = $_REQUEST['Table_page'];
-	else if( isset($_POST['Table_page']) ) $Table_page = $_POST['Table_page'];
-	else $Table_page = 1;
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_POST['page']) ) $page = $_POST['page'];
+	else $page = 1;
 
 	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
 	else $mode	= "";
@@ -183,16 +183,16 @@ $(function () {
    //echo "sql: "  . $ls; exit; //sql: SELECT * from kapp_table10 where fld_enm='seqno' and tab_hnm '' ORDER BY tab_hnm
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-		if(!$Table_page) $Table_page=1;
+		if(!$page) $page=1;
 		$total_page = intval(($total-1) / $limite)+1;
-		$first = ($Table_page-1)*$limite;
+		$first = ($page-1)*$limite;
 		$last = $limite;
 		if($total < $last) $last = $total;
 		$limit = " limit $first, $last ";
-		if ($Table_page == "1")
+		if ($page == "1")
 			$no = $total;
 		else {
-			$no = $total - ($Table_page - 1) * $limite;
+			$no = $total - ($page - 1) * $limite;
 		}
 ?>
 <script type="text/javascript" >
@@ -278,9 +278,9 @@ $(function () {
 		document.table_list.action="table10i.php";
 		document.table_list.submit();
 	}
-	function table_sel_func(enm, hnm, data, Table_page) {
+	function table_sel_func(enm, hnm, data, page) {
 		document.table_list.data.value = data;
-		document.table_list.Table_page.value = Table_page;
+		document.table_list.page.value = page;
 		document.table_list.tab_hnmS.value = enm + ":" + hnm;
 		document.table_list.tab_enm.value=enm;
 		document.table_list.tab_hnm.value=hnm;
@@ -301,7 +301,7 @@ $(function () {
 		document.table_list.mode.value		="tab_list_pg70";
 		document.table_list.pg_name.value	=pg_name;
 		document.table_list.pg_code.value	=pg_code;
-		document.table_list.Table_page.value	=1;
+		document.table_list.page.value	=1;
 		document.table_list.action ="tkher_program_data_list.php";
 		document.table_list.target='_blank';
 		document.table_list.submit();
@@ -339,25 +339,25 @@ $(function () {
 	function table_search(){
 		var tab_hnm = document.table_list.data.value;
 		var tab = document.table_list.tab_hnmS.value;
-		document.table_list.Table_page.value =1;
+		document.table_list.page.value =1;
 		document.table_list.mode.value='Table_Search';
 		document.table_list.action="table10i.php";
 		document.table_list.target='_self'; // .htm
 		document.table_list.submit();
 	}
-	function run_back( mode, data, Table_page){
+	function run_back( mode, data, page){
 		document.table_list.mode.value		='';//Program_Search
 		document.table_list.data.value		=data;
-		document.table_list.Table_page.value		=Table_page;
+		document.table_list.page.value		=page;
 		document.table_list.action		="table10i.php";
 		document.table_list.target='_self'; // .htm
 		document.table_list.submit();
 	}
-	function page_func( Table_page, data ){
+	function page_func( page, data ){
 
-		document.table_list.mode.value		=''; // Table_page click
+		document.table_list.mode.value		=''; // page click
 		document.table_list.data.value		=data;
-		document.table_list.Table_page.value		=Table_page;
+		document.table_list.page.value		=page;
 		document.table_list.action		="table10i.php";
 		document.table_list.target='_self'; // .htm
 		document.table_list.submit();
@@ -365,7 +365,7 @@ $(function () {
 	}
 	function my_data(){
 		//alert("-- my"); return;
-		document.table_list.mode.value='My_List'; // Table_page click
+		document.table_list.mode.value='My_List'; // page click
 		document.table_list.action		="table10i.php";
 		document.table_list.target='_self'; // .htm
 		document.table_list.submit();
@@ -381,7 +381,7 @@ $(function () {
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
 	<input type="hidden" name="mode" >
 	<input type="hidden" name="mid" >
-	<input type='hidden' name='Table_page' value="<?=$Table_page?>">
+	<input type='hidden' name='page' value="<?=$page?>">
 	<input type="hidden" name="tab_hnmS" value=''> <!-- table10i_old.php  -->
 	<input type="hidden" name="pg_name" value=''>
 	<input type="hidden" name="pg_code" value='<?=$pg_code?>' >
@@ -399,13 +399,14 @@ $(function () {
 		}
 ?>
 		<div><center>
-			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
-			<option value="tab_hnm">Table</option>
-			<option value="userid">User</option>
+			<select name="param" style="border-style:;background-color:gray;color:white;height:24;">
+				<option value="tab_hnm" style="background-color:gray;color:white;" >Table</option>
+				<option value="userid" style="background-color:gray;color:white;">User</option>
+				<option value="group_name" style="background-color:gray;color:white;">Project Name</option>
 			</select>
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-			<option value="like">Like</option>
-			<option value="=">=</option>
+				<option value="like">Like</option>
+				<option value="=">=</option>
 			</select>
 			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
 			<input type='button' value='Search' onclick="javascript:table_search();" >
@@ -451,7 +452,7 @@ if( $mode != 'Search') {
 	while( $rs = sql_fetch_array( $resultT ) ) {
 		$group_code = $rs['group_code'];
 		$mid = $rs['userid'];
-		$line=$limite*$Table_page + $i - $limite;
+		$line=$limite*$page + $i - $limite;
 		$bgcolor = "#eeeeee";
 		if( $H_ID == $mid) $bcolor ="style='background-color:white;'";
 		else $bcolor='';
@@ -466,9 +467,9 @@ if( $mode != 'Search') {
 			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>'><?=$rs['userid']?></TD>
 			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>'><?=$rs['group_name']?></TD>
 			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
-			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$Table_page?>' );"><?=$rs['tab_hnm']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></TD>
+			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_hnm']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></TD>
 			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
-			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$Table_page?>' );"><?=$rs['tab_enm']?></a></TD>
+			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_enm']?></a></TD>
 			<TD <?=$bcolor?> ><?=$rs['upday']?></TD>
 <?php
 		} else if( $mode == 'Search' ){
@@ -521,22 +522,22 @@ if( $mode != 'Search') {
     <td align="center" bgcolor="f4f4f4">
 <?php
 	if( $mode =='Search' ) {
-		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$Table_page."');\" style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
+		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data Insert' onclick=\"program_run_funcList('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data Write of $tab_hnm' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data List of $tab_hnm' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $tab_hnm.' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
 	} else {
 		//$data = $_POST["data"];
-		$first_page = intval(($Table_page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
+		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;
 		$prev = $first_page-1;
-		if($Table_page > $page_num)
+		if($page > $page_num)
 			echo"<a href='#' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
 		for($i = $first_page; $i <= $last_page; $i++)
 		{
-			if($Table_page == $i) echo" <b>$i</b> ";
+			if($page == $i) echo" <b>$i</b> ";
 			else
 				echo"<a href='#' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[$i]</a>";
 		}

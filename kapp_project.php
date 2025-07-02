@@ -862,16 +862,16 @@ jQuery(document).ready(function ($) {
 			$i_tit='Project - ';
 ?>
 				<tr valign="middle" width='100%' height='20'> 
-				  <td bgcolor='black' width='30' title='<?=$i_tit?>'><img src='<?=$icon?>' width='30' ></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:30%;" align='left' >
+				  <td style="width:3%;background-color:black;" title='<?=$i_tit?>'><img src='<?=$icon?>' style="width:24px;" ></td>
+				  <td style="width:15%;background-color:black;color:<?=$t_color?>;">
 				      <a href="javascript:call_pg_select( '<?=$seqno?>', '<?=$project_code?>', '<?=$userid?>', '<?=$project_name?>', '<?=$memo?>', '<?=$H_ID?>')" style="background-color:black;color:<?=$t_color?>;" title='<?=$project_code?>'><?=$project_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:10%;" ><?=$project_code?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:15%;" ><?=$project_code?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:10%;" ><?=$userid?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:30%;" ><?=$memo?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:40%;" ><?=$memo?></td>
 <?php
 			if ( isset($H_ID) && $H_LEV > 1 ) {
 ?>
-				  <td style="background-color:black;color:<?=$t_color?>;width:15%;" >
+				  <td style="background-color:black;color:<?=$t_color?>;width:10%;" >
 <?php 
 				if ( $H_ID==$userid ) {
 ?>

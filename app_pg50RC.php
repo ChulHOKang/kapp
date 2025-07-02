@@ -9,17 +9,17 @@
 						 : app_pg50RC_Test.php : 작업 테스트용-중요.
 	*/
 	$ss_mb_id	= get_session("ss_mb_id");
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$H_EMAIL   = $member['mb_email'];
-	if( !$H_ID || $H_LEV < 2 )
-	{
+	$H_ID	= get_session("ss_mb_id");
+	if( !$H_ID || $H_ID =='' )	{
 		m_("You need to login. ");
-		//$url="/";
-		//echo "<script>window.open( '$url' , '_top', ''); </script>";
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
+	} else {
+		$H_LEV=$member['mb_level'];
+		$H_EMAIL   = $member['mb_email'];
 	}
+	$ip = $_SERVER['REMOTE_ADDR'];
 ?>
 <html>
 <head>
@@ -32,10 +32,6 @@
 <meta name="robots" content="ALL">
 </head>
 <?php
-
-		if( isset($_POST['lev']) ) $lev		= $_POST['lev'];
-		else  $lev = "";
-
 		if( isset($_POST['mode']) ) $mode		= $_POST['mode'];
 		else  $mode = "";
 		if( isset($_POST['seqno']) ) $seqno		= $_POST['seqno'];
@@ -44,7 +40,6 @@
 		else  $pg_code = "";
 		if( isset($_POST['pg_name']) ) $pg_name		= $_POST['pg_name'];
 		else  $pg_name = "";
-		
 		if( isset($_POST['tab_enm']) ) $tab_enm		= $_POST['tab_enm'];
 		else  $tab_enm = "";
 		if( isset($_POST['tab_hnm']) ) $tab_hnm		= $_POST['tab_hnm'];
@@ -53,8 +48,6 @@
 		else  $tab_hnmS = "";
 		if( isset($_POST['pg_codeS']) ) $pg_codeS		= $_POST['pg_codeS'];
 		else  $pg_codeS = "";
-
-
 		if( isset($_POST['project_nmS']) ) $project_nmS		= $_POST['project_nmS'];
 		else  $project_nmS = "";
 
@@ -478,8 +471,7 @@ function Apply_button() {
 		else if(ii==5) msg='5:list box';
 		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("^")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
 		{
-			alert(' You used a special character that is not allowed. \n Please enter it again.');
-			// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
+			alert(' You used a special character that is not allowed. \n Please enter it again.');// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
 			return false;
 		}
 		document.makeform["if_data[" + selind + "]"].value = chgStr;
@@ -494,8 +486,7 @@ function titlechange_btncfm_onclickA() {
 	var chgStr = makeform.column_name_change.value;
 	if( chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("^")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
 	{
-		alert(' You used a special character that is not allowed. \n Please enter it again.');
-		// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
+		alert(' You used a special character that is not allowed. \n Please enter it again.');// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
 		return false;
 	}
 	var j = document.makeform.column_index.value;
@@ -563,10 +554,7 @@ function Save_and_Run(pg)
 	document.makeform.action='tkher_program_run.php';
 	document.makeform.target='tab_pg_list';
 	document.makeform.submit();
-	//Abnormal approach. program no found! : dao_1691038637
-	//https://appgenerator.net/t/tkher_program_run.php?pg_code=dao_1691041203
 }
-//----- program 중복체크 와 최조 생성을 실행 한다.
 function Create_button(pg) {
 	var p_selind = makeform.project_nmS.selectedIndex; 
 	var p_val    = makeform.project_nmS.options[p_selind].value;
@@ -612,44 +600,23 @@ function Create_button(pg) {
 		document.makeform.target='_self';
 		document.makeform.submit();
 	}
-	/* else { // pg: table_item_run50
-		if( !Pg_Dup_Check() ) return false;
-		else document.makeform.dup_check.value = 1;
-		alert(' OK : '+pg_name+ ', ' + document.makeform.dup_check.value);
-		document.makeform.pg_make_set.value = "ok";
-
-		document.makeform.item_array.value = str_array;
-		document.makeform.mode.value = 'pg_new_create'; 
-		document.makeform.mode_call.value = 'app_pg50RC';
-		document.makeform.action='app_pg50RC.php'; 
-		document.makeform.target='_self';
-		document.makeform.submit();
-	}*/
 }
 function Project_Update(mode){
 	var p_selind = makeform.project_nmS.selectedIndex; 
 	var p_val    = makeform.project_nmS.options[p_selind].value;
 	var p_nm     = makeform.project_nmS.options[p_selind].text;
-
-	//alert(p_selind+" : p_val: " + p_val + ", p_nm:" + p_nm );//0 : p_val: , p_nm:1.Select table
-	//if( p_selind == 0 || p_val == '' || p_nm=='1.Select Project'){
 	if( p_nm=='1.Select Project' || p_nm=='' ){
 		alert(p_selind+" : p_val: " + p_val + ", p_nm:" + p_nm + " Please select a project! ");
-	//	alert( p_selind+" :  Please select a project! ");
 		return;
 	} else {
-
 		var tab_selind = makeform.tab_hnmS.selectedIndex; 
 		var tab_val    = makeform.tab_hnmS.options[tab_selind].value;
 		var tabnm      = makeform.tab_hnmS.options[tab_selind].text;
-		//alert(tab_selind+" : tab_val: " + tab_val + ", tabnm:" + tabnm );//0 : p_val: , p_nm:1.Select table
-		//	if( !tab_selind || !tab_val || tabnm == '1.Select table') {
 		if( tabnm == '1.Select table') {
 			alert(tab_selind+" :  Please select a table! ");
 			document.makeform.pg_name.focus();
 			return false;
 		}
-
 		document.makeform.mode.value = mode; // mode=project_change
 		document.makeform.mode_call.value = 'app_pg50RC_Test';
 		document.makeform.action='app_pg50RC.php'; 
@@ -658,15 +625,11 @@ function Project_Update(mode){
 	}
 }
 function change_project_func(pnmS){
-	//alert( "pnmS: "+ pnmS ); //
 	var p_selind = document.makeform.project_nmS.selectedIndex; 
 	var p_val    = document.makeform.project_nmS.options[p_selind].value;
 	var p_nm     = document.makeform.project_nmS.options[p_selind].text;
-	//alert( "pnmS: "+ pnmS + ", sind:" + p_selind+" : tab_val: " + p_val + ", tabnm:" + p_nm );//0 : p_val: , p_nm:1.Select table
 }
-	function change_table_func(tab) {
-		//alert( "tab: "+ tab );// tab: dao_1645837697:판매정보
-
+	function change_table_func(tab) {		//alert( "tab: "+ tab );// tab: dao_1645837697:판매정보
 		tab = document.makeform.tab_hnmS.value;
 		document.makeform.mode.value='SearchTAB';
 		document.makeform.column_attribute.value='';
@@ -732,81 +695,47 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
     $response = curl_exec($curl);
 
 	curl_setopt($curl, CURLOPT_FAILONERROR, true);
-	
 	echo curl_error($curl);
-
-	//echo "curl --- response: " . $response;
-
 	if( $response == false) {
-        $_ms = "new program app_pg50RC curl 전송 실패 : " . curl_error($curl);
-		echo 'curl 전송 실패 : ' . curl_error($curl);
-		//m_(" ------------ : " . $_ms);
+        $_ms = "new program app_pg50RC curl error : " . curl_error($curl);
+		echo 'curl error : ' . curl_error($curl);
     } else {
-        $_ms = 'new program app_pg50RC curl 응답 : ' . $response;
-		//echo 'curl 응답 : ' . $response;
-		//m_(" ============ :" . $_ms);
+        $_ms = 'new program app_pg50RC curl response : ' . $response;
     }
-	// ============ :table30m curl 응답 : --- count:10Error: Update failed{"message":"_api table data 전달 완료"}
     curl_close($curl);
-
-	//m_("curl end--------------- ms: email: " . $H_EMAIL); //exit();
 } // function
 //=====================================================
-	$hostnameA = getenv('HTTP_HOST'); // 2023-08-03 add
-	$tabData['data'][][] = array();   // 2023-08-03 add
-
-	$dup_check = '';
-
-//	$pg_code			= $H_ID . "_" . time();
+	$hostnameA = getenv('HTTP_HOST');
+	$tabData['data'][][] = array(); 
+	$dup_check = ''; //	$pg_code= $H_ID . "_" . time();
 	$uid = explode('@', $H_ID);
 	$pg_code = $uid[0] . "_" . time();
-
-	$_SESSION['pg_code'] = $pg_code;  //2023-08-03 add
-
-	$mode_session		= get_session("mode_session");
-
-	if( isset($project_nmS) && $project_nmS !=="" ){
-
+	$_SESSION['pg_code'] = $pg_code;
+	$mode_session= get_session("mode_session");
+	if( isset($project_nmS) && $project_nmS !=='' ){
 		$pcd_nm = explode(":", $project_nmS );
-		if( isset($pcd_nm[0]) ) $group_code	= $pcd_nm[0];
-		else $group_code = "ETC";
-		$group_code	= $pcd_nm[0]; //$rsTAB['group_code'];  
-		if( isset($pcd_nm[1]) ) $group_name	= $pcd_nm[1]; //$rsTAB['group_name'];  
-		else $group_name= "ETC";
+		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $group_code	= $pcd_nm[0];
+		else $group_code = '';	//$group_code	= $pcd_nm[0]; //$rsTAB['group_code'];  
+		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $group_name	= $pcd_nm[1]; //$rsTAB['group_name'];  
+		else $group_name= "";
 	} else {
-		$group_name= "ETC";
-		$group_code= "ETC";
+		$group_name= "";
+		$group_code= "";
 	}
 	$fld_sel_type	= ""; 
-
+	if( isset($_POST['column_attribute']) && $_POST['column_attribute'] !=='' ) $column_attribute = $_POST['column_attribute']; 
+	else  $column_attribute = ""; 
 	if( $mode == 'pg_new_create') {
-
 			$rel_type = ""; 
 			$rel_data = ""; 
 			$pop_data = ""; 
 			$if_data = ""; 
 			$if_type = ""; 
-			if( isset($_POST['column_attribute']) ) $column_attribute = $_POST['column_attribute']; 
-			else  $column_attribute = ""; 
 			if( isset($_POST['item_array']) ) $item_array = $_POST['item_array']; 
 			else  $item_array = ""; 
 			if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt']; 
 			else  $item_cnt = ""; 
-			/*
-			if( isset($_POST['if_data']) ) $if_data = $_POST['if_dataT']; 
-			else  $if_data = ""; 
-			if( isset($_POST['if_type']) ) $if_type = $_POST['if_typeT'];  //if_typeT
-			else  $if_type = ""; 
-			if( isset($_POST['pop_data']) ) $pop_data = $_POST['pop_dataT']; 
-			else  $pop_data = ""; 
-			if( isset($_POST['rel_data'])  && $_POST['rel_data'] !=="") $rel_data = $_POST['rel_data']; 
-			else  $rel_data = ""; 
-			if( isset($_POST['rel_type']) && $_POST['rel_type'] !=="") $rel_type = $_POST['rel_type']; 
-			else  $rel_type = ""; 
-			*/
-
 			$in_day			= date("Y-m-d H:i");
-
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$if_type', if_data='$if_data', pop_data='$pop_data', relation_data='$rel_data', relation_type='', userid='$H_ID' ";
 			$ret = sql_query($query);
 			$sys_pg_root	= $pg_code;
@@ -819,21 +748,10 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code; // 확인용 실행프로그램 링크
 			job_link_table_add( $pg_code, $pg_name, $sys_link, $pg_code, $job_group, $job_name, $jong );
 			insert_point_app( $H_ID, $config['kapp_write_point'], $sys_link, 'program_create@app_pg50RC', $pg_cd_nm, $tab_enm);
-			// 프로그램명,테이블명만 기록한이유:20자리로 내용을 줄여넣음. 포인트 지급내역 생성.
-
-			//===========
-//			$pg_sys_link	= "https://" . $hostnameA . "/t/tkher_program_data_list.php?pg_code=" . $pg_code;
 			$pg_sys_link	= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
 			PG_curl_send( $item_cnt , $item_array, $if_type, $if_data, $pop_data, $pg_sys_link, $rel_data, $rel_type );
-			//===========
-
-			//m_(" pg_code: ". $pg_code);
-			//if($_POST['pg_make_set'] !== "ok"){ // add 2023-09-12 : 프로그램 만 생성하고 data list program을 실행하지 않는다
-				$url = "./tkher_program_run.php?pg_code=". $pg_code;
-				echo "<script>window.open( '".$url."' , '_blank', ''); </script>";
-			//}
-			//exit;
-			//=============================================
+			$url = "./tkher_program_run.php?pg_code=". $pg_code;
+			echo "<script>window.open( '".$url."' , '_blank', ''); </script>";
 	} else if( $mode_session == 'POPUP') { // pop window
 		$pg_codeS_session	= get_session("pg_codeS");
 		$pg_codeS = $pg_codeS_session;
@@ -901,7 +819,6 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
    <table height='100%' cellspacing='0' cellpadding='4' width='300' border='1' class="c1"> 
 		<form name="makeform" method="post" >
 			<input type="hidden" name="sellist"	        value="" >
-			<input type="hidden" name="program_level"	value="<?=$lev?>" >
 			<input type="hidden" name="mode"			value="" >
 			<input type="hidden" name="mode_call"		value="" >
 			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
@@ -910,32 +827,22 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			<input type="hidden" name="rel_type"		value="<?=$rel_type?>"> <!-- 2023-08-03 : add -->
 			<input type="hidden" name="dup_check"		value="<?=$dup_check?>" > <!-- 프로그램 dup check : 2021-09-25 : add -->
 		<tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
-Program Creation: app_pg50RC
-<br>
+New Program Creation (<?=$H_ID?>)<br>
 	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the Project! ' "; ?> >
 
 			<option value=''>1.Select Project</option>
 <?php 
-if( isset( $project_nmS ) && $project_nmS !=="" ) {
-	$pcd_nm = explode(":", $project_nmS );
+	if( isset( $project_nmS ) && $project_nmS !=="" ) {
+		$pcd_nm = explode(":", $project_nmS );
+	}
+	$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
+	while( $rs = sql_fetch_array($result)) {
+		if( $group_code == $rs['group_code']) $chk = " selected ";
+		else $chk = "";
 ?>
-			<option value="<?=$project_nmS?>" selected ><?=$group_name?></option>
+		<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo $chk; ?> title='Project code: <?php echo $group_code;?>' ><?=$rs['group_name']?></option>
 <?php
-} else {
-?>
-			<option value='ETC:ETC' title='Project code: ETC' selected>ETC</option><!-- default set -->
-<?php
-}
-?>
-<?php
-		$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
-		while( $rs = sql_fetch_array($result)) {
-			if( $group_code == $rs['group_code']) $chk = " selected ";
-			else $chk = "";
-?>
-					<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo $chk; ?> title='Project code: <?php echo $group_code;?>' ><?=$rs['group_name']?></option>
-<?php
-				}
+	}
 ?>
 			</SELECT>
 			<!-- 프로그램면 중복확인을 위해 사용 출력. 디스플레이 하지 않는다. program list: display:none; -->
@@ -979,9 +886,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 <div id="here">
 <?php
 	$ss = "";
-//	if( $mode =='pg_new_create' or $table10_pg>0 or $table10_tab>0  ){
 	if( $mode =='pg_new_create' or isset($table10_pg) or isset($table10_tab)  ){
-		//m_("pg_new_create----");
 		$itX = explode("@",$item_array);
 		for( $i=0, $j=0; $i<$item_cnt; $i++, $j++){
 			$it = explode("|",$itX[$i]);

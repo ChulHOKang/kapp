@@ -599,7 +599,7 @@ function ifcheck_onclickA( r, seq) {
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
 			} else {
-				document.makeform.column_attribute.value = '';
+				document.makeform.column_attribute.value = 'Password';
 				document.makeform["iftype[" + selind + "]"].value = r;
 			}
 			break;
@@ -609,7 +609,7 @@ function ifcheck_onclickA( r, seq) {
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
 			} else {
-				document.makeform.column_attribute.value = '';
+				document.makeform.column_attribute.value = 'Attached file';
 				document.makeform["iftype[" + selind + "]"].value = r;
 				if( st[3] == "CHAR" || st[3] == "VARCHAR" ||st[3] == "TEXT" ){
 					if( col_len < 100 ) { //컬럼의 길이가 작습니다.
@@ -721,7 +721,7 @@ function column_length_change( fld_enm, fld_len, fld_type) { // title click run
 		var col_attr = colnm_value.split('|');
 		colnm_hnm = col_attr[2];
 		ii = document.makeform["iftype[" + selind + "]"].value;
-		if( ii==1 || ii==3 || ii==5 ){ // 1:radio button, 3:check box, 5:listbox, 만적용한다.
+		if( ii==1 || ii==3 || ii==5 || ii==7|| ii==9  ){ // 1:radio button, 3:check box, 5:listbox, 7:pass, 9: attache file 만적용한다.
 			if(ii==1) msg='1:radio button';
 			else if(ii==3) msg='3:check box';
 			else if(ii==5) msg='5:list box';
@@ -1098,7 +1098,7 @@ function Save_and_Run( pg)
 </label>
 <br>
 <label class="container"  <?php echo "title='Attached file.'"; ?>>
-  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(9,4)" <?php if( $fld_sel_type=='9') echo " checked "; ?> >Attached file
+  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA( 9,4)" <?php if( $fld_sel_type=='9') echo " checked "; ?> >Attached file
   <span class="checkmark"></span>
 </label>
 <br><!-- 예를들면 수량과 단가를 입력하면 금액을 계산하여주는 컬럼입니다. -->
