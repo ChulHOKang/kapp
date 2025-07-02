@@ -2,14 +2,14 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 		app_pg50RU.php   : table_item_run50_pg50RU.php, table_pg50RU.php을 Copy : 기존의 table_pg50R.php copy하여 backup 보관.
-						 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
-						 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
-						 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
-						 : table_item_run50.php call 하고 PG_curl_send() 추가 : 2023-08-03 - ailinkapp.com : pg_curl_get_ailinkapp.php 와 연동됨.
-							- https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php
-						 : program_list3.php - call : upgrade
-
-	*/
+			 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
+			 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
+			 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
+			 : table_item_run50.php call 하고 PG_curl_send() 추가 : 2023-08-03 - ailinkapp.com : pg_curl_get_ailinkapp.php 와 연동됨.
+				- https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php
+			 : program_list3.php - call : upgrade
+			: column attribute - 1:radio. 3:checkbox. 5:listbox. 7:password. 9:Attached file. 11:calc. 13:popup
+*/
 	$H_ID	= get_session("ss_mb_id");
 	if( !$H_ID || $H_ID =='' ){
 		m_("You need to login. ");
@@ -31,8 +31,6 @@
 	else $tab_hnmS = '';
 	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS'];
 	else $pop_tabS = '';
-	if( isset($_POST['lev']) ) $lev = $_POST['lev'];
-	else $lev = '';
 	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
 	else $seqno = '';
 	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
@@ -788,7 +786,7 @@ function column_length_change( fld_enm, fld_len, fld_type) { // title click run
 		document.makeform.item_array.value = str_array;
 		return;
 	}
-function Save_and_Run(pg)
+function Save_and_Run( pg)
 {
 	pg_name = document.makeform.pg_name.value;
 	if( !pg_name ) {
@@ -961,7 +959,6 @@ function Save_and_Run(pg)
 <div id='menu_normal'>
 		<form name="makeform" method="post" >
 			<input type="hidden" name="sellist"	        value="" >
-			<input type="hidden" name="program_level"	value="<?=$lev?>" >
 			<input type="hidden" name="mode"            value="<?=$mode?>" >
 			<input type="hidden" name="mode_call"		value="" >
 			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
@@ -1161,7 +1158,7 @@ function Save_and_Run(pg)
 				</tr>
 				<tr>
                     <td align="center" >
-						<input type='button' value='Save and Run' <?php echo "title='Save the column attribute information and run the program:$pg_name.' "; ?> onClick="Save_and_Run('table_item_run50')"  style="border-style:;background-color:green;color:white; height:25px;">
+						<input type='button' value='Save and Run' <?php echo "title='Save the column attribute information and run the program:$pg_name.' "; ?> onClick="Save_and_Run( 'table_item_run50')"  style="border-style:;background-color:green;color:white; height:25px;">
 					</td>
                 </tr>
 						<input type='hidden' name='group_code' value="<?=$group_code?>" >
