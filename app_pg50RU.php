@@ -594,53 +594,75 @@ function ifcheck_onclickA( r, seq) {
 			document.makeform["iftype[" + selind + "]"].value = r;
 			break;
 		case 1: //	msge="Radio Button";	//alert( st[3] + ", r: " + r + ", col_attr_old: " + col_attr_old);//INT, r: 1, col_attr_old: 0
-			document.makeform["iftype[" + selind + "]"].value = r;
-			if( !obj2 ) {
-				document.makeform.column_attribute.focus();
-				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");	// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
+			if( st[3] == 'TEXT'){
+				alert( st[3] + ", type cannot be set" );
+				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform.column_attribute.value = '';
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
+			} else {
+				document.makeform["iftype[" + selind + "]"].value = r;
+				if( !obj2 ) {
+					document.makeform.column_attribute.focus();
+					alert(" Enter column processing items using delimiter ':' as in a:b:c:d");	// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
+				}
 			}
 			break;
-		case 3: //	msge="Check Box Button";
-			document.makeform["iftype[" + selind + "]"].value = r;
-			if( !obj2 ) {
-				document.makeform.column_attribute.focus();
-				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+		case 3: //	Check Box Button 
+			if( st[3] == 'CHAR' || st[3] == 'VARCHAR') {
+				document.makeform["iftype[" + selind + "]"].value = r;
+				if( !obj2 ) {
+					document.makeform.column_attribute.focus();
+					alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+				}
+			} else {
+				alert( st[3] + ", type cannot be set" );
+				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform.column_attribute.value = '';
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
 			}
 			break;
 		case 5: //	msge="List Box";
-			document.makeform["iftype[" + selind + "]"].value = r;
-			if( !obj2 ) {
-				document.makeform.column_attribute.focus();
-				alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+			if( st[3] == 'TEXT' ) {
+				alert( st[3] + ", type cannot be set" );
+				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform.column_attribute.value = '';
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
+			} else {
+				document.makeform["iftype[" + selind + "]"].value = r;
+				if( !obj2 ) {
+					document.makeform.column_attribute.focus();
+					alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
+				}
 			}
 			break;
 		case 7: //	msge="Password Type";
-			if( st[3] == 'INT' || st[3] == 'FLOAT' || st[3] == 'DOUBLE' || st[3] == 'DECIMAL' || st[3] == 'BIGINT' || st[3] == 'MEDIUMINT' || st[3] == 'SMALLINT' || st[3] == 'TINYINT'){
-				alert( st[3] + ", Numeric type cannot be set" );
-				document.makeform.ifcheck[col_attr_old].checked=true;
-				return false;
-			} else {
+			if( st[3] == 'CHAR' || st[3] == 'VARCHAR'){
 				document.makeform.column_attribute.value = 'Password';
 				document.makeform["iftype[" + selind + "]"].value = r;
+			} else {
+				alert( st[3] + ", Numeric type cannot be set" );
+				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform.column_attribute.value = '';
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
 			}
 			break;
 		case 9: // add file msge="Attached file";
-			if( st[3] == 'INT' || st[3] == 'FLOAT' || st[3] == 'DOUBLE' || st[3] == 'DECIMAL' || st[3] == 'BIGINT' || st[3] == 'MEDIUMINT' || st[3] == 'SMALLINT' || st[3] == 'TINYINT'){
-				alert( st[3] + ", Numeric type cannot be set" );
-				document.makeform.ifcheck[col_attr_old].checked=true;
-				return false;
-			} else {
+			if( st[3] == "CHAR" || st[3] == "VARCHAR" ||st[3] == "TEXT" ){
+				if( col_len < 100 ) { //컬럼의 길이가 작습니다.
+					alert("colnm: " + st[1] + ", col_len: " + col_len + ", The column length is small. The length of column "+st[1]+" was set to 255.");
+					column_length_change( st[1], col_len, st[3] ); //colnm_value: |fld_2|fld2|VARCHAR|15, A 컬럼의 길이를 255로 설정 하였습니다.
+				}
 				document.makeform.column_attribute.value = 'Attached file';
 				document.makeform["iftype[" + selind + "]"].value = r;
-				if( st[3] == "CHAR" || st[3] == "VARCHAR" ||st[3] == "TEXT" ){
-					if( col_len < 100 ) { //컬럼의 길이가 작습니다.
-						alert("colnm: " + st[1] + ", col_len: " + col_len + ", The column length is small. The length of column "+st[1]+" was set to 255.");
-						column_length_change( st[1], col_len, st[3] ); //colnm_value: |fld_2|fld2|VARCHAR|15, A 컬럼의 길이를 255로 설정 하였습니다.
-					}
-				} else {
-					alert(' ERROR - Data type is not string! The image name must be a string and must be at least 100 characters long. reset please');
-					return false
-				}
+			} else {
+				alert( st[3] + ", Numeric type cannot be set" );
+				document.makeform.column_attribute.value = '';
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false
 			}
 			break;
 		case 11: // Calculation formula msge="Formula.";
@@ -1052,6 +1074,7 @@ function Save_and_Run( pg)
 				 <td valign="top">
 	<div id="here">
 <?php
+//축구  야구  골프  족구  농구  당구  탁구  Warning: Undefined array key 7 in /home1/kappsystem/public_html/kapp/tkher_program_run.php on line 480 
 	$ss = "";
 	$ckv = "";	
 	if( isset( $table10_pg) && $table10_pg !=='' ){ 
@@ -1063,7 +1086,10 @@ function Save_and_Run( pg)
 				}
 				$it = explode("|", $itX[$j] );	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
 				$val = $itX[$j]; 	//m_( "itX: " . $itX[$j] . "  : $j, val:$val");	//itX: |fld_1|fld1|VARCHAR|15  : 0, val:|fld_1|fld1|VARCHAR|15
-				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA( this.value, " .$j. " )' value='".$val."'><label title='".$val."' id='columnR".$j."'>".$it[2] ."(".$it[3].")</label></label><br>";
+				$ifd = explode("|", $if_data ); // $if_data= |||Attached file||||Attached file|Password| , $if_type = |||9||||9|7|
+				$tit_val = $j . " - " . $val . " : " . $ifd[$j+1]; //
+
+				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA( this.value, " .$j. " )' value='".$val."'><label title='".$tit_val."' id='columnR".$j."'>".$it[2] ."(".$it[3].")</label></label><br>";
 			} //for
 	} else {
 		//m_("1370 table10_pg NULL : tab_enm: " . $tab_enm);

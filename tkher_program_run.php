@@ -366,6 +366,9 @@
 			<input type="hidden" name='page'		value="<?=$page?>" />
 			<input type="hidden" name='line_cnt'	value="<?=$line_cnt?>" />
 <?php
+//30  50  60  70  610  8000  50000  Warning: Undefined array key 7 in /home1/kappsystem/public_html/kapp/tkher_program_run.php on line 435
+
+
 		$kkk="off";
 		$list = array();
 		$ddd = "";
@@ -386,7 +389,7 @@
 		$popdata	= explode("^", $pop_dataPG);
 		if( isset($item_array) ) $list = explode("@", $item_array);
 		else  $list = "";
-		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
+		for( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
 				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
 				else $typeX	= "";
@@ -424,7 +427,7 @@
 						if( $typeX == "1" ) { // radio button
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='radio1A'><span>";
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								echo	"<input type='radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' class='input1A'>" . $if_fld[$k] . " &nbsp;";
 							}
 								echo " </span></div> ";
@@ -432,7 +435,7 @@
 						} else if( $typeX == "3" ) { //check box
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='radio1A'><span>";
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									echo	"<input type='Checkbox' name='" . $fld[1] .  "[]'  value='" . $if_fld[$k] . "' >" . $if_fld[$k] . " &nbsp;";
 							}
 								echo " </span></div> ";
@@ -442,7 +445,7 @@
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='ListBox1A'>";
 								echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
 							}
 								echo "</SELECT>";
@@ -477,7 +480,7 @@
 						if( $typeX == "1" ) { // radio button
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								echo	"<input type='radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' class='input1A'>" . $if_fld[$k] . " &nbsp;";
 							}
 							echo " </span></div> ";
@@ -485,7 +488,7 @@
 						} else if( $typeX == "3" ) { //check box
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									echo	"<input type='Checkbox' name='" . $fld[1] .  "[]'  value='" . $if_fld[$k] . "' >" . $if_fld[$k] . " &nbsp;";
 							}
 							echo " </span></div> ";
@@ -494,7 +497,7 @@
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='ListBox1A'>";
 							echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
 							}
 							echo "</SELECT>";
