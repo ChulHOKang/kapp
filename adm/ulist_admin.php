@@ -334,7 +334,7 @@ jQuery(document).ready(function ($) {
 				//alert("OK ---" + seq_no);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert(" 올바르지 않습니다.-- ulink_admin_ajax.php");
+				alert(" confirm. -- ulink_admin_ajax.php");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -367,7 +367,7 @@ jQuery(document).ready(function ($) {
 
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
 		//var seq_no = $("#insert_form").seq_no.val();
-		alert("view_click --- " );
+		//alert("view_click --- " );
 
 	});
 
