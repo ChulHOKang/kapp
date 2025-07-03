@@ -1,20 +1,15 @@
-2025-05-08<?php
+<?php
 	include_once('../tkher_start_necessary.php');
-	 $_ID	= get_session("ss_mb_id"); 
-	if( isset( $_ID) ){
-		$H_ID	= get_session("ss_mb_id");    //"ss_mb_id";	//connect_count('ulist', $H_ID, 0);	// log count
-		$_LEVEL	= get_session("ss_mb_level"); //m_($H_ID . ", _LEVEL: " . $_LEVEL);
+	 $H_ID	= get_session("ss_mb_id"); 
+	if( $H_ID !=='' ){
+		$H_LEV	= get_session("ss_mb_level"); //m_($H_ID . ", _LEVEL: " . $_LEVEL);
 	} else {
 		$H_ID = "";
-		$_LEVEL	= 0; 
+		$H_LEV	= 1; 
 		m_("login please!");
 	}
-
 	/*  
-		2021-04-08
-		ulink_list.php, = /memu/ulink_list.php : table : {$tkher['job_link_table']} 
-		cratree_my_list_menu.php - inc menu_run.php - search call
-
+		ulist_admin.php:  /memu/ulink_list.php : table : {$tkher['job_link_table']} 
 	*/
 	$up_day = date("Y-m-d H:i:s");
 	$pg_		= 'ulink_list.php';
@@ -134,15 +129,12 @@ $(function () {
 		if( isset($aa[3])) $g_no = $aa[3];
 		else $g_no = "";
 	} else {
-		//$sel_g_name	= "ETC:ETC"; // 초기화 ETC
-		//$g_name = "ETC";
-		//$g_name_code = "ETC";
 		if( isset($H_ID) ) $gg_user = $H_ID;
 		else $gg_user = "";
 		$g_no = "";
 	}
 	
-	if( isset($_REQUEST["g_name"]) ) $gnm = $_REQUEST["g_name"];//m_("gnm: " . $gnm); //gnm: ETCA:solpakan@naver.com
+	if( isset($_REQUEST["g_name"]) ) $gnm = $_REQUEST["g_name"];
 	if( isset($gnm) && $gnm !=="" ) {
 		$aa = explode(':', $_REQUEST["g_name"]); 
 		$g_name = $aa[0];
