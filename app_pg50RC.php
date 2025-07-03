@@ -1,16 +1,16 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		ap_pg50RC.php    : PC 버전. table_pg50RC.php를 copy. : 기존의 table_pg50R.php copy하여 backup 보관.
+		ap_pg50RC.php    : table_pg50RC.php copy. : 
 		:  PG_curl_send() 
-						 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
-						 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
-						 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
-						 : app_pg50RC_Test.php : 작업 테스트용-중요.
+		: create and update Separate.
+		: PC:app_pg50RC.php
+		: PC:app_pg50RU.php
+		: app_pg50RC_Test.php :test pg
 	*/
 	$ss_mb_id	= get_session("ss_mb_id");
 	$H_ID	= get_session("ss_mb_id");
-	if( !$H_ID || $H_ID =='' )	{
+	if( $H_ID =='' )	{
 		m_("You need to login. ");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
@@ -50,7 +50,7 @@
 		else  $pg_codeS = "";
 		if( isset($_POST['project_nmS']) ) $project_nmS		= $_POST['project_nmS'];
 		else  $project_nmS = "";
-
+		/* no use 
 		if( $mode == "project_change" ){
 			if( isset( $project_nmS) )	{
 				$aaP= explode(':', $project_nmS);
@@ -67,7 +67,7 @@
 				sql_query( $SQL );
 				
 			}
-		}
+		}*/
 ?>
 <link href="./include/css/admin.css" rel="stylesheet" type="text/css">
 <body leftmargin="0" topmargin="0">
@@ -96,8 +96,7 @@
 		}
 		return str
 	}
-	function Pg_Dup_Check()
-	{
+	function Pg_Dup_Check()	{
 		pg_name = document.makeform.pg_name.value;
 		var item_cnt = makeform.pg_codeS.options.length; 
 		for (i = 0; i < item_cnt; i++) {
@@ -105,7 +104,6 @@
 				var pgnm = makeform.pg_codeS.options[i].text;
 				if(pg_name == pgnm){
 					alert("Program name is duplicate. Please use a different name!");
-					// \n 프로그램명이 중복입니다. 다른 명칭을 사용해주세요! pgnm:
 					document.makeform.pg_name.focus();
 					return false;
 				}
@@ -299,7 +297,7 @@ function del_func() {
 		alert(' Please select a column! ' );
 		return false;
 	}
-	resp = confirm(' Are you sure you want to exclude columns?'); // \n 컬럼을 제외 하시겠습니까?
+	resp = confirm(' Are you sure you want to exclude columns?'); 
 	if( !resp ) return false; 
 	var colnm = document.getElementsByName('column_list');
 	var item_cnt = colnm.length;
@@ -350,96 +348,23 @@ function del_func() {
 	var str_array = '';
     for (k = 0; k < kk; k++) {
 		colnm_value = colnm[k].value;
-		st = colnm_value.split('|');       //val:275|fld_2|작업공정|CHAR|10
+		st = colnm_value.split('|');       //val:275|fld_2|job|CHAR|10
 		str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
 	}
 	makeform.item_array.value = str_array;
 	return;
 }
-function ifcheck_onclickA(r, seq) {// seq = radio button seq no. column attribute click , Reset to column using popup window.
+function ifcheck_onclickA(r, seq) {
 	if(document.makeform.pg_name.value == ""){
 		alert("Create Program name");
 		return;
 	}
-	alert("After creating the program, proceed with Program Upgrade!"); // program create후 Program Upgrade 에서 작업을 진행 해 주세요!
-	return; // 2023-09-12 add 프로그램만 생성히고 Program Upgrade 에서 작업 하도록 한다.
-/* 2023-09-12 막음. popup 설정 오류로 인해 막음 처리.
-	var selind = document.makeform.column_index.value; // colunm index
-	if ( selind == '' ){
-		alert(r+' : Please select a column! ' );
-		document.makeform.ifcheck[seq].checked=false;
-		return false;
-	}
-	var pg = document.makeform.pg_codeS.value; 
-	var tab = document.makeform.tab_hnmS.value;
-	var pg_name = document.makeform.pg_name.value;
-	if( !pg_name) {
-		alert(' Please select or enter program name!' );
-		document.makeform.pg_name.focus();
-		return false;
-	}
-	if( !tab ) {
-		alert(' Please select a table!' );
-		return false;
-	}
-	document.makeform.if_line.value = selind;
-	var colnm = document.getElementsByName('column_list');
-	var colnm_value = colnm[selind].value;
-
-	document.makeform.sellist.value = colnm_value;
-	if( r == 0 )		{ msge="General Input"; } //msgh=" 일반입력 속성 ";
-	else if( r == 1 )	{ msge="Radio Button"; }  //msgh=" 라디오버턴 속성 ";	
-	else if( r == 3 )	{ msge="Check Box Button"; } //msgh=" 체크박스버턴 속성 ";	
-	else if( r == 5 )	{ msge="List Box"; }         //msgh=" 리스트박스 속성 ";	
-	else if( r == 7 )	{ msge="Password Type"; } //msgh=" 암호입력 속성 ";		
-	else if( r == 9 )	{ msge="Attached file"; } //msgh=" 첨부화일 속성 ";		
-	else if( r == 11 )	{ msge="Formula."; }      //msgh=" 계산식 속성 ";		
-	else if( r == 13 )	{ msge="Pop-up Window"; } //msgh=" 팝업창 속성 ";		
-	else				{ msge="General Input"; } //msgh=" 일반입력 속성 ";		
-    var obj1 = document.makeform.ifcheck.value; 
-	var obj2 = document.makeform.column_attribute.value;
-    var obj3 = document.makeform.column_name_change.value; 
-	if(r==0) {
-			document.makeform.column_attribute.value		= '';
-			document.makeform["if_data[" + selind + "]"].value = '';
-			document.makeform["iftype[" + selind + "]"].value = r;
-	} else if( r==13)	{ 
-			pg_code = document.makeform.pg_code.value;
-			document.makeform["iftype[" + selind + "]"].value = r;
-			document.makeform.action          = 'table_popupRM.php?pg_code='+pg_code+'&if_line='+selind;
-			document.makeform.mode.value      = '';
-			document.makeform.mode_call.value = 'app_pg50RC';
-			document.makeform.target          = '_self'; 
-			document.makeform.submit();
-	} else if( r==11)	{ // Formula.
-			document.makeform["iftype[" + selind + "]"].value = r;
-			document.makeform.target          = '_self'; 
-			document.makeform.action          = 'table_formulaM.php';
-			document.makeform.mode.value      = 'run13';
-			document.makeform.mode_call.value = 'app_pg50RC';
-			document.makeform.submit();
-	} else if( r==1 || r==3 || r==5){	 // 1:라디오버턴,3:체크박스,5:리스트박스.
-		if( !obj2 ) {
-			alert(" Enter column processing items using delimiter ':' as in a:b:c:d");	
-			// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
-			document.makeform["if_data[" + selind + "]"].value = '';//obj2;
-			document.makeform["iftype[" + selind + "]"].value = r;
-			document.makeform.column_attribute.focus();
-			return false;
-		} else {
-			document.makeform["if_data[" + selind + "]"].value = obj2;
-			document.makeform["iftype[" + selind + "]"].value = r;
-		}
-	} else {	// r=9-첨부화일, r=7-password
-			document.makeform.column_attribute.value		= '';
-			document.makeform["if_data[" + selind + "]"].value = '';
-			document.makeform["iftype[" + selind + "]"].value = r;
-	}
-	*/
+	alert("After creating the program, proceed with Program Upgrade!"); 
+	return; 
 } 
 function Apply_button() {
-	var selind = document.makeform.column_index.value; // column position
-	if ( selind < 0 ){	// column 선택 확인.
+	var selind = document.makeform.column_index.value;
+	if ( selind < 0 ){
 		alert(' Select column!');
 		return;
 	}
@@ -465,7 +390,7 @@ function Apply_button() {
 	var test = colnm_value.split('|');
 	colnm_hnm = test[2];
 	ii = document.makeform["iftype[" + selind + "]"].value;
-	if(ii==1 || ii==3 || ii==5 ){ // 1:radio button, 3:check box, 5:listbox, 만적용한다.
+	if(ii==1 || ii==3 || ii==5  || ii==7  || ii==9 ){ // 1:radio button, 3:check box, 5:listbox, 7:password, 9: attache file .
 		if(ii==1) msg='1:radio button';
 		else if(ii==3) msg='3:check box';
 		else if(ii==5) msg='5:list box';
@@ -478,7 +403,7 @@ function Apply_button() {
 		document.makeform["iftype[" + selind + "]"].value = ii;
 		alert(""+chgStr+" : OK set");
 	} else {
-		alert(' Please enter a property! 1:radio button or 3:check box or 5:listbox Only' );// 1:radio button or 3:check box or 5:listbox 만적용한다.
+		alert(' Please enter a property! 1:radio button or 3:check box or 5:listbox Only' );
 		return false;
 	}
 }
@@ -486,7 +411,7 @@ function titlechange_btncfm_onclickA() {
 	var chgStr = makeform.column_name_change.value;
 	if( chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("^")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
 	{
-		alert(' You used a special character that is not allowed. \n Please enter it again.');// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
+		alert(' You used a special character that is not allowed. \n Please enter it again.');
 		return false;
 	}
 	var j = document.makeform.column_index.value;
@@ -617,7 +542,7 @@ function Project_Update(mode){
 			document.makeform.pg_name.focus();
 			return false;
 		}
-		document.makeform.mode.value = mode; // mode=project_change
+		document.makeform.mode.value = mode; 
 		document.makeform.mode_call.value = 'app_pg50RC_Test';
 		document.makeform.action='app_pg50RC.php'; 
 		document.makeform.target='_self';
@@ -629,14 +554,14 @@ function change_project_func(pnmS){
 	var p_val    = document.makeform.project_nmS.options[p_selind].value;
 	var p_nm     = document.makeform.project_nmS.options[p_selind].text;
 }
-	function change_table_func(tab) {		//alert( "tab: "+ tab );// tab: dao_1645837697:판매정보
+	function change_table_func(tab) {
 		tab = document.makeform.tab_hnmS.value;
 		document.makeform.mode.value='SearchTAB';
 		document.makeform.column_attribute.value='';
 		document.makeform.action="app_pg50RC.php";
 		document.makeform.submit();
 	}
-	function change_program_func(pg) { // 사용 X
+	function change_program_func(pg) { // no use= X
 		pg = document.makeform.pg_codeS.value;
 		document.makeform.mode.value='SearchPG';
 		document.makeform.column_attribute.value='';
@@ -649,7 +574,6 @@ function change_project_func(pnmS){
 </script>
 
 <?php
-
 function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
 	global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config;      
 	$cnt = 0;
@@ -660,10 +584,8 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 	$tabData['data'][$cnt]['userid']     = $H_ID;
 	$tabData['data'][$cnt]['group_code'] = $group_code;
 	$tabData['data'][$cnt]['group_name'] = $group_name;
-
-	$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostnameA;
+	$tabData['data'][$cnt]['host']       = KAPP_URL_T_;
 	$tabData['data'][$cnt]['email']      = $H_EMAIL;
-
 	$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
 	$tabData['data'][$cnt]['if_type']    = $iftype_db;
 	$tabData['data'][$cnt]['if_data']    = $ifdata_db;
@@ -672,28 +594,19 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 	$tabData['data'][$cnt]['relation_data']   = $rel_data;
 	$tabData['data'][$cnt]['relation_type']   = $rel_type;
 	$tabData['data'][$cnt]['item_array'] = $item_array;
-	
-	//$count = count($tabData['data']);	//m_( "--- count:" . $count ); // 10
-
 	$key = 'appgenerator';
     $iv = "~`!@#$%^&*()-_=+";
-
     $sendData = encryptA( $tabData , $key, $iv);
-
     $url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
-
-    //$curl = curl_init( $url_ );
 	$curl = curl_init();
 	curl_setopt( $curl, CURLOPT_URL, $url_);
     curl_setopt( $curl, CURLOPT_POST, true);
-
     curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
         'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
         'iv' => $iv
     ));
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($curl);
-
 	curl_setopt($curl, CURLOPT_FAILONERROR, true);
 	echo curl_error($curl);
 	if( $response == false) {
@@ -704,19 +617,19 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
     }
     curl_close($curl);
 } // function
-//=====================================================
 	$hostnameA = getenv('HTTP_HOST');
 	$tabData['data'][][] = array(); 
-	$dup_check = ''; //	$pg_code= $H_ID . "_" . time();
-	$uid = explode('@', $H_ID);
-	$pg_code = $uid[0] . "_" . time();
+	$dup_check = ''; 
+	$pg_code= $H_ID . "_" . time();
+	//$uid = explode('@', $H_ID);
+	//$pg_code = $uid[0] . "_" . time();
 	$_SESSION['pg_code'] = $pg_code;
 	$mode_session= get_session("mode_session");
 	if( isset($project_nmS) && $project_nmS !=='' ){
 		$pcd_nm = explode(":", $project_nmS );
 		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $group_code	= $pcd_nm[0];
-		else $group_code = '';	//$group_code	= $pcd_nm[0]; //$rsTAB['group_code'];  
-		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $group_name	= $pcd_nm[1]; //$rsTAB['group_name'];  
+		else $group_code = '';	
+		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $group_name	= $pcd_nm[1]; 
 		else $group_name= "";
 	} else {
 		$group_name= "";
@@ -745,7 +658,7 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			$job_name		= $pg_name;
 			$jong			= "P";
 			$pg_cd_nm = $pg_code . ":" . $pg_name;
-			$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code; // 확인용 실행프로그램 링크
+			$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code; 
 			job_link_table_add( $pg_code, $pg_name, $sys_link, $pg_code, $job_group, $job_name, $jong );
 			insert_point_app( $H_ID, $config['kapp_write_point'], $sys_link, 'program_create@app_pg50RC', $pg_cd_nm, $tab_enm);
 			$pg_sys_link	= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
@@ -824,8 +737,8 @@ function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata
 			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
 			<input type="hidden" name="calc"			value="<?=$calc?>"> 
 			<input type="hidden" name="rel_data"		value="<?=$rel_data?>"> 
-			<input type="hidden" name="rel_type"		value="<?=$rel_type?>"> <!-- 2023-08-03 : add -->
-			<input type="hidden" name="dup_check"		value="<?=$dup_check?>" > <!-- 프로그램 dup check : 2021-09-25 : add -->
+			<input type="hidden" name="rel_type"		value="<?=$rel_type?>">
+			<input type="hidden" name="dup_check"		value="<?=$dup_check?>" > 
 		<tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
 New Program Creation (<?=$H_ID?>)<br>
 	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the Project! ' "; ?> >
@@ -845,7 +758,6 @@ New Program Creation (<?=$H_ID?>)<br>
 	}
 ?>
 			</SELECT>
-			<!-- 프로그램면 중복확인을 위해 사용 출력. 디스플레이 하지 않는다. program list: display:none; -->
 			<SELECT id='pg_codeS' name='pg_codeS' style="display:NONE;" >
 <?php
 			$result = sql_query( "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc " );
@@ -911,7 +823,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 					$if_data = $if_data . "|" . "0";
 					$pop_data = $pop_data . "^" . "";
 				}
-				$nm = $rsP['fld_hnm'];     //onclick='column_list_onclickAA(" .$j. " )' : 함수추가 라벨클릭시에 radio버턴 on 처리 중요
+				$nm = $rsP['fld_hnm'];     //onclick='column_list_onclickAA(" .$j. " )' : When the function is added and the label is clicked, the radio button is turned on. 
 				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. ")'><input type='radio' id='column_list".$j."' name='column_list' onclick='column_list_onclickA(this.value, " .$j. " )' value='".$rsP['seqno']."|".$rsP['fld_enm']."|".$rsP['fld_hnm']."|".$rsP['fld_type']."|".$rsP['fld_len']."'><label id='columnR".$j."'>".$rsP['fld_hnm']."</label></label><br>";
 
 				$item_cnt++;
@@ -919,9 +831,8 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 			} //while
 		} //if( $tab_enm ) { 
 	} //if( $table10_pg>0 or $table10_tab>0 ){ 
-	//$qna = "sequence of the work|Select Project and Table.|Enter program name.|Click Create button.|Column attribute definition.|Click Save and RUN button.|5^작업순서|Table선택|프로그램명 입력|Create 버턴 클릭|컬럼 속성 정의|Save and RUN 버턴 클릭.|5"; // 4:항목수, ^:문항추가.
-	$qna = "sequence of the work|Select Project and Table.|Enter program name.|Click Create button.|"; // 4:항목수, ^:문항추가.
-	echo "<script> rr_func(\"".$ss."\", \"".$qna."\");</script> "; // 최초화면에 설문지 출력 중요.
+	$qna = "sequence of the work|Select Project and Table.|Enter program name.|Click Create button.|"; // 4:item cnt, ^:item add.
+	echo "<script> rr_func(\"".$ss."\", \"".$qna."\");</script> "; // It is important to print the questionnaire on the first screen. 
 ?>
 		</div>
 </td></tr>
@@ -933,7 +844,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 	<a href="javascript:upItemA()" >
 	<img height="21" style="height:24px;CURSOR: hand" title="Move the order of column up." src="./icon/bt_up_s01.gif" border="0"></a>&nbsp;&nbsp;&nbsp;&nbsp;
 	<a href="javascript:del_func()" >
-	<img src="./icon/e_delete.gif" style="height:24px;CURSOR: hand" <?php echo "title='Delete column\n No columns are used in the program. \n Be careful when deleting columns!'";?> border="0" ></a>&nbsp;&nbsp;&nbsp;&nbsp; <!-- 컬럼삭제는 신중히하세요! -->
+	<img src="./icon/e_delete.gif" style="height:24px;CURSOR: hand" <?php echo "title='Delete column\n No columns are used in the program. \n Be careful when deleting columns!'";?> border="0" ></a>&nbsp;&nbsp;&nbsp;&nbsp; 
 </td>
 </tr>
 <tr><td height="24" <?php echo "title='Enter the column name and click the button! ' "; ?> >
@@ -942,7 +853,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 	<input type='button' value='Confirm' name='title_changeX'  onClick="titlechange_btncfm_onclickA()"  style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\" You can change the name of the column. \" "; ?> ><br>
 	*Column attribute data<br>
    <input type='text' id='column_attribute' name='column_attribute' maxlength='200' size='28' style="border-style:;background-color:black;color:yellow;height:25;" value='<?=$column_attribute?>' <?php echo "title=\"  hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?>>
-   <!--  \n 입력예-취미:야구:축구:농구:테니스:골프 와 같이 구분자 ':' 를 사용하여 구분한다. -->
+   <!--  \n Yes - Hobbies:Baseball:Soccer:Basketball:Tennis:Golf, use the delimiter ':' to separate them. -->
    <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
 		<br>
 		<label class="container" title='Only one selectable button. ' >
@@ -969,7 +880,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 		  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(9,4)" <?php if( $fld_sel_type=='9') echo " checked "; ?> >Attached file
 		  <span class="checkmark"></span>
 		</label>
-		<br><!-- 예를들면 수량과 단가를 입력하면 금액을 계산하여주는 컬럼입니다. -->
+		<br><!-- Example: This is a column that calculates the amount when you enter the quantity and unit price. -->
 		<label class="container" <?php echo "title='This column is calculated and output when data is registered.\n For example, if you enter quantity and unit price,\n it is a column that calculates the amount.' "; ?>>
 		  <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(11,5)" <?php if( $fld_sel_type=='11') echo " checked "; ?> >Formula <font color='blue'>[Setup]</font>
 		  <span class="checkmark"></span>
@@ -985,7 +896,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 		  <span class="checkmark"></span>
 		</label>
 		<input type='hidden' id='column_attribute_index' name='column_attribute_index' >
-		<input type='hidden' id='column_index' name='column_index' ><!-- add 2021-05-01 -->
+		<input type='hidden' id='column_index' name='column_index' >
 		<input type='hidden' name='multy_menu_sel' >
 		<input type='hidden' name='pg_make_set' >
 		<input type='hidden' name='tab_enm'  value='<?=$tab_enm?>' >
@@ -1002,48 +913,36 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 	$ifdataR =array();
 	$popdataR =array();
 	$itemR =array();
-
 	$ifT	= "";	$ifD	= "";	$ifP	= "";
-	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // 테이블 선택시에 여기를 탄다.
-
+	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // table select
 			if( isset($if_type) ) $iftypeR = explode("|", $if_type );
-			//else $iftypeR = "";
 			if( isset($if_data) ) $ifdataR = explode("|", $if_data );
-			//else  $ifdataR = "";
 			if( isset($pop_data) ) $popdataR= explode("^", $pop_data );
-			//else  $popdataR = "";
 			if( isset($item_array) ) $itemR   = explode("@", $item_array );
-			//else $itemR   = "";
-
 			for( $i=0, $j=1;$i<$item_cnt;$i++, $j++){
 				if( isset($iftypeR[$j]) ) $ifT	= $iftypeR[$j];
 				if( isset($ifdataR[$j]) ) $ifD	= $ifdataR[$j];
 				if( isset($popdataR[$j]) ) $ifP	= $popdataR[$j];
-
 				$it		= $itemR[$i];
 ?>
 				<input type='hidden' name="iftype[<?=$i?>]"  value='<?=$ifT?>' >
 				<input type='hidden' name="if_data[<?=$i?>]" value='<?=$ifD?>' > 
 				<input type='hidden' name="popdata[<?=$i?>]" value='<?=$ifP?>' > 
-
 				<input type='hidden' name="iftypeA_<?=$i?>" value='<?=$ifT?>' >
 				<input type='hidden' name="if_dataA_<?=$i?>" value='<?=$ifD?>' > 
 <?php
 				$ifT	= "";	$ifD	= "";	$ifP	= "";
 			}			
 	} else {
-		// 첫실행시에 온다.
+		// first run.
 	}
 ?>
 <br>
 </td></tr>
 <tr><td align="center" >
-	<!-- <input type='button' value='Create' onClick="Create_button('table_item_run50')" style="border-style:;background-color:#666fff;color:yellow; height:25px;"  <?php echo "title='Created after duplicate check' "; ?> > -->
-
 	<input type='button' value='Create' onClick="Create_button('app_pg50RC_Create')" style="border-style:;background-color:#666fff;color:yellow; height:25px;"  <?php echo "title='Created after duplicate check' "; ?> >
 
-	<!-- app_pg50RC_Create 테이블의 project 정보만 변경합니다. Change the table project -->
-	<input type='button' value='Project Change' onClick="Project_Update('project_change')" style="border-style:;background-color:#666fff;color:yellow; height:25px;"  <?php echo " title='Change the table project' "; ?> >
+	<!-- <input type='button' value='Project Change' onClick="Project_Update('project_change')" style="border-style:;background-color:#666fff;color:yellow; height:25px;"  <?php echo " title='Change the table project' "; ?> > -->
 	<!-- <input type='button' value='Save and Run' <?php echo "title='Save the column attribute information and run the program:$pg_name.' "; ?> onClick="Save_and_Run('table_item_run50')"  style="border-style:;background-color:green;color:white; height:25px;"> -->
 </td></tr>
 	<input type='hidden' name='group_code' value='<?=$group_code?>' >

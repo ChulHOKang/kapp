@@ -541,7 +541,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 									echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im' width='400' height='300' border='0'></a> </div>";
 								} else {
 									echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-									echo " <div class='data1A'><a href='./file/$mid/$pg_code/$row[$fldenm]'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
+									echo " <div class='data1A'><a href='./file/$mid/$pg_code/$row[$fldenm]' target='_BLANK'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 									echo " <div class='blankA'> </div> ";
 								}
 						}else{

@@ -265,35 +265,38 @@
 	   그래서 여기에 column_list_onclickAA 에 필요한 로직을 설정해야만 한다. 중요! 2024-01-03
 	*/
 	function column_list_onclickAA( j ){
+		document.makeform.column_attribute.value = '';
 		document.getElementById('column_list'+j).checked=true;
 		ss = document.getElementById('column_list'+j).value;
 		var col_attr = ss.split('|'); 
-		
 		document.makeform.column_index.value = j;
 		document.makeform.column_name_change.value = col_attr[2];
 		document.makeform.column_data_type.value   = col_attr[3];
-
 		iftype  = document.makeform["iftype[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
-
 		switch( iftype ) {
 			case '0':
 				document.makeform.ifcheck[0].checked=true;
 				break;
 			case '1':
 				document.makeform.ifcheck[1].checked=true;
+				document.makeform.column_attribute.value = if_data;
 				break;
 			case '3':
 				document.makeform.ifcheck[2].checked=true;
+				document.makeform.column_attribute.value = if_data;
 				break;
 			case '5':
 				document.makeform.ifcheck[3].checked=true;
+				document.makeform.column_attribute.value = if_data;
 				break;
 			case '7':
 				document.makeform.ifcheck[6].checked=true;
+				document.makeform.column_attribute.value = if_data;
 				break;
 			case '9': // add file
 				document.makeform.ifcheck[4].checked=true;
+				document.makeform.column_attribute.value = if_data;
 				break;
 			case '11': // Calculation formula 
 				document.makeform.ifcheck[5].checked=true;
@@ -321,35 +324,53 @@
 	   이 함수는 필요 하지않다 column_list_onclickAA( j )여기에서 모든 처리하도록 한다.
 	*/
 	function column_list_onclickA( ss, j ){ 
+		document.makeform.column_attribute.value = '';
 		var col_attr = ss.split('|'); //val:|fld_1|fld1|VARCHAR|15
 		document.makeform.column_index.value = j;
 		document.makeform.column_name_change.value = col_attr[2];
 		document.makeform.column_data_type.value   = col_attr[3];
-
-		col_attr_old = document.makeform.col_attr_old.value
 		iftype = document.makeform["iftype[" + j + "]"].value;
-		document.makeform.col_attr_old.value = iftype; // column attribute - old save
-
 		if_data = document.makeform["if_data[" + j + "]"].value;
-
-		if(iftype==0)	document.makeform.ifcheck[0].checked=true;
-		else if(iftype==1)	document.makeform.ifcheck[1].checked=true;
-		else if(iftype==3)	document.makeform.ifcheck[2].checked=true;
-		else if(iftype==5)	document.makeform.ifcheck[3].checked=true;
-		else if(iftype==9)	document.makeform.ifcheck[4].checked=true; 
-		else if(iftype==7)	document.makeform.ifcheck[6].checked=true; 
-		else if(iftype==11)	document.makeform.ifcheck[5].checked=true; 
-		else if(iftype==13)	document.makeform.ifcheck[7].checked=true; 
-		else				document.makeform.ifcheck[0].checked=true;
-
-		if( iftype == 11) { // Formula
-			jj = if_data.split(":");
-			document.makeform.column_attribute.value = jj[1];
-			document.makeform.calc.value = jj[0];	 
-		} else if( iftype == 13) { // Popup
+		document.makeform.col_attr_old.value = iftype; // column attribute - old save
+		switch( iftype ){
+			case 0:
+				document.makeform.ifcheck[0].checked=true;
+				break;
+			case 1:
+				document.makeform.ifcheck[1].checked=true;
+				break;
+			case 3:
+				document.makeform.ifcheck[2].checked=true;
+				document.makeform.column_attribute.value = if_data;
+				break;
+			case 5:
+				document.makeform.ifcheck[3].checked=true;
+				document.makeform.column_attribute.value = if_data;
+				break;
+			case 7: // Password
+				document.makeform.ifcheck[6].checked=true;
+				document.makeform.column_attribute.value = if_data;
+				break;
+			case 9: // attache file
+				document.makeform.ifcheck[4].checked=true;
+				document.makeform.column_attribute.value = if_data;
+				break;
+			case 11: // Formula
+				document.makeform.ifcheck[5].checked=true;
+				jj = if_data.split(":");
+				document.makeform.column_attribute.value = jj[1];
+				document.makeform.calc.value = jj[0];	 
+				break;
+			case 13: // Popup
+				document.makeform.ifcheck[7].checked=true;
 				jj = if_data.split(":");
 				document.makeform.column_attribute.value = jj[1]; 
-		} else document.makeform.column_attribute.value = if_data;
+				break;
+			default :
+				document.makeform.ifcheck[0].checked=true;
+				document.makeform.column_attribute.value = if_data;
+				break;
+		}
 	}
 
 function downItemA() {
@@ -1073,10 +1094,6 @@ function Save_and_Run( pg)
 							    <input type='text' id='column_name_change' name='column_name_change' maxlength='200' size='15' style="border-style:;background-color:black;color:yellow;height:25;" value='' <?php echo "title=\" You can change the name of the column.\" "; ?>>
 								<input type='button' value='Confirm' name='title_changeX'  onClick="titlechange_btncfm_onclickA()"  style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\" You can change the name of the column. \" "; ?> ><br>
 							*Column attribute data<br>
-							   <input type='text' id='column_attribute' name='column_attribute' maxlength='200' size='28' style="border-style:;background-color:black;color:yellow;height:25;" value='<?=$column_attribute?>' <?php echo "title=\"  hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?>>
-							   <!--  \n 입력예-취미:야구:축구:농구:테니스:골프 와 같이 구분자 ':' 를 사용하여 구분한다. -->
-							   <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
-<br>
 <label class="container" <?php echo "title='Only one selectable button. ' "; ?> >
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA( 0,0)" <?php if( !isset($fld_sel_type) ) echo " checked "; ?> >For general input
   <span class="checkmark"></span> 
@@ -1116,6 +1133,13 @@ function Save_and_Run( pg)
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(13,7)" <?php if( $fld_sel_type=='13') echo " checked "; ?> >POPUPWindow <font color='blue'>[Setup]</font>
   <span class="checkmark"></span>
 </label>
+<br>
+
+							   <input type='text' id='column_attribute' name='column_attribute' maxlength='200' size='28' style="border-style:;background-color:black;color:yellow;height:25;" value='<?=$column_attribute?>' <?php echo "title=\"  hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?>>
+							   <!--  \n 입력예-취미:야구:축구:농구:테니스:골프 와 같이 구분자 ':' 를 사용하여 구분한다. -->
+							   <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
+<br>
+
 		<input type='hidden' id='column_attribute_index' name='column_attribute_index' >
 		<input type='hidden' id='column_index' name='column_index' >
 		<input type='hidden' name='tab_enm'  value='<?=$tab_enm?>' >
