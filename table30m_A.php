@@ -2,11 +2,15 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 	 * table30m_A.php : table30m_Create.php copy 2023-08-25 - kan
-	   2024-01-04   : TIME fld type add. $view_set=1 add
-	   2024-01-03   : $item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; 보완.
-	   2023-10-12   : 컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요.
-	                : 컬럼 위치 이동 과 이동후 컬럼 삭제 버턴 숨김 처리 추가 중요.
-	 * TAB_curl_send( $tab_enm, $tab_hnm,0 , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ); // table_update_remake 2023-07-25 add
+	 - New_Create_Func()
+	 - Save_Change_Func()
+	 - Table_Copy_Func()
+	 - Re_Create_Func()
+	 - $del_mode : 'Modify_column_mode', 'Add_column_mode' , 'Delete_column_mode'
+	 - TAB_curl_send( $tab_enm, $tab_hnm,0 , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo );
+
+	  : 컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다.
+	  : 컬럼 위치 이동 과 이동후 컬럼 삭제 버턴 숨김 처리 추가.
 	 */
 	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
@@ -223,7 +227,7 @@
 		}
 		msg = " Modify " + fld_hnm + " entry? "; //컬럼을 변경할까요?
 		if( window.confirm( msg ) ) {
-			document.insert.del_mode.value="column_modify_mode";
+			document.insert.del_mode.value="Modify_column_mode";
 			document.insert.mode.value="Search";
 			document.insert.table_yn.value = table_yn;
 
@@ -267,7 +271,7 @@
 		msg = " Add " + fld_hnm + " entry? ";//컬럼을 추가할까요?
 		if ( window.confirm( msg ) )
 		{
-			document.insert.del_mode.value		="column_add_mode";
+			document.insert.del_mode.value		="Add_column_mode";
 			document.insert.mode.value			="Search";
 			document.insert.table_yn.value = table_yn;
 			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
@@ -294,7 +298,7 @@
 			document.insert.submit();
 		}
 	}
-	function Save_Update(cnt){ // Modification Registration - 수정등록
+	function Save_Update( cnt){ // Modification Registration - 수정등록
 		tab_hnm = document.insert.tab_hnm.value;
 		msg = " The data in the table is deleted.\n Want to regenerate? table is " + tab_hnm + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
 		if ( window.confirm( msg ) )
@@ -348,7 +352,7 @@
 		}
 	}
 
-	function table_create_func(line){
+	function table_create_func( line){
 		if( !document.insert.userid.value) {
 			alert(' Please login! ');
 			return false;
@@ -980,7 +984,7 @@
 <?php
 		if( $mode=="Search") {
 ?>
-			<input <?php echo "title='Delete the created table and register the changes.\nIf you only changed the column name and length,you don't need to run it.' "; ?> type='button' name='upd' onclick="javascript:Save_Update('<?=$line_set?>');"
+			<input <?php echo "title='Delete the created table and register the changes.\nIf you only changed the column name and length,you don't need to run it.' "; ?> type='button' name='upd' onclick="javascript:Save_Update( '<?=$line_set?>');"
 			value="Save Change" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 			<input <?php echo "title='Save as a new table.' "; ?> type='button' name='Newset' onclick="javascript:Newtable_save('<?=$line_set?>');"
 			value="NewTable" style='height:25px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>
@@ -994,7 +998,7 @@
 <?php
 		} else {
 ?>
-			<input <?php echo "title='Register and create the created table.' "; ?> type='button' name='ins' onclick="javascript:table_create_func('<?=$line_set?>');"
+			<input <?php echo "title='Register and create the created table.' "; ?> type='button' name='ins' onclick="javascript:table_create_func( '<?=$line_set?>');"
 			value="Create Table" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 			<input <?php echo "title='Change to the table registration screen.' "; ?> type='button' name='reset' onclick="javascript:resetgo();"
 			value="Reset" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
@@ -1047,47 +1051,15 @@
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($curl);
-
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-
-		//echo curl_error($curl);
-		//echo "curl --- response: " . $response;
-
 		if( $response == false) {
-			$_ms = "table30m curl 전송 실패 : " . curl_error($curl);
-			echo 'curl 전송 실패 : ' . curl_error($curl);
+			echo 'table30m_A curl Error : ' . curl_error($curl);
 		} else {
-			//$_ms = 'table30m curl 응답 : ' . $response;
 			//echo 'curl 응답 : ' . $response;
 		}
-		// ============ :table30m curl 응답 : --- count:10Error: Update failed{"message":"_api table data 전달 완료"}
-		curl_close($curl);		//m_("curl end--------------- ms:"); //exit();
+		curl_close($curl);
 	}
-	function TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $cnt, $memo, $Asqltable, $Aif_line, $Aif_type, $Aif_data, $Arelation_data ){
-		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name;
-
-		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
-		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
-		$tabData['data'][$cnt]['fld_enm']  = $fld_enm;
-		$tabData['data'][$cnt]['fld_hnm']  = $fld_hnm;
-		$tabData['data'][$cnt]['fld_type'] = $fld_type;
-		$tabData['data'][$cnt]['fld_len']  = $fld_len;
-		$tabData['data'][$cnt]['disno']    = $cnt;
-		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $group_code;
-		$tabData['data'][$cnt]['group_name'] = $group_name;
-		$tabData['data'][$cnt]['memo']       = $memo;
-		$hostname = KAPP_URL_T_; //getenv('HTTP_HOST');
-		$tabData['data'][$cnt]['host']       = $hostname;
-		$tabData['data'][$cnt]['email']      = $H_EMAIL;
-		$tabData['data'][$cnt]['sqltable']   = $Asqltable;
-		$tabData['data'][$cnt]['if_line']    = $Aif_line;
-		$tabData['data'][$cnt]['if_type']    = $Aif_type;
-		$tabData['data'][$cnt]['if_data']    = $Aif_data;
-		$tabData['data'][$cnt]['relation_data']    = $Arelation_data;
-	}
-
-	if( $del_mode == 'column_modify_mode' ){ 
+	if( $del_mode == 'Modify_column_mode' ){ 
 		$table_yn	=$_POST['table_yn'];
 		$tab_enm	=$_POST['tab_enm'];
 		$fld_enm	=$_POST['add_column_enm'];
@@ -1136,7 +1108,7 @@
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
 
-	} else if( $del_mode == 'column_add_mode' ){
+	} else if( $del_mode == 'Add_column_mode' ){
 		$table_yn	=$_POST['table_yn'];
 		$tab_enm	=$_POST['tab_enm'];
 		$dis		=$_POST['disno'];
@@ -1177,18 +1149,18 @@
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
 	}
 	if( $mode == "table_create_reaction" ){
-		create_reaction_func();
+		Re_Create_Func();
 	} else if( $mode == "table_update_remake" ){ // Save Change
 		$view_set=1; // update_pg_func()에서 참고 내용을 1번만 출력 하도록 한다.
-		update_remake_func();
+		Save_Change_Func();
 	}
 	if( $mode == "table_create" ) {
-		create_func();
+		New_Create_Func();
 	} else if( $mode == "table_new_copy" ){	// copy and new.
-		copy_func();
+		Table_Copy_Func();
 	}
 	//==========================================================================================
-	function create_reaction_func(){
+	function Re_Create_Func(){
 		global $H_ID, $tab_enm, $mode, $tab_hnm;
 		global $config;
 		global $tkher;
@@ -1199,6 +1171,10 @@
 		$cnt=0;
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " seqno int auto_increment not null, ";
+
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
 		$item_array = "";
@@ -1259,12 +1235,16 @@
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' ,  '$mode' );</script>";
 	}
 	//==========================================
-	function create_func(){
+	function New_Create_Func(){
 		global $H_ID, $tab_enm, $table_yn, $mode, $line_set, $ip;
 		global $config;
 		global $tkher;
+
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+
 		$tab_hnm	= $_POST["tab_hnm"];
 		$group_code	= $_POST["group_code"];
 		$group_name	= $_POST["group_name"];
@@ -1368,7 +1348,7 @@
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
 	//=============================================================
-	function copy_func(){
+	function Table_Copy_Func(){
 		global $H_ID, $mode;
 		global $config;
 		global $tkher;
@@ -1381,6 +1361,9 @@
 
 		$item_list  = " create table ". $tab_enm . " ( ";
 		$item_list  = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		
 		$cnt = 1;
 		$item_array = "";
 			$if_type = "";
@@ -1445,7 +1428,7 @@
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
 
-	function update_remake_func(){
+	function Save_Change_Func(){ // update_remake_func(){
 		global $H_ID, $tab_enm, $mode;
 		global $config;
 		global $tkher;
@@ -1457,6 +1440,8 @@
 		$cnt = 1;
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
 
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
@@ -1507,7 +1492,7 @@
 
 				sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 
-				// table_update_remake --- curl array ----- no use
+				// Save_Change_Func --- curl array ----- no use
 				//TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
 				$cnt++;
 			}
@@ -1534,14 +1519,12 @@
 		} else {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
 			sql_query($query);
-			//$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
-			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
-	//----------------------------------------------------------------------
-	//컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요
-	function update_pg_func( $fld_enm, $fld_enmO, $i_data, $fld_O){
+	//컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램도 변경(table10_pg의 item_array)
+	//When you change a column name or column title, the related program also changes.
+	function update_pg_func( $fld_enm, $fld_enmO, $i_data, $fld_O){ // Save_Change_Func()
 		global $H_ID, $tab_enm, $mode, $view_set;
 		global $config;
 		global $tkher;
@@ -1563,36 +1546,27 @@
 			$view_set = 0; //계산식, 팝업창, 관계식에 대한 설정 있다면 확인이 필요할 수 있습니다.
 		}
 	}
-	// 사용 하지않음 --- // 컬럼명이 변경 되었을 때, 사용된 테이블 관련된 프로그램의 컬럼명을 변경한다.
-	function update_pg_funcX( $fld_enm, $fld_enmO, $fld_hnm, $fld_hnmO){
-		global $H_ID, $tab_enm, $mode;
-		global $config;
-		global $tkher;
-		$chg=0;
-		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where tab_enm='".$tab_enm."' ";
-		$retPG = sql_query($sqlPG);
-		$table10_pg = sql_num_rows($retPG);
-		if( $table10_pg ) {
-			while( $rs = sql_fetch_array( $retPG)) {
-				$item_array = $rs['item_array'];
-
-				$list		= explode("@", $item_array);
-				for ( $i=0; isset($list[$i]) && $list[$i] !==''; $i++ ){
-					$ddd				= $list[$i];
-					$item				= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2 , $item[1]; //e, $item[2]; //h, $item[3]; //t	$item[4]; //l
-					if( $item[1] == $fld_enmO ) {	//$item[1] = $fld_enm;
-						$i_data = "|" . $fld_enm . "|" .$item[2] . "|" .$item[3] . "|" .$item[4];
-						$retA = str_replace($ddd , $i_data, $item_array); //$result = str_replace('바나나' , '수박', $str);
-						$query = "UPDATE {$tkher['table10_pg_table']} SET item_array='$retA' WHERE seqno=" . $rs['seqno'];
-						sql_query($query);
-						$chg=1;
-					}
-				}
-			}
-		}
-		if( $chg == 1 && $view_set){
-			m_( $table10_pg . ": Program - " . $rs['pg_code'] . ":" . $rs['pg_name'] . ", If you have settings for calculation formulas, pop-up windows, and relational expressions, you may need to check them. " . $item_array);
-			$view_set = 0; //계산식, 팝업창, 관계식에 대한 설정 있다면 확인이 필요할 수 있습니다.
-		}
+	// No use : column information
+	function TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $cnt, $memo, $Asqltable, $Aif_line, $Aif_type, $Aif_data, $Arelation_data ){
+		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name;
+		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
+		$tabData['data'][$cnt]['fld_enm']  = $fld_enm;
+		$tabData['data'][$cnt]['fld_hnm']  = $fld_hnm;
+		$tabData['data'][$cnt]['fld_type'] = $fld_type;
+		$tabData['data'][$cnt]['fld_len']  = $fld_len;
+		$tabData['data'][$cnt]['disno']    = $cnt;
+		$tabData['data'][$cnt]['userid']     = $H_ID;
+		$tabData['data'][$cnt]['group_code'] = $group_code;
+		$tabData['data'][$cnt]['group_name'] = $group_name;
+		$tabData['data'][$cnt]['memo']       = $memo;
+		$hostname = KAPP_URL_T_; //getenv('HTTP_HOST');
+		$tabData['data'][$cnt]['host']       = $hostname;
+		$tabData['data'][$cnt]['email']      = $H_EMAIL;
+		$tabData['data'][$cnt]['sqltable']   = $Asqltable;
+		$tabData['data'][$cnt]['if_line']    = $Aif_line;
+		$tabData['data'][$cnt]['if_type']    = $Aif_type;
+		$tabData['data'][$cnt]['if_data']    = $Aif_data;
+		$tabData['data'][$cnt]['relation_data']    = $Arelation_data;
 	}
 ?>
