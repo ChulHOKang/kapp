@@ -37,10 +37,13 @@
 	$iftype = explode("|", $iftype);
  	$list = array();
 	$ddd = "";
-	$list = explode("@", $item);	//
+	$list = explode("@", $item);	
+
 	$SQL = " INSERT " . $tab_enm . " SET ";
+	$SQL = $SQL . "kapp_userid= '" . $H_ID . "' , ";
+	$SQL = $SQL . "kapp_pg_code= '" . $pg_code . "', ";
 	
-	for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
+	for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 			if( isset($iftype[$j]) ) $typeX = $iftype[$j]; 
 			else $typeX = "";
 			$ddd = $list[$i]; // echo "<br>$i: ddd=" . $ddd;
@@ -67,6 +70,7 @@
 						else	    $SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
 					}
 				} else if( $typeX=='9' ) {	// 9:첨부화일 처리
+					$f_path= '';
 					$f_path = KAPP_PATH_T_ . "/file/" .  $H_ID . "/" . $tab_enm; // $pg_code;
 					$f_path1= KAPP_PATH_T_ . "/file/" .  $H_ID;
 					if( !is_dir($f_path1) ) {
@@ -100,6 +104,7 @@
 					else	$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
 				} else {
 					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ){
+						if( !$post_fld || $post_fld == '') $post_fld = 0;
 						if( $i==0 )	$SQL = $SQL . $nm . " = " . $post_fld . " ";
 						else	    $SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";
 					} else {
@@ -111,6 +116,7 @@
 	}
 	$rtype = '';
 	$rdata = '';
+	echo "" . $SQL;
 	$mq2 = sql_query($SQL);
 	if( $mq2 ) { 
 		$relation_data =get_session("relation_dataPG");
@@ -183,8 +189,10 @@
 			}else{
 				//echo "sql: " . $SQLR; exit;
 			}
-		} else { // insert
+		} else { // insert - relation
 			$SQLR = "INSERT INTO " . $r_table . " SET ";
+			$SQLR = $SQLR . "kapp_userid= '" . $H_ID . "' , ";
+			$SQLR = $SQLR . "kapp_pg_code= '" . $pg_code . "' , ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
 				$fld_r		= explode("|", $r_fld);		// fld_1:상품|=|fld_1:상품
@@ -196,7 +204,7 @@
 				$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
 				$r_enm	= $fld2[0];
 
-				if( isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
+				if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 				else $post_enm = "";
 				if( $fld_sik == '=' ) {
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . " = '" . $post_enm . "'  ";

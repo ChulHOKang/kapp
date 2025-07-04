@@ -366,9 +366,6 @@
 			<input type="hidden" name='page'		value="<?=$page?>" />
 			<input type="hidden" name='line_cnt'	value="<?=$line_cnt?>" />
 <?php
-//30  50  60  70  610  8000  50000  Warning: Undefined array key 7 in /home1/kappsystem/public_html/kapp/tkher_program_run.php on line 435
-
-
 		$kkk="off";
 		$list = array();
 		$ddd = "";
@@ -389,7 +386,7 @@
 		$popdata	= explode("^", $pop_dataPG);
 		if( isset($item_array) ) $list = explode("@", $item_array);
 		else  $list = "";
-		for( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
+		for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
 				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
 				else $typeX	= "";
@@ -409,23 +406,23 @@
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "TIME" ) {
 							$tday=date("H:i:s");
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$tday' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "DATE" ) { 
 							$day=date("Y-m-d");
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$day' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP" ) { 
 							$day=date("Y-m-d H:i");
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$day' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ) { 
 
 						if( $typeX == "1" ) { // radio button
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+								echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='radio1A'><span>";
 							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								echo	"<input type='radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' class='input1A'>" . $if_fld[$k] . " &nbsp;";
@@ -433,7 +430,7 @@
 								echo " </span></div> ";
 								echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "3" ) { //check box
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+								echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='radio1A'><span>";
 							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									echo	"<input type='Checkbox' name='" . $fld[1] .  "[]'  value='" . $if_fld[$k] . "' >" . $if_fld[$k] . " &nbsp;";
@@ -442,7 +439,7 @@
 								echo " <div class='blankA'> </div> ";
 						
 						} else if( $typeX == "5" ) { // list box
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+								echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 								echo " <div class='ListBox1A'>";
 								echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
 							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
@@ -467,18 +464,18 @@
 							$kkk2 = "document.makeform." . $f4 . ".value";
 							$kkk3 = $f3;
 							$kkk5++; // = $func_cnt;
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
 							echo " <div class='blankA'> </div> ";
 						} else {
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><input type=number name='$fld[1]' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1A'><input type='number' name='$fld[1]' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
 							echo " <div class='blankA'> </div> ";
 						}
 				} else {
 						
 						if( $typeX == "1" ) { // radio button
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
 							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								echo	"<input type='radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' class='input1A'>" . $if_fld[$k] . " &nbsp;";
@@ -486,7 +483,7 @@
 							echo " </span></div> ";
 							echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "3" ) { //check box
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
 							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									echo	"<input type='Checkbox' name='" . $fld[1] .  "[]'  value='" . $if_fld[$k] . "' >" . $if_fld[$k] . " &nbsp;";
@@ -494,7 +491,7 @@
 							echo " </span></div> ";
 							echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "5" ) { // list box
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='ListBox1A'>";
 							echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
 							for ( $k=0; isset( $if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
@@ -504,33 +501,33 @@
 							echo " </div> ";
 							echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "7" ) { //password
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type=PASSWORD name='$fld[1]' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "9" ) { // add file 
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='File1A'>";
 							echo " <input type='FILE' name='$fld[1]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'> ";
 							echo " </div> ";
 							echo " <div class='blankA'> </div> ";
 						} else if( $typeX == "13" ) { // popup window
 							$_SESSION['fld_session']=$i;
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type=text name='$fld_enmX' onclick=\"javascript:popup_call('$if_dataPG', '$popX', '$i')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 						} else {
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type=text name='$fld[1]' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 						}
-					}
-				} else {	//if seqno
+				} //if( $fld[3] == "TEXT" ) {
+			} else {	//if( $fld[1] !== "seqno")
 					m_("seqno ========== ");
-				}
+			}
 		}//for
 ?>
-		<input type=text name='iftype' value='<?=$iftypeX?>' style="display:none;">
-		<input type=text name='ifdata' value='<?=$ifdataX?>' style="display:none;">
+		<input type='text' name='iftype' value='<?=$iftypeX?>' style="display:none;">
+		<input type='text' name='ifdata' value='<?=$ifdataX?>' style="display:none;">
 		<input type='hidden' name='mode'			value=''>
 		<input type='hidden' name='pg_code'		value='<?=$pg_code?>'>
 		<input type='hidden' name='pg_name'		value='<?=$pg_name?>'>
@@ -544,7 +541,7 @@
 		<input type='hidden' name='mid'	value='<?=$mid?>'>
 		<input type="hidden" name='Hid'		value='<?=$H_ID?>' />
 		<input type="hidden" name='grant_write'		value='<?=$grant_write?>' />
-		<input type="button" value="submit" onclick="program_run_pg('<?=$i?>','<?=$iftypeX?>')" class='Btn_List01A'>
+		<input type="button" value="Submit" onclick="program_run_pg( '<?=$i?>','<?=$iftypeX?>')" class='Btn_List01A'>
 		<input type="reset" value="reset" class='Btn_List01A'>
 		<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="Btn_List03A" 
 		title='Program source creation and Download the data registration program source. You need to download the table before you can run the program. Database creation is also included there. To download a table, click Program Creation Menu->Table Search->Table Name and click the Source Download button.' title='point:<?=$H_POINT?>'>
@@ -590,7 +587,7 @@
 	function input_check(item_cnt,iftype) { 
 		return true; // no check
 	}
-	function program_run_pg(item_cnt,iftype) {
+	function program_run_pg( item_cnt,iftype) {
 		if( !document.makeform.Hid.value ) {
 			alert('Login Please!'); return false;
 		}
@@ -617,7 +614,7 @@
 	}
 
 <?php
-	if($kkk !="off") {
+	if( $kkk !="off") {
 ?>
 	function <?=$kkk?>FUNC<?=$kkk5?>() {
 		v1 = (<?=$kkk1?>*1) <?=$kkk3?> (<?=$kkk2?>*1);
