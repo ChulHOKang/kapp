@@ -155,7 +155,7 @@
 		else $update_key_data = "";
 		if( $r_type == 'Update'){
 			$SQLR = "UPDATE " . $r_table . " SET ";
-			for( $i=1;$r_data[$i] !=""; $i++) {
+			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
 				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
 				$fld_r1	= $fld_r[0];
