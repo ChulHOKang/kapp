@@ -11,14 +11,37 @@
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 <?php
+	$pg_code = $_REQUEST['pg_code'];
+	if( !$pg_name || !$pg_code  ) {
+			m_(" program name ----------- ERROR : pg_code:$pg_code , pg_name:$pg_name ");exit;
+	}
+	$SQL = " SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+	if( ($row = sql_fetch( $SQL ) )==false ){
+		printf(" Error  Invalid query: %s\n", $SQL);
+		exit();
+	} else {
+		//$row = sql_fetch_array($result);
+		//$tab_hnm	= $row['tab_hnm'];
+		$grant_write= $row['grant_write'];
+		$grant_view	= $row['grant_view'];
+		//$mid				= $row['userid'];
+		//$pg_title			= $tab_hnm;
+	} 
 	$H_ID= get_session("ss_mb_id");   
-	if( $H_ID == '' ) {
+	if( $H_ID !== '' ){
+		$H_LEV = $member['mb_level'];
+		$H_POINT= $member['mb_point'];
+	} else {
+		$H_LEV = 1;
+		$H_POINT=0;
+	}
+	if( $grant_view > 1 && $H_ID == '') {
+		m_("You need to login. $H_ID");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
+	} else if( $grant_view > $H_LEV ) {
 		m_("You need to login. $H_ID");
 		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
 	}
-
-	$H_LEV		= $member['mb_level'];  
-	$H_POINT	= $member['mb_point'];
 	$mode		= $_POST['mode'];
 	$seqno		= $_POST['seqno'];
 	$tab_hnm	= $_POST['tab_hnm'];
@@ -29,12 +52,20 @@
 	$iftype		= $_POST['iftype'];
 	$item_cnt	= $_POST['item_cnt'];
 	$pg_name	= $_POST['pg_name'];
-	$pg_code	= $_REQUEST['pg_code'];
 	$line_cnt	= $_POST['line_cnt'];
 
-	if( !$pg_name || !$pg_code  ) {
-			m_(" program name ----------- ERROR : pg_code:$pg_code , pg_name:$pg_name ");exit;
-	}
+	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
+	if( ($result = sql_query( $SQL ) )==false ){
+		printf(" Error  Invalid query: %s\n", $SQL);
+		exit();
+	} else {
+		$row = sql_fetch_array($result);
+		$tab_hnm	= $row['tab_hnm'];
+		$grant_write= $row['grant_write'];
+		$grant_view	= $row['grant_view'];
+		$mid				= $row['userid'];
+		$pg_title			= $tab_hnm;
+	} 
 
 	$str  = "abcdefghijklmnopqrstuvwxyz";
 	$str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -43,19 +74,6 @@
 	$shuffled_str = str_shuffle($str);
 	$auto_char=substr($shuffled_str, 0, 6);
 
-	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
-	if ( ($result = sql_query( $SQL ) )==false )
-	{
-		printf(" Error  Invalid query: %s\n", $SQL);
-		exit();
-	} else {
-		$row				= sql_fetch_array($result);
-		$tab_hnm		= $row['tab_hnm'];
-		$grant_write	= $row['grant_write'];
-		$grant_view	= $row['grant_view'];
-		$mid				= $row['userid'];
-		$pg_title			= $tab_hnm;
-	} 
 	$menu1TWPer=15;
 	$menu1AWPer=100 - $menu1TWPer;
 	$menu2TWPer=10;
@@ -64,7 +82,6 @@
 	$menu3AWPer=33.3 - $menu3TWPer;
 	$menu4TWPer=10;
 	$menu4AWPer=25 - $menu4TWPer;
-
 	$Xwidth='100%';
 	$Xheight='100%';
 ?>
