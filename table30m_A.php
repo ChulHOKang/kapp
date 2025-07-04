@@ -187,17 +187,16 @@
 		len = document.insert["fld_len[" + no + "]"].value;
 		Ahnm = document.insert["Afld_hnm[" + no + "]"].value;
 		hnm = document.insert["fld_hnm[" + no + "]"].value;
+		Aenm = document.insert["Afld_enm[" + no + "]"].value;
+		enm = document.insert["fld_enm[" + no + "]"].value;
 		Aftype = document.insert["Afld_type[" + no + "]"].value;
 		ftype = document.insert["fld_type[" + no + "]"].value;
-		alert("Alen: " + Alen + ", len: " + len + ", Ahnm: " + Ahnm + ", hnm: " + hnm+ ", Aftype: " + Aftype + ", ftype: " + ftype);
-		//Alen: 15, len: 255, Ahnm: fld3, hnm: fld3, Aftype: VARCHAR, ftype: TEXT
-		//return;
+		Amemo = document.insert["Afld_memo[" + 0 + "]"].value; // column list
 
-		if( document.insert["Afld_len[" + no + "]"].value == len && document.insert["fld_hnm[" + no + "]"].value == hnm){
-			alert(" name and length is same, You can only change the column name and length. ");
+		if( document.insert["Afld_len["+no+"]"].value == len && document.insert["fld_hnm["+no+"]"].value==hnm && document.insert["fld_enm["+no+"]"].value==enm){
+			alert(" name and length is same, You can only change the column name and length. "); // 컬럼명과 길이만 변경가능
 			return false;
 		}
-		if( document.insert["fld_hnm[" + no + "]"].value == hnm )
 		/*
 		  Program을 Upgrade 했다면 컬럼 변경은 하지 않는것이 좋다. 잘못하면 속성이 엉컬어 질 수 있다.
 		  컬럼 속성을 선언 하였다면 컬럼 길이만 변경 가능
@@ -205,16 +204,19 @@
 		  컬럼의 속성이 선언 되었다면 컬럼 타입을 변경 하지 않는 것이 좋다. VARCHAR 를 INT 로의 변경 즉 문자 타입을 숫자 타입으로 변경은 오류를 유발한다.
 
 		*/
+		fld_enm = document.insert["fld_enm[" + no + "]"].value;
 		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
 		if( fld_hnm == "seqno"){
 			alert(' Can not use column name seqno.');// \n 컬럼명 seqno를 사용할수 없습니다.
 			return false;
 		}
 		for( var k=1; k < colunm_cnt; k++ ){
-				knm = document.insert["fld_hnm[" + k + "]"].value;
-				if( fld_hnm == knm) {
+				khnm = document.insert["fld_hnm[" + k + "]"].value;
+				kenm = document.insert["fld_enm[" + k + "]"].value;  
+				if( fld_hnm == khnm || fld_enm == kenm ) {
 					if( k != no ) {
-						alert(' Column name '+ fld_hnm +' can not be used as a duplicate.');//중복으로 사용할수 없습니다.
+						alert(' Column name '+ fld_enm + ', ' + fld_hnm +' can not be used as a duplicate.');//중복으로 사용할수 없습니다.
+						// Column name fld_1, fld1 can not be used as a duplicate.
 						return false;
 					}
 				}
@@ -224,10 +226,18 @@
 			document.insert.del_mode.value="column_modify_mode";
 			document.insert.mode.value="Search";
 			document.insert.table_yn.value = table_yn;
-			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
+
 			document.insert.add_column_enm.value = document.insert["fld_enm[" + no + "]"].value;
+			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
 			document.insert.add_column_type.value = document.insert["fld_type[" + no + "]"].value;
 			document.insert.add_column_len.value = document.insert["fld_len[" + no + "]"].value;
+
+			document.insert.old_column_enm.value = Aenm;
+			document.insert.old_column_hnm.value = Ahnm;
+			document.insert.old_column_type.value = Aftype;
+			document.insert.old_column_len.value = Alen;
+			document.insert.old_memo.value = Amemo;
+
 			document.insert.add_column_memo.value = document.insert["memo[" + no + "]"].value;
 			document.insert.del_seqno.value = document.insert["seqno[" + no + "]"].value;
 			document.insert.action="table30m_A.php";
@@ -286,7 +296,7 @@
 	}
 	function Save_Update(cnt){ // Modification Registration - 수정등록
 		tab_hnm = document.insert.tab_hnm.value;
-		msg = " The data in the table is deleted. Want to regenerate? table is " + tab_hnm + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
+		msg = " The data in the table is deleted.\n Want to regenerate? table is " + tab_hnm + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
 		if ( window.confirm( msg ) )
 		{
 			tab = document.insert.tab_hnmS.value;
@@ -441,6 +451,11 @@
 		document.insert.submit();
 	}
 
+	function create_after_run_pg(tab_enm){
+		document.insert.action	="tkher_program_data_list.php?pg_code=" +tab_enm;
+		document.insert.target='_blank';
+		document.insert.submit();
+	}
 	function create_after_run(tab_enm, tab_hnm, mode){
 		var selectIndex = document.insert.tab_hnmS.selectedIndex;
 		tab_hnmS=tab_enm + ":" + tab_hnm;
@@ -545,6 +560,11 @@
     function line_getA(no){
 		document.insert.line_index.value = no;
 	}
+    function memo_set(memo){
+		alert("memo: " + memo);
+		//document.insert.line_index.value = no;
+	}
+	
 
 </script>
 <body>
@@ -680,10 +700,18 @@
 		<input type="hidden" name="tab_enm" value='<?=$tab_enm?>'>
 		<input type="hidden" name="disno" value='<?=$disno?>'>
 		<input type="hidden" name="add_column_no" value=''>
+		
 		<input type="hidden" name="add_column_enm" >
 		<input type="hidden" name="add_column_hnm" >
 		<input type="hidden" name="add_column_type" >
 		<input type="hidden" name="add_column_len" >
+
+		<input type="hidden" name="old_column_enm" >
+		<input type="hidden" name="old_column_hnm" >
+		<input type="hidden" name="old_column_type" >
+		<input type="hidden" name="old_column_len" >
+		<input type="hidden" name="old_memo" >
+
 		<input type="hidden" name="add_column_memo" >
 		<input type="hidden" name="group_code_table" value="<?=$group_code_table?>">
 		<input type="hidden" name="old_group_code" >
@@ -914,6 +942,7 @@
 			<?php
 				if ($fld_enm=='seqno' or $i==0) {
 					echo " value='AUTO_INCREMENT , Key : Can not change' title='Can not change' readonly";
+					//echo " value='$memo' ";					echo "<script>memo_set('".$memo."');</script>";
 				} else {
 					echo " value='$memo' ";
 				}
@@ -931,7 +960,7 @@
 					echo " <div id='manager_".$i.">' class='manager_".$i."' style='display: ;' > ";
 					echo " <input type='button' name='del' onclick=\"javascript:delete_column_func('$seqno', '$fld_hnm', '$fld_enm', '$i');\"  value='delete' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Delete a column.'>";
 					// 헤제 2025-06-25, 변경버턴 막아둔다 20230920 - 
-					echo " <input type='button' name='modify' onclick=\"javascript:column_modify_mode_func('$i', '$table_yn', '$dis_cnt', '$fld_len');\"  value='modify' style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Modify a column.'>";
+					echo " <input type='button' name='modify' onclick=\"javascript:column_modify_mode_func( '$i', '$table_yn', '$dis_cnt', '$fld_len');\"  value='modify' style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Modify a column.\nOnly column name and length can be changed.\nAlso change the associated programs.'>"; //컬럼명과 길이만 변경가능
 
 					echo "</div>";
 				}
@@ -951,7 +980,7 @@
 <?php
 		if( $mode=="Search") {
 ?>
-			<input <?php echo "title='Delete the created table and register the changes.' "; ?> type='button' name='upd' onclick="javascript:Save_Update('<?=$line_set?>');"
+			<input <?php echo "title='Delete the created table and register the changes.\nIf you only changed the column name and length,you don't need to run it.' "; ?> type='button' name='upd' onclick="javascript:Save_Update('<?=$line_set?>');"
 			value="Save Change" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 			<input <?php echo "title='Save as a new table.' "; ?> type='button' name='Newset' onclick="javascript:Newtable_save('<?=$line_set?>');"
 			value="NewTable" style='height:25px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>
@@ -1058,15 +1087,24 @@
 		$tabData['data'][$cnt]['relation_data']    = $Arelation_data;
 	}
 
-	if( $del_mode == 'column_modify_mode' ){ //
+	if( $del_mode == 'column_modify_mode' ){ 
 		$table_yn	=$_POST['table_yn'];
 		$tab_enm	=$_POST['tab_enm'];
 		$fld_enm	=$_POST['add_column_enm'];
 		$fld_hnm	=$_POST['add_column_hnm'];
 		$fld_type	=$_POST['add_column_type'];
 		$fld_len	=$_POST['add_column_len'];
+		$it_new = "|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len;
+		$ofld_enm	=$_POST['old_column_enm'];
+		$ofld_hnm	=$_POST['old_column_hnm'];
+		$ofld_type	=$_POST['old_column_type'];
+		$ofld_len	=$_POST['old_column_len'];
+		$it_old = "|". $ofld_enm ."|". $ofld_hnm  ."|". $ofld_type ."|". $ofld_len;
 		$fld_memo	=$_POST['add_column_memo'];
 		$seqno		=$_POST['del_seqno'];
+		if( isset($_POST['old_memo']) ) $Amemo	=$_POST['old_memo'];
+		else $Amemo='';
+		$item_arrayA = str_replace( $it_old, $it_new, $Amemo);
 		if( $table_yn =='y' ) {
 			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL";
@@ -1077,8 +1115,12 @@
 			}
 			$mq1=sql_query($query);
 			if( $mq1 ) {
-				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where userid='$H_ID' and seqno=$seqno " );
+				sql_query( "UPDATE {$tkher['table10_table']} set  memo='$item_arrayA' where tab_enm='$tab_enm' and fld_enm='seqno' " );
+				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where seqno=$seqno " );
+				sql_query( "UPDATE {$tkher['table10_pg_table']} set  item_array='$item_arrayA' where tab_enm='$tab_enm' " );
 				m_(" column update OK!! ");
+				echo "<script>create_after_run_pg( '$tab_enm');</script>"; 
+				exit;
 			}
 			else {
 				printf(" sql:%s ", $query);
@@ -1136,7 +1178,7 @@
 	}
 	if( $mode == "table_create_reaction" ){
 		create_reaction_func();
-	} else if( $mode == "table_update_remake" ){
+	} else if( $mode == "table_update_remake" ){ // Save Change
 		$view_set=1; // update_pg_func()에서 참고 내용을 1번만 출력 하도록 한다.
 		update_remake_func();
 	}
@@ -1444,7 +1486,7 @@
 				$Asqltable = '';
 				$i_data = "|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$item_array = $item_array . "|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
-				if( $fld_enm !== $fld_enmO ) update_pg_func($fld_enm, $fld_enmO, $i_data, $fld_O); // 컬럼명이 변경 되었을 때, 사용된 테이블 관련된 프로그램의 컬럼명을 변경한다.
+				if( $fld_enm !== $fld_enmO ) update_pg_func( $fld_enm, $fld_enmO, $i_data, $fld_O); // 컬럼명이 변경 되었을 때, 사용된 테이블 관련된 프로그램의 컬럼명을 변경한다.
 				$if_type = $if_type . "|" . "0";
 				$if_data = $if_data . "|" . "";
 				if( $fld_type =='INT' )					$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
@@ -1493,13 +1535,13 @@
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
 			sql_query($query);
 			//$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
-			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point - update_remake_func()
+			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
 	//----------------------------------------------------------------------
 	//컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요
-	function update_pg_func($fld_enm, $fld_enmO, $i_data, $fld_O){
+	function update_pg_func( $fld_enm, $fld_enmO, $i_data, $fld_O){
 		global $H_ID, $tab_enm, $mode, $view_set;
 		global $config;
 		global $tkher;
@@ -1522,7 +1564,7 @@
 		}
 	}
 	// 사용 하지않음 --- // 컬럼명이 변경 되었을 때, 사용된 테이블 관련된 프로그램의 컬럼명을 변경한다.
-	function update_pg_funcX($fld_enm, $fld_enmO, $fld_hnm, $fld_hnmO){
+	function update_pg_funcX( $fld_enm, $fld_enmO, $fld_hnm, $fld_hnmO){
 		global $H_ID, $tab_enm, $mode;
 		global $config;
 		global $tkher;
@@ -1535,7 +1577,7 @@
 				$item_array = $rs['item_array'];
 
 				$list		= explode("@", $item_array);
-				for ( $i=0; $list[$i] !== ""; $i++ ){
+				for ( $i=0; isset($list[$i]) && $list[$i] !==''; $i++ ){
 					$ddd				= $list[$i];
 					$item				= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2 , $item[1]; //e, $item[2]; //h, $item[3]; //t	$item[4]; //l
 					if( $item[1] == $fld_enmO ) {	//$item[1] = $fld_enm;
