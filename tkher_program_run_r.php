@@ -67,7 +67,7 @@
 						else	    $SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
 					}
 				} else if( $typeX=='9' ) {	// 9:첨부화일 처리
-					$f_path = KAPP_PATH_T_ . "/file/" .  $H_ID . "/" . $pg_code;
+					$f_path = KAPP_PATH_T_ . "/file/" .  $H_ID . "/" . $tab_enm; // $pg_code;
 					$f_path1= KAPP_PATH_T_ . "/file/" .  $H_ID;
 					if( !is_dir($f_path1) ) {
 						if( !@mkdir( $f_path1, 0755 ) ) {

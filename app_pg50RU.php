@@ -594,13 +594,13 @@ function ifcheck_onclickA( r, seq) {
 			document.makeform["iftype[" + selind + "]"].value = r;
 			break;
 		case 1: //	msge="Radio Button";	//alert( st[3] + ", r: " + r + ", col_attr_old: " + col_attr_old);//INT, r: 1, col_attr_old: 0
-			if( st[3] == 'TEXT'){
+			if( st[3] == 'TEXT' || st[3] == 'DATE'  || st[3] == 'TIME' || st[3] == 'DATETIME' || st[3] == 'PASSWORD' ){
 				alert( st[3] + ", type cannot be set" );
 				document.makeform["iftype[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
-			} else {
+			} else  {
 				document.makeform["iftype[" + selind + "]"].value = r;
 				if( !obj2 ) {
 					document.makeform.column_attribute.focus();
@@ -624,7 +624,7 @@ function ifcheck_onclickA( r, seq) {
 			}
 			break;
 		case 5: //	msge="List Box";
-			if( st[3] == 'TEXT' ) {
+			if( st[3] == 'TEXT' || st[3] == 'DATE'  || st[3] == 'TIME' || st[3] == 'DATETIME' || st[3] == 'PASSWORD' ) {
 				alert( st[3] + ", type cannot be set" );
 				document.makeform["iftype[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
@@ -643,7 +643,7 @@ function ifcheck_onclickA( r, seq) {
 				document.makeform.column_attribute.value = 'Password';
 				document.makeform["iftype[" + selind + "]"].value = r;
 			} else {
-				alert( st[3] + ", Numeric type cannot be set" );
+				alert( st[3] + ", type cannot be set" );
 				document.makeform["iftype[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
 				document.makeform.ifcheck[col_attr_old].checked=true;
@@ -651,8 +651,8 @@ function ifcheck_onclickA( r, seq) {
 			}
 			break;
 		case 9: // add file msge="Attached file";
-			if( st[3] == "CHAR" || st[3] == "VARCHAR" ||st[3] == "TEXT" ){
-				if( col_len < 100 ) { //컬럼의 길이가 작습니다.
+			if( st[3] == "CHAR" || st[3] == "VARCHAR" ){
+				if( col_len < 100 ) { // The column length is small. 컬럼의 길이가 작습니다.
 					alert("colnm: " + st[1] + ", col_len: " + col_len + ", The column length is small. The length of column "+st[1]+" was set to 255.");
 					column_length_change( st[1], col_len, st[3] ); //colnm_value: |fld_2|fld2|VARCHAR|15, A 컬럼의 길이를 255로 설정 하였습니다.
 				}
@@ -666,17 +666,17 @@ function ifcheck_onclickA( r, seq) {
 			}
 			break;
 		case 11: // Calculation formula msge="Formula.";
-			if( st[3] == 'CHAR' || st[3] == 'VARCHAR' || st[3] == 'TEXT' || st[3] == 'DATE' || st[3] == 'DATETIME' || st[3] == 'TIME'){
-				alert( st[3] + ", You cannot set the text type" );
-				document.makeform.ifcheck[col_attr_old].checked=true;
-				return false;
-			} else {
+			if( st[3]=='INT' || st[3]=='FLOAT' || st[3]=='DOUBLE' || st[3]=='TINYINT' || st[3]=='SMALLINT' || st[3]=='MEDIUMINT' || st[3]=='BIGINT' || st[3]=='DECIMAL' ){
 				document.makeform["iftype[" + selind + "]"].value = r;
 				document.makeform.target          = '_self';
 				document.makeform.action          = 'table_formulaM.php';
 				document.makeform.mode.value      = 'run13';
 				document.makeform.mode_call.value = 'app_pg50RU'; //document.makeform.mode_call.value = 'table_item_run50R';
 				document.makeform.submit();
+			} else {
+				alert( st[3] + ", You cannot set the text type" );
+				document.makeform.ifcheck[col_attr_old].checked=true;
+				return false;
 			}
 			break;
 		case 13: // popup window msge="Pop-up Window";

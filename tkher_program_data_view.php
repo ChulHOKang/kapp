@@ -533,8 +533,8 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						if( $row[$fldenm] != '' ) {
 								$ifile = explode( ".", $row[$fldenm] );
 								$row_fnm = $row[$fldenm];
-								$im = "./file/" . $mid . "/". $pg_code . "/" . $row_fnm;
-								$imP= KAPP_PATH_T_ . "/file/" . $mid . "/". $pg_code . "/" . $row_fnm;
+								$im = "./file/" . $mid . "/". $tab_enm . "/" . $row_fnm;
+								$imP= KAPP_PATH_T_ . "/file/" . $mid . "/". $tab_enm . "/" . $row_fnm;
 								$image_size = @GetImageSize( $imP );
 								if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
 									echo"<p>$fldhnm</p>";

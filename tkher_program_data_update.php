@@ -71,18 +71,20 @@ include_once('./tkher_start_necessary.php');
 				} else if( $typeX=='9' ) { // add file
 					$nm = $fld[1]; 
 					$upfileX = $_FILES["$nm"]["name"]; 
-					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $pg_code. "/";
+					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $tab_enm. "/";
 					$upfile_name = $_FILES["$nm"]["name"];
 					$upfile_name = str_replace(" ", "", $upfile_name);
 					$upfile_name = $mid . "_" . time() ."_" . $upfile_name;
 
-					if( $_FILES["$nm"]["error"] > 0){ // error check
-						echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
-					} else { // none error
-						move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
-						echo "Stored in: " . $f_path.$upfile_name;	// upload 
+					if( isset($upfileX) && $upfileX !=='' ) {
+						$query = $query . $fld[1] ."= '" .$upfile_name. "' ";
+						if( $_FILES["$nm"]["error"] > 0){ // error check
+							echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>"; // fld_3
+						} else { // none error
+							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
+							echo "Stored in: " . $f_path.$upfile_name;	// upload 
+						}
 					}
-					if( isset($upfileX) && $upfileX !=='' ) $query = $query . $fld[1] ."= '" .$upfile_name. "' ";
 				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
 				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME") {
@@ -97,17 +99,19 @@ include_once('./tkher_start_necessary.php');
 				} else if( $typeX=='9' ) { 
 					$nm = $fld[1]; 
 					$upfileX = $_FILES["$nm"]["name"]; 
-					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $pg_code. "/";
+					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $tab_enm. "/";
 					$upfile_name = $_FILES["$nm"]["name"];
 					$upfile_name = str_replace(" ", "", $upfile_name);
 					$upfile_name = $mid . "_" . time() ."_" . $upfile_name;
 
-					if( $_FILES["$nm"]["error"] > 0){ // error check
-						echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
-					} else { // none error
-						move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
+					if( isset($upfileX) && $upfileX !=='' ) {
+						$query = $query . $fld[1] ."= '" .$upfile_name. "', ";
+						if( $_FILES["$nm"]["error"] > 0){ // error check
+							echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
+						} else { // none error
+							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
+						}
 					}
-					if( isset($upfileX) && $upfileX !=='' ) $query = $query . $fld[1] ."= '" .$upfile_name. "', ";
 
 				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
@@ -547,16 +551,16 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 
 <?php
 		$list= explode("@", $item_array);
-		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
-				$ddd		= $list[$i];
-				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
+		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
+				if( isset($iftype[$j])  && $iftype[$j] !=='') $typeX	= $iftype[$j];
 				else $typeX	= '';
-				if( isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				if( isset($ifdata[$j]) && $ifdata[$j] !=='' ) $dataX	= $ifdata[$j];
 				else $dataX	= '';
-				if( isset($popdata[$j]) ) $popX	= $popdata[$j]; 
+				if( isset($popdata[$j]) && $popdata[$j] !=='' ) $popX	= $popdata[$j]; 
 				else $popX	= '';
-				if( isset($ifdata[$j]) ) $if_fld= explode(":", $ifdata[$j]);
+				if( isset($ifdata[$j]) && $ifdata[$j] !=='') $if_fld= explode(":", $ifdata[$j]);
 				else $if_fld	= '';
+				$ddd		= $list[$i];
 				$fld = explode("|", $ddd);
 				$fldenm= $fld[1];
 				$fldhnm= $fld[2];
@@ -571,7 +575,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 									echo " <div class='ListBox1A'>";
 									echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
 									
-								for( $k=0; $if_fld[$k] != ""; $k++ ){
+								for( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									if( $if_fld[$k] == $row[$fldenm] )
 											echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
 									else	echo "<OPTION >$if_fld[$k]</OPTION>";
@@ -584,7 +588,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 									echo " <div class='radio1A'><span>";
 								$ck = explode(",", $row[$fldenm] );
 								$kk = count($ck);
-								for ( $k=0; $if_fld[$k] != ""; $k++ ){
+								for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									$mm = " ";
 									for($ii=0;$ii<$kk;$ii++) {
 										if( $if_fld[$k] == $ck[$ii] ) $mm=" checked ";
@@ -596,7 +600,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 						} else if( $typeX == '1' ) {	// radio 버턴.
 									echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 									echo " <div class='radio1A'><span>";
-								for ( $k=0; $if_fld[$k] != ""; $k++ ){
+								for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 									if( $if_fld[$k] == $row[$fldenm] )
 											echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' checked >" . $if_fld[$k] . " &nbsp;";
 									else	echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "'>" . $if_fld[$k] . " &nbsp;";
@@ -677,7 +681,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 							echo " <div class='ListBox1A'>";
 							echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
 							
-						for ( $k=0; $if_fld[$k] != ""; $k++ ){
+						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 							if( $if_fld[$k] == $row[$fldenm] )
 									echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
 							else	echo "<OPTION >$if_fld[$k]</OPTION>";
@@ -690,7 +694,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 							echo " <div class='radio1A'><span>";
 						$ck = explode(",", $row[$fldenm] );
 						$kk = count($ck);
-						for ( $k=0; $if_fld[$k] != ""; $k++ ){
+						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 							$mm = " ";
 							for($ii=0;$ii<$kk;$ii++) {
 								if( $if_fld[$k] == $ck[$ii] ) $mm=" checked ";
@@ -702,7 +706,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 				} else if ( $typeX == '1' ) {	// radio .
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
-						for ( $k=0; $if_fld[$k] != ""; $k++ ){
+						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 							if( $if_fld[$k] == $row[$fldenm] )
 									echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' checked >" . $if_fld[$k] . " &nbsp;";
 							else	echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "'>" . $if_fld[$k] . " &nbsp;";
