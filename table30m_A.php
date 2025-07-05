@@ -12,7 +12,7 @@
 	  : 컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다.
 	  : 컬럼 위치 이동 과 이동후 컬럼 삭제 버턴 숨김 처리 추가.
 	 */
-	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
 	else $H_LEV = 0;
 	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
@@ -36,34 +36,31 @@
 	else $tab_hnmS = '';
 	if( isset($_POST['line_set']) ) $line_set = $_POST['line_set'];
 	else $line_set = 10;
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
-
 	if( isset($_POST['del_mode']) ) $del_mode = $_POST['del_mode'];
 	else $del_mode = '';
-
 	if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
 	else  $group_code	= "";
 	if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
 	else  $group_name	= "";
-
+	/*
 	if( $mode == "table_name_change" && isset($tab_enm) ) {
 			$aa = explode(':', $tab_hnmS);
 			$tab_nmS0 = $aa[0];
 			$tab_nmS1 = $aa[1];
 			$mode ="Search";
-			$query="update {$tkher['table10_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."' where tab_enm='$tab_nmS0' "; 
+			$query="update {$tkher['table10_table']} set tab_hnm='".$tab_hnm."' where tab_enm='$tab_nmS0' "; 
 			$g = sql_query( $query );
 			if( !$g ) m_("update error");
 			else {
-				$query="update {$tkher['table10_pg_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."', pg_name='".$tab_hnm."' where (pg_code='".$tab_nmS0."' and tab_enm='".$tab_nmS0."') "; //OK
+				$query="update {$tkher['table10_pg_table']} set tab_hnm='".$tab_hnm."'  where tab_enm='".$tab_nmS0."' "; 
 				$g1 = sql_query( $query );
 				$g1 = sql_query( $query );
 				if( $g1 ) m_("Changed name of the Table table code: " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
 				else m_("Error! Changed name of Table : " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
 			}
-	}
+	}*/
 	/*
 	if( $mode=='group_name_add'){
 		$uid = explode('@', $H_ID); // id is email
@@ -126,7 +123,7 @@
 </script>
 
 <script language=javascript>
-	function table_name_change(){ // add 2023-09-08 kan
+	function table_name_change(){
 		tab_hnmS = document.insert.tab_hnmS.value;
 		da = tab_hnmS.split(":");
 		hnm=da[1];
@@ -149,41 +146,20 @@
 	function change_table_func() {
 		tab = document.insert.tab_hnmS.value;
 		da = tab.split(":");
-		document.insert.group_code_table.value=da[2];
-		document.insert.group_code.value=da[2];
-		document.insert.group_name.value=da[3];
+		//document.insert.group_code_table.value=da[2];
+		//document.insert.group_code.value=da[2];
+		//document.insert.group_name.value=da[3];
 		document.insert.mode.value='Search';
 		document.insert.action="table30m_A.php";
 		document.insert.submit();
 	}
 
-	function Project_change_func(cd){
+	function Project_change_func( cd){
 		index=document.insert.group_code.selectedIndex;
 		nm = document.insert.group_code.options[index].text;
 		document.insert.group_name.value=nm;
 		document.insert.old_group_code.value=document.insert.group_code.options[index].value;
 		return;
-	}
-
-	function group_name_change_func(nm){
-		index=document.insert.group_code.selectedIndex;
-		gnm = document.insert.group_code.options[index].text;
-		document.insert.old_group_code.value = document.insert.group_code.options[index].value;
-		document.insert.old_group_name.value = gnm;
-		if(gnm=='ETC') {
-			alert(' Project name ETC can not be changed. ');//\n 그룹이름 ETC는 변경할수 없습니다.
-			return false;
-		}
-		nm = document.insert.group_name.value;
-		cd = document.insert.group_code_table.value;
-		if( nm !== gnm ) msg = " Would you like to change the Project name of "+nm+" to "+gnm+"? "; // 프로젝트의 명칭을 변경합니다.
-		else msg = " Change the project of the table? project name is " + gnm; //테이블의 프로젝트를 변경 하시겠습니까?
-		if ( window.confirm( msg ) )
-		{
-			document.insert.mode.value			="group_name_change";
-			document.insert.action					="table30m_A.php";
-			document.insert.submit();
-		} else return false;
 	}
 
 	function column_modify_mode_func( no,  table_yn, colunm_cnt, len ) {
@@ -385,26 +361,32 @@
 		return;
 	}
 
-	function Newtable_save(cnt){
+	function Copy_Newtable_save( cnt){
+		group_code = document.insert.group_code.value;
+		group_name = document.insert.group_name.value;
+		if( group_code == '' || group_name == '' ){
+			alert("select project ");
+			return false;
+		}
 		new_table_name = document.insert.tab_hnm.value;
 		tab = document.insert.tab_hnmS.value;
 		da = tab.split(":");
 		hnm=da[1];
 		enm=da[0];
-		document.insert.group_code.value=da[2];
-		document.insert.group_name.value=da[3];
+		//document.insert.group_code.value=da[2];
+		//document.insert.group_name.value=da[3];
 		if( new_table_name == hnm ) {
 			alert('Change the table name! ');//테이블명을 변경하세요!
 			document.insert.tab_hnm.focus();
 			return false;
 		} else {
 			var item_cnt = insert.tab_hnmS.options.length;
-			for(i=0;i < item_cnt; i++){
+			for( i=0;i < item_cnt; i++){
 				tabA = insert.tab_hnmS[i].value;
 				tt = tabA.split(":");
 				t = tt[1];
 				if( new_table_name == t ) {
-					alert('Table name is duplicate.' );//Table명이 중복입니다.
+					alert('Table name is duplicate.' ); //Table명이 중복입니다.
 					insert.tab_hnm.focus();
 					return false;
 				}
@@ -568,9 +550,8 @@
 		alert("memo: " + memo);
 		//document.insert.line_index.value = no;
 	}
-	
-
 </script>
+
 <body>
 <center>
 <?php
@@ -589,7 +570,8 @@
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
 			$tab_hnm = $aa[1];
-			$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
+//			$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
+			$result = sql_query( "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' order by disno" );
 			$record_cnt = sql_num_rows($result);
 			$ARR=0;
 			$item_array = "";
@@ -600,8 +582,8 @@
 					$fld_hnm		= $rs['fld_hnm'];
 				if($rs['fld_enm'] == 'seqno' )	{
 					$userid				= $rs['userid']; // 한번만 처리하기.
-					$group_code		= $rs['group_code'];
-					$group_name		= $rs['group_name'];
+					//$group_code		= $rs['group_code'];
+					//$group_name		= $rs['group_name'];
 					$tab_enm			= $rs['tab_enm'];
 					$tab_hnm			= $rs['tab_hnm'];
 					$table_yn			= $rs['table_yn'];
@@ -687,8 +669,8 @@
 				}
 			}//while
 	}
-	if( isset($_POST['group_code_table']) ) $group_code_table = $_POST['group_code_table'];
-	$group_code_table ='';
+//	if( isset($_POST['group_code_table']) ) $group_code_table = $_POST['group_code_table'];
+//	$group_code_table ='';
 ?>
 	<Form METHOD='POST' name='insert' enctype="multipart/form-data">
 		<input type="hidden" name="line_index" >
@@ -717,7 +699,7 @@
 		<input type="hidden" name="old_memo" >
 
 		<input type="hidden" name="add_column_memo" >
-		<input type="hidden" name="group_code_table" value="<?=$group_code_table?>">
+		<!-- <input type="hidden" name="group_code_table" value="<?=$group_code_table?>"> -->
 		<input type="hidden" name="old_group_code" >
 		<input type="hidden" name="old_group_name" >
 		<input type="hidden" name="table_yn" value='<?=$table_yn?>'>
@@ -726,15 +708,15 @@
 	<tr>
 		<td bgcolor='#f4f4f4' title='You can change or add the group name of the table.'><font color='black'>Project</td>
 		<td bgcolor='#ffffff'>
-		<SELECT id='group_code' name='group_code' onchange="Project_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered. ' "; ?> >
+		<SELECT id='group_code' name='group_code' onchange="Project_change_func( this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered. ' "; ?> >
 				<option value=''>Select project</option>
-				<!-- <option value='ETC' selected>ETC</option> -->
 <?php
 			$SQLG = "SELECT * from {$tkher['table10_group_table']} where userid='".$H_ID."' order by group_name ";
+//			$SQLG = "SELECT * from {$tkher['table10_group_table']}  order by group_name ";
 			$result = sql_query( $SQLG );
-			while($rs = sql_fetch_array($result)) {
+			while( $rs = sql_fetch_array($result)) {
 ?>
-				<option value="<?=$rs['group_code']?>" <?php if($rs['group_code']==$group_code) echo " selected ";?> ><?=$rs['group_name']?></option>
+				<option value="<?=$rs['group_code']?>" <?php //if($rs['group_code']==$group_code) echo " selected ";?> ><?=$rs['group_name']?></option>
 <?php
 			}
 ?>
@@ -744,8 +726,7 @@
 </tr>
 <tr>
 	<td bgcolor='#f4f4f4' <?php echo "title='Select a table from the list of registered tables.' "; ?>>Table Name</td>
-	<td bgcolor='#ffffff'>
-	<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select a table from the list of registered tables.' "; ?> >
+	<td bgcolor='#ffffff'><SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func( this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select a table from the list of registered tables.' "; ?> >
 				<option value=''>Select table</option>
 <?php
 		if( $mode =='Search') {
@@ -753,17 +734,18 @@
 				<option value="<?php echo $tab_hnmS ?>"  selected ><?php echo $tab_hnm ?> </option>
 <?php
 		}
-		$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
+//		$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
+		$result = sql_query( "SELECT * from {$tkher['table10_table']} where fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
 		while( $rs = sql_fetch_array($result)) {
 ?>
-				<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if($rs['tab_hnm']==$tab_hnm) echo " selected "; ?>><?=$rs['tab_hnm']?></option>
+				<option title="user:<?=$rs['userid']?>" value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if($rs['tab_hnm']==$tab_hnm) echo " selected "; ?>><?=$rs['tab_hnm']?></option>
 <?php
 		}
 ?>
 		</select>
 		</td><td bgcolor='#ffffff'>&nbsp;<input type='text' name='tab_hnm' size='15' maxlength='50' value='<?=$tab_hnm?>' style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Enter the name of the table to be created!' "; ?>>
 		</td>
-		<td bgcolor='#f4f4f4'><input type='button' onclick="javascript:table_name_change();" value='Name Change' style='height:25px;background-color:cyan;border-radius:20px;border:1 solid black' <?php echo "title='name change of table' "; ?> ></td>
+		<!-- <td bgcolor='#f4f4f4'><input type='button' onclick="javascript:table_name_change();" value='Name Change' style='height:25px;background-color:cyan;border-radius:20px;border:1 solid black' <?php echo "title='name change of table' "; ?> ></td> -->
 </tr>
 </table>
 				  Table:<?=$tab_enm?>, Line Count : <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>><!--  \n등록할 라인수를 설정합니다. -->
@@ -946,7 +928,6 @@
 			<?php
 				if ($fld_enm=='seqno' or $i==0) {
 					echo " value='AUTO_INCREMENT , Key : Can not change' title='Can not change' readonly";
-					//echo " value='$memo' ";					echo "<script>memo_set('".$memo."');</script>";
 				} else {
 					echo " value='$memo' ";
 				}
@@ -963,7 +944,6 @@
 				} else {
 					echo " <div id='manager_".$i.">' class='manager_".$i."' style='display: ;' > ";
 					echo " <input type='button' name='del' onclick=\"javascript:delete_column_func('$seqno', '$fld_hnm', '$fld_enm', '$i');\"  value='delete' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Delete a column.'>";
-					// 헤제 2025-06-25, 변경버턴 막아둔다 20230920 - 
 					echo " <input type='button' name='modify' onclick=\"javascript:column_modify_mode_func( '$i', '$table_yn', '$dis_cnt', '$fld_len');\"  value='modify' style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Modify a column.\nOnly column name and length can be changed.\nAlso change the associated programs.'>"; //컬럼명과 길이만 변경가능
 
 					echo "</div>";
@@ -986,8 +966,8 @@
 ?>
 			<input <?php echo "title='Delete the created table and register the changes.\nIf you only changed the column name and length,you don't need to run it.' "; ?> type='button' name='upd' onclick="javascript:Save_Update( '<?=$line_set?>');"
 			value="Save Change" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
-			<input <?php echo "title='Save as a new table.' "; ?> type='button' name='Newset' onclick="javascript:Newtable_save('<?=$line_set?>');"
-			value="NewTable" style='height:25px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>
+			<input <?php echo "title='Copy and Save as a new table.' "; ?> type='button' name='Newset' onclick="javascript:Copy_Newtable_save( '<?=$line_set?>');"
+			value="Copy NewTable" style='height:25px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>
 			<input <?php echo "title='Change to the table registration screen.' "; ?> type='button' name='reset' onclick="javascript:resetgo();"
 			value="Reset" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 <?php
@@ -1227,7 +1207,7 @@
 			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$cnt, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt,  userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt,  userid='$H_ID',  tab_mid='$H_ID' ";
 			sql_query($query);
 			$link_ = KAPP_URL_T_ . "/table30m_A.php";
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point
@@ -1328,7 +1308,7 @@
 			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID',  tab_mid='$H_ID' ";
 			$ret = sql_query($query);
 			if( $ret ){
 				$pg_url = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
@@ -1349,15 +1329,15 @@
 	}
 	//=============================================================
 	function Table_Copy_Func(){
-		global $H_ID, $mode;
+		global $H_ID, $mode, $group_code, $group_name;
 		global $config;
 		global $tkher;
 		$tab_enm		= $H_ID . "_" . time();
 		$tab_hnm		= $_POST["tab_hnm"];
-		if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
-		else  $group_code	= "ETC";
-		if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
-		else  $group_name	= "ETC";
+		//if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
+		//else  $group_code	= "ETC";
+		//if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
+		//else  $group_name	= "ETC";
 
 		$item_list  = " create table ". $tab_enm . " ( ";
 		$item_list  = $item_list . " seqno int auto_increment not null, ";
@@ -1400,7 +1380,7 @@
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='key column', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='key column', sqltable='$item_list' " );
 		$line_set = $cnt;
 		$fld_enm  = "fld_" . $ARR;
 		$mq1 = sql_query( $item_list );
@@ -1413,17 +1393,24 @@
 			TAB_curl_send( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
 		}
 		$enm		= $_POST['tab_enm'];
-		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$enm."' ";
-		$resultPG	= sql_query($sqlPG);
-		$table10_pg = sql_num_rows($resultPG);
-		if( $table10_pg ) {
-			$rsPG = sql_fetch_array($resultPG);
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].",  userid='$H_ID' ";
+//		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$enm."' ";
+		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$enm."' ";
+		$rsPG	= sql_fetch($sqlPG);
+//		$resultPG	= sql_query($sqlPG);
+//		$table10_pg = sql_num_rows($resultPG);
+//		if( $table10_pg ) {
+//		if( !isset($resultPG['pg_code']) && $resultPG['pg_code'] =='' ) {
+		if( $rsPG ) {
+			//$rsPG = sql_fetch_array($resultPG);
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].",  userid='$H_ID',  tab_mid='$H_ID' ";
 			sql_query($query);	// 중요.		//coin_add_func( $H_ID, 200 ); //OK !!!
 			$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10_pg@table30m' );// PG create point
 		} else {
-			m_(" Copy ERROR : mode:".$mode.", pg_code:".$enm );
+			m_(" Copy ERROR : mode:".$mode.", pg_code:".$tab_enm ); //Copy ERROR : mode:table_new_copy, pg_code:dao_1745208944
+			//Copy ERROR : mode:table_new_copy, pg_code:
+			// Copy ERROR : mode:table_new_copy, pg_code:solpakanA_naver_1751686700
+			//echo "sql: " . $sqlPG; exit;
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
@@ -1517,7 +1504,7 @@
 			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array' WHERE pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID',  tab_mid='$H_ID' ";
 			sql_query($query);
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";

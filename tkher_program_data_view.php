@@ -11,21 +11,33 @@
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 <?php
-	$pg_code = $_REQUEST['pg_code'];
-	if( !$pg_name || !$pg_code  ) {
-			m_(" program name ----------- ERROR : pg_code:$pg_code , pg_name:$pg_name ");exit;
+	if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
+	else if( isset($_POST['pg_code']) )  $pg_code = $_POST['pg_code'];
+	else $pg_code='';
+
+	if( isset($_REQUEST['tab_enm']) ) $tab_enm = $_REQUEST['tab_enm'];
+	else if( isset($_POST['tab_enm']) )  $tab_enm = $_POST['tab_enm'];
+	else $tab_enm='';
+
+	if( isset($_REQUEST['data_mid']) ) $data_mid = $_REQUEST['data_mid'];
+	else if( isset($_POST['data_mid']) )  $data_mid = $_POST['data_mid'];
+	else $data_mid='';
+
+	if( $pg_code =='' || $tab_enm =='' ) {
+			m_(" ERROR : pg_code:$pg_code , tab_enm:$tab_enm ");exit;
 	}
+		$pg_mid	= '';
+		$tab_mid= '';
 	$SQL = " SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-	if( ($row = sql_fetch( $SQL ) )==false ){
-		printf(" Error  Invalid query: %s\n", $SQL);
+	if( ($rowPG = sql_fetch( $SQL ) )==false ){
+		m_("tkher_program_data_view Error ");
 		exit();
 	} else {
 		//$row = sql_fetch_array($result);
-		//$tab_hnm	= $row['tab_hnm'];
-		$grant_write= $row['grant_write'];
-		$grant_view	= $row['grant_view'];
-		//$mid				= $row['userid'];
-		//$pg_title			= $tab_hnm;
+		$grant_write= $rowPG['grant_write'];
+		$grant_view	= $rowPG['grant_view'];
+		$pg_mid	= $rowPG['userid'];
+		$tab_mid= $rowPG['tab_mid'];
 	} 
 	$H_ID= get_session("ss_mb_id");   
 	if( $H_ID !== '' ){
@@ -35,17 +47,16 @@
 		$H_LEV = 1;
 		$H_POINT=0;
 	}
-	if( $grant_view > 1 && $H_ID == '') {
-		m_("You need to login. $H_ID");
-		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
-	} else if( $grant_view > $H_LEV ) {
-		m_("You need to login. $H_ID");
-		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
+	if( $H_LEV >= $grant_view || $H_ID == $pg_mid || $H_ID == $data_mid) {
+		//m_("You need to login. $H_ID");
+		//echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$pg_code."'>";exit;
+	} else {
+		m_("You need to view level: $H_LEV, grant: $grant_view ");
+		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$pg_code."'>";exit;
 	}
 	$mode		= $_POST['mode'];
 	$seqno		= $_POST['seqno'];
 	$tab_hnm	= $_POST['tab_hnm'];
-	$tab_enm	= $_POST['tab_enm'];
  	$if_data		= array();
 	$iftype		= array();
 	$if_data		= $_POST['if_data'];
@@ -54,23 +65,23 @@
 	$pg_name	= $_POST['pg_name'];
 	$line_cnt	= $_POST['line_cnt'];
 
-	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
-	if( ($result = sql_query( $SQL ) )==false ){
-		printf(" Error  Invalid query: %s\n", $SQL);
+	/*$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
+	if( ($row = sql_fetch( $SQL ) )==false ){
+	//if( ($result = sql_query( $SQL ) )==false ){
+		//printf(" Error  Invalid query: %s\n", $SQL);
+		m_("Fetch Error - pg_code: $pg_code, tab_enm: $tab_enm");
 		exit();
 	} else {
-		$row = sql_fetch_array($result);
+		//$row = sql_fetch_array($result);
 		$tab_hnm	= $row['tab_hnm'];
 		$grant_write= $row['grant_write'];
 		$grant_view	= $row['grant_view'];
-		$mid				= $row['userid'];
-		$pg_title			= $tab_hnm;
-	} 
+		$tab_mid= $row['userid'];
+	}*/
 
 	$str  = "abcdefghijklmnopqrstuvwxyz";
 	$str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	$str .= "0123456789";
-
 	$shuffled_str = str_shuffle($str);
 	$auto_char=substr($shuffled_str, 0, 6);
 
@@ -465,15 +476,16 @@
 <body bgcolor='#ffffff'>
 <center>
 <?php
-
+$data_mid = '';
 $SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
-if ( ($result = sql_query( $SQLX ) )==false )
-{
-		my_msg( "Error seqno:$seqno" );
-		printf("SQLX Invalid query: %s\n", $SQLX);
+if ( ($row = sql_fetch( $SQLX ) )==false ){
+//if ( ($result = sql_query( $SQLX ) )==false ){
+		m_( "Error $tab_enm , seqno:$seqno" );
+		//printf("SQLX Invalid query: %s\n", $SQLX);
 		exit();
 } else {
-		$row	= sql_fetch_array($result);
+		//$row	= sql_fetch_array($result);
+		$data_mid = $row['kapp_userid'];
 ?>
 <?php
 		$cur='B';
@@ -485,7 +497,9 @@ if ( ($result = sql_query( $SQLX ) )==false )
 			<form name='form_view' action='tkher_program_data_view.php?id=<?=$H_ID?>#update_page' method='post' enctype="multipart/form-data" onsubmit='return check(this)'>
 				<input type="hidden" name='mode'		value='' />
 				<input type="hidden" name='Hid'			value='<?=$H_ID?>' />
-				<input type="hidden" name='mid'			value='<?=$mid?>' />
+				<input type="hidden" name='pg_mid'			value='<?=$pg_mid?>' />
+				<input type="hidden" name='tab_mid'			value='<?=$tab_mid?>' />
+				<input type="hidden" name='data_mid'			value='<?=$data_mid?>' />
 				<input type="hidden" name='tab_enm'	value='<?=$tab_enm?>' />
 				<input type="hidden" name='tab_hnm'	value='<?=$tab_hnm?>' />
 				<input type="hidden" name='seqno'		value='<?=$seqno?>' />
@@ -501,7 +515,7 @@ if ( ($result = sql_query( $SQLX ) )==false )
 		<div class="viewHeader">
 			<span title='tkher_program_data_view'>pg:<?=$pg_code?>(<?=$pg_name?>) &nbsp;&nbsp;&nbsp; Date : <?=date("Y-m-d H:i:s" ); ?></span>
 		</div>
-		<div class="viewSubjX"><span title='(<?=$pg_code?>:<?=$tab_hnm?>)'><?=$pg_name?></span> </div>
+		<div class="viewSubjX"><span title='(pg_mid:<?=$pg_mid?>:data_mid:<?=$data_mid?>:<?=$pg_code?>:<?=$tab_enm?>)'><?=$pg_name?></span> </div>
 		<div class='blankA'> </div>
 <?php
 		if( $mode=="data_delete" ) {
@@ -517,22 +531,24 @@ if ( ($result = sql_query( $SQLX ) )==false )
 			}
 		}
 ?>
-			<form name=form3 action='' method=post enctype="multipart/form-data" onsubmit='return check(this)'>
+			<form name='form3' action='' method='post' enctype="multipart/form-data" onsubmit='return check(this)'>
 <?php
-				$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+				/*$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 				$resultPG = sql_query($sqlPG);
 				if ( $resultPG == false ) { my_msg(" tab_view_pg70 pg_name:$pg_name select ERROR "); exit; }
 				$table10_pg = sql_num_rows($resultPG);
 				$rsPG = sql_fetch_array($resultPG);
+				*/
+
 				$list = array();
 				$ddd = "";
 				$qqq = "";
-				$mid			= $rsPG['userid'];
-				$item_array= $rsPG['item_array'];
+				//$mid			= $rowPG['userid'];
+				$item_array= $rowPG['item_array'];
 				$list			= explode("@", $item_array);
-				$iftypeX		= $rsPG['if_type'];
+				$iftypeX		= $rowPG['if_type'];
 				$iftype		= explode("|", $iftypeX);
-				$ifdataX		= $rsPG['if_data'];
+				$ifdataX		= $rowPG['if_data'];
 				$ifdata		= explode("|", $ifdataX);
 			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
@@ -550,15 +566,15 @@ if ( ($result = sql_query( $SQLX ) )==false )
 						if( $row[$fldenm] != '' ) {
 								$ifile = explode( ".", $row[$fldenm] );
 								$row_fnm = $row[$fldenm];
-								$im = "./file/" . $mid . "/". $tab_enm . "/" . $row_fnm;
-								$imP= KAPP_PATH_T_ . "/file/" . $mid . "/". $tab_enm . "/" . $row_fnm;
+								$im = "./file/" . $tab_mid . "/". $tab_enm . "/" . $row_fnm;
+								$imP= KAPP_PATH_T_ . "/file/" . $tab_mid . "/". $tab_enm . "/" . $row_fnm;
 								$image_size = @GetImageSize( $imP );
 								if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
 									echo"<p>$fldhnm</p>";
 									echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im' width='400' height='300' border='0'></a> </div>";
 								} else {
 									echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-									echo " <div class='data1A'><a href='./file/$mid/$pg_code/$row[$fldenm]' target='_BLANK'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
+									echo " <div class='data1A'><a href='./file/$tab_mid/$tab_enm/$row[$fldenm]' target='_BLANK'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 									echo " <div class='blankA'> </div> ";
 								}
 						}else{
@@ -575,9 +591,11 @@ if ( ($result = sql_query( $SQLX ) )==false )
 ?>
 					<div class="viewBtn">
 <?php
-		if( $H_LEV >= $grant_write ){ //쓰기권한 
+//		if( $H_LEV >= $grant_write ){ //쓰기권한 
+//		if( $H_LEV >= $grant_write || $H_ID == $pg_mid || $H_ID == $data_mid ){ //쓰기권한 
+		if( $H_ID == $pg_mid || $H_ID == $data_mid ){ //쓰기권한 
 ?>
-			<input type='button' value='Modify' onclick="javascript:record_update();" class="btn_bo02">
+			<input type='button' value='Modify' onclick="javascript:record_update();" class="btn_bo02" title="grant write:<?=$grant_write?>:<?=$H_LEV?>">
 			<input type='button' value='Delete' onclick="javascript:data_delete('<?=$H_ID?>', <?=$row['seqno']?>);" class="btn_bo02">
 <?php } ?>
 			<input type='button' value='List' onclick="javascript:tab_pg_view();" class="btn_bo02">

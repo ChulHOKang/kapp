@@ -26,17 +26,11 @@
 	}
 	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
 	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
-	else $pg_code = "";
-	if( !$pg_code ) {
-		$pg_name	= $_SESSION['pg_name'];	 //table_item_run70_r.php 
-		$pg_code	= $_SESSION['pg_code'];
-		$_SESSION['pg_code']	= '';
-		$_SESSION['pg_name']	= '';
-	}
+	else $pg_code = '';
 	if( !$pg_code ) {
 		m_("pg code - ERROR : pg_code: $pg_code "); exit;//
 	}
-	$mid= ''; 
+	$pg_mid= ''; $tab_mid= ''; 
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
@@ -48,7 +42,8 @@
 		$item_cnt = $rsPG['item_cnt'];
 		$fld_cnt = $rsPG['item_cnt'];
 		$pg_name = $rsPG['pg_name']; 
-		$mid= $rsPG['userid']; 
+		$pg_mid= $rsPG['userid']; 
+		$tab_mid= $rsPG['tab_mid']; 
 		$grant_view= $rsPG['grant_view']; 
 		$grant_write= $rsPG['grant_write']; 
 		$group_code= $rsPG['group_code'];
@@ -129,8 +124,9 @@ $(function () {
 		document.view_form.search_fld.value = c[0];
 		document.view_form.mode.value = 'search';
 	}
-	function pg_record_view( seqno ){
+	function pg_record_view( seqno, data_mid ){
 		document.view_form.seqno.value=seqno;
+		document.view_form.data_mid.value=data_mid;
 		document.view_form.action='tkher_program_data_view.php'; 
 		document.view_form.submit();
 	}
@@ -367,12 +363,12 @@ $(function () {
 ?>
 			<br>
 			<div>
-				<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table code:<?=$pg_code?>:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
+				<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
 			</div>
 <?php
 	$total_count = 0;
 	$view_msg ='';
-	if( $grant_view == $H_LEV || $grant_view < $H_LEV || $mid == $H_ID ) {
+	if( $H_LEV >= $grant_view || $pg_mid == $H_ID ) {
 			$SQL1 = "SELECT * from $tab_enm ";
 			if( $mode=='search' ){
 				if( $c_sel3 == "like")		$SQL1 = $SQL1 . " where $search_fld $c_sel3 '%$searchT%' ";
@@ -438,7 +434,7 @@ $(function () {
 <?php
 	if( isset($_POST['group_codeX']) ) $group_codeX = $_POST['group_codeX'];
 	else $group_codeX = "";
-	if( isset($H_ID) ) {
+	if( isset($H_ID) && $H_ID !=='' ) {
 		if( isset( $group_codeX) ){
 			$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_codeX . "' order by upday desc ";
 		} else {
@@ -477,7 +473,7 @@ $(function () {
 				</DIV> 
 
 				<div class="viewHeaderT">
-					<span title='mid:<?=$mid?>, view level:<?=$grant_view?>'>&nbsp;&nbsp;
+					<span title='pg_mid:<?=$pg_mid?>, view level:<?=$grant_view?>'>&nbsp;&nbsp;
 					K-APP:<?=$pg_code?>(<?=$grant_view?>)&nbsp;&nbsp;&nbsp;&nbsp;
 					Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='View page count'>Page:<?=$page?></strong>
@@ -489,7 +485,7 @@ $(function () {
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 					</span>
 <?php
-if( $H_ID==$mid ) {
+if( $H_ID==$pg_mid ) {
 ?>
 					<span>
 						<strong title='Set data view level'>Grant View: </strong>
@@ -508,7 +504,7 @@ if( $H_ID==$mid ) {
 						</select>
 					</span>
 <?php
-}// else echo " user: " . $mid;
+}// else echo " user: " . $pg_mid;
 						echo "<br>".$view_msg;
 ?>
 
@@ -526,7 +522,9 @@ if( $H_ID==$mid ) {
 						<input type="hidden" name='c_sel'			value='<?=$c_sel?>' />
 						<input type="hidden" name='c_sel3'			value='<?=$c_sel3?>' />
 						<input type="hidden" name='target_'		value='<?=$target_?>' />
-						<input type="hidden" name='mid'		value='<?=$mid?>' />
+						<input type="hidden" name='pg_mid'		value='<?=$pg_mid?>' />
+						<input type="hidden" name='tab_mid'		value='<?=$tab_mid?>' />
+						<input type="hidden" name='data_mid'		value='' />
 						<input type="hidden" name='pg_code'		value='<?=$pg_code?>' />
 						<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
 						<input type="hidden" name='group_codeX'		value="<?=$group_codeX?>" />
@@ -560,7 +558,7 @@ if( $H_ID==$mid ) {
 		</thead>
 		<tbody width=100%>
 <?php
-	if( $grant_view == $H_LEV || $grant_view < $H_LEV || $mid == $H_ID ) {
+	if( $H_LEV>= $grant_view || $pg_mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
 			$OrderBy	= " order by seqno desc ";
@@ -572,8 +570,7 @@ if( $H_ID==$mid ) {
 				else	 $SQL = $SQL . " where $search_fld like '%$searchT%' ";
 			} 
 			$SQL = $SQL . $OrderBy . $SQL_limit;
-			if( ($result = sql_query( $SQL ) )==false )
-			{
+			if( ($result = sql_query( $SQL ) )==false )	{
 				printf("Record 0 : query: %s\n", $SQL);
 			} else {
 				if( $page > 1 ) $no=($page -1) * $line_cnt;
@@ -581,20 +578,21 @@ if( $H_ID==$mid ) {
 				while( $row = sql_fetch_array($result)  ) {
 					$no++;
 					$row_seqno = $row['seqno'];
+					$data_mid = $row['kapp_userid'];
 ?>
 					<tr>
 						<td style="width:30px; height:100%px;text-align:center">
-						 <a href="javascript:pg_record_view('<?=$row_seqno?>');" ><?=$no?></a></td>
+						 <a href="javascript:pg_record_view('<?=$row_seqno?>', '<?=$data_mid?>');" ><?=$no?></a></td>
 <?php
 						for( $i=0; $i < $fld_cnt; $i++){
 							$fff = $fld_enm[$i];
 							if( $fld_type[$i]=='INT' ){
 								$num = number_format( $row[$fff] );
-								echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."');\" >$num</a></td> ";
+								echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >$num</a></td> ";
 							} else if( $fld_type[$i]=='TEXT' ){
 								echo " <td class='cell04'>$row[$fff]</td> ";
 							}
-							else echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."');\" >".$row[$fff]."</a></td> ";
+							else echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >".$row[$fff]."</a></td> ";
 						}
 ?>
 					</tr>

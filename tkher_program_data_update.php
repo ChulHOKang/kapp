@@ -38,7 +38,6 @@ include_once('./tkher_start_necessary.php');
 <?php
 	$H_LEV			= $member['mb_level'];  
 	$mode			= $_POST['mode'];
-	$mid				= $_POST['mid'];
 	$seqno			= $_POST['seqno'];
 	$grant_write	= $_POST['grant_write'];
 	$pg_name		= $_POST['pg_name'];
@@ -47,7 +46,10 @@ include_once('./tkher_start_necessary.php');
 	if( isset($_POST['if_data']) ) $if_data=$_POST['if_data'];
 	$tab_hnm		=	$_POST['tab_hnm'];
 	$tab_enm		=	$_POST['tab_enm'];
+
 	if( $mode == 'CHG_MODE' ){
+		$pg_mid		= $_POST['pg_mid'];
+		$tab_mid		= $_POST['tab_mid'];
 		$item_array		= $_POST['item_array'];
 		$item_cnt		= $_POST['item_cnt'];
 		$iftypeX			= $_POST['iftypeX'];
@@ -65,18 +67,19 @@ include_once('./tkher_start_necessary.php');
 			$fld = explode("|", $ddd);
 			$fld_enm= $fld[1];
 			IF( $i==($item_cnt-1) ) { // 마지막 컬럼 체크 "," 처리를 위해...sql a=1, b=2 
+
 				if( $typeX=='3' ) {
 					$aa = @implode(",",$_POST[$fld[1]]);
 					$query = $query . $fld[1] . "= '" . $aa . "' ";
+
 				} else if( $typeX=='9' ) { // add file
 					$nm = $fld[1]; 
 					$upfileX = $_FILES["$nm"]["name"]; 
-					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $tab_enm. "/";
+					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm. "/";
 					$upfile_name = $_FILES["$nm"]["name"];
-					$upfile_name = str_replace(" ", "", $upfile_name);
-					$upfile_name = $mid . "_" . time() ."_" . $upfile_name;
-
-					if( isset($upfileX) && $upfileX !=='' ) {
+					if( isset($upfile_name) && $upfile_name !=='' ) {
+						$upfile_name = str_replace(" ", "", $upfile_name);
+						$upfile_name = $H_ID . "_" . time() ."_" . $upfile_name;
 						$query = $query . $fld[1] ."= '" .$upfile_name. "' ";
 						if( $_FILES["$nm"]["error"] > 0){ // error check
 							echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>"; // fld_3
@@ -93,18 +96,19 @@ include_once('./tkher_start_necessary.php');
 						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . " ";
 				}
 			} ELSE {
+
 				if( $typeX=='3' ) {				// 3: checkbox
 					$aa = @implode("," , $_POST[$fld[1]] ); 
 					$query = $query . $fld[1] . "= '" . $aa . "', ";
+
 				} else if( $typeX=='9' ) { 
 					$nm = $fld[1]; 
 					$upfileX = $_FILES["$nm"]["name"]; 
-					$f_path = KAPP_PATH_T_ . "/file/" .  $mid . "/" . $tab_enm. "/";
+					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm. "/";
 					$upfile_name = $_FILES["$nm"]["name"];
-					$upfile_name = str_replace(" ", "", $upfile_name);
-					$upfile_name = $mid . "_" . time() ."_" . $upfile_name;
-
-					if( isset($upfileX) && $upfileX !=='' ) {
+					if( isset($upfile_name) && $upfile_name !=='' ) {
+						$upfile_name = str_replace(" ", "", $upfile_name);
+						$upfile_name = $H_ID . "_" . time() ."_" . $upfile_name;
 						$query = $query . $fld[1] ."= '" .$upfile_name. "', ";
 						if( $_FILES["$nm"]["error"] > 0){ // error check
 							echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
@@ -132,11 +136,9 @@ include_once('./tkher_start_necessary.php');
 			} else $up_file = '';
 		} else m_(" Change Error! ");
 	}
-
 	$str  = "abcdefghijklmnopqrstuvwxyz";
 	$str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	$str .= "0123456789";
-
 	$shuffled_str = str_shuffle($str);
 	$auto_char=substr($shuffled_str, 0, 6);
 
@@ -149,7 +151,7 @@ include_once('./tkher_start_necessary.php');
 		$tab_hnm		= $row['tab_hnm'];
 		$grant_write	= $row['grant_write'];
 		$grant_view	= $row['grant_view'];
-		$mid				= $row['userid'];
+		$tab_mid				= $row['userid'];
 		$pg_title		= $tab_hnm;
 	} 
 ?>
@@ -522,7 +524,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 		$iftype		= explode("|", $iftypeX);
 		$ifdata		= explode("|", $ifdataX);
 		$popdata	= explode("^", $pop_dataPG);
-		$mid			= $rsPG['userid'];
+		$pg_mid			= $rsPG['userid'];
 		$_SESSION['iftype_db']		= $iftypeX;
 		$_SESSION['ifdata_db']		= $ifdataX;
 		$_SESSION['if_dataPG']		= $ifdataX;	
@@ -534,7 +536,8 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 ?>
 		<form name='makeform' action='' method='post' enctype="multipart/form-data">
 					<input type="hidden" name='mode'			value='' />
-					<input type="hidden" name='mid'				value='<?=$mid?>' />
+					<input type="hidden" name='pg_mid'				value='<?=$pg_mid?>' />
+					<input type="hidden" name='tab_mid'				value='<?=$tab_mid?>' />
 					<input type="hidden" name='tab_hnm'		value='<?=$tab_hnm?>' />
 					<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
 					<input type="hidden" name='seqno'			value='<?=$seqno?>' />
@@ -640,11 +643,11 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 
 				} else if ( $typeX == '9' ) {	// add file
 					if( $row[$fldenm] !== '' ) {
-							$upfile = KAPP_PATH_T_ . "/file/" . $mid . "/" . $pg_code . "/". $row[$fldenm];
+							$upfile = KAPP_PATH_T_ . "/file/" . $tab_mid . "/" . $tab_enm . "/". $row[$fldenm];
 							echo "<input type='hidden' name='up_file' value='$upfile' >"; // delete - use
 							$ifile = explode( ".", $row[$fldenm] );
 							$image_size = @GetImageSize( $upfile );
-							$im = "./file/" . $mid. "/" . $pg_code . "/". $row[$fldenm];
+							$im = "./file/" . $tab_mid. "/" . $tab_enm . "/". $row[$fldenm];
 							if( strtolower($ifile[1]) == 'jpg' || strtolower($ifile[1]) == 'png' || strtolower($ifile[1]) == 'gif' ) {
 								echo"<p>$fldhnm</p>";
 								echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='400' height='300' border=0></a> </div>";
@@ -655,7 +658,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 								echo " <div class='blankA'> </div> ";
 							} else {
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='data1A'><a href='./file/$mid/$pg_code/$row[$fldenm]'><img src=./icon/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
+								echo " <div class='data1A'><a href='./file/$tab_mid/$tab_enm/$row[$fldenm]'><img src=./icon/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 								echo " <div class='blankA'> </div> ";
 								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 								echo " <div class='File1A'>";

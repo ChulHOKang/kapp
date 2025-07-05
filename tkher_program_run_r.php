@@ -2,18 +2,27 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 		tkher_program_run_r.php : tkher_program_run.php 에서 call - table_item_run50_app_pg50RU.php
+		$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm;;  $H_ID->tab_mid, $pg_code->tab_enm,  로 변경
+
 	*/
+	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
-	if( $mode !== 'table_pg70_write' ) {
-		m_("Abnormal approach. ");
+	if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
+	else $pg_code = "";
+	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
+	else $tab_enm = "";
+	if( isset($_POST['pg_mid']) ) $pg_mid = $_POST['pg_mid'];
+	else $pg_mid = "";
+	if( isset($_POST['tab_mid']) ) $tab_mid = $_POST['tab_mid'];
+	else $tab_mid = "";
+
+	if( $mode !== 'table_pg70_write' || $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
+		m_("Abnormal approach. pg_code:$pg_code, tab_enm:$tab_enm, tab_mid:$tab_mid");
 		$rungo = "./";
 		echo "<script>window.open( '$rungo' , '_self', ''); </script>";
 		exit;
 	}
-	if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
-	else $pg_code = "";
-	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID = get_session("ss_mb_id"); 
 	if( $H_ID !== '' ) {
 		$H_LEV = $member['mb_level'];  
@@ -26,8 +35,6 @@
 	else $pg_name = "";
 	set_session('pg_name',  $pg_name);
 	set_session('pg_code',  $pg_code); 
-	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
-	else $tab_enm = "";
 	if( isset($_POST['item_array']) ) $item = $_POST['item_array'];
 	else $item = "";
 	if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt'];
@@ -71,20 +78,20 @@
 					}
 				} else if( $typeX=='9' ) {	// 9:첨부화일 처리
 					$f_path= '';
-					$f_path = KAPP_PATH_T_ . "/file/" .  $H_ID . "/" . $tab_enm; // $pg_code;
-					$f_path1= KAPP_PATH_T_ . "/file/" .  $H_ID;
+					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm; // $pg_code->tab_enm, $H_ID->tab_mid
+					$f_path1= KAPP_PATH_T_ . "/file/" .  $tab_mid;
 					if( !is_dir($f_path1) ) {
 						if( !@mkdir( $f_path1, 0755 ) ) {
 							m_("tkher_program_run_r - Error: f_path : " . $f_path1 . " Failed to create directory.");
-							echo " Error: f_path : " . $f_path1 . " Failed to create directory. ";
-							echo "<script>history.go(-1); </script>";exit;
+							echo " Error: f_path : " . $f_path1 . " Failed to create directory. "; exit;
+							//echo "<script>history.go(-1); </script>";exit;
 						}
 					}
 					if( !is_dir($f_path) ) {
 						if( !@mkdir( $f_path, 0755 ) ) {
 							m_("tkher_program_run_r - Error: f_path : " . $f_path . " Failed to create directory.");
-							echo " Error: f_path : " . $f_path . " Failed to create directory. ";
-							echo "<script>history.go(-1); </script>";exit;
+							echo " Error: f_path : " . $f_path . " Failed to create directory. "; exit;
+							//echo "<script>history.go(-1); </script>";exit;
 						}
 					}
 					$f_path= $f_path . "/";
@@ -116,7 +123,7 @@
 	}
 	$rtype = '';
 	$rdata = '';
-	echo "" . $SQL;
+	//echo "" . $SQL;
 	$mq2 = sql_query($SQL);
 	if( $mq2 ) { 
 		$relation_data =get_session("relation_dataPG");

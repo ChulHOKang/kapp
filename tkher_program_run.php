@@ -310,8 +310,8 @@
 	else $line_cnt = 1;
 	if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
 	else if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
-	else $pg_code = 1;
-	if( !$pg_code  ) {
+	else $pg_code = '';
+	if( !$pg_code  || $pg_code =='') {
 			m_(" Abnormal approach. $mode, $pg_code "); exit;
 	}
 	$in_day = date("Y-m-d H:i");
@@ -320,9 +320,10 @@
 	if( !$rsPG['pg_code']  ) {
 			m_(" Abnormal approach. program no found! : $pg_code"); exit();
 	}
-	$mid	= $rsPG['userid'];
+	$pg_mid	= $rsPG['userid'];
+	$tab_mid	= $rsPG['tab_mid'];
 	$grant_write = $rsPG['grant_write'];
-	if( $grant_write == $H_LEV || $grant_write < $H_LEV || $mid == $H_ID ) {
+	if( $H_LEV >=$grant_write || $pg_mid == $H_ID ) {
 	} else{
 		$write_msg ='You do not have permission. Your permission level is higher than that of the creator. grant_write:'.$grant_write;
 		m_( $write_msg );//  권한이 없습니다. 권한은 생성자 이상의 레벨입니다.
@@ -529,8 +530,8 @@
 		<input type='text' name='iftype' value='<?=$iftypeX?>' style="display:none;">
 		<input type='text' name='ifdata' value='<?=$ifdataX?>' style="display:none;">
 		<input type='hidden' name='mode'			value=''>
-		<input type='hidden' name='pg_code'		value='<?=$pg_code?>'>
 		<input type='hidden' name='pg_name'		value='<?=$pg_name?>'>
+		<input type='hidden' name='pg_code'		value='<?=$pg_code?>'>
 		<input type="hidden" name="tab_enm"		value="<?=$tab_enm?>">
 		<input type="hidden" name="tab_hnm"		value="<?=$tab_hnm?>">
 		<input type="hidden" name="item_array"	value="<?=$item_array?>">
@@ -538,8 +539,9 @@
 		<input type='hidden' name='pop_data'		value='<?=$pop_dataPG?>'>
 		<input type='hidden' name='relation_data'	value='<?=$relation_dataPG?>'>
 		<input type='hidden' name='column_cnt'	value=''>
-		<input type='hidden' name='mid'	value='<?=$mid?>'>
-		<input type="hidden" name='Hid'		value='<?=$H_ID?>' />
+		<input type='hidden' name='H_ID'	value='<?=$H_ID?>'>
+		<input type='hidden' name='pg_mid'	value='<?=$pg_mid?>'>
+		<input type='hidden' name='tab_mid'	value='<?=$tab_mid?>'>
 		<input type="hidden" name='grant_write'		value='<?=$grant_write?>' />
 		<input type="button" value="Submit" onclick="program_run_pg( '<?=$i?>','<?=$iftypeX?>')" class='Btn_List01A'>
 		<input type="reset" value="reset" class='Btn_List01A'>
@@ -561,7 +563,7 @@
 		view_form.submit();
 	}
 	function tkher_source_create($coin){
-		if( !document.makeform.Hid.value ) {
+		if( !document.makeform.H_ID.value ) {
 			alert('Login Please!'); return false;
 		}
 		if( $coin < 1000 ) {
@@ -588,7 +590,7 @@
 		return true; // no check
 	}
 	function program_run_pg( item_cnt,iftype) {
-		if( !document.makeform.Hid.value ) {
+		if( !document.makeform.H_ID.value ) {
 			alert('Login Please!'); return false;
 		}
 		if( !input_check(item_cnt,iftype) ) {
