@@ -31,13 +31,11 @@
 		$mn = sql_num_rows($mq);
 		$rs = sql_fetch_array($mq);
 		if( !$mn){
-			//echo"$query";
-			echo "<script>alert(' Please check. '); history.go(-1);</script>";
+			echo "<script>window.open('updateD.php?infor=$infor&list_no=$list_no','_self','')</script>";exit;
 		} else {
-			
-			$file_ext	= "";//--------------- file upload
+			$file_ext	= "";
 			$fileup_yn	= $_POST['fileup_yn'];
-			if( $fileup_yn ){
+			if( $fileup_yn && $_FILES["fileA"]["name"] !=='' ){
 				$upfile_name= $_FILES["fileA"]["name"];
 				$upfile_size= $_FILES["fileA"]["size"];
 				$file_extA = explode( ".", $upfile_name );
@@ -50,27 +48,26 @@
 			$f_path1	= KAPP_PATH_T_ . "/file/".$mf_infor[53]; // 53:mid user
 			$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];    // 2: board name
 			///home1/kappsystem/public_html/kapp/file/crakan59_gmail/aboard_crakan59_gmail1750060517
-
 			if( $fileup_yn && $upfile_name !== '') {	//$upfile_name
-
 				if( $upfile_size > ($fileup_yn * 1000000) ) { 
-					my_msg("$fileup_yn Mb Only uploaded below"); // $fileup_yn Mb 이하만 업로드 가능합니다 
-					echo "<script>window.open('listD.php?infor=$infor&page=$page','_self','')</script>";
+					m_("$fileup_yn Mb Only uploaded below"); // $fileup_yn Mb 이하만 업로드 가능합니다 
+					echo "<script>window.open('updateD.php?infor=$infor&list_no=$list_no','_self','')</script>";exit;
+					//echo "<script>window.open('listD.php?infor=$infor&page=$page','_self','')</script>";
 					exit;
 				}
 				$upfile_name= $_FILES["fileA"]["name"];
-
 				if( !is_dir($f_path1) ) { 
 					if( !@mkdir( $f_path1, 0755 ) ) {
 						echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
-						echo "<script>history.go(-1); </script>";exit;
-						//echo "<script>window.open('updateD.php?infor=$infor','_self','')</script>";exit;
+						echo "<script>window.open('updateD.php?infor=$infor&list_no=$list_no','_self','')</script>";exit;
+						//echo "<script>history.go(-1); </script>";exit;
 					}
 				}
 				if( !is_dir($f_path2) ) {
 					if( !@mkdir( $f_path2, 0755 ) ) {
 						echo " Error: f_path2 : " . $f_path2 . " Failed to create directory. ";
-						echo "<script>history.go(-1); </script>";exit;
+						echo "<script>window.open('updateD.php?infor=$infor&list_no=$list_no','_self','')</script>";exit;
+						//echo "<script>history.go(-1); </script>";exit;
 					}
 				}
 			}
@@ -85,7 +82,6 @@
 			} else if( $upfile_name == '' && isset($rs['file_name']) ){
 				$query = "update aboard_".$mf_infor[2]." set subject='$subject', context='$content', ip='$ip' where no=".$list_no . $chkpass;
 			}
-
 			$mq = sql_query( $query);
 			if( $mq ) {
 				echo  "<script>alert('update ok!')</script>";
@@ -95,9 +91,7 @@
 				echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 			}
 		}
-
 		//var_dump($url);
 		//header('Location: '.$url['root'].'bbs/modify_done.php');
 		exit();
-
 ?>

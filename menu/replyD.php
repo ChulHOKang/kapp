@@ -16,7 +16,7 @@
 <meta name="robots" content="ALL">
 <?php
 	$H_ID= get_session("ss_mb_id");
-	if( $H_ID !== "" ){ 
+	if( !$H_ID || $H_ID == "" ){ 
 		echo "<script>history.back(-1);</script>"; exit; 
 	} else {
 		$H_EMAIL		= $member['mb_email'];  
@@ -31,11 +31,11 @@
 	else $search_text = "";
 	if( isset($_POST['mode']) ){
 		$mode = $_POST['mode'];
-		if( $mode !== 'replyTT' ) {
-			m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
-			echo "<script>history.back(-1);</script>"; exit;
-		}
-	} else echo "<script>history.back(-1);</script>";
+	} else $mode =''; 
+	if( $mode !== 'replyTT' ) {
+		m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
+		echo "<script>history.back(-1);</script>"; exit;
+	}
 	if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
 	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else { 
@@ -51,70 +51,42 @@
 	$in_day = date("Y-m-d H:i");
 
 	include "./infor.php";
-	switch( $mf_infor[47] ){
-		case '0': break;
-		case '1': 	
-			if( !$H_ID || $H_LEV < 2 ) { 
-				m_("1 You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-		case '2': 
-			if( $H_ID != $mf_infor[53] ) { 
-				m_("2 You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-		case '3': 
-			if( $H_LEV < 8 ) { 
-				m_("3 You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
+	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53]){
+		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
+		echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
+		exit;
 	}
-
 ?>
-
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <link rel="stylesheet" href="../include/css/default.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
 <script type="text/javascript" src="../include/js/common.js"></script>
 <script type='text/javascript' src="../include/js/contents_resize.js" ></script>
-
-        <link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/main.css" type="text/css" >
-		<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
-		<script type='text/javascript' src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js?environment=development" charset="utf-8"></script>
-
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/main.css" type="text/css" >
+<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/> -->
+<script type='text/javascript' src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js?environment=development" charset="utf-8"></script>
 <script type="text/javascript">
-
 	function board_listTT() {
 		x = document.tx_editor_form;
 		infor = x.infor.value;
-		//alert('infor:'+infor);
 		x.action='listD.php?infor='+infor;
 		x.submit();
-
 	}
-
-function data_check(x,y){
-		alert('Please enter your name');
-		x.title.focus();
-		return false;
-
-	if(x.title.value==''){
-		alert('Please enter a title');
-		x.title.focus();
-		return false;
+	function data_check(x,y){
+			alert('Please enter your name');
+			x.title.focus();
+			return false;
+		if(x.title.value==''){
+			alert('Please enter a title');
+			x.title.focus();
+			return false;
+		}
+		if(x.contents.value==''){
+			alert('Please enter your content');
+			x.contents.focus();
+			return false;
+		}
 	}
-	if(x.contents.value==''){
-		alert('Please enter your content');
-		x.contents.focus();
-		return false;
-	}
-
-
-}
-
 	function textarea_size(value) {
 		if (value == 0) {
 		  document.tx_editor_form.contents.cols  = 60;
@@ -123,27 +95,21 @@ function data_check(x,y){
 		if (value == 1) document.tx_editor_form.contents.cols += 5;
 		if (value == 2) document.tx_editor_form.contents.rows += 5;
 	}
-
 	function board_write(x,board, xauto){
-
 		x = document.tx_editor_form;
 		if(x.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
 			x.auto_check.focus();
 			return false;
 		}
-
 		xx = x.auto_check.value;
 		if(xx == xauto){
-
 		} else {
 			alert('Auto-typing prevention characters are incorrect ' + xauto + ' : ' + xx );
 			return false;
 		}
 		var nm = x.nameA.value;
-		//var contents = x.contents.value;
 		var contents = document.getElementById("EditCtrl").value;
-		//alert('nm:'+nm+' , contents:'+contents);
 		if(x.nameA.value==''){
 			alert('Please enter a name! ');
 			x.nameA.focus();
@@ -154,17 +120,9 @@ function data_check(x,y){
 			x.subject.focus();
 			return false;
 		}
-		/*
-		if(x.EditCtrl.value==''){
-			alert('Please enter your content \n 내용을 입력하세요');
-			x.EditCtrl.focus();
-			return false;
-		}*/
-
 		security = x.security_yn.value;
 		fileup = x.fileup_yn.value;
 		if( security > 0) {	// 비밀글 작성 가능시에.
-			//alert('111 --------- security:' + security);
 			var se_ = x.security1.value;
 			if(se_=="use"){
 				p = x.security.value;
@@ -174,15 +132,9 @@ function data_check(x,y){
 					return false;
 				}
 			}
-		} else {
-			//alert('222222 --------- fileup:' + fileup );
 		}
-		
-		//alert('--------- fileup:' + fileup );
-
 		if( fileup > 0 ){	// 첨부화일 가능시에.
 			ff= x.file.value;
-
 			if (x.file.value != ""){
 				idx_path = x.file.value.lastIndexOf("."); 
 				if ( idx_path < 0 ) {
@@ -192,8 +144,6 @@ function data_check(x,y){
 					temp = x.file.value.substring(idx_path);	//toLowerCase()
 				}
 				temp = temp.toLowerCase();
-
-				//alert(' temp:'+temp);	return false;	// temp:.html
 				if( temp != ".jpg" && temp != ".gif" &&temp != ".png" &&temp != ".zip" && temp != ".csv" && temp != ".xls" && temp != ".hwp" && temp != ".pdf" && temp != ".txt" && temp != ".pem" && temp != ".ppk" && temp != ".alz" && temp != ".rar" &&temp != "pptx" && temp != "xlsx"  && temp != ".mp3" && temp != ".mp4" && temp != ".avi" ){
 					alert(" jpg,gif,png,zip,csv,xls,hwp,pdf,txt,pem,ppk,alz,rar,pptx,xlsx xat Please! \n 형식이어야 합니다.");
 					return;
@@ -201,13 +151,11 @@ function data_check(x,y){
 				x.file_ext.value=temp;
 			}
 		}
-			//location.href="customer_write.php?uid="+uid;
+		//location.href="customer_write.php?uid="+uid;
 		x.mode.value='insert_formTT'; 
-		x.action='replyD_check.php'; // x.action='query_ok_new.php';
+		x.action='replyD_check.php'; 
 		x.submit();
-
 	}
-	//-------------------------------------------------
 	function reply_func(xauto){ // No use
 		var form = document.tx_editor_form; //tx_editor_form
 		if(form.auto_check.value==''){
@@ -215,15 +163,12 @@ function data_check(x,y){
 			form.auto_check.focus();
 			return false;
 		}
-
 		xx = form.auto_check.value;
 		if(xx == xauto){
-
 		} else {
 			alert('Auto-typing prevention characters are incorrect ' + xauto + ' : ' + xx );
 			return false;
 		}
-		
 		if( form.nameA.value==''){
 			alert('Please enter your name.');
 			form.nameA.focus();
@@ -234,14 +179,7 @@ function data_check(x,y){
 			form.subject.focus();
 			return false;
 		}
-		/*if(tx_editor_form.context.value==''){
-			alert('Please enter your content \n 내용을 입력하세요');
-			tx_editor_form.context.focus();
-			return false;
-		}*/
-
 		ff= form.file.value;
-		//alert('ff:'+ff);	//ff:C:\fakepath\aboard_tkher58.sql
 		if (form.file.value != ""){
 			idx_path = form.file.value.lastIndexOf("."); 
 			if ( idx_path < 0 ) {
@@ -251,55 +189,43 @@ function data_check(x,y){
 			} else {
 				temp = form.file.value.substring(idx_path);
 			}
-
-			//alert(' temp:'+temp);	return false;	// temp:.html
 			if( temp != ".jpg" && temp != ".gif" &&temp != ".png" &&temp != ".zip" && temp != ".csv" && temp != ".xls" && temp != ".hwp" && temp != ".pdf" && temp != ".txt" && temp != ".pem" && temp != ".ppk" && temp != ".alz" && temp != ".rar" &&temp != "pptx" && temp != "xlsx"){
-				alert(" jpg,gif,png,zip,csv,xls,hwp,pdf,txt,pem,ppk,alz,rar,pptx,xlsx Format Please! \n 형식이어야 합니다.");
+				alert(" jpg,gif,png,zip,csv,xls,hwp,pdf,txt,pem,ppk,alz,rar,pptx,xlsx Format Please!.");
 				return;
 			}
 			form.file_ext.value=temp;
 		}
-
 		form.mode.value='reply_funcTT'
 		form.submit();
 	}
-
 	function email_check( email ) {
-		alert(' email ' + email);
-
 	  if (ereg("(^[a-zA-Z0-9]{1}([_0-9a-zA-Z-]+)@[^\.@]+(\.[0-9a-zA-Z-]{2,})*(\.([a-zA-Z]{2,})$))",email)){
 		$return = true;}
 		else {$return = false;}
 	  return $return;
 	}
-
 	 function back_go(infor,list_no, page) {
-		 		x = document.tx_editor_form;
-
+ 		x = document.tx_editor_form;
 		x.infor.value=infor;
 		x.list_no.value=list_no;
 		x.page.value=page;
-		
 		x.action=x.previous.value;
 		x.submit();
 	}
 </script>
-
 </head>
+
 <body>
 <?php 
 	$cur='B';
 	include_once "../menu_run.php"; 
-
 	$query="SELECT * from aboard_" . $mf_infor[2] . " where no=". $list_no;
 	$mf = sql_fetch($query);
 	$mf['context'] = "[ ".$H_ID." Sir ]\n" . $mf['context']; 
 	$mf['subject'] = "Re: ".$mf['subject']; 
-
 	$mf_subject = $mf['subject'];
 	$mf_context = $mf['context'];
 	$content = $mf['context'];
-
 	if( isset($_REQUEST['previous']) ) $previous = $_REQUEST['previous'];
 	else  $previous = "";
 ?>
@@ -316,22 +242,17 @@ function data_check(x,y){
 			<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'>
 			<input type='hidden' name='file_ext'    value=''>
 			<input type="hidden" name='previous'    value='<?=$previous?>' />
-
 			<input type='hidden' name='target'		value='<?=$mf['target']?>'>
 			<input type='hidden' name='step'		value='<?=$mf['step']?>'>
 			<input type='hidden' name='re'			value='<?=$mf['re']?>'>
 			<input type='hidden' name='search_choice' 		value='<?=$search_choice?>'>
 			<input type='hidden' name='search_text' 		value='<?=$search_text?>'>
-
 			<div class="boardView">
 				<div class="viewHeader">
 					<span><?=$in_day?></span>
-
 					<a href="javascript:back_go('<?=$infor?>','<?=$list_no?>','<?=$page?>')" class="btn_bo02">Previous</a>
 					<a href="javascript:board_listTT();" class="btn_bo02">List</a>
-					<!-- 위 목록 버튼은 절대경로로 사이트 주소를 풀로 적고 뒤에 #customer 를 적어서 ID값으로 이동하게끔 하면 됨 -->
 				</div>
-
 				<div class="viewSubj"><span><?=$mf_infor[1]?></span> </div>
 				<ul class="viewForm">
 <?php 
@@ -364,16 +285,13 @@ function data_check(x,y){
 					</li>
 <?php } ?>
 				</ul>
-
 <?php 
-	$_SESSION['infor'] = $infor;	//m_("infor: " . $infor);
+	$_SESSION['infor'] = $infor;
 	require_once ('write_head.php');
 ?>
-
 				<div class="viewFooter">
 					<ul class="viewForm_2">
 <?php
-		//m_("infor : " . $mf_infor[3]); //infor : 1
 		if( isset($mf_infor[3]) ){ 
 				if( isset( $mf['context']) ) $mf_context = $mf['context'];
 				else $mf_context = "";
@@ -402,7 +320,7 @@ function data_check(x,y){
 						</li>
 					</ul>
 					<div class="cradata_check">
-						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a>
+						<a href="javascript:saveContent( '<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Submit</a>
 					</div>
 				</div>
 			</div>
@@ -472,7 +390,7 @@ function data_check(x,y){
 <!-- Sample: Saving Contents -->
 <script type="text/javascript">
   /* 예제용 함수 */
-  function saveContent(xauto, no, id) {
+  function saveContent( xauto, no, id) {
 
 		var form = document.tx_editor_form;
 		if(form.auto_check.value==''){

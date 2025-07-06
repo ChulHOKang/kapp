@@ -16,7 +16,7 @@
 
 <?php
 	$H_ID= get_session("ss_mb_id");
-	if( $H_ID !== "" ){ 
+	if( !$H_ID || $H_ID == "" ){ 
 		echo "<script>history.back(-1);</script>"; exit; 
 	} else {
 		$H_EMAIL		= $member['mb_email'];  
@@ -38,19 +38,22 @@
 		m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); 
 		echo "<script>history.back(-1);</script>"; exit;
 	}
-	$email			= $member['mb_email'];  
+	$email	= $member['mb_email'];  
 	$in_day = date("Y-m-d H:i");
-
 	include "./infor.php";
-
-	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password from aboard_" . $mf_infor[2] . " where no=".$list_no;
+	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password, id from aboard_" . $mf_infor[2] . " where no=".$list_no;
 	$mq = sql_query($query);
-
 	$mf = sql_fetch_row($mq);
 	$mf[6] = htmlspecialchars($mf[6]);
 	$content = $mf[2];
 	if( $mf_infor[47]=='0' and !$H_ID ) $H_NAME = $mf[1];
-	switch( $mf_infor[47] ){
+
+	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf[10]!==$H_ID){
+		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
+		echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
+		exit;
+	}
+	/*switch( $mf_infor[47] ){
 		case '0': break;
 		case '1': 	
 			if( !$H_ID || $H_LEV < 2 ) { 
@@ -70,7 +73,7 @@
 				echo "<script>history.back(-1);</script>"; exit;
 			}
 			else break;
-	}
+	}*/
 
 ?>
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
@@ -79,40 +82,33 @@
 <script type="text/javascript" src="../include/js/common.js"></script>
 <SCRIPT src="../include/js/contents_resize.js" type='text/javascript'></SCRIPT>
 
-        <link href="<?=KAPP_URL_T_?>/menu/css/main.css" rel="stylesheet">
-		<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
-		<script src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js?environment=development" type="text/javascript" charset="utf-8"></script>
+<link href="<?=KAPP_URL_T_?>/menu/css/main.css" rel="stylesheet">
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
+<script src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js?environment=development" type="text/javascript" charset="utf-8"></script>
 
 <script type="text/javascript">
-
 	function board_listTT() {
 		x = document.tx_editor_form;
 		page=x.page.value;
 		infor = x.infor.value;
 		x.action='listD.php?infor='+infor+'&page='+page;
 		x.submit();
-
 	}
-
 	function data_check(x,y){
-			alert('Please enter your name'); // \n 이름을 입력하세요
+			alert('Please enter your name');
 			x.title.focus();
 			return false;
-
 		if(x.title.value==''){
-			alert('Please enter a title'); // \n 제목을 입력하세요
+			alert('Please enter a title'); 
 			x.title.focus();
 			return false;
 		}
 		if(x.contents.value==''){
-			alert('Please enter your content'); // \n 내용을 입력하세요
+			alert('Please enter your content');
 			x.contents.focus();
 			return false;
 		}
-
-
 	}
-
 	function textarea_size(value) {
 		if (value == 0) {
 		  document.tx_editor_form.contents.cols  = 60;
@@ -121,14 +117,9 @@
 		if (value == 1) document.tx_editor_form.contents.cols += 5;
 		if (value == 2) document.tx_editor_form.contents.rows += 5;
 	}
-
 	function update_func(xauto, listno, id){
 		var formA = document.tx_editor_form;
 		alert('listno: ' + listno); 
-		
-		//var content = editor.getContent();
-		//content = formA.content.value;
-
 		if( formA.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
 			formA.auto_check.focus();
@@ -140,7 +131,6 @@
 			formA.auto_check.focus();
 			return;
 		}
-
 		if( !id ){
 			var p1 = document.tx_editor_formA.password.value;
 			if( !p1 ) { alert('Enter Password! ' ); document.tx_editor_form.password.focus();  return false; }
@@ -152,7 +142,6 @@
 				return false;
 			}
 		} 
-
 			if(formA.nameA.value==''){
 				alert('Please enter your name.');
 				formA.nameA.focus();
@@ -182,7 +171,6 @@
 				formA.file_ext.value=temp;
 			}
 			formA.mode.value='update_funcTT'
-			//formA.action='query_ok_new.php';
 			formA.action='updateD_check.php'; // modify_check.php
 			formA.submit();
 	}
@@ -293,43 +281,13 @@
 						</span>
 					</li>
 <?php } ?>
-				</ul><!-- add -->
-
-		<!-- <table border="0" width="100%" borderColorDark="#fdfdfa" borderColorLight="#bec9d4" cellSpacing="0" cellpadding="0">
-			<tr bordercolor="#FFFFFF" bgcolor="#FFFFFF">
-			 <td>
-
-				<DIV id='editctrlX' align='' style='background-color:yellow;ime-mode:active; background-image:; width:100%; height:100%; '>
-				<textarea name="EditCtrl" id="EditCtrl" ><?=$context?></textarea>
-				</DIV>
-
-					<script>
-						//CKEDITOR.replace( 'EditCtrl' );//처음것. 아래것은:화면크기조정 가능.
-						CKEDITOR.replace(
-						'EditCtrl',
-						{
-						customConfig: '/contents/ckeditor/config.js',
-						toolbar : 'standard',
-						language: 'en',
-						width : '100%',
-						height : '100'
-						}
-						);
-					</script>
-
-			</td>
-			</tr>
-		</table> -->
- 					
-				<!-- </ul> -->
+				</ul>
 <?php 
-	$_SESSION['infor'] = $infor;	//m_("infor: " . $infor);
+	$_SESSION['infor'] = $infor;
 	require_once ('write_head.php');
 ?>
-
 				<div class="viewFooter">
 					<ul class="viewForm_2">
-
 <?php if($mf_infor[3]){ ?><!-- 첨부화일. -->
 						<li>
 							<span class="t01">Attachments</span>
@@ -361,20 +319,11 @@
 		</div>
  	</div><!-- end : container -->
 </form>
-
 </div><!-- end : wrapper-->
 
-
-
-
-
-
-
 <script type="text/javascript">
-
 	var content = '<?php echo $content; ?>';
-
-  var config = {
+	var config = {
     txHost: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) http://xxx.xxx.com */
     txPath: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) /xxx/xxx/ */
     txService: 'sample', /* 수정필요없음. */
@@ -422,14 +371,10 @@
   EditorJSLoader.ready(function(Editor) {
     var editor = new Editor(config);
   });
-   
 </script>
  
-<!-- Sample: Saving Contents -->
 <script type="text/javascript">
-  /* 예제용 함수 */
   function saveContent(xauto, no, id) {
-
 		var formA = document.tx_editor_form;
 		if( formA.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
@@ -481,15 +426,12 @@
    */
   function validForm(editor) {
     // Place your validation logic here
- 
-    // sample : validate that content exists
     var validator = new Trex.Validator();
     var content = editor.getContent();
     if (!validator.exists(content)) {
       alert('내용을 입력하세요');
       return false;
     }
- 
     return true;
   }
  
@@ -528,7 +470,6 @@
                 form.createField(input);
             }
         }
- 
         var files = editor.getAttachments('file');
         for (i = 0; i < files.length; i++) {
             input = document.createElement('input');
@@ -540,47 +481,19 @@
         return true;
   }
 function youTubeImplant() {
-
     var popUrl = "./youtube.html";
     var popOption = "./youtube.html";
     window.open(popUrl, "", popOption);
 }
 
 </script>
-<!-- <div><button onclick='saveContent()'>SAMPLE - submit contents</button></div> -->
-<!-- End: Saving Contents -->
  
 <script type="text/javascript">
   function loadContent() {
-
 	var content = '<?php echo $content; ?>';
-	
     var attachments = {};
     attachments['image'] = [];
     attachments['file'] = [];
-    /*
-	attachments['image'].push({
-      'attacher': 'image',
-      'data': {
-        'imageurl': 'https://24c.kr/Tboard/uploads',
-        'filename': '이미지 024.png',
-        'filesize': 59501,
-        'originalurl': 'https://24c.kr/Tboard/uploads',
-        'thumburl': 'https://24c.kr/Tboard/uploads'
-      }
-    });
-	
-    attachments['file'] = [];
-    attachments['file'].push({
-      'attacher': 'file',
-      'data': {
-        'attachurl': 'http://cfile297.uf.daum.net/attach/207C8C1B4AA4F5DC01A644',
-        'filemime': 'image/gif',
-        'filename': 'editor_bi.gif',
-        'filesize': 640
-      }
-    }); */
-	//alert("---3 content: " + content);
     /* 저장된 컨텐츠를 불러오기 위한 함수 호출 */
     Editor.modify({
       "attachments": function () { // 저장된 첨부가 있을 경우 배열로 넘김, 위의 부분을 수정하고 아래 부분은 수정없이 사용 
@@ -595,13 +508,12 @@ function youTubeImplant() {
     });
   }
 </script>
-
 <!-- End: Loading Contents -->
 <script>
-window.onload = function()
-{
-	loadContent();
-}
+	window.onload = function()
+	{
+		loadContent();
+	}
 </script>
 
 </body>
