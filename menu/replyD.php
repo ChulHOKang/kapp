@@ -2,7 +2,7 @@
 	include_once('../tkher_start_necessary.php');
 
 	/*
-		replyD.php
+		replyD.php : general board
 	*/
 ?>
 <html>
@@ -14,11 +14,9 @@
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
-
 <?php
-
-	$H_ID			= get_session("ss_mb_id");
-	if( !isset($H_ID) && $H_ID !== "" ){ 
+	$H_ID= get_session("ss_mb_id");
+	if( $H_ID !== "" ){ 
 		echo "<script>history.back(-1);</script>"; exit; 
 	} else {
 		$H_EMAIL		= $member['mb_email'];  
@@ -29,34 +27,28 @@
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
 	else $search_choice = "";
-
 	if( isset($_POST['search_text']) ) $search_text   = $_POST['search_text'];
 	else $search_text = "";
-	
-		if( isset($_POST['mode']) ){
-			$mode = $_POST['mode'];
-			if( $mode !== 'replyTT' ) {
-				m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-		} else echo "<script>history.back(-1);</script>";
-
-		if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
-		else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
-		else { 
-			echo "<script>history.back(-1);</script>"; exit; 
+	if( isset($_POST['mode']) ){
+		$mode = $_POST['mode'];
+		if( $mode !== 'replyTT' ) {
+			m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
+			echo "<script>history.back(-1);</script>"; exit;
 		}
-		$_SESSION['infor'] = $infor;
-
-		if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
-		else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
-		else echo "<script>history.back(-1);</script>";
-		
-		if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
-		else if( isset($_POST['page']) ) $page = $_POST['page'];
-		else $page = 1;
-
-		$in_day = date("Y-m-d H:i");
+	} else echo "<script>history.back(-1);</script>";
+	if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
+	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	else { 
+		echo "<script>history.back(-1);</script>"; exit; 
+	}
+	$_SESSION['infor'] = $infor;
+	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
+	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
+	else echo "<script>history.back(-1);</script>";
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_POST['page']) ) $page = $_POST['page'];
+	else $page = 1;
+	$in_day = date("Y-m-d H:i");
 
 	include "./infor.php";
 	switch( $mf_infor[47] ){
@@ -295,26 +287,14 @@ function data_check(x,y){
 
 </head>
 <body>
-		<?php 
-		$cur='B';
-		include_once "../menu_run.php"; 
-		?>
+<?php 
+	$cur='B';
+	include_once "../menu_run.php"; 
 
-<?php
-	$str  = "abcdefghijklmnopqrstuvwxyz";
-    $str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    $str .= "0123456789";
-
-    $shuffled_str = str_shuffle($str);
-	$auto_char=substr($shuffled_str, 0, 6);
-	//-----------------------------------------------------------------------------------------------------
-	//m_("2: " . $mf_infor[2]); //2: tkhersolpakan1746132547
-//	$query="select no,name,context,target,step,re,subject from aboard_" . $mf_infor[2] . " where no=".$list_no;
 	$query="SELECT * from aboard_" . $mf_infor[2] . " where no=". $list_no;
-	//$mq = sql_query($query); // $mf = sql_fetch_row($mq);
-	$mf = sql_fetch($query);	// m_("context: " . $mf['context']; // " , 9: " .$mf[9]);
-	$mf['context'] = "[ ".$H_ID." Sir ]\n" . $mf['context']; // context
-	$mf['subject'] = "Re: ".$mf['subject']; //subject
+	$mf = sql_fetch($query);
+	$mf['context'] = "[ ".$H_ID." Sir ]\n" . $mf['context']; 
+	$mf['subject'] = "Re: ".$mf['subject']; 
 
 	$mf_subject = $mf['subject'];
 	$mf_context = $mf['context'];
@@ -323,13 +303,11 @@ function data_check(x,y){
 	if( isset($_REQUEST['previous']) ) $previous = $_REQUEST['previous'];
 	else  $previous = "";
 ?>
-
 <div class="wrapper">
 		<div id="write_page" class="mainProject">
-
 <form name="tx_editor_form" id="tx_editor_form" action="replyD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 
-		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' />
+		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' /><!-- my_func -->
 			<input type='hidden' name='mode'	value='reply_funcTT'>
 			<input type='hidden' name='infor'   value='<?=$infor?>' > 
 			<input type='hidden' name='list_no' value='<?=$list_no?>'>

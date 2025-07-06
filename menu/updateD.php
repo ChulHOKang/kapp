@@ -1,5 +1,8 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/*
+	updateD.php : general board
+	*/
 ?>
 <html>
 <head>
@@ -12,46 +15,41 @@
 <meta name="robots" content="ALL">
 
 <?php
-
-	$ss_mb_id		= get_session("ss_mb_id");   //"ss_mb_id";
-	$ss_mb_level	= $member['mb_level'];    //get_session("ss_mb_level");   //"ss_mb_id";
-	$H_ID			= get_session("ss_mb_id");
-	$H_LEV			= $member['mb_level'];  
-	$H_NAME			= $member['mb_name'];  
-	$H_EMAIL		= $member['mb_email'];  
-	$ip				= $_SERVER['REMOTE_ADDR'];
-
-		if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
-		else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
-		else $mode  = "";
-		if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
-		else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
-
-		if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
-		else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
-		//else echo "<script>history.back(-1);</script>";
-
-		if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
-		else if( isset($_POST['page']) ) $page = $_POST['page'];
-		if( $mode != 'updateTT' || !$infor ) {
-			m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); //mode: , You do not have permission to reply. infor:1
-			//mode: , You do not have permission to reply. no:21
-			echo "<script>history.back(-1);</script>"; exit;
-		}
-		$email			= $member['mb_email'];  
-		$in_day = date("Y-m-d H:i");
+	$H_ID= get_session("ss_mb_id");
+	if( $H_ID !== "" ){ 
+		echo "<script>history.back(-1);</script>"; exit; 
+	} else {
+		$H_EMAIL		= $member['mb_email'];  
+		$H_LEV			= $member['mb_level'];  
+		$H_NAME			= $member['mb_name'];  
+		$H_NICK			= $member['mb_nick'];  
+	}
+	$ip= $_SERVER['REMOTE_ADDR'];
+	if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
+	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+	else $mode  = "";
+	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
+	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
+	if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
+	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_POST['page']) ) $page = $_POST['page'];
+	if( $mode != 'updateTT' || !$infor ) {
+		m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); 
+		echo "<script>history.back(-1);</script>"; exit;
+	}
+	$email			= $member['mb_email'];  
+	$in_day = date("Y-m-d H:i");
 
 	include "./infor.php";
 
 	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password from aboard_" . $mf_infor[2] . " where no=".$list_no;
-	$mq = sql_query($query);	//m_("--- mq:");
+	$mq = sql_query($query);
 
 	$mf = sql_fetch_row($mq);
 	$mf[6] = htmlspecialchars($mf[6]);
-	$content = $mf[2];	//m_("-----------, 2 content: " . $content);
-
+	$content = $mf[2];
 	if( $mf_infor[47]=='0' and !$H_ID ) $H_NAME = $mf[1];
-
 	switch( $mf_infor[47] ){
 		case '0': break;
 		case '1': 	
@@ -213,27 +211,16 @@
 
 </head>
 <body>
-		<?php 
+<?php 
 		$cur='B';
 		include_once "../menu_run.php"; 
-		?>
-
-<?php
-	$str  = "abcdefghijklmnopqrstuvwxyz";
-    $str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    $str .= "0123456789";
-
-    $shuffled_str = str_shuffle($str);
-	$auto_char=substr($shuffled_str, 0, 6);
 ?>
-
 <div class="wrapper">
 		<div id="write_page" class="mainProject">
-
 <form name="tx_editor_form" id="tx_editor_form" action="updateD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 		<!-- <input type ="hidden" name = "doc_idx2" value="<?=$doc_idx?>"> -->
 
-		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' />
+		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' /><!-- my_func -->
 
 			<input type='hidden' name='infor' 			value='<?=$infor?>' > 
 			<input type='hidden' name='list_no'			value='<?=$list_no?>'>

@@ -13,15 +13,12 @@
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
-
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <script type="text/javascript" src="../include/js/common.js"></script>
 <SCRIPT src="../include/js/contents_resize.js" type='text/javascript'></SCRIPT>
-
 <?php
-
 	$H_ID = get_session("ss_mb_id"); $ip = $_SERVER['REMOTE_ADDR'];
-	if( $H_ID ) {
+	if( $H_ID && $H_ID !=='') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
@@ -32,19 +29,13 @@
 		$H_NICK	= '';  
 		$H_EMAIL= '';  
 	}
-	
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
 	if( isset($_POST['menu_mode']) ) $menu_mode=$_REQUEST['menu_mode'];
 	else $menu_mode = '';
-
-		$in_day = date("Y-m-d H:i");
-
-	//if( isset($_REQUEST['infor']) )  $infor = $_REQUEST['infor'];
-	//else
+	$in_day = date("Y-m-d H:i");
 	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else $infor = '';
 	if( $infor ) $_SESSION['infor'] = $infor;
@@ -194,13 +185,6 @@
 		?>
 
 <?php
-	$str  = "abcdefghijklmnopqrstuvwxyz";
-    $str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    $str .= "0123456789";
-
-    $shuffled_str = str_shuffle($str);
-	$auto_char=substr($shuffled_str, 0, 6);
-
 	include "./headerD.php"; // OK ./header.php는 Tboard write.php 용. 주의.
 ?>
 
@@ -208,7 +192,7 @@
 	<div id="write_page" class="mainProject">
 <form name="tx_editor_form" id="tx_editor_form" action="insertD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 		<input type="hidden" name='mode'		value='' />
-		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' />
+		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' /><!-- my_func -->
 		<input type="hidden" name='c_sel'		value='<?=$c_sel?>' />
 		<input type="hidden" name='id'			value='<?=$id?>' />
 		<input type="hidden" name='board'		value='<?=$board?>' />
