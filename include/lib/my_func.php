@@ -1,27 +1,31 @@
 <?php
-
 /*
-17-09-20 : 메일발송 sendMail 추가
-2021-01-27 : connect_count_search($call_pg ,$id, $ipcheck, $sdata) add
+	: connect_count_search($call_pg ,$id, $ipcheck, $sdata) add
 */
 
 $from_session_url = KAPP_URL_;
 //$urllinkcoin_my_ip = "";
 $nicknm ='K-APP';
 $snm    ='';	// company
-$tel    ='';    // 
+$tel    ='';
 $htel   ='';    // manager
 $tel1   ='';    // 1 team
 $tel2   ='';    // 2 team
-$fax    ='';    //
+$fax    ='';
 $sano   ='';
 $addr   ='';
 $mail   ='solpakan89@gmail.com';
 $Htitle = "[K-APP] : ".$tel." Mail:".$mail;
 $user_login_time = 6000;
 
-/* start program design 중요. */
-	$menu1TWPer=15;
+/* start program design. */
+	$is_mobile = false;
+	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
+	if( $is_mobile ) {
+		$menu1TWPer=36;
+	} else {
+		$menu1TWPer=15;
+	}
 	$menu1AWPer=100 - $menu1TWPer;
 	$menu2TWPer=10;
 	$menu2AWPer=50 - $menu2TWPer;
@@ -29,15 +33,127 @@ $user_login_time = 6000;
 	$menu3AWPer=33.3 - $menu3TWPer;
 	$menu4TWPer=10;
 	$menu4AWPer=25 - $menu4TWPer;
-
 	$Xwidth='100%';
 	$Xheight='100%';
+	$Text_height='60px';
 
 	/* 자동등록방지.  */
 	$strT  = "abcdefghijklmnopqrstuvwxyz";
     $strT .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $strT .= "0123456789";
+	$shuffled_str = str_shuffle($strT);
+	$auto_char=substr($shuffled_str, 0, 6); // insertD.php, updateD.php, replyD.php
 
+	function TAB_curl_send( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
+		// use: table30m_A.php
+		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $config;
+		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
+		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
+		$tabData['data'][$cnt]['fld_hnm']  = 'seqno';
+		$tabData['data'][$cnt]['fld_type'] = 'INT';
+		$tabData['data'][$cnt]['fld_len']  = '10';
+		$tabData['data'][$cnt]['disno']    = $cnt;
+		$tabData['data'][$cnt]['userid']     = $H_ID;
+		$tabData['data'][$cnt]['group_code'] = $group_code;
+		$tabData['data'][$cnt]['group_name'] = $group_name;
+		$tabData['data'][$cnt]['memo']       = $memo;
+		$hostname = getenv('HTTP_HOST');
+		$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostname;
+		$tabData['data'][$cnt]['email']      = $H_EMAIL;
+		$tabData['data'][$cnt]['sqltable']   = $item_list;
+		$tabData['data'][$cnt]['if_line']    = $if_line;
+		$tabData['data'][$cnt]['if_type']    = $if_type;
+		$tabData['data'][$cnt]['if_data']    = $if_data;
+		$tabData['data'][$cnt]['relation_data']    = $relation_data;
+		$key = 'appgenerator';
+		$iv = "~`!@#$%^&*()-_=+";
+		$sendData = encryptA( $tabData , $key, $iv);
+		$url_ = $config['kapp_theme'] . '/_Curl/table_curl_get_ailinkapp.php'; 
+		$curl = curl_init(); //$curl = curl_init( $url_ );
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
+			'iv' => $iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		if( $response == false) {
+			echo 'table30m_A curl Error : ' . curl_error($curl);
+		} else {
+			//echo 'curl 응답 : ' . $response;
+		}
+		curl_close($curl);
+	}
+	function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
+		// use: app_pg50RC.php,  table30m_A.php
+		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config;      
+		$cnt = 0;
+		$tabData['data'][$cnt]['pg_code']  = $pg_code;
+		$tabData['data'][$cnt]['pg_name']  = $pg_name;
+		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
+		$tabData['data'][$cnt]['userid']     = $H_ID;
+		$tabData['data'][$cnt]['group_code'] = $group_code;
+		$tabData['data'][$cnt]['group_name'] = $group_name;
+		$tabData['data'][$cnt]['host']       = KAPP_URL_T_;
+		$tabData['data'][$cnt]['email']      = $H_EMAIL;
+		$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
+		$tabData['data'][$cnt]['if_type']    = $iftype_db;
+		$tabData['data'][$cnt]['if_data']    = $ifdata_db;
+		$tabData['data'][$cnt]['popdata_db'] = $popdata_db;
+		$tabData['data'][$cnt]['sys_link']   = $sys_link;
+		$tabData['data'][$cnt]['relation_data']   = $rel_data;
+		$tabData['data'][$cnt]['relation_type']   = $rel_type;
+		$tabData['data'][$cnt]['item_array'] = $item_array;
+		$key = 'appgenerator';
+		$iv = "~`!@#$%^&*()-_=+";
+		$sendData = encryptA( $tabData , $key, $iv);
+		$url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
+			'iv' => $iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			$_ms = "new program curl error : " . curl_error($curl);
+			echo 'curl error : ' . curl_error($curl);
+		} else {
+			$_ms = 'new program app_pg50RC curl response : ' . $response;
+		}
+		curl_close($curl);
+	} // function
+	// No use : column information - table30m_A.php 테이블 생성시 컬럼 정보 curl 처리를 보류함.
+	function TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $cnt, $memo, $Asqltable, $Aif_line, $Aif_type, $Aif_data, $Arelation_data ){
+		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name;
+		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
+		$tabData['data'][$cnt]['fld_enm']  = $fld_enm;
+		$tabData['data'][$cnt]['fld_hnm']  = $fld_hnm;
+		$tabData['data'][$cnt]['fld_type'] = $fld_type;
+		$tabData['data'][$cnt]['fld_len']  = $fld_len;
+		$tabData['data'][$cnt]['disno']    = $cnt;
+		$tabData['data'][$cnt]['userid']     = $H_ID;
+		$tabData['data'][$cnt]['group_code'] = $group_code;
+		$tabData['data'][$cnt]['group_name'] = $group_name;
+		$tabData['data'][$cnt]['memo']       = $memo;
+		$hostname = KAPP_URL_T_; //getenv('HTTP_HOST');
+		$tabData['data'][$cnt]['host']       = $hostname;
+		$tabData['data'][$cnt]['email']      = $H_EMAIL;
+		$tabData['data'][$cnt]['sqltable']   = $Asqltable;
+		$tabData['data'][$cnt]['if_line']    = $Aif_line;
+		$tabData['data'][$cnt]['if_type']    = $Aif_type;
+		$tabData['data'][$cnt]['if_data']    = $Aif_data;
+		$tabData['data'][$cnt]['relation_data']    = $Arelation_data;
+	}
 	function special_comma_chk ($input) { // 특수문자 제거. "'"만 제거한다.
 		if( is_array($input)) {
 			return array_map('special_chk', $input); 
