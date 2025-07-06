@@ -574,51 +574,8 @@ function change_project_func(pnmS){
 </script>
 
 <?php
-function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-	global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config;      
-	$cnt = 0;
-	$tabData['data'][$cnt]['pg_code']  = $pg_code;
-	$tabData['data'][$cnt]['pg_name']  = $pg_name;
-	$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
-	$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
-	$tabData['data'][$cnt]['userid']     = $H_ID;
-	$tabData['data'][$cnt]['group_code'] = $group_code;
-	$tabData['data'][$cnt]['group_name'] = $group_name;
-	$tabData['data'][$cnt]['host']       = KAPP_URL_T_;
-	$tabData['data'][$cnt]['email']      = $H_EMAIL;
-	$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
-	$tabData['data'][$cnt]['if_type']    = $iftype_db;
-	$tabData['data'][$cnt]['if_data']    = $ifdata_db;
-	$tabData['data'][$cnt]['popdata_db'] = $popdata_db;
-	$tabData['data'][$cnt]['sys_link']   = $sys_link;
-	$tabData['data'][$cnt]['relation_data']   = $rel_data;
-	$tabData['data'][$cnt]['relation_type']   = $rel_type;
-	$tabData['data'][$cnt]['item_array'] = $item_array;
-	$key = 'appgenerator';
-    $iv = "~`!@#$%^&*()-_=+";
-    $sendData = encryptA( $tabData , $key, $iv);
-    $url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
-	$curl = curl_init();
-	curl_setopt( $curl, CURLOPT_URL, $url_);
-    curl_setopt( $curl, CURLOPT_POST, true);
-    curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-        'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-        'iv' => $iv
-    ));
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($curl);
-	curl_setopt($curl, CURLOPT_FAILONERROR, true);
-	echo curl_error($curl);
-	if( $response == false) {
-        $_ms = "new program app_pg50RC curl error : " . curl_error($curl);
-		echo 'curl error : ' . curl_error($curl);
-    } else {
-        $_ms = 'new program app_pg50RC curl response : ' . $response;
-    }
-    curl_close($curl);
-} // function
+	$tabData['data'][][] = array(); // use: PG_curl_send() - my_func
 	$hostnameA = getenv('HTTP_HOST');
-	$tabData['data'][][] = array(); 
 	$dup_check = ''; 
 	$pg_code= $H_ID . "_" . time();
 	//$uid = explode('@', $H_ID);

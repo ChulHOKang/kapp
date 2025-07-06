@@ -1,5 +1,8 @@
 <?php
 	include_once('./tkher_start_necessary.php');
+	/*
+	tkher_program_data_view.php : kapp pg data view
+	*/
 ?>
 <html>
 <head>
@@ -78,23 +81,6 @@
 		$grant_view	= $row['grant_view'];
 		$tab_mid= $row['userid'];
 	}*/
-
-	$str  = "abcdefghijklmnopqrstuvwxyz";
-	$str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	$str .= "0123456789";
-	$shuffled_str = str_shuffle($str);
-	$auto_char=substr($shuffled_str, 0, 6);
-
-	$menu1TWPer=15;
-	$menu1AWPer=100 - $menu1TWPer;
-	$menu2TWPer=10;
-	$menu2AWPer=50 - $menu2TWPer;
-	$menu3TWPer=10;
-	$menu3AWPer=33.3 - $menu3TWPer;
-	$menu4TWPer=10;
-	$menu4AWPer=25 - $menu4TWPer;
-	$Xwidth='100%';
-	$Xheight='100%';
 ?>
 
 <style>

@@ -20,23 +20,6 @@
 	//--- Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36, KAPP_MOBILE_AGENT: phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony
 	----------------------------------------------------------------- */
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$is_mobile = false;
-	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
-	if( $is_mobile ) {
-		$menu1TWPer=36;
-	} else {
-		$menu1TWPer=15;
-	}
-	$menu1AWPer=100 - $menu1TWPer;
-	$menu2TWPer=10;
-	$menu2AWPer=50 - $menu2TWPer;
-	$menu3TWPer=10;
-	$menu3AWPer=33.3 - $menu3TWPer;
-	$menu4TWPer=10;
-	$menu4AWPer=25 - $menu4TWPer;
-	$Xwidth='100%';
-	$Xheight='100%';
-	$Text_height='60px';
 
 	$H_ID= get_session("ss_mb_id");
 	if( isset($H_ID) && $H_ID !=='' ) {

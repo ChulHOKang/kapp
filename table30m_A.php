@@ -7,7 +7,7 @@
 	 - Table_Copy_Func()
 	 - Re_Create_Func()
 	 - $del_mode : 'Modify_column_mode', 'Add_column_mode' , 'Delete_column_mode'
-	 - TAB_curl_send( $tab_enm, $tab_hnm,0 , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo );
+	 - TAB_curl_send( $tab_enm, $tab_hnm,0 , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ); - my_func
 
 	  : 컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다.
 	  : 컬럼 위치 이동 과 이동후 컬럼 삭제 버턴 숨김 처리 추가.
@@ -143,7 +143,7 @@
 		}
 	}
 
-	function change_table_func() {
+	function change_table_func( thisS ) {
 		tab = document.insert.tab_hnmS.value;
 		da = tab.split(":");
 		//document.insert.group_code_table.value=da[2];
@@ -172,7 +172,6 @@
 		Aftype = document.insert["Afld_type[" + no + "]"].value;
 		ftype = document.insert["fld_type[" + no + "]"].value;
 		Amemo = document.insert["Afld_memo[" + 0 + "]"].value; // column list
-
 		if( document.insert["Afld_len["+no+"]"].value == len && document.insert["fld_hnm["+no+"]"].value==hnm && document.insert["fld_enm["+no+"]"].value==enm){
 			alert(" name and length is same, You can only change the column name and length. "); // 컬럼명과 길이만 변경가능
 			return false;
@@ -428,13 +427,6 @@
 			document.insert.action="table30m_A.php";
 			document.insert.submit();
 		}
-	}
-
-	function sendser(){
-		s = document.insert.tab_hnmS.value;
-		document.insert.mode.value = 'Search';
-		document.insert.action="table30m_A.php";
-		document.insert.submit();
 	}
 
 	function create_after_run_pg(tab_enm){
@@ -918,19 +910,29 @@
 				  <option <?php echo "title='Number auto increment type.' "; ?> value="INT" <?php if ( $i==0 ) { echo "selected"; } ?> >INT</option>-->
 			  </select>
 		</td>
-		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 <?php
-				if ( $fld_enm=='seqno' or $i==0) { echo "value='13' readonly"; } else { echo " value='$fld_len' ";}
-?>  >
+				if ( $fld_enm=='seqno' or $i==0) {
+				  $fld_len = 13; 
+				  $fld_only=' readonly ';	//  echo "value='13' readonly"; 
+				  $memo_v = "AUTO_INCREMENT , Key : Can not change readonly";
+				}  else {
+					  //echo " value='$fld_len' ";
+					  $fld_len = $fld_len; 
+					  $fld_only=' ';
+					  $memo_v = $memo;
+				}
+?>
+		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'  value='<?=$fld_len?>' <?=$fld_only?> >
 		</td>
 		<td align='left'>
 			<input type='text' name="memo[<?=$i?>]"  style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
+			value='<?=$memo_v?>'
 			<?php
-				if ($fld_enm=='seqno' or $i==0) {
+				/*if ($fld_enm=='seqno' or $i==0) {
 					echo " value='AUTO_INCREMENT , Key : Can not change' title='Can not change' readonly";
 				} else {
 					echo " value='$memo' ";
-				}
+				}*/
 			?> >
 	   </td>
 	<?php
@@ -994,51 +996,9 @@
 </Form>
 </body>
 </html>
-<?php
 
+<?php
 	$tabData['data'][][] = array();
-	function TAB_curl_send( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
-		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $config;
-		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
-		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
-		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
-		$tabData['data'][$cnt]['fld_hnm']  = 'seqno';
-		$tabData['data'][$cnt]['fld_type'] = 'INT';
-		$tabData['data'][$cnt]['fld_len']  = '10';
-		$tabData['data'][$cnt]['disno']    = $cnt;
-		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $group_code;
-		$tabData['data'][$cnt]['group_name'] = $group_name;
-		$tabData['data'][$cnt]['memo']       = $memo;
-		$hostname = getenv('HTTP_HOST');
-		$tabData['data'][$cnt]['host']       = KAPP_URL_T_; //$hostname;
-		$tabData['data'][$cnt]['email']      = $H_EMAIL;
-		$tabData['data'][$cnt]['sqltable']   = $item_list;
-		$tabData['data'][$cnt]['if_line']    = $if_line;
-		$tabData['data'][$cnt]['if_type']    = $if_type;
-		$tabData['data'][$cnt]['if_data']    = $if_data;
-		$tabData['data'][$cnt]['relation_data']    = $relation_data;
-		$key = 'appgenerator';
-		$iv = "~`!@#$%^&*()-_=+";
-		$sendData = encryptA( $tabData , $key, $iv);
-		$url_ = $config['kapp_theme'] . '/_Curl/table_curl_get_ailinkapp.php'; 
-		$curl = curl_init(); //$curl = curl_init( $url_ );
-		curl_setopt( $curl, CURLOPT_URL, $url_);
-		curl_setopt( $curl, CURLOPT_POST, true);
-		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-			'iv' => $iv
-		));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		$response = curl_exec($curl);
-		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-		if( $response == false) {
-			echo 'table30m_A curl Error : ' . curl_error($curl);
-		} else {
-			//echo 'curl 응답 : ' . $response;
-		}
-		curl_close($curl);
-	}
 	if( $del_mode == 'Modify_column_mode' ){ 
 		$table_yn	=$_POST['table_yn'];
 		$tab_enm	=$_POST['tab_enm'];
@@ -1264,9 +1224,8 @@
 				if( !$ret ) {
 					echo "sql: " . $sql; exit;
 				}
-				// table_create --- curl array -------------- no use
 				$Asqltable=''; $if_lineA=0; $if_typeA=''; $if_dataA=''; $relation_dataA='';
-				//TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
+				//TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA); //my_func
 				$cnt++;
 			}
 		}
@@ -1332,22 +1291,18 @@
 		global $H_ID, $mode, $group_code, $group_name;
 		global $config;
 		global $tkher;
+		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_EMAIL, $hostnameA, $item_array;      
+
 		$tab_enm		= $H_ID . "_" . time();
 		$tab_hnm		= $_POST["tab_hnm"];
-		//if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
-		//else  $group_code	= "ETC";
-		//if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
-		//else  $group_name	= "ETC";
-
 		$item_list  = " create table ". $tab_enm . " ( ";
 		$item_list  = $item_list . " seqno int auto_increment not null, ";
 		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
 		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
-		
 		$cnt = 1;
 		$item_array = "";
-			$if_type = "";
-			$if_data = "";
+		$if_type = "";
+		$if_data = "";
 		$item_cnt   = 0;
 		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]); $ARR++ ) {
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
@@ -1380,7 +1335,7 @@
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='key column', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$item_array', sqltable='$item_list' " );
 		$line_set = $cnt;
 		$fld_enm  = "fld_" . $ARR;
 		$mq1 = sql_query( $item_list );
@@ -1392,29 +1347,26 @@
 			insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10@table30m' );//re make copy
 			TAB_curl_send( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
 		}
-		$enm		= $_POST['tab_enm'];
-//		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$enm."' ";
-		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$enm."' ";
+		$tab_enm_copy	= $_POST['tab_enm'];
+		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$tab_enm_copy."' ";
 		$rsPG	= sql_fetch($sqlPG);
-//		$resultPG	= sql_query($sqlPG);
-//		$table10_pg = sql_num_rows($resultPG);
-//		if( $table10_pg ) {
-//		if( !isset($resultPG['pg_code']) && $resultPG['pg_code'] =='' ) {
 		if( $rsPG ) {
-			//$rsPG = sql_fetch_array($resultPG);
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].",  userid='$H_ID',  tab_mid='$H_ID' ";
-			sql_query($query);	// 중요.		//coin_add_func( $H_ID, 200 ); //OK !!!
-			$link_ = $link_ = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=". $tab_enm;
-			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10_pg@table30m' );// PG create point
+			sql_query($query);
+
+			$pg_code = $tab_enm;
+			$pg_name = $tab_hnm;
+			$pg_sys_link	= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
+			//insert_point_app( $H_ID, $config['kapp_comment_point'], $pg_sys_link, 'copy table10_pg@table30m' );// PG create point
+			
+			$tabData['data'][][] = ''; //array(); // use: PG_curl_send() - my_func
+			PG_curl_send( $rsPG['item_cnt'] , $rsPG['item_array'], $rsPG['if_type'], $rsPG['if_data'], $rsPG['pop_data'], $pg_sys_link, $rsPG['relation_data'], $rsPG['relation_type'] );
+			echo "<script>window.open( '".$pg_sys_link."' , '_blank', ''); </script>";
 		} else {
-			m_(" Copy ERROR : mode:".$mode.", pg_code:".$tab_enm ); //Copy ERROR : mode:table_new_copy, pg_code:dao_1745208944
-			//Copy ERROR : mode:table_new_copy, pg_code:
-			// Copy ERROR : mode:table_new_copy, pg_code:solpakanA_naver_1751686700
-			//echo "sql: " . $sqlPG; exit;
+			m_("table30m_A - Copy ERROR : mode:".$mode.", tab_enm_copy:".$tab_enm_copy );//table30m_A - Copy ERROR : mode:table_new_copy, tab_enm_copy:dao_1744229654
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 	}
-
 	function Save_Change_Func(){ // update_remake_func(){
 		global $H_ID, $tab_enm, $mode;
 		global $config;
@@ -1478,16 +1430,12 @@
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 
 				sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
-
-				// Save_Change_Func --- curl array ----- no use
 				//TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
 				$cnt++;
 			}
 		} // for
-
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', memo='$item_array', sqltable='$item_list' " );
-
 		$line_set = $cnt-1;
 		TAB_curl_send( $tab_enm, $tab_hnm,0 , $item_list, $_POST["Aif_line"][0], $_POST["Aif_type"][0], $_POST["Aif_data"][0], $_POST["Arelation_data"][0], $item_array );
 
@@ -1532,28 +1480,5 @@
 			m_( $table10_pg . ": Program - " . $rs['pg_code'] . ":" . $rs['pg_name'] . ", If you have settings for calculation formulas, pop-up windows, and relational expressions, you may need to check them. " . $item_array);
 			$view_set = 0; //계산식, 팝업창, 관계식에 대한 설정 있다면 확인이 필요할 수 있습니다.
 		}
-	}
-	// No use : column information
-	function TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $cnt, $memo, $Asqltable, $Aif_line, $Aif_type, $Aif_data, $Arelation_data ){
-		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name;
-		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
-		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
-		$tabData['data'][$cnt]['fld_enm']  = $fld_enm;
-		$tabData['data'][$cnt]['fld_hnm']  = $fld_hnm;
-		$tabData['data'][$cnt]['fld_type'] = $fld_type;
-		$tabData['data'][$cnt]['fld_len']  = $fld_len;
-		$tabData['data'][$cnt]['disno']    = $cnt;
-		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $group_code;
-		$tabData['data'][$cnt]['group_name'] = $group_name;
-		$tabData['data'][$cnt]['memo']       = $memo;
-		$hostname = KAPP_URL_T_; //getenv('HTTP_HOST');
-		$tabData['data'][$cnt]['host']       = $hostname;
-		$tabData['data'][$cnt]['email']      = $H_EMAIL;
-		$tabData['data'][$cnt]['sqltable']   = $Asqltable;
-		$tabData['data'][$cnt]['if_line']    = $Aif_line;
-		$tabData['data'][$cnt]['if_type']    = $Aif_type;
-		$tabData['data'][$cnt]['if_data']    = $Aif_data;
-		$tabData['data'][$cnt]['relation_data']    = $Arelation_data;
 	}
 ?>

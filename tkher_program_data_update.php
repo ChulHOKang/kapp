@@ -1,23 +1,12 @@
 <?php
-include_once('./tkher_start_necessary.php');
-/*
-    tkher_program_data_update.php						: data update system program
-    tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
-    tkher_program_data_updateT.php						: data update test - system program
-	tkher_program_data_view.php							: data view   system program
-	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
-*/
-	$menu1TWPer=15;
-	$menu1AWPer=100 - $menu1TWPer;
-	$menu2TWPer=10;
-	$menu2AWPer=50 - $menu2TWPer;
-	$menu3TWPer=10;
-	$menu3AWPer=33.3 - $menu3TWPer;
-	$menu4TWPer=10;
-	$menu4AWPer=25 - $menu4TWPer;
-	$Xwidth='100%';
-	$Xheight='100%';
-	$Text_height='60px';
+	include_once('./tkher_start_necessary.php');
+	/*
+		tkher_program_data_update.php						: data update system program
+		tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
+		tkher_program_data_updateT.php						: data update test - system program
+		tkher_program_data_view.php							: data view   system program
+		tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
+	*/
 
 	$H_ID = get_session("ss_mb_id");   
 	if( $H_ID == '' ) {
@@ -136,11 +125,6 @@ include_once('./tkher_start_necessary.php');
 			} else $up_file = '';
 		} else m_(" Change Error! ");
 	}
-	$str  = "abcdefghijklmnopqrstuvwxyz";
-	$str .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	$str .= "0123456789";
-	$shuffled_str = str_shuffle($str);
-	$auto_char=substr($shuffled_str, 0, 6);
 
 	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
 	if ( ($result = sql_query( $SQL ) )==false ){
