@@ -3,28 +3,35 @@
 	: connect_count_search($call_pg ,$id, $ipcheck, $sdata) add
 */
 
-$from_session_url = KAPP_URL_;
-//$urllinkcoin_my_ip = "";
-$nicknm ='K-APP';
-$snm    ='';	// company
-$tel    ='';
-$htel   ='';    // manager
-$tel1   ='';    // 1 team
-$tel2   ='';    // 2 team
-$fax    ='';
-$sano   ='';
-$addr   ='';
-$mail   ='solpakan89@gmail.com';
-$Htitle = "[K-APP] : ".$tel." Mail:".$mail;
-$user_login_time = 6000;
+	$from_session_url = KAPP_URL_;
+	$kapp_cmop_nicknm ='K-APP';
+	$kapp_comp_snm    ='';	// company
+	$kapp_cmop_tel    ='';
+	$kapp_cmop_htel   ='';    // manager
+	$kapp_cmop_tel1   ='';    // 1 team
+	$kapp_cmop_tel2   ='';    // 2 team
+	$kapp_cmop_fax    ='';
+	$kapp_cmop_sano   ='';
+	$kapp_cmop_addr   ='';
+	$kapp_cmop_mail   ='solpakan89@gmail.com';
+	$kapp_cmop_Htitle = "[K-APP] : ".$kapp_cmop_tel." Mail:".$kapp_cmop_mail;
+	$user_login_time = 6000000;
+
+	$kapp_key = 'appgenerator';
+	$kapp_iv = "~`!@#$%^&*()-_=+";
+	$link_secret_iv = "#@$%^&*()_+=-";
+	$send_mail = "solpakan@naver.com";
+	$user_admin_pass = 'ad2457807';
+	$id= "editor";	// admin
+	$pw	= "Edi!))$35";
 
 /* start program design. */
 	$is_mobile = false;
-	$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
+	//$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
 	if( $is_mobile ) {
-		$menu1TWPer=36;
-	} else {
 		$menu1TWPer=15;
+	} else {
+		$menu1TWPer=36;
 	}
 	$menu1AWPer=100 - $menu1TWPer;
 	$menu2TWPer=10;
@@ -44,9 +51,10 @@ $user_login_time = 6000;
 	$shuffled_str = str_shuffle($strT);
 	$auto_char=substr($shuffled_str, 0, 6); // insertD.php, updateD.php, replyD.php
 
-	function TAB_curl_send( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
-		// use: table30m_A.php
-		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $config;
+	function TAB_curl_send( $curl_snm, $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
+		// use: kapp_tabel_create.php , table30m_A.php
+		global $H_ID, $H_EMAIL, $group_code, $group_name, $config, $kapp_iv, $kapp_key;
+		$tabData['data'][][] = array();
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
 		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
 		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
@@ -66,30 +74,32 @@ $user_login_time = 6000;
 		$tabData['data'][$cnt]['if_type']    = $if_type;
 		$tabData['data'][$cnt]['if_data']    = $if_data;
 		$tabData['data'][$cnt]['relation_data']    = $relation_data;
-		$key = 'appgenerator';
-		$iv = "~`!@#$%^&*()-_=+";
-		$sendData = encryptA( $tabData , $key, $iv);
-		$url_ = $config['kapp_theme'] . '/_Curl/table_curl_get_ailinkapp.php'; 
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
+
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-			'iv' => $iv
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
+			'iv' => $kapp_iv
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($curl);
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
 		if( $response == false) {
-			echo 'table30m_A curl Error : ' . curl_error($curl);
+			echo ' TAB_curl_send curl Error : ' . curl_error($curl);
 		} else {
-			//echo 'curl 응답 : ' . $response;
+			echo 'curl 응답 : ' . $response;
 		}
 		curl_close($curl);
+		return $response;
 	}
-	function PG_curl_send( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-		// use: app_pg50RC.php,  table30m_A.php
-		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $tabData, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config;      
+	function PG_curl_send( $curl_snm, $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
+		// use: kapp_tabel_create.php, app_pg50RC.php,  table30m_A.php
+		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
+		$tabData['data'][][] = array();
 		$cnt = 0;
 		$tabData['data'][$cnt]['pg_code']  = $pg_code;
 		$tabData['data'][$cnt]['pg_name']  = $pg_name;
@@ -108,29 +118,176 @@ $user_login_time = 6000;
 		$tabData['data'][$cnt]['relation_data']   = $rel_data;
 		$tabData['data'][$cnt]['relation_type']   = $rel_type;
 		$tabData['data'][$cnt]['item_array'] = $item_array;
-		$key = 'appgenerator';
-		$iv = "~`!@#$%^&*()-_=+";
-		$sendData = encryptA( $tabData , $key, $iv);
-		$url_ = $config['kapp_theme'] . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+
+		$url_ = $curl_snm . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-			'iv' => $iv
+			'iv' => $kapp_iv
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($curl);
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
 		echo curl_error($curl);
 		if( $response == false) {
-			$_ms = "new program curl error : " . curl_error($curl);
-			echo 'curl error : ' . curl_error($curl);
+			//$_ms = "new program curl error : " . curl_error($curl);
+			echo 'curl error PG_curl_send : ' . curl_error($curl);
 		} else {
-			$_ms = 'new program app_pg50RC curl response : ' . $response;
+			//$_ms = 'new program app_pg50RC curl response : ' . $response;
 		}
 		curl_close($curl);
+		return $response;
 	} // function
+	function TAB_curl_send_tabData( $curl_snm, $tabData ){
+		// use: table_curl_get_ailinkapp.php
+		global $kapp_iv, $kapp_key;
+
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
+
+		$curl = curl_init(); //$curl = curl_init( $url_ );
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			echo 'TAB_curl_send_tabData curl Error : ' . curl_error($curl);
+		} else {
+			echo 'TAB_curl_send_tabData curl 응답 : ' . $response;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	function PG_curl_send_tabData( $curl_snm, $tabData ){
+		// use: pg_curl_get_ailinkapp.php
+		global $kapp_iv, $kapp_key; 
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		$url_ = $curl_snm . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			$_ms = "PG_curl_send_tabData curl error : " . curl_error($curl);
+			echo 'PG_curl_send_tabData curl error : ' . curl_error($curl);
+		} else {
+			$_ms = 'new PG_curl_send_tabData curl response : ' . $response;
+			echo 'PG_curl_send_tabData curl response: ' . $response;
+		}
+		curl_close($curl);
+		return $response;
+	} // function
+	function Link_Table_curl_send_tabData( $kapp_theme, $tabData ){
+		global $kapp_iv, $kapp_key;
+
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		$url_ = $kapp_theme . '/_Curl/Link_Table_curl_get_ailinkapp.php';
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			$_ms = "new Link_Table_curl_get_ailinkapp fail : " . curl_error($curl);
+			echo 'curl : ' . $_ms;
+		} else {
+			$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
+			echo 'curl : ' . $_ms;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	function job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $aboard_no, $job_group, $job_name, $jong ){
+		global $H_ID, $H_EMAIL, $tkher;
+		global $kapp_theme0;
+		global $kapp_theme1;
+
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$from_session_url = KAPP_URL_; //$_SERVER['HTTP_HOST'];
+		$up_day  = date("Y-m-d-H:i:s");
+		$result = sql_fetch("SELECT * from {$tkher['job_link_table']} where user_id='$H_ID' and user_name='$sys_subtit' and job_addr='$sys_link' ");
+		//$tot = sql_num_rows($result);
+		//if( $tot < 1 ) {
+		if( !isset($result['user_id']) && !isset($result['user_name']) && !isset($result['job_arrd'])  ) {
+			$up_day = date("Y-m-d H:i:s");
+			$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID',  email='$H_EMAIL', job_name='$job_name', user_name='$sys_subtit', num='$sys_pg_root', aboard_no='$aboard_no', job_addr='$sys_link', jong='$jong', job_group='$job_group', club_url='$from_session_url', job_level='0', ip='$ip', up_day='$up_day' ";
+			$ret = sql_query( $sqlA );
+			$memo = 'tit:' . $sys_subtit . ', sys_pg:' .$sys_pg_root. ', aboard_no:' . $aboard_no;
+			if( $ret ) {
+				if( $kapp_theme0 ) {
+					if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day ) ) {
+						if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day );
+					}
+				}
+				return true;
+			} else {
+				m_("my_func - job_link_table_add error ");
+				//echo "my_func, job_link_table_add error sql: " .$sqlA; exit;
+				return false;
+			}
+		}
+		return false;
+	}
+	function Link_Table_curl_send( $kapp_theme, $sys_subtit, $sys_link, $jong, $kapp_server, $ip, $memo, $up_day ){
+		global $H_ID, $H_EMAIL, $config, $kapp_iv, $kapp_key;
+
+		$tabData['data'][][] = array();
+		$cnt = 0;
+		$tabData['data'][$cnt]['link_title']  = $sys_subtit;
+		$tabData['data'][$cnt]['link_url']    = $sys_link;
+		$tabData['data'][$cnt]['link_type']   = $jong;
+		$tabData['data'][$cnt]['kapp_server'] = $kapp_server;
+		$tabData['data'][$cnt]['email']       = $H_EMAIL;
+		$tabData['data'][$cnt]['user_ip']     = $ip;
+		$tabData['data'][$cnt]['memo']        = $memo;
+		$tabData['data'][$cnt]['up_day']      = $up_day;
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		
+		$url_ = $kapp_theme . '/_Curl/Link_Table_curl_get_ailinkapp.php';
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			$_ms = "new Link_Table_curl_get_ailinkapp fail : " . curl_error($curl);
+			echo 'curl : ' . $_ms;
+		} else {
+			$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
+			echo 'curl : ' . $_ms;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	/*
 	// No use : column information - table30m_A.php 테이블 생성시 컬럼 정보 curl 처리를 보류함.
 	function TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $cnt, $memo, $Asqltable, $Aif_line, $Aif_type, $Aif_data, $Arelation_data ){
 		global $tabData, $H_ID, $H_EMAIL, $group_code, $group_name;
@@ -153,7 +310,7 @@ $user_login_time = 6000;
 		$tabData['data'][$cnt]['if_type']    = $Aif_type;
 		$tabData['data'][$cnt]['if_data']    = $Aif_data;
 		$tabData['data'][$cnt]['relation_data']    = $Arelation_data;
-	}
+	}*/
 	function special_comma_chk ($input) { // 특수문자 제거. "'"만 제거한다.
 		if( is_array($input)) {
 			return array_map('special_chk', $input); 
@@ -288,64 +445,6 @@ $user_login_time = 6000;
 		return $html;
 	}
 
-	function job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $aboard_no, $job_group, $job_name, $jong ){
-		global $H_ID, $H_EMAIL, $tkher;
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$from_session_url = KAPP_URL_; //$_SERVER['HTTP_HOST'];
-		$up_day  = date("Y-m-d-H:i:s");
-		$result = sql_query("SELECT * from {$tkher['job_link_table']} where user_id='$H_ID' and user_name='$sys_subtit' and job_addr='$sys_link' ");
-		$tot = sql_num_rows($result);
-		if( $tot < 1 ) {
-			$up_day = date("Y-m-d H:i:s");
-			$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID',  email='$H_EMAIL', job_name='$job_name', user_name='$sys_subtit', num='$sys_pg_root', aboard_no='$aboard_no', job_addr='$sys_link', jong='$jong', job_group='$job_group', club_url='$from_session_url', job_level='0', ip='$ip', up_day='$up_day' ";
-			$ret = sql_query( $sqlA );
-			$memo = 'tit:' . $sys_subtit . ', sys_pg:' .$sys_pg_root. ', aboard_no:' . $aboard_no;
-			if( $ret ) {
-				Link_Table_curl_send( $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day );
-				return true;
-			} else {
-				echo "my_func, job_link_table_add error sql: " .$sqlA; exit;
-			}
-		}
-
-	}
-	function Link_Table_curl_send( $sys_subtit, $sys_link, $jong, $kapp_server, $ip, $memo, $up_day ){
-		global $H_ID, $H_EMAIL, $config;
-
-		$tabData['data'][][] = array();
-		$cnt = 0;
-		$tabData['data'][$cnt]['link_title']  = $sys_subtit;
-		$tabData['data'][$cnt]['link_url']    = $sys_link;
-		$tabData['data'][$cnt]['link_type']   = $jong;
-		$tabData['data'][$cnt]['kapp_server'] = $kapp_server;
-		$tabData['data'][$cnt]['email']       = $H_EMAIL;
-		$tabData['data'][$cnt]['user_ip']     = $ip;
-		$tabData['data'][$cnt]['memo']        = $memo;
-		$tabData['data'][$cnt]['up_day']      = $up_day;
-		$key = 'appgenerator';
-		$iv = "~`!@#$%^&*()-_=+";
-		$sendData = encryptA( $tabData , $key, $iv);
-		$url_ = $config['kapp_theme'] . '/_Curl/Link_Table_curl_get_ailinkapp.php';
-		$curl = curl_init();
-		curl_setopt( $curl, CURLOPT_URL, $url_);
-		curl_setopt( $curl, CURLOPT_POST, true);
-		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-			'iv' => $iv
-		));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		$response = curl_exec($curl);
-		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-		echo curl_error($curl);
-		if( $response == false) {
-			$_ms = "new Link_Table_curl_get_ailinkapp fail : " . curl_error($curl);
-			echo 'curl : ' . $_ms;
-		} else {
-			$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
-		}
-		curl_close($curl);
-		return $response;
-	}
 	function get_memberT( $email, $table, $fields='*')
 	{
 		global $tkher;
@@ -362,7 +461,6 @@ $user_login_time = 6000;
 		return sql_fetch(" select $fields from {$tkher['tkher_member_table']} where mb_email = TRIM('$mb_id') ");
 	}
 	function urllink_member_set( $gid, $gemail, $gname, $gsajin, $sn, $table){
-		// 2021-06-24 add $sn
         global $tkher;
 		global $member;
 		$ip = $_SERVER['REMOTE_ADDR'];
@@ -902,7 +1000,6 @@ function Encrypt($str, $secret_key='secret key', $secret_iv='secret iv')
 {
     $key = hash('sha256', $secret_key);
     $iv = substr(hash('sha256', $secret_iv), 0, 16); //32->16
-
     return str_replace("=", "", base64_encode(
                  openssl_encrypt($str, "AES-256-CBC", $key, 0, $iv))
     );
@@ -911,16 +1008,10 @@ function Decrypt($str, $secret_key='secret key', $secret_iv='secret iv')
 {
     $key = hash('sha256', $secret_key);
     $iv = substr(hash('sha256', $secret_iv), 0, 16); //32->16
-
     return openssl_decrypt(
             base64_decode($str), "AES-256-CBC", $key, 0, $iv
     );
 }
-	$link_secret_iv = "#@$%^&*()_+=-";
-	$send_mail = "solpakan@naver.com";
-	$user_admin_pass = 'ad2457807';
-	$id		= "editor";	// admin
-	$pw	= "Edi!))$35";	// pw
 
 	function Shorten_StringX($String, $MaxLen, $ShortenStr)  {
 		$StringLen = strlen($String);
