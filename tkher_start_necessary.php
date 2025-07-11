@@ -20,7 +20,7 @@
 	header('P3P: CP="ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC"');
 	if( !defined('KAPP_SET_TIME_LIMIT')) define('KAPP_SET_TIME_LIMIT', 0);
 	@set_time_limit(KAPP_SET_TIME_LIMIT);
-	//=========================================================================================================
+	//====================================================================================
 	// extract($_GET); 명령으로 인해 index.php?_POST[var1]=data1&_POST[var2]=data2 와 같은 코드가 _POST 변수로 사용되는 것을 막음
 	//---------------------------------------------------------------------------------------
 	$ext_arr = array ('PHP_SELF', '_ENV', '_GET', '_POST', '_FILES', '_SERVER', '_COOKIE', '_SESSION', '_REQUEST',
@@ -97,70 +97,64 @@ $group		= array(); // tkher_common use
 $tkher		= array();
 $member		= array();
 
-	$dbconfig_file = KAPP_PATH_T_ . "/data/kapp_dbcon.php"; //$dbconfig_file = KAPP_PATH_T_ . "/data/tkher_dbconfig.php";
-	$_myLIB        = KAPP_LIB_PATH . "/my_func.php";	// 2022-05-09 이동.
+$dbconfig_file = KAPP_PATH_T_ . "/data/kapp_dbcon.php";
+$_myLIB        = KAPP_LIB_PATH . "/my_func.php";
 
 if( file_exists( $dbconfig_file) ) {
     include_once( $dbconfig_file);
-	include_once( $_myLIB );      // 2021-04-04 add 공통 라이브러리
+	include_once( $_myLIB );
     $connect_db = sql_connect(KAPP_MYSQL_HOST, KAPP_MYSQL_USER, KAPP_MYSQL_PASSWORD) or die('MySQL Connect Error!!!');
     $select_db  = sql_select_db(KAPP_MYSQL_DB, $connect_db) or die('MySQL DB Error!!!');
     $tkher['connect_db'] = $connect_db;
     sql_set_charset('utf8', $connect_db);
-
 } else {
 	$setup = KAPP_URL_T_ . "/setup/index.php";
 ?>
-<!doctype html>
-<html lang="ko">
-<head>
-    <meta charset="utf-8">
-    <title>Error! <?php echo KAPP_VERSION_ ?> K-App Setup</title>
-    <link rel="stylesheet" href="./install_/install.css">
-</head>
-<body>
-    <div id="ins_bar">
-        <span id="bar_img">K-App : program source code generator</span>
-        <span id="bar_txt">dbconfig_file: <?=$dbconfig_file?></span>
-    </div>
-    <h1>Please install K-App. </h1>
-    <div class="ins_inner">
-        <p>File not found</p>
-        <ul>
-            <li><strong><?=$dbconfig_file ?> or <?=$_fileLIB?></strong></li>
-        </ul>
-        <p>Run K-App again after installation.</p>
-        <div class="inner_btn">
-            <a href="<?=$setup?>">K-App Setup</a>
-        </div>
-    </div>
-    <div>
-        <strong>K-App : program source code generator</strong>
-    </div>
-
-</body>
-
-</html>
-
+		<!doctype html>
+		<html lang="ko">
+		<head>
+			<meta charset="utf-8">
+			<title>Error! <?php echo KAPP_VERSION_ ?> K-APP Setup</title>
+			<link rel="stylesheet" href="./include/css/style..css">
+		</head>
+		<body>
+			<div id="ins_bar">
+				<span id="bar_img">K-APP : program source code generator</span>
+				<span id="bar_txt">dbconfig_file: <?=$dbconfig_file?></span>
+			</div>
+			<h1>Please install K-APP. </h1>
+			<div class="ins_inner">
+				<p>File not found</p>
+				<ul>
+					<li><strong><?=$dbconfig_file ?> or <?=$_fileLIB?></strong></li>
+				</ul>
+				<p>Run K-APP again after installation.</p>
+				<div class="inner_btn">
+					<a href="<?=$setup?>">K-APP Setup</a>
+				</div>
+			</div>
+			<div>
+				<strong>K-APP : program source code generator</strong>
+			</div>
+		</body>
+		</html>
 <?php
 		exit;
 }
-
 $time_micro = microtime();
 $begin_time = get_microtime();
 //==============================================================================
 // SESSION 설정
 //------------------------------------------------------------------------------
 @ini_set("session.use_trans_sid", 0);    // PHPSESSID를 자동으로 넘기지 않음
-@ini_set("url_rewriter.tags",""); // 링크에 PHPSESSID가 따라다니는것을 무력화함. //session_save_path(KAPP_SESSION_PATH);
+@ini_set("url_rewriter.tags","");   // 링크에 PHPSESSID가 따라다니는것을 무력화함. //session_save_path(KAPP_SESSION_PATH);
 if( isset($SESSION_CACHE_LIMITER))
     @session_cache_limiter($SESSION_CACHE_LIMITER);
 else
     @session_cache_limiter("no-cache, must-revalidate");
 
 
-	$config = sql_fetch(" SELECT * from {$tkher['config_table']} "); // kapp_config, m_("start - kapp_register_point: " . $config['kapp_register_point']);
-
+	$config = sql_fetch(" SELECT * from {$tkher['config_table']} "); 
 	$qstr = '';
 	if( isset($_REQUEST['sca']))  {
 		$sca = clean_xss_tags(trim($_REQUEST['sca']));
@@ -232,12 +226,13 @@ else
 	} else {
 		$wr_id = 0;
 	}
-	if( isset($_REQUEST['bo_table'])) {
-		$bo_table = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['bo_table']));
-		$bo_table = substr($bo_table, 0, 20);
+	if( isset($_REQUEST['tab_enm'])) {
+		$tab_enm = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['tab_enm']));
+		$tab_enm = substr($tab_enm, 0, 50); //m_("start necessary - tab_enm: ". $tab_enm);//start necessary - tab_enm: solpakanA_naver_1752025525
 	} else {
-		$bo_table = '';
+		$tab_enm = '';
 	}
+	
 	// URL ENCODING
 	if( isset($_REQUEST['url'])) {
 		$url = strip_tags(trim($_REQUEST['url']));
@@ -250,21 +245,17 @@ else
 			$urlencode = KAPP_DOMAIN.urldecode(preg_replace("/^".urlencode($p['path'])."/", "", $urlencode));
 		}
 	}
-	if( isset($_REQUEST['gr_id'])) {
-		if( !is_array($_REQUEST['gr_id'])) {
-			$gr_id = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['gr_id']));
+	if( isset($_REQUEST['H_ID'])) {
+		if( !is_array($_REQUEST['H_ID'])) {
+			$H_ID = preg_replace('/[^a-z0-9_]/i', '', trim($_REQUEST['H_ID']));
 		}
 	} else {
-		$gr_id = '';
+		$H_ID = '';
 	}
-
 	$host_script = $tkher_iurl . $_SERVER['SCRIPT_NAME'];
     $user_agent  = is_mobileX(); //escape_trim(clean_xss_tags($_SERVER['HTTP_USER_AGENT']));
 	$remote_addr = escape_trim($_SERVER['REMOTE_ADDR']);
 	$kapp_host   = isset( $_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
-
-	$H_ID = "";
-
 	if( isset($_SESSION['ss_mb_id']) ) $ss_mb_id = $_SESSION['ss_mb_id'];
 	else $ss_mb_id = "";			
 	if( isset($_SESSION['ss_mb_id']) ) { // 로그인중이라면
@@ -273,11 +264,10 @@ else
 		if( isset($member['mb_intercept_date']) && $member['mb_intercept_date'] <= date("Ymd", KAPP_SERVER_TIME)) {
 			set_session('ss_mb_id', '');
 			$member = array();
-			m_("start --- 차단된 회원이면 ss_mb_id 초기화 --- ss_mb_id NULL set ");
+			//m_("start --- 차단된 회원이면 ss_mb_id 초기화 --- ss_mb_id NULL set ");
 		} else { // today first login
 			if( isset( $member['mb_today_login']) && substr( $member['mb_today_login'], 0, 10) != KAPP_TIME_YMD) { // 첫 로그인 포인트 지급
 				insert_point_app($member['mb_id'], $config['kapp_login_point'], KAPP_TIME_YMD.' first_login', '@login', $member['mb_id'], $member['mb_id'], KAPP_TIME_YMD);
-
 				// 오늘의 로그인이 될 수도 있으며 마지막 로그인일 수도 있음  해당 회원의 접근일시와 IP 를 저장
 				$sql = " update {$tkher['tkher_member_table']} set mb_today_login = '".KAPP_TIME_YMDHIS."', mb_login_ip = '{$remote_addr}' where mb_id = '{$member['mb_id']}' ";
 				sql_query($sql);
@@ -288,14 +278,9 @@ else
 		if( isset($_SERVER['HTTP_REFERER'])) $referer = escape_trim(clean_xss_tags($_SERVER['HTTP_REFERER']));
 		if( !strpos( $_SERVER['SCRIPT_NAME'], "indexTT.php")  ) {
 			connect_count( $host_script, "Guest", 1, $referer);	// count -  1: log_info 생성, 관리자ip log 생성, 0:미생성.
-		} else {
-			//m_("else - SCRIPT_NAME: " . $referer);
 		}
-		
 		if( $tmp_mb_id = get_cookie('kapp_mb_id')) { // auto login 
-
-			$tmp_mb_id = substr( preg_replace("/[^a-zA-Z0-9_]* /", "", $tmp_mb_id), 0, 20);
-			// 최고관리자는 자동로그인 금지
+			$tmp_mb_id = substr( preg_replace("/[^a-zA-Z0-9_]* /", "", $tmp_mb_id), 0, 20);			// 최고관리자는 자동로그인 금지
 			if( strtolower($tmp_mb_id) != strtolower( $config['kapp_admin'])) {
 				$sql = " select mb_password, mb_intercept_date, mb_leave_date, mb_email_certify from {$tkher['tkher_member_table']} where mb_id = '{$tmp_mb_id}' ";
 				$row = sql_fetch($sql);
@@ -314,7 +299,6 @@ else
 			}
 		} // auto login end
 	}
-
 //=========================================================================================
 // 회원, 비회원 구분
 if( isset($member['mb_level']) ){
@@ -334,8 +318,7 @@ if( isset($member['mb_id']) ) {
     $member['mb_id'] = '';
     $member['mb_level'] = 1; // 비회원의 경우 회원레벨을 가장 낮게 설정
 }
-if( $is_admin != 'super') {
-    // 접근가능 IP
+if( $is_admin != 'super') {    // 접근가능 IP
     $kapp_possible_ip = trim($config['kapp_possible_ip']);
     if( $kapp_possible_ip) {
         $is_possible_ip = false;
@@ -370,7 +353,7 @@ $is_mobile = false;
 $set_device = true;
 $mobile_agent = "/(iPod|iPhone|Android|BlackBerry|SymbianOS|SCH-M\d+|Opera Mini|Windows CE|Nokia|SonyEricsson|webOS|PalmOS)/";
 
-if(defined('KAPP_SET_DEVICE') && $set_device) {
+if( defined('KAPP_SET_DEVICE') && $set_device) {
     switch(KAPP_SET_DEVICE) {
         case 'pc':
             $is_mobile  = false;

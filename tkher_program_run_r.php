@@ -19,8 +19,9 @@
 
 	if( $mode !== 'table_pg70_write' || $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
 		m_("Abnormal approach. pg_code:$pg_code, tab_enm:$tab_enm, tab_mid:$tab_mid");
+		//Abnormal approach. pg_code:solpakan_naver_1751974969, tab_enm:solpakan_naver_1751974713, tab_mid:
 		$rungo = "./";
-		echo "<script>window.open( '$rungo' , '_self', ''); </script>";
+		//echo "<script>window.open( '$rungo' , '_self', ''); </script>";
 		exit;
 	}
 	$H_ID = get_session("ss_mb_id"); 
@@ -83,15 +84,15 @@
 					if( !is_dir($f_path1) ) {
 						if( !@mkdir( $f_path1, 0755 ) ) {
 							m_("tkher_program_run_r - Error: f_path : " . $f_path1 . " Failed to create directory.");
-							echo " Error: f_path : " . $f_path1 . " Failed to create directory. "; exit;
-							//echo "<script>history.go(-1); </script>";exit;
+							echo " Error: f_path : " . $f_path1 . " Failed to create directory. ";
+							echo "<script>history.go(-1); </script>";exit;
 						}
 					}
 					if( !is_dir($f_path) ) {
 						if( !@mkdir( $f_path, 0755 ) ) {
 							m_("tkher_program_run_r - Error: f_path : " . $f_path . " Failed to create directory.");
-							echo " Error: f_path : " . $f_path . " Failed to create directory. "; exit;
-							//echo "<script>history.go(-1); </script>";exit;
+							echo " Error: f_path : " . $f_path . " Failed to create directory. ";
+							echo "<script>history.go(-1); </script>";exit;
 						}
 					}
 					$f_path= $f_path . "/";
@@ -123,7 +124,6 @@
 	}
 	$rtype = '';
 	$rdata = '';
-	//echo "" . $SQL;
 	$mq2 = sql_query($SQL);
 	if( $mq2 ) { 
 		$relation_data =get_session("relation_dataPG");

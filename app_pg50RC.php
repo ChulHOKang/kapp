@@ -8,18 +8,15 @@
 		: PC:app_pg50RU.php
 		: app_pg50RC_Test.php :test pg
 	*/
-	$ss_mb_id	= get_session("ss_mb_id");
 	$H_ID	= get_session("ss_mb_id");
-	if( $H_ID =='' )	{
+	if( !$H_ID || $H_ID =='' )	{
 		m_("You need to login. ");
-		$url= KAPP_URL_T_;
+		$url="./";
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
-	} else {
-		$H_LEV=$member['mb_level'];
-		$H_EMAIL   = $member['mb_email'];
 	}
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_LEV =$member['mb_level'];
 ?>
 <html>
 <head>
@@ -606,7 +603,7 @@ function change_project_func(pnmS){
 			if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt']; 
 			else  $item_cnt = ""; 
 			$in_day			= date("Y-m-d H:i");
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$if_type', if_data='$if_data', pop_data='$pop_data', relation_data='$rel_data', relation_type='', userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$if_type', if_data='$if_data', pop_data='$pop_data', relation_data='$rel_data', relation_type='', tab_mid='$H_ID', userid='$H_ID' ";
 			$ret = sql_query($query);
 			$sys_pg_root	= $pg_code;
 			$sys_subtit		= $pg_name;
@@ -616,10 +613,22 @@ function change_project_func(pnmS){
 			$jong			= "P";
 			$pg_cd_nm = $pg_code . ":" . $pg_name;
 			$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code; 
+			$kapp_theme0 = '';
+			$kapp_theme1 = '';
+			$kapp_theme = $config['kapp_theme'];
+			$kapp_theme = explode('^', $kapp_theme );	//$n = sizeof($server_);
+			$kapp_theme0 = $kapp_theme[0];
+			$kapp_theme1 = $kapp_theme[1];
 			job_link_table_add( $pg_code, $pg_name, $sys_link, $pg_code, $job_group, $job_name, $jong );
 			insert_point_app( $H_ID, $config['kapp_write_point'], $sys_link, 'program_create@app_pg50RC', $pg_cd_nm, $tab_enm);
 			$pg_sys_link	= KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $pg_code;
-			PG_curl_send( $item_cnt , $item_array, $if_type, $if_data, $pop_data, $pg_sys_link, $rel_data, $rel_type );
+			
+			if( isset($kapp_theme0) && $kapp_theme0 !=='' ){
+				PG_curl_send( $kapp_theme0, $item_cnt , $item_array, $if_type, $if_data, $pop_data, $pg_sys_link, $rel_data, $rel_type );
+			}
+			if( isset($kapp_theme1) && $kapp_theme1 !=='' ) {
+				PG_curl_send( $kapp_theme1, $item_cnt , $item_array, $if_type, $if_data, $pop_data, $pg_sys_link, $rel_data, $rel_type );
+			}
 			$url = "./tkher_program_run.php?pg_code=". $pg_code;
 			echo "<script>window.open( '".$url."' , '_blank', ''); </script>";
 	} else if( $mode_session == 'POPUP') { // pop window

@@ -1,14 +1,13 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		app_pg50RU.php   : table_item_run50_pg50RU.php, table_pg50RU.php을 Copy : 기존의 table_pg50R.php copy하여 backup 보관.
-			 : 프로그램을 생성과 보완을 동시에 하던것을 생성 과 변경으로 분리함. 
-			 : 생성(PC:app_pg50RC.php, Mobile:table_pg50RC.php) 부분과 
-			 : 변경(PC:app_pg50RU.php, Mobile:table_pg50RU.php) 부분으로 분리함.
-			 : table_item_run50.php call 하고 PG_curl_send() 추가 : 2023-08-03 - ailinkapp.com : pg_curl_get_ailinkapp.php 와 연동됨.
-				- https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php
-			 : program_list3.php - call : upgrade
-			: column attribute - 1:radio. 3:checkbox. 5:listbox. 7:password. 9:Attached file. 11:calc. 13:popup
+		app_pg50RU.php   :
+		: app_pg50RU_update.php - table_item_run50_pg50RU.php copy, table_pg50RU.php Copy : table_pg50R.php copy.
+		: PG_curl_send() - call: pg_curl_get_ailinkapp.php
+		: program_list3.php - call : upgrade
+		: column attribute - 1:radio. 3:checkbox. 5:listbox. 7:password. 9:Attached file. 11:calc. 13:popup
+		: create - PC: app_pg50RC.php, Mobile:table_pg50RC.php
+		: update - PC: app_pg50RU.php, Mobile:table_pg50RU.php
 */
 	$H_ID	= get_session("ss_mb_id");
 	if( !$H_ID || $H_ID =='' ){
@@ -17,7 +16,8 @@
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	$H_LEV =$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_LEV =$member['mb_level'];
+	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
 	if( !isset($_SESSION['mode_session_ok']) ) $_SESSION['mode_session_ok']= 'ok';
@@ -866,7 +866,7 @@ function Save_and_Run( pg)
 		}
 	} else document.makeform.mode.value = 'Pg_Upgrade';
 	document.makeform.mode_call.value = 'app_pg50RU';
-	document.makeform.action='table_item_run50_pg50RU.php';
+	document.makeform.action='app_pg50RU_update.php';
 	document.makeform.target='_blank';
 	document.makeform.submit();
 }
@@ -970,6 +970,8 @@ function Save_and_Run( pg)
 		$tab_enm		= $rsPG['tab_enm'];
 		$tab_hnm		= $rsPG['tab_hnm'];
 		$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
+		$group_code		= $rsPG['group_code'];
+		$group_name		= $rsPG['group_name'];
 	
 	} else if( $mode == 'program_upgrade' ){
 		if( isset($_POST['pg_code']) ) {
