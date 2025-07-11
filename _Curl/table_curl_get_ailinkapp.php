@@ -1,34 +1,37 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 	/*
-	  작업 결과 : 성공, 2023-07-27
+		table_curl_get_ailinkapp.php
 	*/
-    $key = 'appgenerator';    //$iv = "~`!@#$%^&*()-_=+";
-    $responseData = $_POST['tabData']; // json_decode($_POST['tabData'], true);
-    $iv = $_POST['iv'];
-    $tabData =  decryptA($responseData, $key, $iv);
+	$responseData = $_POST['tabData'];  
+	//$responseData = json_decode($_POST['tabData'], true);
+	//$tabData = json_decode($_POST['tabData'], JSON_UNESCAPED_UNICODE);
+    $kapp_iv = $_POST['iv'];
+	//$tabData = $_POST['tabData'];  
+    $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
 	//------------------- 배열 재 구성 --------------------------
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
 	$tabData = json_decode($tabData, true);
 	//--------------------------------------------------------
-    if( isset($tabData) ){
+    if( isset( $tabData) ){
         $message = '_api table data 전달 완료';
     } else {
         $message = '_api table data 전달 실패';
     }
-    $connect_db->begin_transaction();
+	echo "<br>message: " . $message;
+	echo "table_curl_get_ailinkapp tab_enm: " . $tabData['data'][0]['tab_enm'];
+			$kapp_theme0 = '';
+			$kapp_theme1 = '';
+			$kapp_theme = $config['kapp_theme'];
+			$kapp_theme = explode('^', $kapp_theme );	//$n = sizeof($server_);
+			$kapp_theme0 = $kapp_theme[0];
+			$kapp_theme1 = $kapp_theme[1];
+
+	$connect_db->begin_transaction();
     try {
-        for($i = 0; $i < count($tabData['data']); $i++){
-			$sql1 = "SELECT * from {$tkher['table10_curl_table']} WHERE 
-				host       = '".$tabData['data'][$i]['host']."' and
-				email      = '".$tabData['data'][$i]['email']."' and
-				group_code = '".$tabData['data'][$i]['group_code']."' and
-				group_name = '".$tabData['data'][$i]['group_name']."' and
-				tab_enm    = '".$tabData['data'][$i]['tab_enm']."' and
-				tab_hnm    = '".$tabData['data'][$i]['tab_hnm']."' and
-				fld_enm    = '".$tabData['data'][$i]['fld_enm']."' and
-				fld_hnm    = '".$tabData['data'][$i]['fld_hnm']."' 
-			";
+		$i=0;
+        //for($i = 0; $i < count($tabData['data']); $i++){
+			$sql1 = "SELECT * from {$tkher['table10_curl_table']} WHERE tab_enm= '".$tabData['data'][0]['tab_enm']."' and fld_enm= 'seqno' ";
 			$result = $connect_db->query( $sql1 ); // $result = sql_query( $sql1 );
 			$row = sql_num_rows($result);          // echo "count_:" . $row;
 			if( $row > 0 ) {
@@ -43,14 +46,7 @@
 					sqltable   = '".$tabData['data'][$i]['sqltable']."'  , 
 					memo       = '".$tabData['data'][$i]['memo']."' 
 					WHERE
-							host       = '".$tabData['data'][$i]['host']."' and
-							email      = '".$tabData['data'][$i]['email']."' and
-							group_code = '".$tabData['data'][$i]['group_code']."' and
-							group_name = '".$tabData['data'][$i]['group_name']."' and
-							tab_enm    = '".$tabData['data'][$i]['tab_enm']."' and
-							tab_hnm    = '".$tabData['data'][$i]['tab_hnm']."' and
-							fld_enm    = '".$tabData['data'][$i]['fld_enm']."' and
-							fld_hnm    = '".$tabData['data'][$i]['fld_hnm']."' 
+							tab_enm    = '".$tabData['data'][$i]['tab_enm']."' and fld_enm= 'seqno'
 				";
 			} else {
 				if( isset($tabData['data'][$i]['if_line']) == '' || $tabData['data'][$i]['if_line'] == NULL) $tabData['data'][$i]['if_line'] = 0;
@@ -75,14 +71,13 @@
 					memo          = '".$tabData['data'][$i]['memo']."' 
 				";
 			}
-			echo "sql:".$sql;
 			$resultA = $connect_db->query( $sql );
-		}
-        // 롤백
+		//}
         if (!$resultA) {
-            throw new Exception("Update failed");
-        }
-        $connect_db->commit();
+            throw new Exception("table_curl_get_ailinkapp.php : throw new Exception - Update failed");
+        } else{
+		}
+		$connect_db->commit();
     } catch (Exception $e) {
         $connect_db->rollback();
         echo "Error: " . $e->getMessage();
@@ -93,5 +88,14 @@
     );
     header('Content-Type: application/json');
     echo json_encode($response, JSON_UNESCAPED_UNICODE);
-
+			
+			if( isset( $kapp_theme0) && $kapp_theme0 !=='' ) {
+				$tabData['data'][0]['host']       = KAPP_URL_T_;
+				if( TAB_curl_send_tabData( $kapp_theme0, $tabData ) ){
+					if( isset( $kapp_theme1) && $kapp_theme1 !=='' ) TAB_curl_send_tabData( $kapp_theme1, $tabData );
+				}
+			}
+			//fation https://biogplus.iwinv.net/kapp^https://moado.net/kapp
+			//biog   https://modumodu.net/kapp^https://modumodu.net/biogplus/kapp
+	return $response;
 ?>
