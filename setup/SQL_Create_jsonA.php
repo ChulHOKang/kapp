@@ -394,8 +394,8 @@ function Table10($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10 (
 		seqno int(13) auto_increment NOT NULL,
-        group_code varchar(50) NOT NULL DEFAULT 'xxxx',
-        group_name varchar(50) NOT NULL DEFAULT 'ETC(기타)',
+        group_code varchar(50)  DEFAULT NULL,
+        group_name varchar(50)  DEFAULT NULL,
         disno int(5) NOT NULL,
         tab_enm varchar(50) NOT NULL,
         tab_hnm varchar(50) NOT NULL,
@@ -538,8 +538,8 @@ function Table10_curl($t_head, $tab) {
         `seqno` int(13) auto_increment NOT NULL,
   `host` char(30) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `group_code` varchar(50) NOT NULL DEFAULT 'xxxx',
-  `group_name` varchar(50) NOT NULL DEFAULT 'ETC',
+  `group_code` varchar(50)  DEFAULT NULL,
+  `group_name` varchar(50)  DEFAULT NULL,
   `disno` int(5) NOT NULL,
   `tab_enm` varchar(50) NOT NULL,
   `tab_hnm` varchar(50) NOT NULL,
