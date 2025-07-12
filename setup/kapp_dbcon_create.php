@@ -2,19 +2,14 @@
 	include "kapp_start.php";
 	/*
 	   이프로그램을 사용유무 확인 필요 - SQL+Create_jsonA.php를 사용하는것 같다
-
         kapp_dbcon_create.php : _curl table 생성 부분 추가 - 2025-03-17 컬럼확인 부분 미완성 - 
-		                      : create table 'kapp_member' and 'DB의 id, pw record'를 생성한다 중요!
-
-		'tkher_dbconfig.php(/t/data/tkher_dbconfig.php 사용중인 원본 화일이다 중요!)' 을 생성 
-
-		out 1 : 'tkher_dbcon.php'       를 생성한다.
+			- create table 'kapp_member' and 'DB의 id, pw record'를 생성한다 중요!
+			- DB_curl_get_ailinkapp.php : curl_server setting
+		out 1 : 'kapp_dbcon.php'       를 생성한다.
 		    2 : 'tkher_dbcon_Table.php' 를 생성한다.
-		out 3 : 'kapp_member' Table and 'DB의 id, pw record'를 생성한다 중요!
+		out 3 : kapp_DB table create, 'kapp_member' Table and 'DB의 id, pw record'를 생성한다 중요!
 		call : setup.php에서 call한다. 
-		이것을 고쳐야 될것같다.................................................... 2021-09-28 ---------------------
 	*/
-
 	$tabData['data'][][] = array();
 	$db_host 		= "";
 	$db_name 		= "";
@@ -24,47 +19,31 @@
 	$admin_password = "";
 	$admin_id 	= "";
 	$home_url = KAPP_URL_T_;
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else  $mode = "";
 	$table_prefix = $_POST['table_prefix'];
 	$_SESSION['table_prefix'] = $table_prefix;
-
-	//m_("create mode: " . $mode . ", table_prefix: " . $table_prefix); // create mode: Kapp_Setup, table_prefix: kapp_
 	if( $mode !== 'Kapp_Setup' and $mode !== 'Kapp_ReSet' ) {
 		m_("kapp_dbcon_create : Error - mode: " . $mode);
 		echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 		exit;
 	} else {
-
 		$db_host 		= $_POST['db_host'];
 		$db_name 		= $_POST['db_name'];
 		$db_user		= $_POST['db_user'];
 		$db_password 	= $_POST['db_password'];
 		$admin_email 	= $_POST['admin_email'];
 		$admin_password = $_POST['admin_password'];
-
 		$emailA = explode(".", $admin_email);
 		$email0 = $emailA[0];
-		$admin_id = str_replace( "@", "_", $email0); // 2025-05-18 add
+		$admin_id = str_replace( "@", "_", $email0); 
 	}
 	if( $mode == 'Kapp_Setup' ) {
-		// $kapp_dbcon = KAPP_PATH_T_ . "/data/kapp_dbcon.php"; 만 생성 티스트를 한다.
-		//m_("set create mode: " . $mode );
-		
 		create_kapp_dbcon();
-
 		Create_Kapp_Table('Kapp_Setup'); // DB table, DB record=kapp_DB_record_create(), table All
-
 	} else if( $mode == 'Kapp_ReSet' ) {
-		//m_("1 reset create mode: " . $mode ); // 1 reset create mode: Kapp_ReSet
-
 		create_kapp_dbcon();
-		
-		Create_Kapp_Table('Kapp_ReSet');		//m_("Re Set OK===============");
-
-		//echo "<script>window.open('./index.php','_self',''); </script>";
-
+		Create_Kapp_Table('Kapp_ReSet');	
 	} else if( $mode == 'db_create' ) {
 
 	} else{
@@ -72,28 +51,20 @@
 		echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 		exit;
 	}
-
-	//$upday= date("Y-m-d H:i:s");
-	//$memo = $_SERVER['SERVER_NAME']. ", " . $_SERVER['SCRIPT_NAME'];
-	//DB_curl_send( $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_HOST'], $upday, $memo );
-
-	//--------------------------------------
 	function Create_Kapp_Table( $set_type ){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
 		$upday  = date("Y-m-d H:i:s",time());
-
 		$kapp_dbcon_connect		= KAPP_PATH_T_ . "/data/kapp_dbcon.php";
 		if( file_exists( $kapp_dbcon_connect ) ) {  
 			include_once( $kapp_dbcon_connect );
 		} else {
-			m_("No found file: " . $kapp_dbcon_connect); // /data/kapp_dbcon.php
+			m_("No found file: " . $kapp_dbcon_connect); 
 			exit;
 		}
-
 		$kapp_dblib_common = KAPP_PATH_T_ . "/setup/kapp_dblib_common.php";
 		if( file_exists( $kapp_dblib_common) ) {  
-			include_once( $kapp_dblib_common );    // db 라이브러리       
+			include_once( $kapp_dblib_common );  
 		} else {
 			m_( $kapp_dblib_common . " - file no found! Error!"); 
 			exit;
@@ -102,56 +73,47 @@
 		$select_db  = sql_select_db( $db_name, $connect_db) or die('MySQL DB Error! Confirm DB password!!!');
 		$tkher['connect_db'] = $connect_db;       
 		sql_set_charset('utf8', $connect_db);       
-
-		Drop_ALL_Table();	// m_("Drop_ALL_Table --- OK");
+		Drop_ALL_Table();
 
 		$chk = kapp_DB_table_check( $table_prefix . "DB" );
 		if( !$chk ) { // no found
 			$ret = kapp_DB_table_create();
 			if( $ret ) kapp_DB_record_create();
-
 			if( !kapp_DB_table_check( $table_prefix . "member" ) ) {
-				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); //kapp_member 없으면 생성.
+				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
 				else exit;
-			} else { //m_(" 1 Create_ALL_Table Member_Record Update ------- "); // 
-				//Kapp_Member_Record_Update(); // m_(" 2 Create_ALL_Table Member_Record Update ------- "); // 
+			} else {
 				drop_kapp_( $table_prefix . "member" );
-				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); //kapp_member 무조건 새로 생성.
+				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
 				else exit;
 			}
 			$_SESSION['mb_level'] = 8;
 			$_SESSION['admin'] = 'modumoa';
-			Create_ALL_Table();	// m_("Create_ALL_Table --- OK");
-		} else { // m_( $table_prefix ."DB Table 존재 합니다.");
-			drop_kapp_( $table_prefix ."DB" ); // kapp_DB
+			Create_ALL_Table();
+		} else { // m_( $table_prefix ."DB Table 존재 합니다."); - kapp_DB
+			drop_kapp_( $table_prefix ."DB" ); 
 			$ret = kapp_DB_table_create();
 			if( $ret ) kapp_DB_record_create();
-
 			if( !kapp_DB_table_check( $table_prefix . "member" ) ) { //kapp_member 없으면 생성.
 				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
 				else exit;
-			} else { //m_(" 1 Create_ALL_Table Member_Record Update ------- "); // kapp_member 무조건 새로 생성.
-				//Kapp_Member_Record_Update(); // m_(" 2 Create_ALL_Table Member_Record Update ------- "); // 
+			} else { 
 				drop_kapp_( $table_prefix . "member" );
-				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); //kapp_member 없으면 생성.
+				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
 				else exit;
 			}
 			$_SESSION['mb_level'] = 8;
 			$_SESSION['admin'] = 'modumoa';
-			Create_ALL_Table();	// m_("Create_ALL_Table --- OK");
-		} //m_("kapp_DB Table ---------- OK");
+			Create_ALL_Table();
+		}
 	}
-	//---------------------------
 	function Drop_ALL_Table(){
-		global $table_prefix;	//m_("Drop_ALL_Table ------- "); //
-
+		global $table_prefix;
 		echo "<br><br><b>--- Reset table list :  ---</b><br>";
-
-		//drop_kapp_( $table_prefix ."menuskin" );
 		if( kapp_DB_table_check( $table_prefix . "config" ) )			drop_kapp_( $table_prefix . "config" ); 
 		if( kapp_DB_table_check( $table_prefix . "tkher_main_img" ) )	drop_kapp_( $table_prefix . "tkher_main_img" ); 
 		if( kapp_DB_table_check( $table_prefix . "tkher_my_control" ))	drop_kapp_( $table_prefix . "tkher_my_control" ); 
@@ -163,7 +125,7 @@
 		if( kapp_DB_table_check( $table_prefix . "point" ) )			drop_kapp_( $table_prefix . "point" ); 
 		if( kapp_DB_table_check( $table_prefix . "aboard_admin" ) )	drop_kapp_( $table_prefix . "aboard_admin" ); 
 		if( kapp_DB_table_check( $table_prefix . "aboard_infor" ) )	drop_kapp_( $table_prefix . "aboard_infor" ); 
-		//-------------------- add 2025-05-30
+
 		if( kapp_DB_table_check( "aboard_" .$table_prefix . "notice" ) )	drop_kapp_( "aboard_" .$table_prefix . "notice" ); 
 		if( kapp_DB_table_check( "aboard_" .$table_prefix . "news" ) )	drop_kapp_( "aboard_" .$table_prefix . "news" ); 
 		if( kapp_DB_table_check( "aboard_" .$table_prefix . "qna" ) )	drop_kapp_( "aboard_" .$table_prefix . "qna" ); 
@@ -180,12 +142,11 @@
 		if( kapp_DB_table_check( $table_prefix . "table10_pg" ) )		drop_kapp_( $table_prefix . "table10_pg" ); 
 		if( kapp_DB_table_check( $table_prefix . "job_link_table" ) )	drop_kapp_( $table_prefix . "job_link_table" ); 
 		if( kapp_DB_table_check( $table_prefix . "sys_menu_bom" ) )	drop_kapp_( $table_prefix . "sys_menu_bom" ); 
-		//-------------- add - 2025-03-17 
+
 		if( kapp_DB_table_check( $table_prefix . "table10_curl" ) )			drop_kapp_( $table_prefix . "table10_curl" ); 
 		if( kapp_DB_table_check( $table_prefix . "table10_pg_curl" ) )		drop_kapp_( $table_prefix . "table10_pg_curl" ); 
 		if( kapp_DB_table_check( $table_prefix . "job_link_table_curl" ) )	drop_kapp_( $table_prefix . "job_link_table_curl" ); 
 		if( kapp_DB_table_check( $table_prefix . "sys_menu_bom_curl" ) )	drop_kapp_( $table_prefix . "sys_menu_bom_curl" ); 
-		//-------------- add - 2025-03-17 end
 		
 		if( kapp_DB_table_check( $table_prefix . "table10_group" ) )	drop_kapp_( $table_prefix . "table10_group" ); 
 		if( kapp_DB_table_check( $table_prefix . "coin_view" ) )		drop_kapp_( $table_prefix . "coin_view" ); 
@@ -198,11 +159,8 @@
 		if( kapp_DB_table_check( $table_prefix . "tkher_content" ) )	drop_kapp_( $table_prefix . "tkher_content" ); 
 		if( kapp_DB_table_check( $table_prefix . "ip_info" ) )			drop_kapp_( $table_prefix . "ip_info" ); 
 		if( kapp_DB_table_check( $table_prefix . "login" ) )			drop_kapp_( $table_prefix . "login" ); 
-
 		echo "<br><br><b>--- Table : End ---</b><br>";
-		//echo "Click Here <a href='./DB_Table_CreateA.php?admin=modumoa' target='_blank'> Table List </a>";
 	}
-	//--------------------------------------
 	function drop_kapp_( $tab_){
 		global $table_prefix;
 		$query	="drop table " . $tab_;
@@ -210,12 +168,9 @@
 		if( $mq2 ) echo ", --- delete success : " . $tab_;
 		else echo "<br> delete fail : " . $tab_;
 	}
-	//---------------------------
 	function Create_ALL_Table(){
-		global $table_prefix;	//m_("Create_ALL_Table ------- "); //
-
+		global $table_prefix;	
 		echo "<br><br><b>--- Setup Create table list :  ---</b><br>";
-
 		if( !kapp_DB_table_check( $table_prefix . "config" ) )			Config( $table_prefix , "config" ); 
 		if( !kapp_DB_table_check( $table_prefix . "tkher_main_img" ) )	Tkher_main_img( $table_prefix , "tkher_main_img" ); 
 		if( !kapp_DB_table_check( $table_prefix . "tkher_my_control" ))	Tkher_my_control( $table_prefix , "tkher_my_control" ); 
@@ -239,12 +194,11 @@
 		if( !kapp_DB_table_check( $table_prefix . "table10_pg" ) )		Table10_pg( $table_prefix , "table10_pg" ); 
 		if( !kapp_DB_table_check( $table_prefix . "job_link_table" ) )	Job_link_table( $table_prefix , "job_link_table" ); 
 		if( !kapp_DB_table_check( $table_prefix . "sys_menu_bom" ) )	Sys_menu_bom( $table_prefix , "sys_menu_bom" ); 
-		//-------------- add - 2025-03-17 
+
 		if( !kapp_DB_table_check( $table_prefix . "table10_curl" ) )		         Table10_curl( $table_prefix , "table10_curl" ); 
 		if( !kapp_DB_table_check( $table_prefix . "table10_pg_curl" ) )		 Table10_pg_curl( $table_prefix , "table10_pg_curl" ); 
 		if( !kapp_DB_table_check( $table_prefix . "job_link_table_curl" ) )	 Job_link_table_curl( $table_prefix , "job_link_table_curl" ); 
 		if( !kapp_DB_table_check( $table_prefix . "sys_menu_bom_curl" ) ) Sys_menu_bom_curl( $table_prefix , "sys_menu_bom_curl" ); 
-		//-------------- add - 2025-03-17 - end
 		
 		if( !kapp_DB_table_check( $table_prefix . "table10_group" ) )	table10_group( $table_prefix , "table10_group" ); 
 		if( !kapp_DB_table_check( $table_prefix . "coin_view" ) )		Coin_view( $table_prefix , "coin_view" ); 
@@ -261,23 +215,20 @@
 		echo "<br><br><b>--- Table Create : End ---</b><br>";
 		echo "Click Here <a href='./DB_Table_CreateA.php?admin=modumoa' target='_blank'> Table List </a>";
 	}
-	//----------------------------------
 	function kapp_DB_table_check( $tab ){
 		global $table_prefix;
 		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables
 		WHERE table_schema = '".KAPP_MYSQL_DB."'
 		AND table_name = '".$tab."' ";
-
-		$ret = sql_fetch($sql);	//m_( "cnt: " . $ret['cnt']);
-		if( $ret['cnt'] > 0 ) {  //m_( $tab . ", 존재합니다."); // , 존재합니다.
-			echo "<br>" . $tab . ", already exists. "; // 이미 존재합니다
+		$ret = sql_fetch($sql);
+		if( $ret['cnt'] > 0 ) { 
+			echo "<br>" . $tab . ", already exists. ";
 			return true;
-		} else {  //m_( $tab . ", 존재하지 않습니다.");
+		} else { 
 			echo "<br>" . $tab . ", --- ";
 			return false;
 		}
 	}
-	// ----- kapp_member insert ----------
 	function Kapp_Member_Table_Create( $tab ){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
@@ -359,10 +310,8 @@
 		$result = sql_query( $sqlA );
 		if( $result !== false ){   
 			echo "<script>alert('". $table_prefix."member Insert Success'); </script>";  
-			//echo "<script>window.open('./index.php','_self',''); </script>";
 		} else {
 			m_("member insert error! ");	echo "sql:" . $sqlA; exit;
-			//#1364 - Field 'mb_signature' doesn't have a default value
 		}
 	}
 	function Kapp_Member_Record_Update(){ // 
@@ -370,11 +319,8 @@
 		global $tkher, $admin_id;      
 		$upday  = date("Y-m-d H:i:s",time());
 		$nickday  = date("Y-m-d",time());
-		
-		//$admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
-
 		$row = sql_fetch(" select password('$admin_password') as pass ");
-		$pw = $row['pass']; //m_(" pw: " . $pw); // pw: *2FAA1FB2012C385C7CFE7FE38E4F4FC018237420
+		$pw = $row['pass']; 
 		$sqlA = "update " . $table_prefix. "member set 
 		mb_id='".$admin_id."', mb_email='".$admin_email."', mb_email_certify='".$upday."', mb_email_certify2='DB Setup', mb_nick_date='".$nickday."', mb_name='DBadmin', mb_nick='DBadmin', mb_level=9, mb_sn='db', mb_password='".$pw."', mb_point=100000, mb_ip='".$_SERVER['REMOTE_ADDR']."', mb_memo='".$_SERVER['SERVER_NAME'].":".$_SERVER['HTTP_HOST']. ":" . $_SERVER['SCRIPT_NAME']."' where mb_id='".$admin_id."' ";
 		
@@ -384,7 +330,6 @@
 			m_("member update error! "); echo "sql:" . $sqlA; exit;
 		}
 	}
-	//--------------------------------------
 	function drop_DB_table( $DB_Table ){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
@@ -392,15 +337,14 @@
 		if( file_exists( $kapp_dbcon_connect ) ) {  
 			include_once( $kapp_dbcon_connect );
 		} else {
-			m_("No found file: " . $kapp_dbcon_connect); // /var/www/html/t/data/kapp_dbcon.php
+			m_("No found file: " . $kapp_dbcon_connect); 
 			exit;
 		}
 		$kapp_dblib_common = KAPP_PATH_T_ . "/setup/kapp_dblib_common.php";
 		if( file_exists($kapp_dblib_common) ) {  
-			include_once( $kapp_dblib_common );    // db 라이브러리       
+			include_once( $kapp_dblib_common );  
 		} else {
 			m_( $kapp_dblib_common . " - file no found! Error!"); 
-			//echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 			exit;
 		}
 		$connect_db = sql_connect( KAPP_MYSQL_HOST, KAPP_MYSQL_USER, KAPP_MYSQL_PASSWORD, KAPP_MYSQL_DB) or die('MySQL Connect Error!!! <br>- Confirm DB password! and DB-NAME , pw:' . KAPP_MYSQL_PASSWORD . ', db:' . KAPP_MYSQL_DB . ', user:' . KAPP_MYSQL_USER);   
@@ -413,7 +357,6 @@
 		$mq2	=sql_query($query);
 		if( $mq2 ) m_(" delete success kapp DB table: " . $DB_Table);
 	}
-	//--------------------------------------
 	function create_DB_table( $set_type ){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
@@ -423,25 +366,21 @@
 		if( file_exists( $kapp_dbcon_connect ) ) {  
 			include_once( $kapp_dbcon_connect );
 		} else {
-			m_("No found file: " . $kapp_dbcon_connect); // /data/kapp_dbcon.php
+			m_("No found file: " . $kapp_dbcon_connect);
 			exit;
 		}
-
 		$kapp_dblib_common = KAPP_PATH_T_ . "/setup/kapp_dblib_common.php";
 		if ( file_exists($kapp_dblib_common) ) {  
-			include_once( $kapp_dblib_common );    // db 라이브러리       
+			include_once( $kapp_dblib_common ); 
 		} else {
 			m_( $kapp_dblib_common . " - file no found! Error!");  
-			//echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 			exit;
 		}
 		$connect_db = sql_connect( $db_host, $db_user, $db_password, $db_name) or die('MySQL Connect Error!!! Confirm DB password!!!');   
 		$select_db  = sql_select_db( $db_name, $connect_db) or die('MySQL DB Error! Confirm DB password!!!');
 		$tkher['connect_db'] = $connect_db;       
 		sql_set_charset('utf8', $connect_db);       
-
 		$SQL = " create table " . $table_prefix. "DB( seqno int auto_increment not null, kapp_dbhost CHAR(15), kapp_dbname CHAR(15), kapp_dbuser CHAR(50), kapp_dbpw CHAR(255), admin_email CHAR(100), admin_pw CHAR(255), kapp_ip CHAR(30), kapp_point INT ,kapp_level INT , upday CHAR(30), server_name CHAR(50), kapp_memo text, primary key(seqno) )";  
-		
 		$result = sql_query( $SQL );
 		if( !$result ){   
 			echo $table_prefix. "DB Table Create Invalid query: " . $SQL;
@@ -453,92 +392,73 @@
 	function create_kapp_DB(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
-
 		$upday = date("Y-m-d H:i:s");
-		$host = $_SERVER['HTTP_HOST']; // $_SERVER['SERVER_NAME']
+		$host = $_SERVER['HTTP_HOST'];
 		$ip   = $_SERVER['REMOTE_ADDR'];
-
 		$kapp_dbcon_connect		= KAPP_PATH_T_ . "/data/kapp_dbcon.php";
 		if( file_exists( $kapp_dbcon_connect ) ) {  
 			include_once( $kapp_dbcon_connect );
-		} else { // if ( file_exists( $kapp_dbcon_connect ) ) : $kapp_dbcon_connect = KAPP_PATH_T_ . "./data/kapp_dbcon.php";
-				m_( $kapp_dbcon_connect . " - file no found! Create Error!"); // kapp_dbcon.php
+		} else { 
+				m_( $kapp_dbcon_connect . " - file no found! Create Error!"); 
 				echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 				exit;
 		}
-			
 		$_fileLIB = KAPP_PATH_T_ . "/setup/kapp_dblib_common.php";
 		if( file_exists($_fileLIB) ) {  
-			include_once( $_fileLIB );    // db 라이브러리       
+			include_once( $_fileLIB ); 
 		} else {
 			m_( $_fileLIB . " - file no found! Error!"); 
-			//echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 			exit;
 		}
 		$connect_db = sql_connect(KAPP_MYSQL_HOST, KAPP_MYSQL_USER, KAPP_MYSQL_PASSWORD, KAPP_MYSQL_DB) or die('MySQL Connect Error!!!');   
 		$select_db  = sql_select_db(KAPP_MYSQL_DB, $connect_db) or die('MySQL DB Error!!');
 		$tkher['connect_db'] = $connect_db;       
 		sql_set_charset('utf8', $connect_db);       
-
-		//-----------------------------------------
-		$sql = "SHOW TABLES LIKE 'kapp_DB' ";		// table_prefix
+		$sql = "SHOW TABLES LIKE 'kapp_DB' ";
 		$ret = sql_query($sql);						        
 		if( $ret ){ // kapp_DB 있다.
 			$row = sql_fetch_array($ret);		                
 			if( $row ) {		
 				$sqlB = "select server_name from kapp_DB where server_name='".$_SERVER['HTTP_HOST']."' ";		
-				//$retB = sql_query($sqlB);						        
 				$rowB = sql_fetch( $retB );		                
-				if( $rowB ){ // record data 가 존재하면 변경하여 저장한다.
+				if( $rowB ){ 
 					$sqlA   = " 
 						UPDATE " . $table_prefix. "DB set 
 						kapp_dbhost='$db_host', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_pw='".md5($admin_password)."', admin_email='$admin_email', kapp_point=10000, kapp_level=9, kapp_ip='".$ip."', kapp_memo='".$_SERVER['SERVER_NAME']."', upday='$upday', server_name='".$_SERVER['HTTP_HOST']."' 
 						where server_name='".$_SERVER['HTTP_HOST']."'
 					";
 					if( ($result = sql_query( $sqlA ) ) !==false ){   
-						//m_("Table " . $table_prefix. "DB record Update Success");
-						//$memo = "update, " . $_SERVER['SERVER_NAME']. ", " . $_SERVER['SCRIPT_NAME'];
 						$memo = $upday ." update - " . $_SERVER['SERVER_SOFTWARE']. ", " . $_SERVER['SERVER_NAME']. ", " . $_SERVER['SCRIPT_NAME'];
 						DB_curl_send( $ip, KAPP_URL_T_, $upday, $memo, md5($db_password) );
-						//exit;
 					}
-				} else { // $rowB - kapp_member table이 존재하고 record가 없으면 record만 생성한다.
+				} else {
 					kapp_DB_record_create();
 				}//$rowB
 			} else {// $row
 				kapp_DB_record_create();
 			} //$row
-
-		} else{ // kapp_DB table이 없으면 table을 생성하고 record를 생성한다 - ret=sql_query - $sql = "SHOW TABLES LIKE 'kapp_DB' ";
-
+		} else{
 			kapp_DB_table_create(); 
 			m_( $_fileLIB . " - file no found! Error!"); 
-			//echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 			exit;
 		}
-		
 	}
-	//----------------------------------
 	function kapp_DB_table_create(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
-
 			$SQL = " create table kapp_DB( seqno int auto_increment not null, kapp_dbhost CHAR(15), kapp_dbname CHAR(15), kapp_dbuser CHAR(50), kapp_dbpw CHAR(255), admin_email CHAR(100), admin_pw CHAR(255), kapp_ip CHAR(30), kapp_point INT ,kapp_level INT , upday CHAR(30), server_name CHAR(50), kapp_memo text, primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";  
-			
 			if( ( $result = sql_query( $SQL ) )==false ) {   
 				echo $table_prefix . " Table Create Invalid query: " . $SQL;
-				return false; //exit;   
+				return false; 
 			} else {   
 				echo ", --- ".$table_prefix. "DB table create <br>" ;
 				return true;
 			}
 	}
-	// ----- kapp_DB insert ----------
 	function kapp_DB_record_create(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
 		$upday = date("Y-m-d H:i:s");
-
 		$memo = $upday ." setup - " . $_SERVER['SERVER_SOFTWARE']. ", " . $_SERVER['SERVER_NAME']. ", " . $_SERVER['SCRIPT_NAME']. ", " . $_SERVER['HTTP_USER_AGENT'];
 		$sqlA = "insert into kapp_DB set 
 		kapp_dbhost='".$db_host."', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_email='".$admin_email."', admin_pw='".md5($admin_password)."', kapp_point=10000, kapp_level=9, kapp_ip='".$_SERVER['REMOTE_ADDR']."', server_name='".$_SERVER['HTTP_HOST']."', upday='$upday', kapp_memo='".$memo."' ";
@@ -546,17 +466,13 @@
 			DB_curl_send( $_SERVER['REMOTE_ADDR'], KAPP_URL_T_, $upday, $memo, md5($admin_password) );
 			echo " - Create Success and Record Create  Success : kapp_DB <br>";
 		} else {
-			echo "ERROR - insert kapp_DB";// "sql:" . $sqlA;
+			echo "ERROR - insert kapp_DB";
 		}
 	}
-
 	function DB_curl_send( $ip, $server_name_set, $upday, $memo, $pw_md5 ){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tabData;
 		$cnt = 0;
-		
-		m_("DB_curl_send - db_host : " . $db_host);
-
 		$tabData['data'][$cnt]['kapp_dbhost']  = $db_host;
 		$tabData['data'][$cnt]['kapp_dbname']  = $db_name;
 		$tabData['data'][$cnt]['kapp_dbuser']  = $db_user;
@@ -566,56 +482,33 @@
 		$tabData['data'][$cnt]['upday']        = $upday;
 		$tabData['data'][$cnt]['memo']         = $memo;
 		$tabData['data'][$cnt]['pw_md5']       = $pw_md5;
-
-		$key = 'appgenerator';
+		$kapp_key = 'appgenerator';
 		$iv = "~`!@#$%^&*()-_=+";
-
-		$sendData = encryptA( $tabData , $key, $iv);
-
-		//$url_ = 'https://ailinkapp.com/onlyshop/coupon/pg_curl_get_ailinkapp.php';
-		$url_ = 'https://www.fation.net/kapp/_Curl/DB_curl_get_ailinkapp.php'; //$url_ = 'https://ailinkapp.com/kapp/DB_curl_get_ailinkapp.php';
-		//$url_ =  KAPP_URL_T_ . "/_Curl/DB_curl_get_ailinkapp.php" //$url_ = 'https://ailinkapp.com/kapp/DB_curl_get_ailinkapp.php';
+		$sendData = encryptA( $tabData , $kapp_key, $iv);
+		$url_ = 'https://www.fation.net/kapp/_Curl/DB_curl_get_ailinkapp.php'; 
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
-
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
 			'iv' => $iv
 		));
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($curl);
-
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-		
-		//echo curl_error($curl);
-
-		echo "curl --- response: " . $response . "<br>";
-
 		if( $response == false) {
-			$_ms = "new kapp_DB curl Fail : " . curl_error($curl);
-			echo $_ms . ", response: " . $response . "<br>"; // 'curl 전송 실패 : ' . curl_error($curl);
-			//m_(" ------------ : " . $_ms);
+			echo " response: " . $response . "<br>"; 
 		} else {
-			$_ms = 'new kapp_DB curl OK : ' . $response;
 			echo 'curl OK : ' . $response . "<br>";
-			//m_(" ============ :" . $_ms);
 		}
 		curl_close($curl);
 	}
-	//--------- kapp_dbcon----------------------------- Table DEFINE 추가 필요함 ==========================================
 	function create_kapp_dbcon(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password;
 		global $tkher, $table_prefix;      
-
 		$upday  = date("Y-m-d H:i:s",time());
 		$kapp_dbcon		= KAPP_PATH_T_ . "/data/kapp_dbcon.php";
-
-		//m_(" create_kapp_dbcon - kapp_dbcon: " . $kapp_dbcon); // /data/kapp_dbcon.php
-		//create_kapp_dbcon - kapp_dbcon: /var/www/html/kapp/data/kapp_dbcon.php
-
 		$fsi = fopen("$kapp_dbcon","w");
-
 		fwrite($fsi,"<?php                                              \r\n");
 		fwrite($fsi,"if (!defined('_KAPP_')) exit;                      \r\n");
 		fwrite($fsi,"define('KAPP_SET_TIME',       '".$upday."');       \r\n");
@@ -624,7 +517,6 @@
 		fwrite($fsi,"define('KAPP_MYSQL_USER',     '".$db_user."');     \r\n");
 		fwrite($fsi,"define('KAPP_MYSQL_PASSWORD', '".$db_password."'); \r\n");
 		fwrite($fsi,"define('KAPP_MYSQL_SET_MODE', true);               \r\n");
-
 		fwrite($fsi," define('KAPP_TABLE_PREFIX', '" . $table_prefix . "' );                // table prefix   \r\n\r\n");
 
 		fwrite($fsi," $" . "tkher['config_table']		= KAPP_TABLE_PREFIX.'config';       // basic config table   \r\n");
@@ -635,7 +527,7 @@
 		fwrite($fsi," $" . "tkher['tkher_member_table']	= KAPP_TABLE_PREFIX.'member';       // member   \r\n");
 		fwrite($fsi," $" . "tkher['pri_contect_table']  = KAPP_TABLE_PREFIX.'pri_contect';  // company contect    \r\n");
 
-/*
+		/*
 		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_member_table']	= KAPP_TABLE_PREFIX.'group_member'; //    \r\n");
 		fwrite($fsi," $" . "tkher['auth_table']			= KAPP_TABLE_PREFIX.'auth';         // 관리권한 설정 테이블   \r\n");
@@ -650,18 +542,17 @@
 		fwrite($fsi," $" . "tkher['menu_table']			= KAPP_TABLE_PREFIX.'menu';         // 메뉴관리 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['popular_table']		= KAPP_TABLE_PREFIX.'popular';      // 인기검색어 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['scrap_table']		= KAPP_TABLE_PREFIX.'scrap';        // 게시글 스크랩 테이블   \r\n");
-*/
+		*/
 
 		fwrite($fsi," $" . "tkher['table10_table']		= KAPP_TABLE_PREFIX.'table10';             // kapp_table10_table   \r\n");
 		fwrite($fsi," $" . "tkher['table10_pg_table']	= KAPP_TABLE_PREFIX.'table10_pg';          // kapp_table10_pg_table   \r\n");
 		fwrite($fsi," $" . "tkher['job_link_table']		= KAPP_TABLE_PREFIX.'job_link_table';      // kapp_job_link_table   \r\n");
 		fwrite($fsi," $" . "tkher['sys_menu_bom_table']		= KAPP_TABLE_PREFIX.'sys_menu_bom';    // kapp_sys_menu_bom   \r\n");
-// ----------------------------- add 2025-03-25 curl 부분 추가 . ---------------------------------------------
+
 		fwrite($fsi," $" . "tkher['table10_curl_table']		= KAPP_TABLE_PREFIX.'table10_curl';             // kapp_table10_table_curl   \r\n");
 		fwrite($fsi," $" . "tkher['table10_pg_curl_table']	= KAPP_TABLE_PREFIX.'table10_pg_curl';          // kapp_table10_pg_table_curl   \r\n");
 		fwrite($fsi," $" . "tkher['job_link_table_curl']		= KAPP_TABLE_PREFIX.'job_link_table_curl';  // kapp_job_link_table_curl   \r\n");
 		fwrite($fsi," $" . "tkher['sys_menu_bom_curl_table']		= KAPP_TABLE_PREFIX.'sys_menu_bom_curl';// kapp_sys_menu_bom_curl  \r\n");
-//---------------------- end
 
 		fwrite($fsi," $" . "tkher['table10_group_table']= KAPP_TABLE_PREFIX.'table10_group';         // Project management   \r\n");
 		fwrite($fsi," $" . "tkher['project_table']		= KAPP_TABLE_PREFIX.'project';               // Work request         \r\n");
@@ -672,7 +563,7 @@
 		fwrite($fsi," $" . "tkher['webeditor_comment_table']	= KAPP_TABLE_PREFIX.'webeditor_comment'; // webeditor comment   \r\n");
 		fwrite($fsi," $" . "tkher['menuskin_table']			= KAPP_TABLE_PREFIX.'menuskin';     // board menuskin   \r\n");
 		fwrite($fsi," $" . "tkher['ap_bbs_table']			= KAPP_TABLE_PREFIX.'ap_bbs';       // Bulletin Board Collect All Data   \r\n");
-/*
+		/*
 		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_table']		= KAPP_TABLE_PREFIX.'coin_group';   // 게시판 그룹 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_member_table']	= KAPP_TABLE_PREFIX.'group_member'; // 게시판 그룹+회원 테이블   \r\n");
@@ -680,34 +571,19 @@
 		fwrite($fsi," $" . "tkher['board_file_table']	= KAPP_TABLE_PREFIX.'board_file';   // 게시판 첨부파일 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['board_good_table']	= KAPP_TABLE_PREFIX.'board_good';   // 게시물 추천,비추천 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['board_new_table']	= KAPP_TABLE_PREFIX.'board_new';    // 게시판 새글 테이블   \r\n");
-*/
+		fwrite($fsi," $" . "tkher['url_group_table']= KAPP_TABLE_PREFIX.'url_group';    //   \r\n");
+		*/
 		fwrite($fsi," $" . "tkher['tkher_main_img_table']  = KAPP_TABLE_PREFIX.'tkher_main_img';  // slide main and my image   \r\n");
 		fwrite($fsi," $" . "tkher['sajin_group_table']	   = KAPP_TABLE_PREFIX.'sajin_group';     //   \r\n");
 		fwrite($fsi," $" . "tkher['tkher_my_control_table']= KAPP_TABLE_PREFIX.'tkher_my_control';//   \r\n");
 		fwrite($fsi," $" . "tkher['pri_maintenance_table']= KAPP_TABLE_PREFIX.'pri_maintenance';//   \r\n");
 		fwrite($fsi," $" . "tkher['coin_view_table']= KAPP_TABLE_PREFIX.'coin_view';// point pay table  \r\n");
-//		fwrite($fsi," $" . "tkher['url_group_table']= KAPP_TABLE_PREFIX.'url_group';    //   \r\n");
 		fwrite($fsi," $" . "tkher['log_info_table']= KAPP_TABLE_PREFIX.'log_info';      //   \r\n");
 		fwrite($fsi," $" . "tkher['bbs_history_table']= KAPP_TABLE_PREFIX.'bbs_history';//   \r\n");
-
 		fwrite($fsi,"?>                                                 \r\n");
-
-		/* 필요시 해제...
-		fwrite($fst,"$"."connect_db = sql_connect(KAPP_MYSQL_HOST, KAPP_MYSQL_USER, KAPP_MYSQL_PASSWORD, KAPP_MYSQL_DB) or die('MySQL Connect Error!!!');  \r\n");
-		fwrite($fst," if( $"."connect_db=='dberror' ) { $"."connect_dbcheck='dberror'; return; } \r\n"); 
-		fwrite($fst,"$"."select_db  = sql_select_db(KAPP_MYSQL_DB, $"."connect_db) or die('MySQL DB Error!!!');  \r\n");
-		fwrite($fst,"$"."kapp['connect_db'] = $"."connect_db; \r\n");
-		fwrite($fst,"sql_set_charset('utf8', $"."connect_db); \r\n");
-		*/
-
 		fclose($fsi);
 		m_("file : " . $kapp_dbcon . " created. ");
-		//echo "<br><a href='./DB_Table_CreateA.php?admin=modumoa' ><b>Table info list - Click here!!!</b></a>";
-		//echo "<script> href='./DB_Table_CreateA.php'; </script>"; //DB_Table_CreateA.php , SQL_Create_Table.php
 	}
-
-
-//==========================================================
 function Delete_table($_prefix, $tab) {
     $kapp_tab = $_prefix.$tab;
     $SQL = " drop table ".$kapp_tab." ";
@@ -719,8 +595,6 @@ function Delete_table($_prefix, $tab) {
         m_("Delete Success : $tab");
     }
 }
-
-//==========================================================
 function Login($t_head, $tab){
 	global $admin_email, $table_prefix;
     $tab = $t_head.$tab;
@@ -733,15 +607,11 @@ function Login($t_head, $tab){
 		  lo_url text DEFAULT NULL,
 		  PRIMARY KEY (lo_ip)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 	";
 }
-
 function Config($t_head, $tab) {
 	global $admin_email, $table_prefix, $admin_id;
     $tab = $t_head.$tab;
-	//$admin_id = str_replace( "@", "_", $admin_email); // 2025-05-18 add
-
     $SQL = "
         CREATE TABLE ".$t_head."config (
         kapp_title varchar(255) NOT NULL DEFAULT '',
@@ -812,10 +682,8 @@ function Config($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
-        //m_("Create Success : $tab");
-
 		$query = "
         INSERT INTO ".$t_head."config set
 			kapp_title='K-APP',
@@ -881,20 +749,15 @@ function Config($t_head, $tab) {
 			kapp_pay_point=1,
 			kapp_slide_time=6000 
 		";
-
         $result = sql_query( $query );
-
         if( !$result ){
             m_("kapp_dbcon_create $tab Table Insert Invalid query: ");
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
         } else {
             echo " - Create Success and Record Create  Success : $tab, admin email:" . $admin_email;
         }
     }
 }
 function Aboard_admin($t_head, $tab) {
-    /* m_("Create Success : $tab");
-    exit; */
     $tab = $t_head.$tab;
     $SQL = "
         CREATE TABLE ".$t_head."aboard_admin (
@@ -914,25 +777,19 @@ function Aboard_admin($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
-        //m_("Create Success : $tab");
-
         $query = "
         INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 9, 'total manager')
         ";
-
         $result = sql_query( $query );
-
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");//table이 이미 존재하는지 확인 바랍니다
         } else {
             echo "Create Success and Record Create  Success : $tab";
         }
     }
 }
-
 function Aboard_infor($t_head, $tab) {
 	global $admin_id, $admin_email, $home_url;
     $tab = $t_head.$tab;
@@ -1000,13 +857,12 @@ function Aboard_infor($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
 		$notice_nm = $t_head ."notice";
 		$news_nm   = $t_head ."news";
 		$qna_nm    = $t_head ."qna";
 		$free_nm   = $t_head ."free";
-	//$day = date("Y-m-d H:i", time());
 	$day = time();
 
 $query = "
@@ -1017,17 +873,13 @@ $query = "
 ('Q&A', '".$qna_nm."', 3, ".$day.", 1, 0, 0, '".$admin_id."', '".$home_url."', '500', 'align=center border=0 cellpadding=1 cellspacing=0', '#ffffff', '#000000', '#FFFFFF', '#000000', 20, 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#c0c0c0', '#ffffff', '#000000', '#ffffff', '#000000', 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#000000', 'home.gif', 'e_prev.gif', 'e_next.gif', 'e_insert.gif', 'e_update.gif', 'e_delete.gif', 'e_reply.gif', 'e_list.gif', 'search_list.gif', 'search.gif', 'e_submit.gif', 'new.gif', 'list_reply.gif', 'memo.gif', 'e_admin.gif', 1, 1, '', '', 1, 2, '5', '#FFFFFF', '#000000', '0', '2', '".$admin_id."', '".$home_url."', 3, 'K-APP setup QnA'),
 ('Free Board', '".$free_nm."', 3, ".$day.", 1, 0, 0, '".$admin_id."', '".$home_url."', '500', 'align=center border=0 cellpadding=1 cellspacing=0', '#ffffff', '#000000', '#FFFFFF', '#000000', 20, 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#c0c0c0', '#ffffff', '#000000', '#ffffff', '#000000', 'align=center border=0 cellpadding=1 cellspacing=0', '#FFFFFF', '#000000', 'home.gif', 'e_prev.gif', 'e_next.gif', 'e_insert.gif', 'e_update.gif', 'e_delete.gif', 'e_reply.gif', 'e_list.gif', 'search_list.gif', 'search.gif', 'e_submit.gif', 'new.gif', 'list_reply.gif', 'memo.gif', 'e_admin.gif', 1, 1, '', '', 1, 1, '5', '#FFFFFF', '#000000', '0', '2', '".$admin_id."', '".$home_url."', 4, 'K-APP setup free board')
 ";
-
         $result = sql_query( $query );
-
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");//table이 이미 존재하는지 확인 바랍니다
         } else {
             echo "Create Success and Record Create  Success : $tab";
         }
 		echo " - Create  Success : $tab";
-
 		$sql = "
         CREATE TABLE `aboard_".$t_head."notice` (
 			  `no` int(11) auto_increment NOT NULL,
@@ -1057,7 +909,6 @@ $query = "
         $result = sql_query( $sql );
 		echo "<br>aboard_".$t_head."notice, --- ";
 		if( $result ) echo " - Create  Success : aboard_".$t_head."notice";
-
 		$sql = "
 			CREATE TABLE `aboard_".$t_head."news` (
 			  `no` int(11) auto_increment NOT NULL,
@@ -1087,7 +938,6 @@ $query = "
         $result = sql_query( $sql );
 		echo "<br>aboard_".$t_head."news, --- ";
 		if( $result ) echo " - Create  Success : aboard_".$t_head."news";
-
 		$sql = "
 			CREATE TABLE `aboard_".$t_head."qna` (
 			  `no` int(11) auto_increment NOT NULL,
@@ -1117,7 +967,6 @@ $query = "
         $result = sql_query( $sql );
 		echo "<br>aboard_".$t_head."qna, --- ";
 		if( $result ) echo " - Create  Success : aboard_".$t_head."qna";
-
 		$sql = "
 			CREATE TABLE `aboard_".$t_head."free` (
 			  `no` int(11) auto_increment NOT NULL,
@@ -1149,7 +998,6 @@ $query = "
 		if( $result ) echo " - Create  Success : aboard_".$t_head."free";
     }
 }
-
 function Aboard_memo($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1167,12 +1015,11 @@ function Aboard_memo($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Admin_bbs($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1212,12 +1059,11 @@ function Admin_bbs($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Bbs_history($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1235,12 +1081,11 @@ function Bbs_history($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Coin_view($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1262,12 +1107,11 @@ function Coin_view($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Ip_info($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1284,12 +1128,11 @@ function Ip_info($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Visit_sum($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1306,12 +1149,11 @@ function Visit_sum($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Menuskin($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1336,12 +1178,11 @@ function Menuskin($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Sajin_group($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1359,12 +1200,11 @@ function Sajin_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Sajin_jpg($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1387,12 +1227,11 @@ function Sajin_jpg($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Table10($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1423,12 +1262,11 @@ function Table10($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Table10_pg($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1461,12 +1299,11 @@ function Table10_pg($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Job_link_table($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1494,12 +1331,11 @@ function Job_link_table($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Sys_menu_bom($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1530,13 +1366,11 @@ function Sys_menu_bom($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
-//------ add 2025-03-17 테이블 컬럼 확인 필요 . 중요 -  보완완료2025-03-20
 function Table10_curl($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1551,7 +1385,7 @@ function Table10_curl($t_head, $tab) {
   `tab_hnm` varchar(50) NOT NULL,
   `fld_enm` varchar(50) NOT NULL,
   `fld_hnm` varchar(50) NOT NULL,
-  `fld_type` varchar(10) NOT NULL,
+  `fld_type` varchar(20) NOT NULL,
   `fld_len` int(10) NOT NULL,
   `if_line` tinyint(3) DEFAULT NULL,
   `if_type` text DEFAULT NULL,
@@ -1569,12 +1403,11 @@ function Table10_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Table10_pg_curl($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1598,7 +1431,7 @@ function Table10_pg_curl($t_head, $tab) {
   `disno` int(5) DEFAULT NULL,
   `upday` timestamp NOT NULL DEFAULT current_timestamp(),
   `userid` varchar(50) NOT NULL,
-  `email` varchar(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `del` varchar(1) DEFAULT NULL,
   `del_date` datetime DEFAULT NULL,
   `sys_link` varchar(255) NOT NULL
@@ -1607,12 +1440,11 @@ function Table10_pg_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Job_link_table_curl($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1631,7 +1463,7 @@ function Job_link_table_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1675,17 +1507,13 @@ function Sys_menu_bom_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
-//------------------------------------------------------------------------------ add end
-
 function table10_group($t_head, $tab) {
-    $tab = $t_head.$tab; // solpakan_1713493572
-
+    $tab = $t_head.$tab; 
     $SQL = "
         CREATE TABLE ".$t_head."table10_group (
         seqno int(13) auto_increment NOT NULL,
@@ -1699,12 +1527,11 @@ function table10_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Tkher_main_img($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1728,10 +1555,8 @@ function Tkher_main_img($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
-        //m_("Create Success : $tab");
-
         $query = "
         INSERT INTO `".$t_head."tkher_main_img` (`no`, `jpg_name`, `jpg_file`, `jpg_memo`, `group_code`, `group_name`, `view_no`, `g_file1`, `g_file2`, `g_file3`, `day`, `url`, `userid`, `delay_time`) VALUES
         (81, 'Developer Level', 'ma1.jpg', 'Beginner<br>\r\nIntermediate<br>\r\nAdvanced<br>\r\nExp', 'main', 'main', 5, NULL, NULL, NULL, NULL, NULL, 'tkher', 5000),
@@ -1750,18 +1575,14 @@ function Tkher_main_img($t_head, $tab) {
         (97, 'App Generator Board', 'bg_proj11.jpg', 'App Generator Board<br>\r\nTree Board Make<br>\r\nGeneral<br>\r\nStandard<br>\r\nOne line board', 'main', 'main', 99, NULL, NULL, NULL, NULL, NULL, 'tkher', 5000),
         (100, 'App Generator', '2_78281.jpg', 'App Generator<br>\r\nProgram Generator<br>\r\nSource Code DownLoad\r\n', 'main', 'main', 0, NULL, NULL, NULL, '2018-11-19 02:20:24', NULL, 'tkher', 3000)
         ";
-
         $result = sql_query( $query );
-
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
         } else {
             echo " - Create Success and Record Create  Success : $tab";
         }
     }
 }
-
 function Tkher_my_control($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1779,25 +1600,18 @@ function Tkher_my_control($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
-        //m_("Create Success : $tab");
-
         $query = "
-        INSERT INTO `".$t_head."tkher_my_control` (`seqno`, `userid`, `slide_time`, `fld1`, `fld2`, `fld3`, `fld4`, `fld5`) VALUES
-        (1, 'tkher', 6000, '', '', '', '', 0)
-        ";
+        INSERT INTO `".$t_head."tkher_my_control` (`seqno`, `userid`, `slide_time`, `fld1`, `fld2`, `fld3`, `fld4`, `fld5`) VALUES (1, 'tkher', 6000, '', '', '', '', 0)";
         $result = sql_query( $query );
-
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
         } else {
             echo " - Create Success and Record Create  Success : $tab";
         }
     }
 }
-
 function Url_group($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1814,12 +1628,11 @@ function Url_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Webeditor($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1846,12 +1659,11 @@ function Webeditor($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Webeditor_comment($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1877,15 +1689,13 @@ function Webeditor_comment($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Member($t_head, $tab) {
     $tab = $t_head.$tab;
-    // 2024-03-26 mb_zip1 char(3) => char(10) 변경
     $SQL = "
         CREATE TABLE ".$t_head."member (
         mb_no int(11) auto_increment NOT NULL,
@@ -1941,12 +1751,11 @@ function Member($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Log_info($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1970,12 +1779,11 @@ function Log_info($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Point($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1999,14 +1807,11 @@ function Point($t_head, $tab) {
     ";
     $result = sql_query( $SQL );
     if( !$result ){
-        m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
-
 function Visit($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -2028,12 +1833,11 @@ function Visit($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Ap_bbs($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -2052,12 +1856,11 @@ function Ap_bbs($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function E_list($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -2074,12 +1877,11 @@ function E_list($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Pri_contect($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -2113,25 +1915,21 @@ function Pri_contect($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         //m_("Create Success : $tab");
         $query = "
         INSERT INTO `".$t_head."pri_contect` (`seqno`, `custom`, `compno`, `up_name`, `postno`, `address1`, `address2`, `address3`, `tel`, `tel1`, `tel2`, `tel3`, `email`, `homep`, `gubun`, `jobgubun1`, `jobgubun2`, `jobgubun3`, `jobgubun4`, `memo`, `day`, `pass_check`, `cnt`) VALUES
         (1, '(주)K-APP', '736-81-01709', 'sw개발', '49224', '부산 서구 구덕로186번길 13', '2층', ' (토성동3가)', '010-7542-8567', '010', '7542', '8567', 'solpakan@naver.com', 'https://fation.net', '', '', '', '', '', 'K-APP', '2025-03-26 13:15:00', '1111', 0)
         ";
-
         $result = sql_query( $query );
-
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
         } else {
             echo " - Create Success and Record Create  Success : $tab";
         }
     }
 }
-
 function Project($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -2158,7 +1956,7 @@ function Project($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
@@ -2185,12 +1983,11 @@ function Tkher_content($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-
 function Pri_maintenance($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -2217,26 +2014,21 @@ function Pri_maintenance($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        m_("Please check if the $tab table already exists.");
     } else {
         echo " - Create  Success : $tab";
     }
 }
-	//--------------------------------------------------------------------------------------------
 	function encryptA($_data, $_salt, $_iv) {
 		$key = openssl_digest($_salt, 'sha256', true);
 		$encrypt_jsonData = json_encode($_data);
 		$encryptedData = openssl_encrypt($encrypt_jsonData, 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $_iv);
 		return base64_encode($encryptedData);
 	}
-
-	//복호화 ---
 	function decryptA($_encryptedData, $_salt , $_iv) {
 		$key = openssl_digest($_salt, 'sha256', true);
 		$decryptedData = openssl_decrypt(base64_decode($_encryptedData), 'AES-256-CBC', $key, OPENSSL_RAW_DATA, $_iv);
 		$encrypted_jsonData = json_decode($decryptedData);
 		return $encrypted_jsonData;
 	}
-
-//=================================================
 ?>
