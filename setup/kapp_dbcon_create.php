@@ -1244,7 +1244,7 @@ function Table10($t_head, $tab) {
         tab_hnm varchar(50) NOT NULL,
         fld_enm varchar(50) NOT NULL,
         fld_hnm varchar(50) NOT NULL,
-        fld_type varchar(10) NOT NULL,
+        fld_type varchar(20) NOT NULL,
         fld_len int(10) NOT NULL,
         if_line tinyint(3) DEFAULT NULL,
         if_type text DEFAULT NULL,
