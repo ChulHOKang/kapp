@@ -485,7 +485,7 @@
 		$kapp_key = 'appgenerator';
 		$iv = "~`!@#$%^&*()-_=+";
 		$sendData = encryptA( $tabData , $kapp_key, $iv);
-		$url_ = 'https://www.fation.net/kapp/_Curl/DB_curl_get_ailinkapp.php'; 
+		$url_ = 'https://fation.net/kapp/_Curl/DB_curl_get_ailinkapp.php'; 
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
