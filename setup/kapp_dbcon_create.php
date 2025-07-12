@@ -1,14 +1,17 @@
 <?php
 	include "kapp_start.php";
 	/*
-	   이프로그램을 사용유무 확인 필요 - SQL+Create_jsonA.php를 사용하는것 같다
-        kapp_dbcon_create.php : _curl table 생성 부분 추가 - 2025-03-17 컬럼확인 부분 미완성 - 
+        kapp_dbcon_create.php : 
+		: call : setup.php에서 call한다. 
 			- create table 'kapp_member' and 'DB의 id, pw record'를 생성한다 중요!
 			- DB_curl_get_ailinkapp.php : curl_server setting
 		out 1 : 'kapp_dbcon.php'       를 생성한다.
 		    2 : 'tkher_dbcon_Table.php' 를 생성한다.
 		out 3 : kapp_DB table create, 'kapp_member' Table and 'DB의 id, pw record'를 생성한다 중요!
-		call : setup.php에서 call한다. 
+		: call : setup.php에서 call한다. 
+		- call : DB_curl_get_ailinkapp.php - DB server url setting
+		- DB : kapp_DB , kapp_DB_curl
+		- function : create_kapp_dbcon() , kapp_DB_table_create(), kapp_DB_record_create(), DB_curl_send( $ip, $server_name_set, $upday, $memo, $pw_md5 )
 	*/
 	$tabData['data'][][] = array();
 	$db_host 		= "";
@@ -460,8 +463,7 @@
 		global $tkher;      
 		$upday = date("Y-m-d H:i:s");
 		$memo = $upday ." setup - " . $_SERVER['SERVER_SOFTWARE']. ", " . $_SERVER['SERVER_NAME']. ", " . $_SERVER['SCRIPT_NAME']. ", " . $_SERVER['HTTP_USER_AGENT'];
-		$sqlA = "insert into kapp_DB set 
-		kapp_dbhost='".$db_host."', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_email='".$admin_email."', admin_pw='".md5($admin_password)."', kapp_point=10000, kapp_level=9, kapp_ip='".$_SERVER['REMOTE_ADDR']."', server_name='".$_SERVER['HTTP_HOST']."', upday='$upday', kapp_memo='".$memo."' ";
+		$sqlA = "insert into kapp_DB set kapp_dbhost='".$db_host."', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_email='".$admin_email."', admin_pw='".md5($admin_password)."', kapp_point=10000, kapp_level=9, kapp_ip='".$_SERVER['REMOTE_ADDR']."', server_name='".$_SERVER['HTTP_HOST']."', upday='$upday', kapp_memo='".$memo."' ";
 		if( ($result = sql_query( $sqlA ) ) !== false ) {   
 			DB_curl_send( $_SERVER['REMOTE_ADDR'], KAPP_URL_T_, $upday, $memo, md5($admin_password) );
 			echo " - Create Success and Record Create  Success : kapp_DB <br>";
@@ -502,6 +504,7 @@
 			echo 'curl OK : ' . $response . "<br>";
 		}
 		curl_close($curl);
+		return $response;
 	}
 	function create_kapp_dbcon(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password;
