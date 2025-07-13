@@ -9,10 +9,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script type='text/javascript'>
     <!--
-    function Kakao_Login_func($kapp_kakao_js_apikey) {
+    /*
+	function Kakao_Login_func($kapp_kakao_js_apikey) {
 		alert(" Kakao_Login_func --- " + $kapp_kakao_js_apikey);
         //kakao_login("<?=Decrypt('$kapp_kakao_js_apikey', 'modumoa', '~!@#$%^&*()_+')?>");
-    }
+    }*/
 
     function Kout_func() {
         document.kakao_form.modeA.value = '';
@@ -229,7 +230,7 @@
                     style='border-style:;height:20px;'></a>
             <ul>
                 <li align='left'>
-                    <a href="/kapp" target='_top'>0. Home</a>
+                    <a href="<?=KAPP_URL_T_?>" target='_top'>0. Home</a>
                 </li>
                 <li align='left'>
                     <a href="<?=KAPP_URL_T_?>/privacy_policy_en.html" target='_blank'>1. Privacy Policy</a>
