@@ -119,11 +119,11 @@ else if($mode == "Delete_Image") {
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
-		$no = $_REQUEST[no];
-		$SQL = "delete from tkher_main_img where no = $no ";
-		if ( ($result = sql_query( $SQL ) )==false )
-		{
-		  printf("Invalid query: %s \n", $SQL);
+		$no = $_POST['no'];
+		$SQL = "delete from {$tkher['tkher_main_img_table']} where no = $no ";
+		if ( ($result = sql_query( $SQL ) )==false ){
+			printf("Invalid query: %s \n", $SQL); 
+			//Invalid query: delete from tkher_main_img where no = 100 - 2_78281.jpg, App Generator<br>Program Generator<br>Source Code DownLoad
 			m_("A delete error occurred.");	// \\n delete 오류가 발생하였습니다. 
 			exit();
 		} else {
@@ -270,7 +270,7 @@ else if($mode == "Insert_func") {
 	$tot = sql_num_rows( $result );
 	if( !$tot ){
 		$slide_time=6000;
-		$SQL = "INSERT {$tkher['tkher_my_control_table']} SET userid='tkher', slide_time='$slide_time' ";
+		$SQL = "INSERT {$tkher['tkher_my_control_table']} SET userid='tkher', slide_time=$slide_time ";
 		sql_query( $SQL );
 	} else {
 		$row = sql_fetch_array( $result );
@@ -362,7 +362,7 @@ else if($mode == "Insert_func") {
 					<textarea id='jpg_memo' name='jpg_memo[$i]' style='border-style:;background-color:cyan;color:black;height:60;width:350;' >".$row['jpg_memo']."</textarea>
 						<br><label for='file'>Filename:</label>
 					<input type='file' name='file_$i' id='file'><br>
-					<input type='button' value='File_Change' onclick=\"javascript:upload_func('$no', '$i')\" title='Change the file.'>
+					<input type='button' value='File_Change' onclick=\"javascript:upload_func($no, '$i')\" title='Change the file.'>
 				</td>
 				";
 
@@ -370,8 +370,8 @@ else if($mode == "Insert_func") {
 				<td align='center'><input type='text' name='view_no[$i]' value='".$row['view_no']."' size=2 title='Output Order.'>&nbsp;
 				</td>
 				<td align='center'>
-					<input type=button value='Update' onclick=\"javascript:update_func('$no', '$i');\" style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Change the title.'><br><br>
-					<input type=button value='Delete_Image' onclick=\"javascript:del_check('$no', '$i', '$H_LEV' )\" style='height:22px;background-color:red;color:white;border:1 solid black' title='Delete the image.'>
+					<input type=button value='Update' onclick=\"javascript:update_func($no, '$i');\" style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Change the title.'><br><br>
+					<input type=button value='Delete_Image' onclick=\"javascript:del_check($no, '$i', '$H_LEV' )\" style='height:22px;background-color:red;color:white;border:1 solid black' title='Delete the image.'>
 				</td>
 			</tr>
 			";
