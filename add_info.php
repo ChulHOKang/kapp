@@ -9,7 +9,7 @@
         exit;
     }
 
-	$menu1TWPer=15;  
+	$menu1TWPer=25;  
 	$menu1AWPer=100 - $menu1TWPer;  
 	$menu2TWPer=10;  
 	$menu2AWPer=50 - $menu2TWPer;  
@@ -485,7 +485,7 @@ function Next_input() {
 <body width=100%>
     <center>
         <div class="HeadTitle01AX">
-            <P href='#' class='on' title='table code:ksd39673976_1694494339 , program name:아이디찾기'>추가정보</P>
+            <P href='#' class='on' title='table code:ksd39673976_1694494339 , program name:add_info'>Additional information</P>
         </div>
         <br>
         <div class='boardViewX'>
@@ -497,82 +497,69 @@ function Next_input() {
             <form name='makeform' action='' method='post' enctype='multipart/form-data' onsubmit='return check(this)'>
                 <input type=hidden name='mode' value='' />
                 <div class="email_sign">
-                    <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>이름</span>
-                    </div>
-                    <div class='menu1A'><input type='CHAR' name='mb_name' value='<?=$member['mb_name']?>'
-                            style='width:70%;height:<?=$Xheight?>;' placeholder='이름을 입력해주세요.'></div>
+                    <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Name</span></div>
+                    <div class='menu1A'><input type='CHAR' name='mb_name' value='<?=$member['mb_name']?>' style='width:70%;height:<?=$Xheight?>;' placeholder='Name.'></div>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span
-                            style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>비밀번호</span>
+                    <div class='menu1T' align=center><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Email</span></div>
+                    <div class='menu1A'><input type='CHAR' name='mb_email' value='<?=$member['mb_email']?>' style='width:70%;height:<?=$Xheight?>;' placeholder='Email.'></div>
+                    <div class='blankA'> </div>
+                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Password</span>
                     </div>
-                    <div class='menu1A'><input type='password' name='mb_password' value=''
-                            style='width:90%;height:<?=$Xheight?>;'
-                            placeholder='비밀번호는 8~25자의 영문자+숫자+특수문자 조합으로 입력해야 합니다.'>
+                    <div class='menu1A'><input type='password' name='mb_password' value='' style='width:90%;height:<?=$Xheight?>;' placeholder='Password 8~25.'>
                     </div>
                     <input type='hidden' name='mb_password_enc' value=''>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>비밀번호
-                            확인</span>
+                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Password confirm</span>
                     </div>
-                    <div class='menu1A'><input type='password' name='mb_password2' value=''
-                            style='width:90%;height:<?=$Xheight?>;'
-                            placeholder='비밀번호는 8~25자의 영문자+숫자+특수문자 조합으로 입력해야 합니다.'>
+                    <div class='menu1A'><input type='password' name='mb_password2' value='' style='width:90%;height:<?=$Xheight?>;' placeholder='Password 8~25.'>
                     </div>
                     <input type='hidden' name='mb_password2_enc' value=''>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>연락처</span>
+                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Phone no</span>
                     </div>
-                    <div class='menu1A'><input type='text' name='mb_hp' value='<?=$member['mb_hp']?>'
-                            style='width:90%;height:<?=$Xheight?>;' placeholder='연락처를 입력해주세요.'>
+                    <div class='menu1A'><input type='text' name='mb_hp' value='<?=$member['mb_hp']?>' style='width:90%;height:<?=$Xheight?>;' placeholder='Phone no .'>
                     </div>
                     <input type='hidden' name='mb_hp_number' value='<?=$member['mb_hp']?>'>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>성별</span>
+                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Sex</span>
                     </div>
-                    <div class='menu1A'><SELECT SIZE='1' name="mb_sex"
-                            style='border-style:;height:25; text-align: center;'>
-                            <option value='M' selected>Male</option>
-                            <?php
-                            if($member['mb_sex'] == 'F') $selected = 'selected';
-                            ?>
+                    <div class='menu1A'>
+						<SELECT SIZE='1' name="mb_sex" style='border-style:;height:25; text-align: center;'>
+							<option value='M' selected>Male</option>
+                 <?php
+                            if( $member['mb_sex'] == 'F') $selected = 'selected';
+							else $selected = '';
+                  ?>
                             <option value='F' <?=$selected?>>Female</option>
                         </SELECT>
                     </div>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span
-                            style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>생년월일</span>
+                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>birth date</span>
                     </div>
                     <div class='menu1A'>
-                        <!-- <input type='text' name='mb_birth' value=''
-                            style='width:90%;height:<?=$Xheight?>;' placeholder='생년월일을 입력해주세요'> -->
-                        <input type='text' name='mb_birth' value='<?=$member['mb_birth']?>'
-                            style='width:90%;height:<?=$Xheight?>;' placeholder='0000-00-00'>
+                        <!-- <input type='text' name='mb_birth' value='' style='width:90%;height:<?=$Xheight?>;' placeholder='생년월일을 입력해주세요'> -->
+                        <input type='text' name='mb_birth' value='<?=$member['mb_birth']?>' style='width:90%;height:<?=$Xheight?>;' placeholder='0000-00-00'>
                     </div>
                     <input type='hidden' name='mb_birth_number' value=''>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span
-                            style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>우편번호</span>
+                    <!-- <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>우편번호</span>
                     </div>
-                    <div class='menu1A'><input id="member_post" type='number' name='mb_zip1'
-                            value='<?=$member['mb_zip1']?>' style='width:90%;height:<?=$Xheight?>;'
-                            placeholder='우편번호를 입력해주세요.' readonly onclick="findAddr(0)"></div>
+                    <div class='menu1A'>
+					 <input id="member_post" type='number' name='mb_zip1' value='<?=$member['mb_zip1']?>' style='width:90%;height:<?=$Xheight?>;' placeholder='우편번호를 입력해주세요.' readonly onclick="findAddr(0)"></div>
                     <div class='blankA'> </div>
                     <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>주소</span>
                     </div>
-                    <div class='menu1A'><input id="member_addr" type='text' name='mb_addr1'
-                            value='<?=$member['mb_addr1']?>' style='width:90%;height:<?=$Xheight?>;'
-                            placeholder='주소를 입력해주세요.' readonly onclick="findAddr(0)"></div>
+                    <div class='menu1A'><input id="member_addr" type='text' name='mb_addr1' value='<?=$member['mb_addr1']?>' style='width:90%;height:<?=$Xheight?>;' placeholder='주소를 입력해주세요.' readonly onclick="findAddr(0)"></div>
                     <div class='blankA'> </div>
-                    <div class='menu1T' align='center'><span
-                            style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>상세주소</span>
+                    <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>상세주소</span>
                     </div>
                     <div class='menu1A'><input type='text' name='mb_addr2' value='<?=$member['mb_addr2']?>'
                             style='width:90%;height:<?=$Xheight?>;' placeholder='상세주소를 입력해주세요.'></div>
-                    <div class='blankA'> </div>
+                    <div class='blankA'> </div> -->
                     <div class='blankA'> </div>
                     <div class='viewHeader' style="text-align:center;">
-                        <input type=button value='저장' onclick="record_modify()" class="Btn_List01A">
-                        <input type=button value='다음에 입력하기' onclick="Next_input()" class="Btn_List01A">
+                        <input type=button value='Submit' onclick="record_modify()" class="Btn_List01A">
+                        <input type=button value='Enter next' onclick="Next_input()"  class="Btn_List01A">
                     </div>
                 </div>
             </form>
