@@ -216,7 +216,8 @@
 		if( !kapp_DB_table_check( $table_prefix . "login" ) )			Login( $table_prefix , "login" ); 
 
 		echo "<br><br><b>--- Table Create : End ---</b><br>";
-		echo "Click Here <a href='./DB_Table_CreateA.php?admin=modumoa' target='_blank'> Table List </a>";
+		echo "K-APP Home<a href='".KAPP_URL_T_."' target='_blank'> [ Home - click ]</a>";
+		echo "<br>Click Here <a href='./DB_Table_CreateA.php?admin=modumoa' target='_blank'> Table List </a>";
 	}
 	function kapp_DB_table_check( $tab ){
 		global $table_prefix;
@@ -615,6 +616,7 @@ function Login($t_head, $tab){
 function Config($t_head, $tab) {
 	global $admin_email, $table_prefix, $admin_id;
     $tab = $t_head.$tab;
+	$optm = date("Y-m-d", time());
     $SQL = "
         CREATE TABLE ".$t_head."config (
         kapp_title varchar(255) NOT NULL DEFAULT '',
@@ -702,9 +704,9 @@ function Config($t_head, $tab) {
 			kapp_cut_name=10,
 			kapp_nick_modify=60,
 			kapp_new_rows=15,
-			kapp_read_point=100,
-			kapp_write_point=3000,
-			kapp_comment_point=1000,
+			kapp_read_point=10,
+			kapp_write_point=1000,
+			kapp_comment_point=500,
 			kapp_download_point=-1000,
 			kapp_write_pages=10,
 			kapp_mobile_pages=5,
@@ -716,9 +718,9 @@ function Config($t_head, $tab) {
 			kapp_syndi_token='',
 			kapp_syndi_except='',
 			kapp_register_level=2,
-			kapp_register_point=30000,
+			kapp_register_point=10000,
 			kapp_use_recommend=1,
-			kapp_recommend_point=1000,
+			kapp_recommend_point=500,
 			kapp_leave_day=30,
 			kapp_search_part=1000,
 			kapp_prohibit_id='admin,administrator,webmaster,sysop,manager,root,su,guest',
@@ -727,14 +729,14 @@ function Config($t_head, $tab) {
 			kapp_memo_del=180,
 			kapp_visit_del=365,
 			kapp_popular_del=180,
-			kapp_optimize_date='',
+			kapp_optimize_date='$optm',
 			kapp_login_minutes=10,
 			kapp_image_extension='gif|jpg|png',
 			kapp_movie_extension='asx|asf|wmv|wma|mpg|mpeg|mov|avi|mp3',
 			kapp_formmail_is_member=1,
 			kapp_page_rows=15,
 			kapp_mobile_page_rows=10,
-			kapp_visit='today:2, yestday:, max:2, Total:2',
+			kapp_visit='today:0, yestday:0, max:0, Total:0',
 			kapp_max_po_id=0,
 			kapp_stipulation='',
 			kapp_privacy='',
