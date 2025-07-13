@@ -35,8 +35,8 @@
         document.kakao_form.authObject.value = '';
         document.kakao_form.gemail.value = ''; // google
         document.kakao_form.gname.value = '';
-        document.location.href =
-            " https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + <?=KAPP_URL_T_?>;
+        document.location.href =" https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=";
+//        document.location.href =" https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + <?=KAPP_URL_T_?>;
     }
     function kakao_loginX($Kakao_APP_KEY) { // 중요 - Login Button XXX
         alert("kakao_login 64");

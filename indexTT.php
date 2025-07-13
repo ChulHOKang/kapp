@@ -92,11 +92,13 @@
 </script>
 
 <?php
-	$sql = " SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
-	$ret = sql_query($sql);
-	$rs  = sql_fetch_array($ret);
-	$slide_time = $rs['slide_time'];
-	if( !$slide_time ) $slide_time = $config['kapp_slide_time']; //$slide_time = 6000;
+
+	//$sql = "select * from {$tkher['tkher_main_img_table']} where userid='tkher' ";
+	//$ret = sql_query($sql);
+	//$rs  = sql_fetch_array($ret);
+	//$slide_time = $rs['slide_time'];
+	//if( !$slide_time )
+	$slide_time = $config['kapp_slide_time']; //$slide_time = 6000;
 	$sql = " SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher' and group_name='main' order by view_no ";
 	$ret       = sql_query($sql);
 	$st_style  = "<style type='text/css'> ";
@@ -104,8 +106,9 @@
 	$i=0;
 	while ( $rs = sql_fetch_array($ret) ) {
 		$i++;
-		if( $i < 10 ) $k = "0" . $i;
-		else			$k = $i;
+		//if( $i < 10 ) $k = "0" . $i;
+		//else			$k = $i;
+		$k = $i;
 		$ifile =$rs['jpg_file'];
 		$inm   =$rs['jpg_name'];
 		$mg    =$rs['jpg_memo'];
@@ -168,7 +171,7 @@
     }
 ?>
         <h1>
-            <a href="/kapp" target='_top' class="logo" title='development man'>
+            <a href=<?=KAPP_URL_T_?>" target='_top' class="logo" title='development man'>
                 <img src="<?=$gsajin?>" class="logo_web" style="opacity:0.3;width:200px" title="K-APP Home" />
             </a>
         </h1>
