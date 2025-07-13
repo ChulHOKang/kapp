@@ -38,9 +38,7 @@
 	if( $mode == 'Google_Login') {
 		set_session("urllink_login_type", $_POST['modeG']);
 	}
-	$r = explode("/", $_SERVER['SCRIPT_FILENAME'] );
-	$cnt = count($r);
-	$_url = "./" . $r[$cnt-1];
+	$_url = KAPP_URL_T_;
 	if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
 	else $mid = "";
 	if( $mode == 'SearchPG'){
@@ -366,21 +364,21 @@ body {
 <?php if( $H_ID ) { ?>
 			<li align="center" style="color:cyan; background-color:black; height:21px; border:none"><?=$H_ID?></li>
 <?php } else { ?>
-			<li align="center" style="color:cyan; background-color:black; height:21px; border:none">K-APP</li>
+			<li align="center" style="color:cyan; background-color:black; height:21px; border:none;list-style-type:none">K-APP</li>
 <?php } ?>
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-			<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
-			<!-- <li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li> -->
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
+			<li style='font-size:18;color:cyan;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
+			<!-- <li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li> -->
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
 
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>App Permissions setting</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>App Permissions setting</a></li>
 
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_relationA.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seed.png' width='22' height='22'>Table Relationship</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seedX.png' width='22' height='22'>Program List A</a></li>
-			<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/berry.png' width='22' height='22'>Program List B</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_relationA.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seed.png' width='22' height='22'>Table Relationship</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seedX.png' width='22' height='22'>Program List A</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/berry.png' width='22' height='22'>Program List B</a></li>
 
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 
