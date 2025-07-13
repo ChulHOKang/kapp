@@ -5,7 +5,7 @@
 	}
 	/*
 		tkher_start_necessary.php : call : indexTT.php
-
+		kapp_start_necessary_TT.php 
 		/t/index.php - include : kapp_start_necessary_TT.php - old: tkher_start_necessary.php
 					 - iframe  : indexTT.php - include : tkher_start_necessary.php
 

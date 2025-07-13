@@ -1,5 +1,24 @@
 <?php
 	include_once('./tkher_start_necessary.php');
+	/*
+		indexTT.php - tkher_start_necessary.php
+		index.php - kapp_start_necessary_TT.php
+
+		//Old $http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
+		//New $http = $_SERVER['REQUEST_SCHEME'] . "://";		//m_("http : " . $http ); // https
+		if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') $http = "https://";
+		else if( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ) $http = "https://";
+		else if( isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') $http = "https://";
+		else  $http = "http://";
+
+	  --- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
+	  1. 이것은 나의 미래를 결정한다.
+	  2. 이것은 나의 경쟁력이다.
+	  3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
+	  4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
+	  5. 이것을 아는것은 힘이요, 원동력이다.
+	  --------------------------------------------------
+	*/
 ?>
 <html>
 <head>
@@ -13,19 +32,6 @@
     <meta name="robots" content="ALL">
 
     <?php
-	/*
-	indexTT.php - call : index.php - include : 
-	- include : tkher_start_necessary.php
-	: login $config['kapp_googl_shorturl_apikey']
-
-	  --- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
-	  1. 이것은 나의 미래를 결정한다.
-	  2. 이것은 나의 경쟁력이다.
-	  3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
-	  4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
-	  5. 이것을 아는것은 힘이요, 원동력이다.
-	  --------------------------------------------------
-	*/
 	date_default_timezone_set("Asia/Seoul");
 	$day		= date("Y-m-d H:i:s");
 	if( isset($member['mb_id']) ){
@@ -136,7 +142,7 @@
 	';
 	
 	if( get_session("urllink_login_type") == "" ){ 
-		if( isset($config['kapp_kakao_js_apikey'])) $kapp_kakao_js_apikey = $config['kapp_kakao_js_apikey'];
+		if( isset($config['kapp_kakao_js_apikey']) && $config['kapp_kakao_js_apikey'] !=='') $kapp_kakao_js_apikey = $config['kapp_kakao_js_apikey'];
 		else $kapp_kakao_js_apikey = '';
 		echo "<table><tr><td><a id='kakao_ligin' href='javascript:kakao_login(\"".$kapp_kakao_js_apikey."\");'><img src='./icon/kakao.jpg' style='height:38px;' /></a>&nbsp;&nbsp;&nbsp;</td>";
 		echo '<td><div class="g_id_signin" data-type="standard"></div></td>';
