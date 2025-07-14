@@ -3,8 +3,12 @@ include_once('./tkher_start_necessary.php');
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
+	m_("mode: $mode");
+
 	if( $mode === 'add_info'){	//print_r($_POST);
 		Record_Update();
+	}else{
+		m_(" error confirm approche "); 
 	}
 
 function Record_Update() {
@@ -22,9 +26,9 @@ function Record_Update() {
     $query = $query . ",mb_sex= '" . $_POST['mb_sex'] . "' ";   
     $query = $query . ",mb_birth= '" . $_POST['mb_birth_number'] . "' ";   
     $query = $query . ",mb_hp= '" . $_POST['mb_hp_number'] . "' ";   
-    $query = $query . ",mb_zip1= '" . $_POST['mb_zip1'] . "' ";   
-    $query = $query . ",mb_addr1= '" . $_POST['mb_addr1'] . "' ";   
-    $query = $query . ",mb_addr2= '" . $_POST['mb_addr2'] . "' ";   
+	//$query = $query . ",mb_zip1= '" . $_POST['mb_zip1'] . "' ";   
+    //$query = $query . ",mb_addr1= '" . $_POST['mb_addr1'] . "' ";   
+    //$query = $query . ",mb_addr2= '" . $_POST['mb_addr2'] . "' ";   
     $query = $query . ",mb_email_certify= '" . date("Y-m-d H:i:s") . "' ";  // mb_email_certify 추가
     $query = $query . " where mb_id = '".$member['mb_id']."' ";   
 

@@ -375,7 +375,6 @@ let email_code = '';
 let phone_code = '';
 
 function record_modify() {
-
     if (!document.makeform.mb_name.value) {
         alert("이름을 입력해주세요.");
         document.makeform.mb_name.focus();
@@ -410,7 +409,8 @@ function record_modify() {
     } else {
         Birth_number(); // - 문자 제거
     }
-    if (!document.makeform.mb_zip1.value) {
+    /*
+	if (!document.makeform.mb_zip1.value) {
         alert("우편번호를 입력해주세요.");
         document.makeform.mb_zip1.focus();
         return;
@@ -419,7 +419,7 @@ function record_modify() {
         alert("주소를 입력해주세요.");
         document.makeform.mb_addr1.focus();
         return;
-    }
+    }*/
 
     /* document.makeform.mb_password_enc.value = CryptoJS.MD5(document.makeform.mb_password.value);
     document.makeform.mb_password2_enc.value = CryptoJS.MD5(document.makeform.mb_password2.value); */
