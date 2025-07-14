@@ -1,18 +1,17 @@
 <?php  
     include_once('./tkher_start_necessary.php');
-	$_ID	= $member['mb_id'];
-	if( isset( $_ID) ){
+	if( isset($member['mb_id'] )  ) {
+		$H_ID	= $member['mb_id'];
 		$_LEVEL	= $member['mb_level'];
 	} else {
-		$H_ID = "";
-		$_LEVEL	= 0; 
 		m_("login please!");
 		exit;
 	}
+	/*
 	$menu1TWPer=30;  
 	$menu1AWPer=100 - $menu1TWPer;  
 	$Xwidth='100%';  
-	$Xheight='100%';  
+	$Xheight='100%';  */
 ?>
 <style>
 * {
@@ -388,7 +387,8 @@ jQuery(document).ready(function ($) {
 			return;
 		}
 		var server_name = $("#server_name").val();
-		alert("server_name: " + server_name);
+		alert("server_name: " + server_name);//server_name: https://modumodu.net/biog7/kapp
+
 		var server_sel = $("#server_sel").val();
 		var admin_id = $("#admin_id").val();
 		var admin_password = $("#admin_password").val();
@@ -408,7 +408,7 @@ jQuery(document).ready(function ($) {
 			success: function(data) {
 					//console.log(data);
 					alert(data);
-					location.replace(location.href);
+					//location.replace( location.href );
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("ERROR - data type, or URL or admin_id confirm. -- curl_server_ajax.php");
@@ -462,6 +462,9 @@ jQuery(document).ready(function ($) {
 	}
 		$response = Server_get(); // fation.net 의 curl server data list call
 		$server_ = explode('|', $response);
+
+		if( isset($_POST['admin_id']) ) $admin_id = $_POST['admin_id'];
+		else $admin_id='';
 ?>
 
 <body width=100%>
@@ -481,7 +484,7 @@ jQuery(document).ready(function ($) {
                 <div class="email_sign">
                     <div class='menu1T' align='center'><span style='width:100%;height:100%;' title='Administrator during installation ID'>Admin Email</span>
                     </div>
-                    <div class='menu1A'><input type='CHAR' id='admin_id' name='admin_id' value=''
+                    <div class='menu1A'><input type='CHAR' id='admin_id' name='admin_id' value='<?=$admin_id?>'
                             style='width:100%;height:100%;' placeholder='Please enter the administrator ID during installation..'></div>
                     <div class='blankA'> </div>
                     <div class='menu1T' align='center'><span
@@ -496,15 +499,16 @@ jQuery(document).ready(function ($) {
                     <div class='menu1T' align='center'><span style='width:100%;height:100%;'>Serve URL</span>
                     </div>
                     <div class='menu1A'>
-						<SELECT SIZE='1' id="server_sel" name="server_sel" style='border-style:;height:100%; text-align: center;'>
-                            <option value='https://fation.net/kapp' selected>https://fation.net/kapp</option>
+						<SELECT  id="server_sel" name="server_sel" style='border-style:;height:100%; text-align: center;'>
+                            <option value='' >Select Server</option>
+							<!-- <option value='https://fation.net/kapp' selected>https://fation.net/kapp</option> -->
 <?php
-							for($i=0; sizeof($server_) > $i; $i++){
-								if( isset($server_[$i]) && $server_[$i] !== ""){
-									if( $config['kapp_theme'] == $server_[$i] ) $selected = 'selected';
+$kapp_theme = explode(  '^', $config['kapp_theme']);
+
+							for($i=0; isset($server_[$i]) && $server_[$i]!==''; $i++){
+									if( isset($kapp_theme[0]) && $kapp_theme[0] == $server_[$i] ) $selected = 'selected';
 									else $selected = '';
-									echo "<option value= '".$server_[$i]."' ".$selected." >".$server_[$i]."</option>";
-								}
+									echo "<option value= '".$server_[$i]."' " . $selected ." >".$server_[$i]."</option>";
 							}
 ?>
                         </SELECT>

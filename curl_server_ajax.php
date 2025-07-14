@@ -12,18 +12,24 @@
 			echo "level ERROR";
 			exit;
 		}
+//		echo "<br>curl_server_ajax - mode_update: ".$mode_update . ", server_url:" . $server_url . ", admin_id: " . $admin_id . ". admin_password:" . $admin_password;
 
 		$up_day = date("Y-m-d H:i:s");
 		$query = "select server_name from kapp_DB where admin_email='$admin_id' and admin_pw='".md5($admin_password)."' ";
 		$row =	sql_fetch( $query ); 
 		if( isset($row) && $row > 0 ) {
-			$sql = "update {$tkher['config_table']} set kapp_theme='$server_url' where kapp_admin='$admin_id' ";
+			$sql = "select kapp_theme from {$tkher['config_table']} where kapp_admin_email='$admin_id' ";
+			$ret = sql_fetch($sql);
+			$kapp_theme = explode('^', $ret['kapp_theme']);
+			$server_url = $server_url . '^' . $kapp_theme[1];
+			$sql = "update {$tkher['config_table']} set kapp_theme='$server_url' where kapp_admin_email='$admin_id' ";
 			$ret = 	sql_query( $sql ); 
 			if( !$ret) {
 				echo " ERROR! update config";
 				return false;
 				exit;
 			} else {
+				//printf("<br>sql:%s", $sql );
 				Servr_Update_curl_send( $server_name, $server_url, $admin_id, $admin_password );
 				echo "--- save OK!";
 				return true;
