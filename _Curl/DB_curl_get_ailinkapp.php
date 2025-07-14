@@ -87,8 +87,8 @@
 								$B='';
 							}
 							$K = $A . "^".  $B . "^" . $C;		
-							Curl_Server_Send( $A, $R, $C );	//echo "<br>$i - " .$K;
-							curl_set_DBsave( $A, $R, $C  );
+							Curl_Server_Send( $A, $B, $C );	//echo "<br>$i - " .$K;
+							curl_set_DBsave( $A, $B, $C  );
 						}
 						$i++;
 					}//while
