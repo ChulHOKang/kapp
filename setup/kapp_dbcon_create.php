@@ -12,6 +12,10 @@
 		- call : DB_curl_get_ailinkapp.php - DB server url setting
 		- DB : kapp_DB , kapp_DB_curl
 		- function : create_kapp_dbcon() , kapp_DB_table_create(), kapp_DB_record_create(), DB_curl_send( $ip, $server_name_set, $upday, $memo, $pw_md5 )
+
+		-file : /var/www/html/biog7/kapp/data/kapp_dbcon.php created. 
+		-kapp_member Insert Success
+		-
 	*/
 	$tabData['data'][][] = array();
 	$db_host 		= "";
@@ -80,8 +84,8 @@
 
 		$chk = kapp_DB_table_check( $table_prefix . "DB" );
 		if( !$chk ) { // no found
-			$ret = kapp_DB_table_create();
-			if( $ret ) kapp_DB_record_create();
+			$ret = kapp_DB_table_create(); //   1
+			if( $ret ) kapp_DB_record_create(); //  2
 			if( !kapp_DB_table_check( $table_prefix . "member" ) ) {
 				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
@@ -95,11 +99,11 @@
 			$_SESSION['mb_level'] = 8;
 			$_SESSION['admin'] = 'modumoa';
 			Create_ALL_Table();
-		} else { // m_( $table_prefix ."DB Table 존재 합니다."); - kapp_DB
+		} else { // m_( $table_prefix ."DB Table exists."); - kapp_DB
 			drop_kapp_( $table_prefix ."DB" ); 
 			$ret = kapp_DB_table_create();
 			if( $ret ) kapp_DB_record_create();
-			if( !kapp_DB_table_check( $table_prefix . "member" ) ) { //kapp_member 없으면 생성.
+			if( !kapp_DB_table_check( $table_prefix . "member" ) ) { //kapp_member nothing create.
 				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
 				else exit;
@@ -314,6 +318,7 @@
 		$result = sql_query( $sqlA );
 		if( $result !== false ){   
 			echo "<script>alert('". $table_prefix."member Insert Success'); </script>";  
+			return true;
 		} else {
 			m_("member insert error! ");	echo "sql:" . $sqlA; exit;
 		}
@@ -452,10 +457,9 @@
 		global $tkher;      
 			$SQL = " create table kapp_DB( seqno int auto_increment not null, kapp_dbhost CHAR(15), kapp_dbname CHAR(15), kapp_dbuser CHAR(50), kapp_dbpw CHAR(255), admin_email CHAR(100), admin_pw CHAR(255), kapp_ip CHAR(30), kapp_point INT ,kapp_level INT , upday CHAR(30), server_name CHAR(50), kapp_memo text, primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";  
 			if( ( $result = sql_query( $SQL ) )==false ) {   
-				echo $table_prefix . " Table Create Invalid query: " . $SQL;
 				return false; 
+				exit;
 			} else {   
-				echo ", --- ".$table_prefix. "DB table create <br>" ;
 				return true;
 			}
 	}
@@ -467,7 +471,7 @@
 		$sqlA = "insert into kapp_DB set kapp_dbhost='".$db_host."', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_email='".$admin_email."', admin_pw='".md5($admin_password)."', kapp_point=10000, kapp_level=9, kapp_ip='".$_SERVER['REMOTE_ADDR']."', server_name='".$_SERVER['HTTP_HOST']."', upday='$upday', kapp_memo='".$memo."' ";
 		if( ($result = sql_query( $sqlA ) ) !== false ) {   
 			DB_curl_send( $_SERVER['REMOTE_ADDR'], KAPP_URL_T_, $upday, $memo, md5($admin_password) );
-			echo " - Create Success and Record Create  Success : kapp_DB <br>";
+			echo " - Create Success and Record Create  Success : kapp_DB <br>"; // ok
 		} else {
 			echo "ERROR - insert kapp_DB";
 		}
@@ -619,8 +623,9 @@ function Config($t_head, $tab) {
 	$optm = date("Y-m-d", time());
     $SQL = "
         CREATE TABLE ".$t_head."config (
-        kapp_title varchar(255) NOT NULL DEFAULT '',
-        kapp_admin varchar(255) NOT NULL DEFAULT '',
+        kapp_title varchar(255) NOT NULL,
+        kapp_theme varchar(255) DEFAULT NULL,
+        kapp_admin varchar(255) DEFAULT NULL,
         kapp_admin_email varchar(255) DEFAULT NULL,
         kapp_admin_email_name varchar(255) DEFAULT NULL,
         kapp_admin_level int(3) DEFAULT 8,
@@ -691,7 +696,8 @@ function Config($t_head, $tab) {
     } else {
 		$query = "
         INSERT INTO ".$t_head."config set
-			kapp_title='K-APP',
+			kapp_title='K-App',
+			kapp_theme='',
 			kapp_admin='".$admin_id."',
 			kapp_admin_email='".$admin_email."',
 			kapp_admin_email_name='".$admin_id."',
