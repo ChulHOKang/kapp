@@ -117,7 +117,6 @@ $(function () {
 	else $param ='';
 	if( isset($_POST['sel']) ) $sel =$_POST['sel'];
 	else $sel   ='';
-m_("mode: ". $mode);
    if( $H_ID && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
