@@ -58,6 +58,7 @@
 		echo "<script>window.open( './index.php', '_TOP', ''); </script>";
 		exit;
 	}
+	//---------------------------------------------
 	function Create_Kapp_Table( $set_type ){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
@@ -85,7 +86,6 @@
 		$chk = kapp_DB_table_check( $table_prefix . "DB" );
 		if( !$chk ) { // no found
 			$ret = kapp_DB_table_create(); //   1
-			if( $ret ) kapp_DB_record_create(); //  2
 			if( !kapp_DB_table_check( $table_prefix . "member" ) ) {
 				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
@@ -98,11 +98,11 @@
 			}
 			$_SESSION['mb_level'] = 8;
 			$_SESSION['admin'] = 'modumoa';
-			Create_ALL_Table();
+			$retC = Create_ALL_Table();
+			if( $ret && $retC) kapp_DB_record_create(); //  2
 		} else { // m_( $table_prefix ."DB Table exists."); - kapp_DB
 			drop_kapp_( $table_prefix ."DB" ); 
 			$ret = kapp_DB_table_create();
-			if( $ret ) kapp_DB_record_create();
 			if( !kapp_DB_table_check( $table_prefix . "member" ) ) { //kapp_member nothing create.
 				$member_chk = Kapp_Member_Table_Create( $table_prefix . "member" ); 
 				if($member_chk) kapp_member_record_create();
@@ -115,7 +115,8 @@
 			}
 			$_SESSION['mb_level'] = 8;
 			$_SESSION['admin'] = 'modumoa';
-			Create_ALL_Table();
+			$retC = Create_ALL_Table();
+			if( $ret && $retC) kapp_DB_record_create(); //  2
 		}
 	}
 	function Drop_ALL_Table(){
@@ -177,7 +178,7 @@
 	}
 	function Create_ALL_Table(){
 		global $table_prefix;	
-		echo "<br><br><b>--- Setup Create table list :  ---</b><br>";
+		//echo "<br><br><b>--- Setup Create table list :  ---</b><br>";
 		if( !kapp_DB_table_check( $table_prefix . "config" ) )			Config( $table_prefix , "config" ); 
 		if( !kapp_DB_table_check( $table_prefix . "tkher_main_img" ) )	Tkher_main_img( $table_prefix , "tkher_main_img" ); 
 		if( !kapp_DB_table_check( $table_prefix . "tkher_my_control" ))	Tkher_my_control( $table_prefix , "tkher_my_control" ); 
@@ -222,6 +223,7 @@
 		echo "<br><br><b>--- Table Create : End ---</b><br>";
 		echo "K-APP Home<a href='".KAPP_URL_T_."' target='_blank'> [ Home - click ]</a>";
 		echo "<br>Click Here <a href='./DB_Table_CreateA.php?admin=modumoa' target='_blank'> Table List </a>";
+		return true;
 	}
 	function kapp_DB_table_check( $tab ){
 		global $table_prefix;
@@ -398,6 +400,7 @@
 		} else return true;
 	}
 	//---------------------------
+	/*
 	function create_kapp_DB(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
@@ -451,7 +454,7 @@
 			m_( $_fileLIB . " - file no found! Error!"); 
 			exit;
 		}
-	}
+	}*/
 	function kapp_DB_table_create(){
 		global $db_host, $db_name, $db_user, $db_password, $admin_email, $admin_password, $table_prefix;
 		global $tkher;      
@@ -470,8 +473,9 @@
 		$memo = $upday ." setup - " . $_SERVER['SERVER_SOFTWARE']. ", " . $_SERVER['SERVER_NAME']. ", " . $_SERVER['SCRIPT_NAME']. ", " . $_SERVER['HTTP_USER_AGENT'];
 		$sqlA = "insert into kapp_DB set kapp_dbhost='".$db_host."', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_email='".$admin_email."', admin_pw='".md5($admin_password)."', kapp_point=10000, kapp_level=9, kapp_ip='".$_SERVER['REMOTE_ADDR']."', server_name='".$_SERVER['HTTP_HOST']."', upday='$upday', kapp_memo='".$memo."' ";
 		if( ($result = sql_query( $sqlA ) ) !== false ) {   
-			DB_curl_send( $_SERVER['REMOTE_ADDR'], KAPP_URL_T_, $upday, $memo, md5($admin_password) );
-			echo " - Create Success and Record Create  Success : kapp_DB <br>"; // ok
+			$RC = DB_curl_send( $_SERVER['REMOTE_ADDR'], KAPP_URL_T_, $upday, $memo, md5($admin_password) );
+			echo "<br> - Create Success and Record Create  Success : kapp_DB "; // ok
+
 		} else {
 			echo "ERROR - insert kapp_DB";
 		}
