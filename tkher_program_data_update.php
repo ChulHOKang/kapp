@@ -713,7 +713,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 ?>
 				<input type="hidden" name='upfile'		value='<?=$upfile?>' />
 				<div class="viewHeader">
-					<a href="javascript:record_modify('<?=$seqno?>');" class="btn_bo02">Save</a>
+					<a href="javascript:record_modify('<?=$seqno?>');" class="btn_bo02"> Submit </a>
 					<a href="javascript:tab_pg_list();" class="btn_bo02">List</a>
 				</div>
 			</form>
@@ -727,11 +727,6 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 </body>
 
  <script type="text/javascript">
-	function table_data_list() {
-		document.tkher_form.action="tkher_program_data_list.php";
-		document.tkher_form.target='tab_pg_list';
-		document.tkher_form.submit();
-	}
 	function popimage(imagesrc,winwidth,winheight){
 		var look='width='+winwidth+',height='+winheight+','
 		popwin=window.open("","",look)
@@ -739,23 +734,13 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 		popwin.document.write('<title>urllinkcoin.com</title><body bgcolor="white" topmargin=0 leftmargin=0 marginheight=0 marginwidth=0><a href="javascript:window.close()"><img src="'+imagesrc+'" border=0></a></body>')
 		popwin.document.close()
 	}
-	function board_delete(uid, no){
-		if( confirm("Are you sure you want to delete?") ) {
-			document.tkher_form.mode.value="bbs_delete";
-			document.tkher_form.submit();
-		}
-	}
 	function record_modify( seqno ){
-		up_file=document.makeform.up_file.value;
 		if( confirm("Do you want to change it? seqno:"+seqno) ) {
 			document.makeform.seqno.value=seqno;
 			document.makeform.mode.value = "CHG_MODE";
 			document.makeform.action = 'tkher_program_data_update.php';
 			document.makeform.submit();
 		}
-	}
-	function bbs_update(){
-		document.makeform.submit();
 	}
 	function tab_pg_list() {
 		document.tkher_form.action='tkher_program_data_list.php';

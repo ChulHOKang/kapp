@@ -1136,16 +1136,18 @@ jQuery(document).ready(function ($) {
 	} // function
 	//==========================================
 	function create_func(){
-		//global $H_ID, $H_EMAIL, $tab_enm, $table_yn, $mode, $line_set, $tabData;
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
 		global $tkher;
 		global $group_code, $group_name, $tab_hnm, $tab_enm; 
+
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " seqno int auto_increment not null, ";
 		$tab_hnm	= $_POST["tab_hnm"];
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
 		$group_code	= $_POST["group_code"];
-		$group_name	= $_POST["group_name"];
+		$group_name= $_POST["group_name"];
 		$cnt = 1;
 		$item_array = "";
 		$if_type = "";
@@ -1197,11 +1199,9 @@ jQuery(document).ready(function ($) {
 			$mq1 = sql_query( $item_list );
 			if( !$mq1 ) {
 				m_("error --- insert table10_table - $tab_enm");
-				//echo "sql: " . $item_list;				m_("c3 $tab_hnm table creation failed.");
 				exit;
 			} else {
 				m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
-				//c  Successful creation of the new_curlB table - solpakanA_naver_1752117873.
 				$table_yn = 'y';
 				$link_ = KAPP_URL_T_ . "table30m_A.php";
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10@table30m' );
@@ -1213,21 +1213,15 @@ jQuery(document).ready(function ($) {
 		$rets = sql_query($query);
 		if( $rets ){
 			m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
-			//$link_ = KAPP_URL_T_ . "/table30m_A.php";
-			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );// PG create point
-	
 			$Tret = TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
 			if( $Tret ) {
 				m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
 				$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $tab_enm; 
 				$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
 			} else  m_("TAB_curl_sendA -- Error");
-			//
 		} else {
 			m_("Error INSERT table10_pg_table , $tab_enm , $tab_hnm ");
 		}
-		//m_("end $tab_enm , $tab_hnm , $mode ");
-		//end solpakanA_naver_1752117873 , new_curlB , table_create 
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
 		exit;
 	}
