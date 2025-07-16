@@ -1034,6 +1034,7 @@ jQuery(document).ready(function ($) {
 
 	//$tabData['data'][][] = array();
 	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
+		m_("start --- TAB_curl_sendA ");
 		global $H_ID, $H_EMAIL, $group_code, $group_name;
 		$tabData['data'][][] = array();
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
@@ -1085,6 +1086,7 @@ jQuery(document).ready(function ($) {
 		return $response;
 	}
 	function PG_curl_sendA( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
+		m_("start --- PG_curl_sendA ");
 		// use: kapp_tabel_create.php, app_pg50RC.php,  table30m_A.php
 		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
 		global $H_ID, $H_EMAIL, $group_code, $group_name, $tab_hnm, $tab_enm; 
@@ -1198,18 +1200,19 @@ jQuery(document).ready(function ($) {
 				//echo "sql: " . $item_list;				m_("c3 $tab_hnm table creation failed.");
 				exit;
 			} else {
-				//m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
+				m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
 				//c  Successful creation of the new_curlB table - solpakanA_naver_1752117873.
 				$table_yn = 'y';
 				$link_ = KAPP_URL_T_ . "table30m_A.php";
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10@table30m' );
 			}
-		} else m_("ERROR create_func - tab seqno in ");
+		} else m_("INSERT table10_table ERROR create_func - tab seqno in ");
 
-		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
+		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt,  userid='$H_ID',  tab_mid='$H_ID' ";
+		
 		$rets = sql_query($query);
 		if( $rets ){
-			//m_("OK table10_pg_table - insert  -- ");//OK table10_pg_table - insert  -- 
+			m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
 			//$link_ = KAPP_URL_T_ . "/table30m_A.php";
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );// PG create point
 	
@@ -1220,6 +1223,8 @@ jQuery(document).ready(function ($) {
 				$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
 			} else  m_("TAB_curl_sendA -- Error");
 			//
+		} else {
+			m_("Error INSERT table10_pg_table , $tab_enm , $tab_hnm ");
 		}
 		//m_("end $tab_enm , $tab_hnm , $mode ");
 		//end solpakanA_naver_1752117873 , new_curlB , table_create 
