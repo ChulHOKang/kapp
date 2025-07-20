@@ -1,21 +1,20 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	 $_ID	= get_session("ss_mb_id"); 
-	if( isset( $_ID) ){
-		$H_ID	= get_session("ss_mb_id");    //"ss_mb_id";	//connect_count('ulist', $H_ID, 0);	// log count
-		$_LEVEL	= get_session("ss_mb_level"); //m_($H_ID . ", _LEVEL: " . $_LEVEL);
-	} else {
-		$H_ID = "";
-		$_LEVEL	= 0; 
-		m_("login please!");
-	}
-
 	/*  
-		2021-04-08
 		ulink_list.php, ulist.php : table : {$tkher['job_link_table']} 
 		cratree_my_list_menu.php - inc menu_run.php - search call
-
 	*/
+	if( isset($member['mb_id']) && $member['mb_id'] !== "") {
+		$H_ID	= get_session("ss_mb_id"); 
+		if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
+		else $H_LEV = 0;
+		if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
+		else $H_EMAIL = '';
+	} else {
+		$H_EMAIL	    = ""; 
+		$H_ID				= "Guest"; 
+		$H_LEV			= 1; 
+	}
 	$up_day = date("Y-m-d H:i:s");
 	$pg_		= 'ulink_list.php';
 	if( isset($_POST['target_']) ) $target_	= $_POST['target_'];
@@ -99,18 +98,6 @@ $(function () {
 </head> 
 
 <?php
-	$ss_mb_id		= get_session("ss_mb_id");
-	if( isset($member['mb_id']) && $member['mb_id'] !== "") {
-		$ss_mb_level	= $member['mb_level']; 
-		$H_EMAIL	    = $member['mb_email'];
-		$H_ID				= $ss_mb_id;
-		$H_LEV			= $ss_mb_level; 
-	} else {
-		$ss_mb_level	= ""; 
-		$H_EMAIL	    = ""; 
-		$H_ID				= ""; 
-		$H_LEV			= ""; 
-	}
 		$g_name = "";
 		$g_name_code = "";
 		$sel_g_name = ":";
@@ -186,29 +173,62 @@ $(function () {
 			$url = "ulink_list.php";
 			echo "<script>alert('Member Login IN! Please!'); window.open('$url', '_self', '');</script>";
 		}
-		$board_num = 'Note';
-		$table_name = 'Note';
-		$create_type = 'Note';
+		$job_ = 'Link Note';
+		$create_type = 'Note'; // fix 
 
-		$title_nm		= $_REQUEST['title_nm'];
-		$g_class	= $_REQUEST['url_nm'];  // url
-		$gong_num = $_REQUEST['gong_num'];
-		$memo		= $_REQUEST['memo'];
-		$job_label	= $gong_num;	              
+		$title_nm		= $_POST['title_nm'];
+		$sys_subtit		= $_POST['title_nm'];
+		$job_url	= KAPP_URL_T_ . "/menu/ulink_list.php";//$_REQUEST['url_nm'];  // url
+		$sys_link	= KAPP_URL_T_ . "/menu/ulink_list.php";
+		$url_nm	= $_POST['url_nm'];  // url
+		$job_label = $_POST['gong_num'];
+		$memo		= $_POST['memo'];
 		$jong	= 'U';	                   //  tree가아닌 개별등록...
 		$ip = $_SERVER['REMOTE_ADDR'];
-		$result = sql_query("select * from {$tkher['job_link_table']} where user_id='$H_ID' and user_name='$title_nm' and job_addr='$g_class' ");
-		$tot = sql_num_rows($result);
-		if( $tot < 1 ) {
-			$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID', club_url='$from_session_url', user_name='$title_nm', job_name='$create_type', job_group='$g_name', job_group_code='$g_name_code', job_addr='$g_class', job_level='$job_label', jong='$jong', memo='$memo', ip='$ip', num='$create_type', aboard_no='$create_type', email='$H_EMAIL', up_day='$up_day' ";
-			sql_query(  $sqlA ); 
+		$up_day  = date("Y-m-d-H:i:s");
+		$kapp_url = KAPP_URL_T_;
+		$g_name=$_POST['g_name']; 
+		$g_name_code=$_POST['g_name_code']; 
+
+		$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID', club_url='$url_nm', user_name='$title_nm', job_name='$create_type', job_group='$g_name', job_group_code='$g_name_code', job_addr='$job_url', job_level='$job_label', jong='$jong', memo='$memo', ip='$ip', num='Note', aboard_no='$job_', email='$H_EMAIL', up_day='$up_day' ";
+		$ret = sql_query(  $sqlA ); 
+
+		$kapp_theme0 = '';
+		$kapp_theme1 = '';
+		$kapp_theme = $config['kapp_theme'];
+		$kapp_theme = explode('^', $kapp_theme );	//$n = sizeof($server_);
+		$kapp_theme0 = "https://fation.net/kapp";//$kapp_theme[0];
+		$kapp_theme1 = $kapp_theme[1];
+		if( $ret ) {
+			if( $kapp_theme0 ) {
+				if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day ) ) {
+					if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day );
+				}
+			}
+			m_("job_link_table --- insert ok");
+			//return true;
+		} else {
+			m_("my_func - job_link_table_add error ");
+			//echo "my_func, job_link_table_add error sql: " .$sqlA; exit;
+			//return false;
 		}
-		$sql= " update {$tkher['tkher_member_table']} set mb_point=mb_point+1 where mb_id = '$ss_mb_id' ";
-		sql_query($sql);
+		/*
+curl : https://fation.net/kapp, Link_Table_curl_send OK : {"message":"https:\/\/fation.net\/kapp, api OK, "}
+curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/modumodu.net\/biog7\/kapp, api OK, "}
+curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/biogplus.iwinv.net\/kapp, api OK, "}
+curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/moado.net\/kapp, api OK, "}
+curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/kapp, api OK, "}
+curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/biogplus\/kapp, api OK, "}
+curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/24c.kr\/kapp, api OK, "}
+curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"https:\/\/fation.net\/kapp, api OK, "}
 
-		Link_Table_curl_send( $title_nm, $g_class, $jong, $from_session_url, $ip, $memo, $up_day );
-
-		$memo='';
+		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/modumodu.net\/biog7\/kapp, api OK, "}
+		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/biogplus.iwinv.net\/kapp, api OK, "}
+		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/moado.net\/kapp, api OK, "}
+		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/kapp, api OK, "}
+		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/biogplus\/kapp, api OK, "}
+		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/24c.kr\/kapp, api OK, "}
+		*/
 	}
 	if($mode_up == 'Save_encrypted_run') {
 		if ( !$H_ID ) {
@@ -280,6 +300,7 @@ $(function () {
 	// 손대면 안되는 부분입니다. 2018-06-26 -----------------
 	// treelist2_cranim_book.php, ulink_list.php, link_list2.php, webeditor_list2.php, tkbbs_list2.php
 	function change_g_name_func(g_nm) {
+		//alert("g_nm:"+g_nm);
 		g_name = g_nm;
 		var gg = g_nm.split(":");
 		g_name2 = gg[0];
@@ -288,7 +309,7 @@ $(function () {
 		g_no = gg[3];
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.g_name_code.value = gg[1]; 
-		document.insert_form.g_name_update.value = gg[0]; 
+		//document.insert_form.g_name_update.value = gg[0]; 
 	}
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
         //if(jong=='M') link_='/t/menu/' + id + '/' + num + '_r1.htm'; // add M=menu
@@ -386,19 +407,24 @@ jQuery(document).ready(function ($) { // click point pay
 		document.getElementById("memo").value = "";
 	}
 
+	function insert_url_func() {
+		document.insert_form.mode.value = "insert_url_func_mode";
+		document.insert_form.action='ulink_list.php'; 
+		document.insert_form.target='_self';
+		document.insert_form.submit();
+	}
+
 //-->
 </script>
 
  <script>
 jQuery(document).ready(function ($) {
 
-
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
 		//var seq_no = $("#insert_form").seq_no.val();
 		//alert("Note Create click --- " );
 
 	});
-
 
 	$('#Save_encrypted').on('click', function() {//alert('버튼 클릭됨');//$('#element').text('새 텍스트 내용');
 		var memo= $("#memo").val();
@@ -497,18 +523,18 @@ jQuery(document).ready(function ($) {
                 cache: false,
                 contentType: false,
                 processData: false,
-                success: function (returndata) 
+                success: function (data) 
                 {
                     //show return answer
-                    alert(returndata);
-					location.replace(location.href);
+                    alert("OK insert data: " +data);
+					//location.replace(location.href);
                 },
                 error: function(){
-                alert("error in ajax form submission");
-                                    }
+					//alert("error in ajax form submission");
+				}
         });
 		//location.reload();
-        return false;
+        return;
     });
 
 	$('#insert_group').on('click', function() {		//alert('버튼 클릭됨');
@@ -665,9 +691,10 @@ jQuery(document).ready(function ($) {
 				<input id="upd_save_button" type='button'  onclick="javascript:contents_upd_run();" value='Save Changes' style="background-color:blue;color:yellow;height:25;">
 				<input id="upd_cancle" type='button'  onclick="javascript:Cancle_run();" value='Cancel Change' style="background-color:red;color:yellow;height:25;">
 <?php		} else { ?>			
-				<!-- <input type='button'  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'> --> User:<?=$H_ID?>
+				<!-- <input type='button'  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?> -->
 <?php		} ?>			
-				<input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" /><!-- curl run button -->
+				<!-- <input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" /> -->
+				<input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?>
 <?php } ?> 
 
 		</td>
@@ -688,7 +715,6 @@ jQuery(document).ready(function ($) {
 	// treelist2_cranim_book.php, ulink_list.php, link_list2.php, webeditor_list2.php, tkbbs_list2.php
  -->
 <form name='coinview_form' method='post' >
-	<input type='hidden' name='table_name'	value='' > 
 	<input type='hidden' name='mid'			value='' > 
 	<input type='hidden' name='seqno'		value='' > 
 	<input type='hidden' name='link_'		value='' > 
