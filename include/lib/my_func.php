@@ -219,13 +219,13 @@
 		curl_close($curl);
 		return $response;
 	}
-	function job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $aboard_no, $job_group, $job_name, $jong ){
+	function job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $aboard_no, $job_group, $job_name, $jong){
 		global $H_ID, $H_EMAIL, $tkher;
 		global $kapp_theme0;
 		global $kapp_theme1;
 
 		$ip = $_SERVER['REMOTE_ADDR'];
-		$from_session_url = KAPP_URL_; //$_SERVER['HTTP_HOST'];
+		$from_session_url = KAPP_URL_T_; //$_SERVER['HTTP_HOST'];
 		$up_day  = date("Y-m-d-H:i:s");
 		$result = sql_fetch("SELECT * from {$tkher['job_link_table']} where user_id='$H_ID' and user_name='$sys_subtit' and job_addr='$sys_link' ");
 		//$tot = sql_num_rows($result);
@@ -241,6 +241,7 @@
 						if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day );
 					}
 				}
+				m_("job_link_table --- insert ok");
 				return true;
 			} else {
 				m_("my_func - job_link_table_add error ");
@@ -258,6 +259,7 @@
 		$tabData['data'][$cnt]['link_title']  = $sys_subtit;
 		$tabData['data'][$cnt]['link_url']    = $sys_link;
 		$tabData['data'][$cnt]['link_type']   = $jong;
+		$tabData['data'][$cnt]['host'] = KAPP_URL_T_;
 		$tabData['data'][$cnt]['kapp_server'] = $kapp_server;
 		$tabData['data'][$cnt]['email']       = $H_EMAIL;
 		$tabData['data'][$cnt]['user_ip']     = $ip;
@@ -266,6 +268,7 @@
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 		
 		$url_ = $kapp_theme . '/_Curl/Link_Table_curl_get_ailinkapp.php';
+//		$url_ = 'https://fation.net/kapp/_Curl/Link_Table_curl_get_ailinkapp.php'; 
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -278,11 +281,11 @@
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
 		echo curl_error($curl);
 		if( $response == false) {
-			$_ms = "new Link_Table_curl_get_ailinkapp fail : " . curl_error($curl);
+			$_ms = KAPP_URL_T_ .  ", Link_Table_curl_send fail : " . curl_error($curl);
 			echo 'curl : ' . $_ms;
 		} else {
-			$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
-			echo 'curl : ' . $_ms;
+			$_ms =KAPP_URL_T_ .  ', Link_Table_curl_send OK : ' . $response;
+			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
 		return $response;
