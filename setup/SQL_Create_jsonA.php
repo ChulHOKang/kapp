@@ -536,7 +536,7 @@ function Table10_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` char(30) NOT NULL,
+  `host` varchar(100) NOT NULL,
   `email` varchar(50) NOT NULL,
   `group_code` varchar(50)  DEFAULT NULL,
   `group_name` varchar(50)  DEFAULT NULL,
@@ -574,7 +574,7 @@ function Table10_pg_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_pg_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` varchar(30) NOT NULL,
+  `host` varchar(100) NOT NULL,
   `pg_code` char(50) NOT NULL,
   `pg_name` char(50) NOT NULL,
   `tab_enm` varchar(50) NOT NULL,
@@ -592,7 +592,7 @@ function Table10_pg_curl($t_head, $tab) {
   `disno` int(5) DEFAULT NULL,
   `upday` timestamp NOT NULL DEFAULT current_timestamp(),
   `userid` varchar(50) NOT NULL,
-  `email` varchar(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `del` varchar(1) DEFAULT NULL,
   `del_date` datetime DEFAULT NULL,
   `sys_link` varchar(255) NOT NULL
@@ -612,7 +612,8 @@ function Job_link_table_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."job_link_table_curl (
         `seqno` int(11) auto_increment NOT NULL,
-  `kapp_server` varchar(30) DEFAULT NULL,
+		`host` varchar(100) NOT NULL,
+  `kapp_server` varchar(100) DEFAULT NULL,
   `link_title` varchar(200) DEFAULT NULL,
   `link_url` text DEFAULT NULL,
   `link_type` char(1) DEFAULT NULL,
@@ -636,9 +637,9 @@ function Sys_menu_bom_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."sys_menu_bom_curl (
         `seqno` int(11) auto_increment NOT NULL,
-  `host` varchar(30) DEFAULT NULL,
+  `host` varchar(100) DEFAULT NULL,
   `sys_userid` varchar(50) NOT NULL,
-  `email` varchar(30) NOT NULL,
+  `email` varchar(50) NOT NULL,
   `sys_pg` varchar(50) NOT NULL,
   `sys_rcnt` int(11) DEFAULT 0,
   `sys_disno` int(11) DEFAULT 0,
