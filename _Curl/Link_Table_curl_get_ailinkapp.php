@@ -3,22 +3,13 @@
 	/*
 		Link_Table_curl_get_ailinkapp.php
 		-app_pg50RC.php
-		-확인 필요...
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"_api DB data OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : Error: Link_Table_curl_get_ailinkapp.php : throw new Exception - link_table data failed{"message":"_api DB data OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"_api DB data OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"_api DB data OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : Error: Link_Table_curl_get_ailinkapp.php : throw new Exception - link_table data failed{"message":"_api DB data OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : Error: Link_Table_curl_get_ailinkapp.php : throw new Exception - link_table data failed{"message":"_api DB data OK, "}curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"_api DB data OK, "}
 	*/
-	//--------------------------------------------------------------------------------------
-    $responseData = $_POST['tabData'];  //json_decode($_POST['tabData'], true);
+    $responseData = $_POST['tabData']; 
     $kapp_iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
-	//------------------- 배열 재 구성 --------------------------
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
 	$tabData = json_decode($tabData, true);
-	//--------------------------------------------------------
+
     if( isset($tabData) ){
         $message = KAPP_URL_T_ . ', api OK, ';
     } else {
@@ -47,7 +38,7 @@
 		"; 
 		$resultA = $connect_db->query( $sql );
         if( !$resultA) {
-            throw new Exception( KAPP_URL_T_ . ", Link_Table_curl_get_ailinkapp.php : throw new Exception - link_table data failed");
+            throw new Exception( KAPP_URL_T_ . ", Link_Table_curl_get_ailinkapp.php : throw new Exception - job_link_table Failed");
         }
         $connect_db->commit();
     } catch (Exception $e) {
@@ -68,5 +59,4 @@
 			}
 		}
 	return $response;
-
 ?>
