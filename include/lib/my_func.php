@@ -236,6 +236,8 @@
 			$ret = sql_query( $sqlA );
 			$memo = 'tit:' . $sys_subtit . ', sys_pg:' .$sys_pg_root. ', aboard_no:' . $aboard_no;
 			if( $ret ) {
+				$kapp_theme0 = "https://fation.net/kapp"; //$kapp_theme[0];
+				$kapp_theme1 = '';
 				if( $kapp_theme0 ) {
 					if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day ) ) {
 						if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day );
@@ -268,7 +270,6 @@
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 		
 		$url_ = $kapp_theme . '/_Curl/Link_Table_curl_get_ailinkapp.php';
-//		$url_ = 'https://fation.net/kapp/_Curl/Link_Table_curl_get_ailinkapp.php'; 
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -285,6 +286,32 @@
 			echo 'curl : ' . $_ms;
 		} else {
 			$_ms =KAPP_URL_T_ .  ', Link_Table_curl_send OK : ' . $response;
+			//echo 'curl : ' . $_ms;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	function Sys_Menu_bom_curl_send_tabData( $kapp_theme, $tabData ){
+		global $kapp_iv, $kapp_key;
+
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		$url_ = $kapp_theme . '/_Curl/sys_menu_bom_curl_get_ailinkapp.php';
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			$_ms = "Sys_Menu_bom_curl_send_tabData api Fail : " . curl_error($curl);
+			echo 'curl : ' . $_ms;
+		} else {
+			$_ms = 'Sys_Menu_bom_curl_send_tabData api OK : ' . $response;
 			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
