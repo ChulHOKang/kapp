@@ -235,17 +235,17 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 			$url = "ulink_list.php";
 			echo "<script>alert('Member Login IN! Please!'); window.open('/', '_self', '');</script>";
 		}
-		$link_ = $_REQUEST['url_nm'];
-		$title_ = $_REQUEST['title_nm'];
-		$str = $_REQUEST['memo'];
-		$secret_key = $_REQUEST['form_psw'];
+		$link_ = $_POST['url_nm'];
+		$title_ = $_POST['title_nm'];
+		$str = $_POST['memo'];
+		$secret_key = $_POST['form_psw'];
 		$memo = Encrypt($str, $secret_key, $link_secret_iv);
 	}
 	else if($mode_up == 'Decryption_run') {
-		$link_ = $_REQUEST['url_nm'];
-		$title_ = $_REQUEST['title_nm'];
-		$encrypted = $_REQUEST['memo'];
-		$secret_key = $_REQUEST['form_psw'];
+		$link_ = $_POST['url_nm'];
+		$title_ = $_POST['title_nm'];
+		$encrypted = $_POST['memo'];
+		$secret_key = $_POST['form_psw'];
 		$memo = Decrypt($encrypted, $secret_key, $link_secret_iv);
 	}
 	else if ( $mode_up == 'update_link_run') {
@@ -253,20 +253,18 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 			$url = "ulink_list.php";
 			echo "<script>alert('Please log in'); window.open('$url', '_self', '');</script>";
 		}
-		$seq		= $_REQUEST['seq_no'];
-		$title_		= $_REQUEST['title_nm'];		// title
-		$url_		= $_REQUEST['url_nm'];  // url
-		//$job_label	= $_REQUEST['job_label'];
-		//$gong_num	= $_REQUEST['gong_num'];
-		$memo		= $_REQUEST['memo'];			// memo
-		$memo = special_comma_chk($memo); // comma 제거
+		$seq		= $_POST['seq_no'];
+		$title_		= $_POST['title_nm'];
+		$url_		= $_POST['url_nm']; 
+		$memo		= $_POST['memo'];
+		$memo = special_comma_chk($memo); 
 		$sql = "update {$tkher['job_link_table']} set user_name='$title_', job_addr='$url_', memo='$memo' where seqno='$seq' ";
 		$result = sql_query(  $sql );
 		$memo='';
 		$title_='';
 		echo "<script>location.href('ulink_list.php?g_name=$g_name');</script>";
 	}
-
+	/*
 	$menu1TWPer=15;  
 	$menu1AWPer=100 - $menu1TWPer;  
 	$menu2TWPer=10;  
@@ -277,8 +275,7 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 	$menu4AWPer=25 - $menu4TWPer;  
 	$Xwidth='90%';  
 	$Xheight='100%';  
-	$Text_height='60px';  
-
+	$Text_height='60px';  */
 ?>
 <script language='javascript'>
 <!--
@@ -297,10 +294,7 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		} 
 
 	}
-	// 손대면 안되는 부분입니다. 2018-06-26 -----------------
-	// treelist2_cranim_book.php, ulink_list.php, link_list2.php, webeditor_list2.php, tkbbs_list2.php
 	function change_g_name_func(g_nm) {
-		//alert("g_nm:"+g_nm);
 		g_name = g_nm;
 		var gg = g_nm.split(":");
 		g_name2 = gg[0];
@@ -309,10 +303,8 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		g_no = gg[3];
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.g_name_code.value = gg[1]; 
-		//document.insert_form.g_name_update.value = gg[0]; 
 	}
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
-        //if(jong=='M') link_='/t/menu/' + id + '/' + num + '_r1.htm'; // add M=menu
 		document.coinview_form.link_.value =link_;
 		document.coinview_form.mid.value   =id;
 		document.coinview_form.group.value =group;
@@ -325,7 +317,6 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		document.coinview_form.target='_blank';
 		document.coinview_form.submit();
 	}
-	//------------ tree -------------
 	function contents_del( num, g_name, webnum ) {
 		if( confirm('Are you sure you want to delete? '+num) ) {
 			insert_form.mode.value='delete_link';
@@ -345,45 +336,39 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		form.form_psw.value='';
 		form.memo.value=memo;
 		form.mode.value="update_link";
-
 		if( mid !== H_ID) {
 			document.getElementById('save_button').style.visibility = 'hidden';
 			document.getElementById('Save_encrypted').style.visibility = 'hidden';
 			document.getElementById('Decryption').style.visibility = 'hidden';
 		} else {
-
 			document.getElementById('upd_save_button').style.visibility = 'visible';
 			document.getElementById('upd_cancle').style.visibility = 'visible';
-				
 			document.getElementById('Save_encrypted').style.visibility = 'visible';
 			document.getElementById('Decryption').style.visibility = 'visible';
 			document.getElementById('save_button').style.visibility = 'hidden';
 		}
-		//-------------------------------------------
 		var seq_no= $("#seq_no").val();		//alert( seq_no + ", memo: " + memo);
-jQuery(document).ready(function ($) { // click point pay
-		$.ajax({
-			header:{"Content-Type":"application/json"},
-			method: "post",
-                url: 'ulink_ajax.php',
-				data: {
-					"mode_insert": 'view_click',
-					"seq_no": seq_no
-				},
-			success: function(data) {
-				//console.log(data);
-				//alert("OK ---" + seq_no);
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert(" 올바르지 않습니다.-- ulink_ajax.php");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-				return;
-			}
+		jQuery(document).ready(function ($) { // click point pay
+				$.ajax({
+					header:{"Content-Type":"application/json"},
+					method: "post",
+						url: 'ulink_ajax.php',
+						data: {
+							"mode_insert": 'view_click',
+							"seq_no": seq_no
+						},
+					success: function(data) {
+						//console.log(data);				//alert("OK ---" + seq_no);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(" 올바르지 않습니다.-- ulink_ajax.php");
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+						return;
+					}
+				});
 		});
-});
-
 
 	}
 	function contents_upd_run() {
@@ -398,34 +383,27 @@ jQuery(document).ready(function ($) { // click point pay
 	function Cancle_run() {
 		document.getElementById('upd_save_button').style.visibility = 'hidden';
 		document.getElementById('upd_cancle').style.visibility = 'hidden';
-			
 		document.getElementById('save_button').style.visibility = 'visible';
 		form = document.insert_form;
 		form.seq_no.value='';
-		form.url_nm.value=''; // url
+		form.url_nm.value='';
 		form.title_nm.value='';
 		document.getElementById("memo").value = "";
 	}
-
 	function insert_url_func() {
 		document.insert_form.mode.value = "insert_url_func_mode";
 		document.insert_form.action='ulink_list.php'; 
 		document.insert_form.target='_self';
 		document.insert_form.submit();
 	}
-
 //-->
 </script>
 
- <script>
+<script>
 jQuery(document).ready(function ($) {
-
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
-		//var seq_no = $("#insert_form").seq_no.val();
-		//alert("Note Create click --- " );
-
+		//var seq_no = $("#insert_form").seq_no.val();		//alert("Note Create click --- " );
 	});
-
 	$('#Save_encrypted').on('click', function() {//alert('버튼 클릭됨');//$('#element').text('새 텍스트 내용');
 		var memo= $("#memo").val();
 		var pws= $("#form_psw").val();
@@ -436,7 +414,6 @@ jQuery(document).ready(function ($) {
 		if( encrypted_check == ""){
 			alert("Login Please!"); return false;
 		}
-
 		$.ajax({
 			header:{"Content-Type":"application/json"},
 			method: "post",
@@ -447,12 +424,10 @@ jQuery(document).ready(function ($) {
 					"pws": pws
 				},
 			success: function(data) {
-					$("#memo").val(data);
-				//console.log(data);
-				//alert(data);
+				$("#memo").val(data);				//console.log(data);				//alert(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- ulink_ajax.php");
+				alert("The data type or URL is incorrect. -- ulink_ajax.php");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -460,7 +435,6 @@ jQuery(document).ready(function ($) {
 			}
 		});
 	});
-
 	$('#Decryption').on('click', function() {
 		var encrypted_check= $("#encrypted_check").val();
 		if( encrypted_check == ""){
@@ -468,7 +442,7 @@ jQuery(document).ready(function ($) {
 		}
 		var memo= $("#memo").val();
 		var pws= $("#form_psw").val();
-		if(pws==='') {
+		if( pws==='') {
 			alert("key none"); return false;
 		}
 		$.ajax({
@@ -481,9 +455,7 @@ jQuery(document).ready(function ($) {
 					"pws": pws
 				},
 			success: function(data) {
-					$("#memo").val(data);
-				//console.log(data);
-				//alert(data);
+				$("#memo").val(data);				//console.log(data);				//alert(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("data or URL confirm.-- ulink_list.php");
@@ -498,7 +470,6 @@ jQuery(document).ready(function ($) {
     $("#insert_form").submit(function (event) {
 		var g_name= $("#g_name").val();
 		var g_name_code= $("#g_name_code").val();
-
 		var tit= $("#title_nm").val();
 		var url= $("#url_nm").val();
 		var memo= $("#memo").val();
@@ -508,12 +479,8 @@ jQuery(document).ready(function ($) {
 			alert("project or title or memo confirm");
 			return false
 		}
-		//alert("tit:  --" + tit + ", url:" + url +", memo" + memo + ", pw:" + password + ", enc: " +encrypted_check);  return;
-
 		event.preventDefault();
-		//validation for login form
         $("#progress").html('Inserting <i class="fa fa-spinner fa-spin" aria-hidden="true"></i></span>');
-
             var formData = new FormData($(this)[0]);
             $.ajax({
                 url: 'ulink_ajax.php',
@@ -527,7 +494,7 @@ jQuery(document).ready(function ($) {
                 {
                     //show return answer
                     alert("OK insert data: " +data);
-					//location.replace(location.href);
+					location.replace(location.href);
                 },
                 error: function(){
 					//alert("error in ajax form submission");
@@ -537,11 +504,9 @@ jQuery(document).ready(function ($) {
         return;
     });
 
-	$('#insert_group').on('click', function() {		//alert('버튼 클릭됨');
+	$('#insert_group').on('click', function() {	
 		var g_code = $("#g_name_code").val();
 		var g_name= $("#g_name").val();		
-		alert(" g_code:" + g_code + ", g_name:" + g_name); //return;
-
 		$.ajax({
 			header:{"Content-Type":"application/json"},
 			method: "post",
@@ -552,13 +517,11 @@ jQuery(document).ready(function ($) {
 					"g_name": g_name
 				},
 			success: function(data) {
-					alert(data);
-					location.replace(location.href);
-					//	$("#g_name").val(data);
-					//console.log(data);
+				alert(data);
+					location.replace(location.href);			//	$("#g_name").val(data);		//console.log(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- ulink_ajax.php");
+				alert("The data type or URL is incorrect. -- ulink_ajax.php");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -566,12 +529,9 @@ jQuery(document).ready(function ($) {
 			}
 		});
 	});
-
-	$('#update_group').on('click', function() {		//alert('버튼 클릭됨');
+	$('#update_group').on('click', function() {
 		var g_code = $("#g_name_code").val();
 		var g_name= $("#g_name").val();		
-		alert(" g_code:" + g_code + ", g_name:" + g_name); //return;
-
 		$.ajax({
 			header:{"Content-Type":"application/json"},
 			method: "post",
@@ -582,13 +542,12 @@ jQuery(document).ready(function ($) {
 					"g_name": g_name
 				},
 			success: function(data) {
-					//	$("#g_name").val(data);
-					//console.log(data);
+					//	$("#g_name").val(data);	//console.log(data);
 					alert(data);
 					location.replace(location.href);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- ulink_ajax.php");
+				alert("The data type or URL is incorrect. -- ulink_ajax.php");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -600,13 +559,11 @@ jQuery(document).ready(function ($) {
 });
 </script>
 
-
 <body onload="initA()">
 <?php
 		$cur='B';
 		include_once "../menu_run.php"; 
 ?>
-
 <form id="insert_form" name='insert_form' method='post' enctype='multipart/form-data' >
 	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
 	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
@@ -629,13 +586,11 @@ jQuery(document).ready(function ($) {
 <div id="mypanel" class="ddpanel">
 <div id="mypanelcontent" class="ddpanelcontent">
 <table border='0' bgcolor='#cccccc' width='100%'>
-
-	<tr>
+<tr>
 		<td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; Project</td>
 		<td bgcolor='#ffffff'>&nbsp; 
 			<select name='sel_g_name' onchange="change_g_name_func(this.value);" title="select Project">
 				<option value=''>Project select</option>
-				<!-- <option value='ETC:ETC:<?=$H_ID?>:' <?php if($g_name_code=='ETC' || $g_name_code=='') echo "selected"; ?>>ETC</option> -->
 <?php
 				$result = sql_query( "select * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name asc" );
 				while($rs = sql_fetch_array($result)) {
@@ -651,24 +606,20 @@ jQuery(document).ready(function ($) {
 			<input type='hidden' id='g_name' name='g_name' size='10' value='<?=$g_name?>' readonly> 
 		</td>
 	</tr>
-
 	<tr>
 		<td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; Title</td>
 		<td bgcolor='#ffffff'><font color='black'>&nbsp; <input type='text' id='title_nm' name='title_nm' size='20' value='<?=$title_?>' onKeyDown="check_enter()" >
 		</td>
 	</tr>
-
 	<tr>
 		<td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; URL </td>
 		<td bgcolor='#ffffff'>&nbsp; <input type='text' id='url_nm' name='url_nm' size='70' maxlength='550'  value='<?=$link_?>'>
 		</td>
 	</tr>
-	
 	<tr>
 		<td bgcolor='#f4f4f4'><font color='black'>&nbsp; Memo</td>
 		<td bgcolor='#ffffff'><font color='black'>&nbsp;
 		<textarea id="memo" name="memo" rows="4" cols="50"><?=$memo?></textarea>
-
 			<input type='hidden' id='encrypted_check' name='encrypted_check' value='<?=$H_ID?>'>
 			<br> &nbsp; Encryption key:<input type='password' id='form_psw' name='form_psw' size='4' value=''> 
 				 &nbsp; <input type='button'  id='Save_encrypted' onclick="javascript:Save_encrypted();" value='Encryption' style="background-color:red;color:yellow;height:25;">
@@ -681,7 +632,6 @@ jQuery(document).ready(function ($) {
 		</td>
 	</tr>
 	<tr>
-		<!-- <td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; Title</td> -->
 		<td bgcolor='#ffffff' colspan=2><font color='black'>&nbsp; 
 			<input type='button' id="upd_save_button" onclick="javascript:contents_upd_run();" value='Save Changes' style="background-color:blue;color:yellow;height:25;display:;">
 			<input type='button' id="upd_cancle" onclick="javascript:Cancle_run();" value='Cancel Change' style="background-color:red;color:yellow;height:25;display:;">
@@ -693,8 +643,8 @@ jQuery(document).ready(function ($) {
 <?php		} else { ?>			
 				<!-- <input type='button'  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?> -->
 <?php		} ?>			
-				<!-- <input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" /> -->
-				<input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?>
+				<input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" />
+				<!-- <input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'> --><br> User:<?=$H_ID?>
 <?php } ?> 
 
 		</td>
@@ -706,14 +656,7 @@ jQuery(document).ready(function ($) {
 <a href="#" ><span style="background-color:;color:yellow;">Note Create</span> </a>
 </div>
 </div>
-
-
-
 <link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
- <!-- 
-	// 손대면 안되는 부분입니다. 2018-06-26 -----------------
-	// treelist2_cranim_book.php, ulink_list.php, link_list2.php, webeditor_list2.php, tkbbs_list2.php
- -->
 <form name='coinview_form' method='post' >
 	<input type='hidden' name='mid'			value='' > 
 	<input type='hidden' name='seqno'		value='' > 
@@ -760,7 +703,6 @@ jQuery(document).ready(function ($) {
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
 		<a href="ulink_list.php?g_type=U" target='iframe_url'>Note list</a>
-		<!-- <a href="ulink_list.php?g_type=D" target='iframe_url'>Note list</a> -->
 		</td>
 		</tr>
 		<tr>
@@ -781,7 +723,7 @@ jQuery(document).ready(function ($) {
 <?php
 	$result = sql_query( $sql );
 	$j=0;
-	while ( $rs = sql_fetch_array( $result )  ) { //m_("nm: " .$rs['group_name']);
+	while ( $rs = sql_fetch_array( $result )  ) { 
 ?>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
@@ -806,16 +748,15 @@ jQuery(document).ready(function ($) {
 		if($mode == 'search_rtn') {
 			$sdata = $title_nm;
 		}
-		//m_("1 mylist ---: " . $g_name . ", g_type: " . $g_type);//1 mylist ---: , g_type: my-list
-		if ( $g_type=='mylist' && isset($sdata) && $sdata !== ""  ) { //m_("1 - my g_type: " . $g_type);
+		if ( $g_type=='mylist' && isset($sdata) && $sdata !== ""  ) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
-		} else if ( $g_type=='mylist' ) {  //m_("OK 1 - mylist ---");
+		} else if ( $g_type=='mylist' ) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID'   ";
-		} else if ( $g_type=='M' ) { // menu
+		} else if ( $g_type=='M' ) { 
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE job_group='menu' ";
-		} else if ( $g_type=='T' ) { // link T, U
+		} else if ( $g_type=='T' ) { 
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE jong='T' "; // sysbom menu url link
-		} else if ( $g_type=='G' ) { // 게시판 A, [G, F]:tkher_bbs/bbs_listTT.php
+		} else if ( $g_type=='G' ) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE jong='G' or jong='A' or jong='F' ";
 		} else if ( $g_type=='U' ) { // Note - U
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE jong='U' ";
@@ -823,13 +764,13 @@ jQuery(document).ready(function ($) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE jong='D' or jong='B' ";
 		} else if ( $g_type=='P' ) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE jong='p' ";
-		} else if ( isset($g_name) && $g_name !== "" && isset($sdata) && $sdata !== "" ){ //m_(" 2 g_name :" . $g_name);
+		} else if ( isset($g_name) && $g_name !== "" && isset($sdata) && $sdata !== "" ){ 
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
-		} else if ( isset($g_name) && $g_name !== "" ) { //m_(" g_name :" . $g_name);
+		} else if ( isset($g_name) && $g_name !== "" ) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE (job_name='$g_name' or job_group='$g_name') ";
-		} else if ( isset($sdata) && $sdata !== "" ) { //m_(" 3 g_name :" . $g_name);
+		} else if ( isset($sdata) && $sdata !== "" ) {
 				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_name like '%$sdata%' ";
-		} else{ //m_(" 4 g_name :" . $g_name . ", g_type: " . $g_type); // 4 g_name :, g_type: 
+		} else{
 			$ls = "SELECT job_addr from {$tkher['job_link_table']} ";
 		}
 		$result = sql_query( $ls );
@@ -850,10 +791,6 @@ jQuery(document).ready(function ($) {
 		else $g_nameX = "Group: " . $g_name;
 		if( $H_ID ) $g_nameX = $g_nameX . ", level:" . $member['mb_level'] . "," .$member['mb_email'];
 ?>
-		<!-- <tr>
-			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$g_nameX?> [count:<?=$total?>]
-			</td> 
-		</tr> -->
 <table class='floating-thead' width='100%'>
 <thead  width='100%'>
 		<tr align='center'>
@@ -876,7 +813,7 @@ jQuery(document).ready(function ($) {
 				$ls = $ls . " WHERE user_id='$H_ID' and user_name like '%$sdata%'    ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
 				$ls = $ls . " $limit ";
-			} else if ( $g_type=='mylist' ) {  //m_("OK 2 g_type: " . $g_type);
+			} else if ( $g_type=='mylist' ) {
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " WHERE user_id='$H_ID'  ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
@@ -904,31 +841,29 @@ jQuery(document).ready(function ($) {
 			} else if ( $g_type=='M' ) {
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " WHERE jong='M' ";
-				//$ls = $ls . " WHERE job_group='menu' ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
 				$ls = $ls . " $limit ";
 			} else if ( $g_type=='U' ) {
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " WHERE jong='U' ";
-				//$ls = $ls . " WHERE job_group='menu' ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
 				$ls = $ls . " $limit ";
-			} else if ( isset($g_name) && $g_name !== "" && isset($sdata) && $sdata !== "" ) { //m_("--- 0 g_name : " . $g_name );
+			} else if ( isset($g_name) && $g_name !== "" && isset($sdata) && $sdata !== "" ) {
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " WHERE (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
 				$ls = $ls . " $limit ";
-			} else if ( isset($g_name) && $g_name !== "" ) { //m_("--- 1 g_name : " . $g_name );
+			} else if ( isset($g_name) && $g_name !== "" ) {
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " WHERE (job_name='$g_name' or job_group='$g_name') $w ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
 				$ls = $ls . " $limit ";
-			} else if ( isset($sdata) && $sdata !== "" ) { //m_("--- sdata : " . $sdata );
+			} else if ( isset($sdata) && $sdata !== "" ) {
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " WHERE user_name like '%$sdata%'    ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
 				$ls = $ls . " $limit ";
-			} else{ //m_("--- 2 g_name : " . $g_name );
+			} else{
 				$ls = " SELECT * from {$tkher['job_link_table']} ";
 				$ls = $ls . " ";
 				$ls = $ls . " ORDER BY up_day desc, user_name ";
@@ -936,12 +871,12 @@ jQuery(document).ready(function ($) {
 			}
 		$result = sql_query(  $ls );
 		while ( $rs = sql_fetch_array( $result ) ) {
-			$sys_label	= $rs['job_name'];		//  분류
-			$sys_name	= $rs['user_name'];		//  타이틀명 
-			$rs_job_addr	= $rs['job_addr'];		//	프로그램명. or  Url 
-			$sys_group	= $rs['job_group'];   // project
-			$num		= $rs['num'];				//  생성번호.
-			$user_id	= $rs['user_id'];			//  작성자id
+			$sys_group= $rs['job_group'];
+			$sys_label	= $rs['job_name'];	
+			$sys_name	= $rs['user_name']; //title
+			$rs_job_addr	= $rs['job_addr'];
+			$num		= $rs['num'];
+			$user_id	= $rs['user_id'];	
 			$seqno		= $rs['seqno'];
 			$lev		= $rs['job_level'];
 			$gubun		= $rs['jong'];
@@ -980,24 +915,9 @@ jQuery(document).ready(function ($) {
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a>
 				  </td>
 <?php }?>
-				  <!-- <td style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr?></td> -->
 				  <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$i_tit ?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:30px;" ><?=$rs['view_cnt'] ?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:120px;" ><?=$rs['up_day'] ?></td>
-			  <?php 
-			  if ( $H_ID ) {
-			  ?>
-				  <!-- <td style="background-color:black;color:<?=$t_color?>;width:100px;" >
-				  <?php 
-				  if ( $gubun=='U' && ($H_ID==$rs['user_id']) ) {
-				  ?>
-					  <input type='button' onclick="javascript:contents_del( '<?=$seqno?>', '<?=$g_name?>', '<?=$num?>' );" value='delete' style="background-color:red;color:yellow;height:25;">
-					  <input type='button' onclick="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>');" value='Change' style="background-color:blue;color:yellow;height:25;">
-				<?php } else { ?>
-						---
-			<?php }  ?>
-			  </td>-->
-			<?php } ?> 
 				</tr> 
 		<?php
 			}	//-------- Loop
