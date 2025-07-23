@@ -73,6 +73,9 @@ if( isset($sys_pg) && $sys_pg !=='' ) {
 		$sys_link       = KAPP_URL_T_ . '/menu/contents_view_menuD.php?num=' . $book_numR;
 		$view_cnt  = 0;
 		$view_lev  = '0';
+		//$sys_type = 'M';
+		if( isset($_POST['sys_type'])) $sys_type   = $_POST['sys_type'];
+		else $sys_type   = '';
 		$kapp_theme0 = '';
 		$kapp_theme1 = '';
 		$kapp_theme = $config['kapp_theme'];
@@ -80,7 +83,7 @@ if( isset($sys_pg) && $sys_pg !=='' ) {
 		$kapp_theme0 = $kapp_theme[0];
 		$kapp_theme1 = $kapp_theme[1];
 
-		$sql = "insert into {$tkher['sys_menu_bom_table']} ( sys_comp, sys_userid, sys_pg, sys_menu, sys_submenu, sys_subtit,sys_link, sys_menutit, sys_memo, sys_level, sys_rcnt, sys_cnt, sys_disno, view_cnt, view_lev, tit_gubun, book_num, up_day ) values('$from_session_url', '$H_ID', '$sys_pg', '$sys_menu','$sys_submenu','$sys_subtit','$sys_link','$sys_menutit','$sys_memo','$sys_level',$sys_rcnt,$sys_cnt,$sys_disno,$view_cnt, '$view_lev', 'M', '$book_numR', '$up_day'  )";	//B->M
+		$sql = "insert into {$tkher['sys_menu_bom_table']} ( sys_comp, sys_userid, sys_pg, sys_menu, sys_submenu, sys_subtit,sys_link, sys_menutit, sys_memo, sys_level, sys_rcnt, sys_cnt, sys_disno, view_cnt, view_lev, tit_gubun, book_num, up_day ) values('$from_session_url', '$H_ID', '$sys_pg', '$sys_menu','$sys_submenu','$sys_subtit','$sys_link','$sys_menutit','$sys_memo','$sys_level',$sys_rcnt,$sys_cnt,$sys_disno,$view_cnt, '$view_lev', '$sys_type', '$book_numR', '$up_day'  )";	//B->M
 		$ret = sql_query( $sql );
 		if( $ret ) {
 				$sql = "INSERT INTO {$tkher['webeditor_table']} SET num='$book_numR', user='$H_ID', id='book', h_lev='$view_lev', title='$sys_subtit' , diff='1', book_name='$sys_pg', content='$sys_subtit', date='$up_day' ";

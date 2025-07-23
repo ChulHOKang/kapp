@@ -1,5 +1,11 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/*
+		index.php : Tree List
+		- index_create.php - cratreebook_make_create_menu.php : tree menu Create
+		DB: {$tkher['sys_menu_bom_table']}, webeditor, webeditor_comment,
+		     job_link_table, aboard_info, aboard_memo, aboard_admin, menuskin
+	*/
 	$H_ID  = get_session("ss_mb_id");
 	if( isset($H_ID) && strlen($H_ID) > 2) {
 		$H_LEV  = $member['mb_level'];
@@ -11,10 +17,6 @@
 		$H_EMAIL= '';
 	}
 	$ip     = $_SERVER['REMOTE_ADDR'];
-	/*
-		DB: {$tkher['sys_menu_bom_table']}, webeditor, webeditor_comment,
-		     job_link_table, aboard_info, aboard_memo, aboard_admin, menuskin
-	*/
 ?>
 <html>
 <head>
@@ -213,7 +215,7 @@ common = {
 	$limit = "";
 	$no = 0;
 	$sdata  = '';
-	if( isset($_POST['sdata']) ) {
+	if( isset($_POST['sdata']) && $_POST['sdata'] !=='' ) {
 		$sdata  = $_POST['sdata'];
 		$sdata = '%' . $sdata . '%';
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main'  ";
@@ -320,7 +322,7 @@ if( $result ){
 			<tr>
 				<td align='center'>$ln $iconX</td>
 				<td>
-					<a href='$run' target='_top' style='color:$bb' title='index - maker:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
+					<a href='$run' target='_top' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
 				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a>
 				</td>
 				<td>
@@ -341,7 +343,7 @@ if( $result ){
 			<tr>
 				<td align='center'>$ln $iconX</td>
 				<td>
-					<a href='$run' target='_blank' style='color:$bb' title='index - maker:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a></td>
+					<a href='$run' target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a></td>
 				<td align='center'><a href='$run' target='_blank' style='color:cyan' title='-Launch the popup menu:$runM'>Popup</a>
 				</td>
 				<td>

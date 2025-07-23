@@ -1,19 +1,20 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$from_session_id = $H_ID;
-
 	/*
-	/////////////////////////////////////////////////////////////////
-	// tree_remake_book_menu.php : ReDesign Job,  Tree Note Remake Source
-	// run : tree_remakew_book_menu.php
-	//		트리메뉴 재생성 시작 페이지:tree_remakew_book call
-	//  mid : 크라트리 생성자: add : 2018-04-01
-	XXX : run : tree_create_new_bbstree.php
-	//////////////////////////////////////////////////////////////////
+	- tree_remake_book_menu.php : ReDesign Job,  Tree Note Remake Source
+	- run : tree_remakew_book_menu.php
+			트리메뉴 재생성 시작 페이지:tree_remakew_book call
+	- mid : 
 	*/
+	$H_ID	= get_session("ss_mb_id");
+	if( $H_ID && $H_ID !=='' ){
+		$H_LEV=$member['mb_level']; 
+	} else {
+		exit;
+	}
+	$ip = $_SERVER['REMOTE_ADDR'];
 
-	if (!$from_session_id) {
+	if (!$H_ID) {
 		my_msg(" Please login. ");
 		$rungo = "./";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
@@ -96,13 +97,15 @@ a:hover { color:red}
 	//if( !$sys_pg ) $sys_pg = $_POST['pg'];
 	$sys_pg = $_POST['sys_pg'];
 	if( !$sys_pg ) m_("ERROR - tree_remake_book_menu sys_pg:" . $sys_pg);
-	$book_num = $_REQUEST['book_num'];
+	if( isset($_POST['book_num']) ) $book_num = $_POST['book_num'];
+	else if(isset($_REQUEST['book_num']) ) $book_num = $_REQUEST['book_num'];
+	else $book_num = '';
 	$sql = "select * from {$tkher['sys_menu_bom_table']} where sys_pg = '".$sys_pg."' and sys_level='mroot' order by seqno  desc ";
 	$result = sql_query($sql);	
 	$rs = sql_fetch_array($result);
 	$mid = $rs['sys_userid'];
 	if( !$rs ) {
-		if( $from_session_id !== $mid and $H_LEV < 8 ) {
+		if( $H_ID !== $mid and $H_LEV < 8 ) {
 			my_msg(" You do not have permission ");
 			//$rungo = $sys_pg . "_r1.htm";
 			echo "<script>history.back(); histroy.go(-1); </script>";
@@ -265,7 +268,7 @@ else $t_lev= 'Open';
 						<img name="img2" align='middle' src="<?=KAPP_URL_T_?>/icon/<?php echo $rs2['imgtype2']?>">
 						<img name="img3" align='middle' src="<?=KAPP_URL_T_?>/icon/<?php echo $rs2['imgtype3']?>">
 <?php
-	if ( $from_session_id == 'admin' || $H_LEV > 7) { 
+	if ( $H_ID == 'admin' || $H_LEV > 7) { 
 ?>
 						<input type="button" value="추가" onclick="javascript:img_add();" style="border-style:groove;">
 <?php
