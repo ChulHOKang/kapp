@@ -1175,7 +1175,7 @@ function Menuskin($t_head, $tab) {
         CREATE TABLE ".$t_head."menuskin (
         seqno int(11) auto_increment NOT NULL,
         user_id varchar(50) DEFAULT NULL,
-        sys_pg varchar(30) DEFAULT NULL,
+        sys_pg varchar(50) DEFAULT NULL,
         sys_subtit varchar(50) NOT NULL DEFAULT '',
         sys_link varchar(100) DEFAULT NULL,
         bgcolor varchar(10) DEFAULT NULL,
@@ -1186,7 +1186,7 @@ function Menuskin($t_head, $tab) {
         imgtype2 varchar(100) DEFAULT NULL,
         imgtype3 varchar(100) DEFAULT NULL,
         Mmemo varchar(100) DEFAULT NULL,
-        club_url varchar(15) DEFAULT NULL,
+        club_url varchar(100) DEFAULT NULL,
         up_day timestamp NULL DEFAULT current_timestamp()
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
@@ -1660,8 +1660,8 @@ function Webeditor($t_head, $tab) {
         id varchar(50) DEFAULT NULL,
         title varchar(255) NOT NULL DEFAULT '',
         align varchar(255) DEFAULT NULL,
-        content text DEFAULT NULL,
-        reply text DEFAULT NULL,
+        content longblob  DEFAULT NULL,
+        reply longblob  DEFAULT NULL,
         date timestamp NULL DEFAULT current_timestamp(),
         backgroundcolor varchar(7) DEFAULT NULL,
         backgroundimage varchar(100) DEFAULT NULL,
@@ -1691,8 +1691,8 @@ function Webeditor_comment($t_head, $tab) {
         doc_userid varchar(50) DEFAULT NULL,
         title varchar(255) DEFAULT NULL,
         align varchar(10) DEFAULT NULL,
-        content text DEFAULT NULL,
-        reply text DEFAULT NULL,
+        content longblob  DEFAULT NULL,
+        reply longblob  DEFAULT NULL,
         date datetime DEFAULT current_timestamp(),
         backgroundcolor varchar(7) DEFAULT NULL,
         backgroundimage varchar(100) DEFAULT NULL,
@@ -1862,7 +1862,7 @@ function Ap_bbs($t_head, $tab) {
         `infor` bigint(20) NOT NULL,
         `email` varchar(100) DEFAULT NULL,
         `subject` varchar(60) NOT NULL,
-        `content` text NOT NULL,
+        `content` longblob NOT NULL,
         `up_day` datetime DEFAULT current_timestamp(),
         `reg_date` int(11) DEFAULT NULL,
 		`host` varchar(100) DEFAULT NULL,
