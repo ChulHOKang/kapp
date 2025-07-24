@@ -73,7 +73,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
+<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -184,7 +184,7 @@ if( isset($title) ) {
 		[ Title :<?=$title?> ] [user:<?=$row_user?> - point:<?=number_format( $member['mb_point'])?>] [view:<?=$view_cnt?>] :
 		<input type='button' value=' Change ' title='data change upd_func' style='border-radius:20px;' onClick="javascript:upd_func('<?=$num?>','update','1', '<?=$book_name?>', '<?=$target_run?>');">
 		&nbsp;<a href='./download.php?num=<?=$num?>'  style='background-color:blue;color:yellow;border-radius:20px;'><?=$addfile?></a>
-		</DIV>
+		&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='tree list'></a></DIV>
 <?php } else {?>
 		<DIV style='background-color:yellow;color:black;text-align:left'>
 		[ Title : <?=$title?> ] [user:<?=$row_user?>] [view:<?=$view_cnt?>]

@@ -75,7 +75,7 @@ if( isset($sys_pg) && $sys_pg !=='' ) {
 		$view_lev  = '0';
 		//$sys_type = 'M';
 		if( isset($_POST['sys_type'])) $sys_type   = $_POST['sys_type'];
-		else $sys_type   = '';
+		else $sys_type   = 'M';
 		$kapp_theme0 = '';
 		$kapp_theme1 = '';
 		$kapp_theme = $config['kapp_theme'];

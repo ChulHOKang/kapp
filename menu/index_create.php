@@ -1,7 +1,7 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 	/*
-		index_create.php - call: index.php - List
+		index_create.php - call: index.php - List, Re Design
 		-cratreebook_make_create_menu.php : note tree Create.
 	*/
 	$H_ID  = get_session("ss_mb_id");	
@@ -71,7 +71,7 @@ function fontf() {
 
 			if( confirm('Prints at the top of the list, Cancle? Y/N ') ) {
 				document.sys_bom.sys_type.checked =false;
-				document.sys_bom.sys_type.value='';
+				document.sys_bom.sys_type.value='M';
 				return;
 			} else {
 				document.sys_bom.sys_type.checked =true;
@@ -84,7 +84,7 @@ function fontf() {
 			document.sys_bom.sys_type.value='T';
 		} else {
 			document.sys_bom.sys_type.checked =false;
-			document.sys_bom.sys_type.value='';
+			document.sys_bom.sys_type.value='M';
 		}
 		/*
 		if(document.sys_bom.sys_type.checked === false){
