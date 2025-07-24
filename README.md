@@ -1,4 +1,6 @@
-웹 프로그램을 제작하는 도구 입니다. - K-APP 이라 명칭을 부여 합니다
+A tool for creating web programs without coding on the web.
+웹상에서 코딩을 하지 않고 웹프로그램을 제작하는 도구
+- K-APP 
 
 --- 운영 서버 환경 ---
 서버 문자셋: UTF-8 Unicode (utf8)
