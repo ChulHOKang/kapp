@@ -124,7 +124,7 @@
 		ip varchar(15),
 		in_date int(11),
 		subject varchar(100),
-		context lognblob,
+		context longblob,
 		html int(11),
 		password varchar(10),
 		file_name varchar(250),
