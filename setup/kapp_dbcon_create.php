@@ -1861,7 +1861,7 @@ function Ap_bbs($t_head, $tab) {
         `seqno` bigint(20) NOT NULL AUTO_INCREMENT,
         `infor` bigint(20) NOT NULL,
         `email` varchar(100) DEFAULT NULL,
-        `subject` varchar(60) NOT NULL,
+        `subject` varchar(100) NOT NULL,
         `content` longblob NOT NULL,
         `up_day` datetime DEFAULT current_timestamp(),
         `reg_date` int(11) DEFAULT NULL,
