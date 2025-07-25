@@ -82,15 +82,72 @@ if( strstr($scolumn, "mb_id"))
 else
     $mb_id = "";
 ?>
+<script src="//code.jquery.com/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="<?=KAPP_URL_T_?>/include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/dddropdownpanel.js"></script>
-<!-- --------------------------------------------------------------------- -->
+
+<script type="text/javascript" >
+	function search_func(){
+		data = document.fsearch.sdata.value;
+		document.fsearch.mode.value	="Search";
+		document.fsearch.action="point_list_adm.php";
+		document.fsearch.submit();
+	}
+	function Submit_func(){
+		if( document.admpointlistA.mb_id.value == '' ) {
+			alert("id confirm!");	return false;
+		}
+		if( document.admpointlistA.po_content.value == '' ) {
+			alert("message confirm!");	return false;
+		}
+		if( document.admpointlistA.po_point.value == '' ) {
+			alert("point count confirm!");	return false;
+		}
+
+	jQuery(document).ready(function ($) {
+
+			var yn = window.confirm("Do you want to pay point : " + $("#po_point").val());
+			if ( yn ){
+				//alert("Submit_Confirm id:" + $("#mb_id").val());
+				var $mb_id = $("#mb_id").val();
+				var $po_content= $("#po_content").val();		
+				var $po_point= $("#po_point").val();		
+				//alert(" mb_id:" + $mb_id + ", po_content:" + $po_content); //return;
+
+				$.ajax({
+					header:{"Content-Type":"application/json"},
+					method: "post",
+						url: 'kapp_admin_point_ajax.php',
+						data: {
+							"mode_insert": 'Point_Admin_Pay',
+							"mb_id": $mb_id,
+							"po_content": $po_content,
+							"po_point": $po_point
+						},
+					success: function(data) {
+							//	$("#po_content").val(data);
+							//console.log(data);
+							alert( "OK, data: " + data);
+							location.replace(location.href);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- kapp_project_ajax.php");
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+						return;
+					}
+				});
+			}
+	});
+}
+</script>
 <div id="mypanel" class="ddpanel">
 <div id="mypanelcontent" class="ddpanelcontent">
-<!-- --------------------------------------------------------------------- -->
+
 <body style="background-color:black;color:white;">
 <section id="point_adm">
-<form name="admpointlist2" method="post" id="admpointlist2" action="./point_update_adm.php" autocomplete="off">
+<form name="admpointlistA" method="post" id="admpointlistA" action="./point_update_adm.php" autocomplete="off">
     <input type="hidden" name="sdata"   value="<?php echo $sdata ?>">
 	<input type="hidden" name="scolumn" value="<?php echo $scolumn ?>">
     <input type="hidden" name="page"    value="<?php echo $page ?>">
@@ -113,9 +170,9 @@ else
         </tbody>
         </table>
     </div>
-    <div>
-        <input type="submit" value="Confirm">
-    </div>
+    <!-- <div><input type="submit" value="Confirm"></div> -->
+    <!-- <div><a id='Submit_Confirm' value="Submit" href="javascript:Submit_func()"></a></div> -->
+	<div><input type="button" value="Confirm" onclick="javascript:Submit_func()"></div>
     </form>
 </section>
 
@@ -138,14 +195,6 @@ else
     }
     ?>
 </div> -->
-<script type="text/javascript" >
-	function search_func(){
-		data = document.fsearch.sdata.value;
-		document.fsearch.mode.value	="Search";
-		document.fsearch.action="point_list_adm.php";
-		document.fsearch.submit();
-	}
-</script>
 
 <center>
 <form name="fsearch" id="fsearch" method="post">
@@ -192,7 +241,7 @@ else
             <!-- <input type="checkbox" name="chkall" value="1" id="chkall" onclick="check_all(this.form)"> -->
         </th>
         <th scope="col">id</a></th>
-        <th scope="col">name</th>
+        <!-- <th scope="col">name</th> -->
         <th scope="col" style='width:200px'>title</th>
         <th scope="col" style='width:300px'>point msg</a></th>
         <th scope="col" title='get Point'>Get</th>
@@ -258,7 +307,8 @@ else
 			<label for="chk_<?php echo $i; ?>" ><?php echo $j ?></label>
         </td>
         <td style="background-color:black;color:white;"><a href="?scolumn=mb_id&amp;sdata=<?php echo $row['mb_id'] ?>" style="background-color:black;color:white;"><?php echo $row['mb_id'] ?></a></td>
-        <td style="background-color:black;color:cyan;"><?=$row2['mb_name']?></td> <!-- <td class="td_name sv_use"><div><?=$row2['mb_nick']?></div></td> -->
+        <!-- <td style="background-color:black;color:cyan;"><?=$row2['mb_name']?></td> -->
+		<!-- <td class="td_name sv_use"><div><?=$row2['mb_nick']?></div></td> -->
         <td style="background-color:black;color:yellow;"><?php echo $row['po_title'] ?></td>
         <td style="background-color:black;color:yellow;"><?php echo $link1 ?><?php echo $row['po_content'] ?><?php echo $link2 ?></td>
         <td style="background-color:black;color:white;"><?php echo number_format($row['po_point']) ?></td>
