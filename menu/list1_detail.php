@@ -319,7 +319,7 @@
 		<table border='0' width='100%'>
 
 <?php
-
+$tmp=''; $size='';$imgA='';$imgs='';
 if( $mf[12]){	// file_name
 	$width  = 0;
 	$height = 0;

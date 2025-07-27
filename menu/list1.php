@@ -233,7 +233,7 @@ while( $mf = sql_fetch_row( $mq ) ){
 	$j++;
 	//$date = strftime("%m/%d", $mf[4]);
 	//글자르기//	$mf[3]=Shorten_String($mf[3],"45","...");
-	$mf[3] = iconv_substr($mf[3], 0, 45, 'utf-8');// . "...";
+	//$mf[3] = iconv_substr($mf[3], 0, 45, 'utf-8');// . "...";
 	//답변들여쓰기
 	for( $i=0;$i<$mf[6];$i++){ $dep = $dep . "&nbsp;&nbsp;"; }
 	//메모글 카운트
@@ -242,10 +242,11 @@ while( $mf = sql_fetch_row( $mq ) ){
 	//include "./inc/file_image.php";
 	//new 이미지삽입
 	$today =$now - $mf[7]; // 4 -7
-	if( $today <= 86400){$new="<img src='$mf_infor[38]' border=0>";}
+	if( $today <= 86400){ $new="<img src='$mf_infor[38]' border=0>";}
 	//검색어 표시
 	if( $search_text){ $mf[3] = preg_replace("($search_text)","<font color=blue>\\1</font>",$mf[3]); }
-	$msg_=iconv_substr($mf[9], 0, 20, 'utf-8');// . "..."; // author	//Shorten_String( $mf[9],"20","...");	// author
+	//$msg_=iconv_substr($mf[9], 0, 20, 'utf-8');// . "..."; // author	//Shorten_String( $mf[9],"20","...");	// author
+	$msg_=$mf[9];// . "..."; // author	//Shorten_String( $mf[9],"20","...");	// author
 ?>
       		<td width="8%" height="20" align="center" bgcolor="<?=$mf_infor[14]?>" title='<?=$msg_?>'>
 			<img onclick="view_detail('<?=$H_LEV?>','<?=$mf[0]?>','<?=$infor?>','<?=$page?>','<?=$search_text?>','<?=$del_admin?>');" src="../file/<?=$mid?>/aboard_<?=$board_name?>/<?=$mf[12]?>" border='0' width='50' height='50'  

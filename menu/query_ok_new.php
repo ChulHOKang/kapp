@@ -1,5 +1,12 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/*
+		query_ok_new.php : 
+		call : board_list3.php, insertTT.php, replyTT.php, detailTT.php, 
+		       : list1_detail_update.php
+		table create : board_create_pop.php - board_create_pop_ok.php
+		mode: memo_insert, list1_detail_update
+	*/
 ?>
 <html> 
 <head> 
@@ -21,13 +28,6 @@
 	$H_NAME = $member['mb_name'];
 	$H_NICK = $member['mb_nick'];
 	$H_EMAIL= $member['mb_email'];
-	/*
-		query_ok_new.php : 
-		call : board_list3.php, insertTT.php, replyTT.php, detailTT.php, 
-		Table data insert : 2019-01-26
-		table create : board_create_pop.php - board_create_pop_ok.php
-		? infor:126, mode:memo_insert
-	*/
 
 	//include "./infor.php";
 
@@ -91,7 +91,7 @@
 			else break;
 	}*/
 
-	if( $_POST['mode'] == "ADD_create_board_list3" || $_POST['mode'] == "ADD_create_board_list_my" || $_POST['mode'] == "ADD_create_board_list_adm" || $_POST['mode'] == "board_list3m"){
+	if( $mode == "ADD_create_board_list3" || $mode == "ADD_create_board_list_my" || $mode == "ADD_create_board_list_adm" || $mode == "board_list3m"){
 
 		$result = sql_query("SELECT * from {$tkher['aboard_admin_table']} ");
 		$rs = sql_fetch_array( $result );
@@ -273,9 +273,7 @@
 		echo "<meta http-equiv='refresh' content=0;url='".$gourl."?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 
 	} else if( $mode == 'del_funcA' ) {
-		
 		include "./infor.php";
-
 		$target_no = $_POST['target_no'];
 		if( $H_LEV > 7 ) $chkpass = " ";
 		else if( $H_ID == $mf_infor[53] ) $chkpass = " ";
@@ -297,12 +295,12 @@
 		sql_query( $sql );
 		echo "<meta http-equiv='refresh' content=0;url='board_list_memo.php?infor=$infor'>";
 		exit;
+
 	} else if( $mode=='memo_reply_func'){
 		include "./infor.php";
 		$upload_file_size_limit = $mf_infor[3]*1000000;
 		$upfile_name= '';
 		$upfile_size= 0;
-
 		//if( strlen( $_POST['file']) > 0 ){
 		if( isset($_FILES["file"]["name"]) ){
 			$upfile_name= $_FILES["file"]["name"];
@@ -387,9 +385,9 @@
 		}
 		echo("<meta http-equiv='refresh' content=0;url='board_list_memo.php?infor=$infor&no=$no&page=$page&search_choice=$search_choice&search_text=$search_text'>");
 		exit;
+
 	} else if( $mode == "del_func_") { 
 		include "./infor.php";
-
 		$del_no = $_POST['xmf_no'];
 		$sql    = "delete from " . "aboard_". $mf_infor[2] . " where no=$del_no and infor= $infor and id='$H_ID' ";
 		sql_query( $sql );
@@ -409,7 +407,8 @@
 				sql_query( $sql );
 				echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";
 				exit;
-	} else if( $_POST['mode'] == "Update_func_run" ){ // board_list3.php
+
+	} else if( $mode == "Update_func_run" ){ // board_list3.php
 		$grant_read  = $_POST['xread'];
 		$grant_write = $_POST['xwrite'];
 		$grant_memo  = $_POST['xmemo'];
@@ -427,10 +426,8 @@
 			exit;
 
 	} else if( $mode == "insert_form_image") {
-
 		include "./infor.php";
 		$upload_file_size_limit = $mf_infor[3]*1000000;
-
 		$fileup_yn	= $_POST['fileup_yn'];
 		if( strlen( $_FILES["file"]["name"] ) > 0 ){
 			$upfile_name= $_FILES["file"]["name"];
@@ -506,10 +503,10 @@
 		}
 		echo "<meta http-equiv='refresh' content=0;url='list1.php?infor=$infor'>";
 		exit;
+
 	} else if( $mode == "memo_insert_form_") {	// board_list_memo.php : call. 
 		include "./infor.php";
 		$upload_file_size_limit = $mf_infor[3]*1000000;
-
 		if( strlen( $_FILES["file"]["name"] ) > 0 ){
 			$upfile_name= $_FILES["file"]["name"];
 			$upfile_size= $_FILES["file"]["size"];
@@ -585,8 +582,9 @@
 		}
 		echo "<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>";
 		exit;
+
 	} else {
-		m_("? infor:$infor, mode:$mode");
+		m_("query_ok_new - Mode Error , mode:$mode, infor:$infor");
 		echo("<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>"); 
 	}
 ?>
