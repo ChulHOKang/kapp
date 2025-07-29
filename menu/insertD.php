@@ -202,6 +202,8 @@
 		<input type='hidden' name='security_yn' value='<?=$mf_infor[51]?>'>
 		<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'><!-- 업로드 가능한 화일 크기 -->
 		<input type='hidden' name='html_yn'     value='<?=$mf_infor[7]?>'>
+		<input type='hidden' name='tab_enm'     value='aboard_<?=$mf_infor[2]?>'>
+		<input type='hidden' name='tab_hnm'     value='<?=$mf_infor[1]?>'>
 		<input type='hidden' name='infor'       value='<?=$infor?>' > 
 		<input type='hidden' name='file_ext'    value=''>
 		<input type='hidden' name='list_no'     value=''>

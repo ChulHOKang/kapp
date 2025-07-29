@@ -41,11 +41,16 @@
 	if( isset($_POST['content']) ) $content	= $_POST['content'];
 	else $content	= '';
 
+	if( isset($_POST['tab_enm']) ) $tab_enm	= $_POST['tab_enm']; //$tab_enm = "aboard_".$mf_infor[2];
+	else $tab_enm	= '';
+	if( isset($_POST['tab_hnm']) ) $tab_hnm	= $_POST['tab_hnm']; //$tab_hnm = "aboard_".$mf_infor[1];
+	else $tab_hnm	= '';
+
 	$content = special_chk( $content );
 	$in_dateA	= date("Y-m-d H:i:s", time());
 	$in_date	= time();
 
-	$q = " INSERT INTO {$tkher['ap_bbs_table']} set infor=$infor, email='$H_EMAIL', subject='$subject', content='$content', reg_date='$in_date', host='".KAPP_URL_T_."' ";
+	$q = " INSERT INTO {$tkher['ap_bbs_table']} set infor=$infor, email='$H_EMAIL', subject='$subject', content='$content', reg_date='$in_date', aboard_tab_enm='$tab_enm', aboard_tab_hnm='$tab_hnm', host='".KAPP_URL_T_."' ";
 	$result = sql_query($q); //$result = $mysqli->query($q);
 	if( $result){
 		m_("ap_bbs - insert OK");
