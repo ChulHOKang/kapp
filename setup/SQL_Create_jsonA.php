@@ -1190,7 +1190,12 @@ function Ap_bbs($t_head, $tab) {
         `email` varchar(100) DEFAULT NULL,
         `subject` varchar(100) NOT NULL,
         `content` longblob NOT NULL,
-        `reg_date` datetime DEFAULT NULL,
+        `up_day` datetime DEFAULT current_timestamp(),
+        `reg_date` int(11) DEFAULT NULL,
+		`host` varchar(100) DEFAULT NULL,
+		`aboard_tab_enm` varchar(50) DEFAULT NULL,
+		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
+		`kapp_server` varchar(100) DEFAULT NULL,
         PRIMARY KEY (`seqno`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
@@ -1200,6 +1205,32 @@ function Ap_bbs($t_head, $tab) {
         m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
     } else {
         m_("Create Success : $tab");
+    }
+}
+function Ap_bbs_curl($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE `".$t_head."ap_bbs_curl` (
+        `seqno` bigint(20) NOT NULL AUTO_INCREMENT,
+        `infor` bigint(20) NOT NULL,
+        `email` varchar(100) DEFAULT NULL,
+        `subject` varchar(100) NOT NULL,
+        `content` longblob NOT NULL,
+        `up_day` datetime DEFAULT current_timestamp(),
+        `reg_date` int(11) DEFAULT NULL,
+		`host` varchar(100) DEFAULT NULL,
+		`aboard_tab_enm` varchar(50) DEFAULT NULL,
+		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
+		`kapp_server` varchar(100) DEFAULT NULL,
+        PRIMARY KEY (`seqno`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");
+    } else {
+        echo " - Create  Success : $tab";
     }
 }
 

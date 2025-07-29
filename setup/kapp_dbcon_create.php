@@ -142,6 +142,7 @@
 		if( kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		drop_kapp_( $table_prefix . "aboard_memo" ); 
 		if( kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		drop_kapp_( $table_prefix . "admin_bbs" ); 
 		if( kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			drop_kapp_( $table_prefix . "ap_bbs" ); 
+		if( kapp_DB_table_check( $table_prefix . "ap_bbs_curl" ) )			drop_kapp_( $table_prefix . "ap_bbs_curl" ); 
 		if( kapp_DB_table_check( $table_prefix . "menuskin" ) )		drop_kapp_( $table_prefix . "menuskin" ); 
 		if( kapp_DB_table_check( $table_prefix . "webeditor" ) )		drop_kapp_( $table_prefix . "webeditor" ); 
 		if( kapp_DB_table_check( $table_prefix . "webeditor_comment"))	drop_kapp_( $table_prefix . "webeditor_comment" ); 
@@ -194,6 +195,7 @@
 		if( !kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		Aboard_memo( $table_prefix , "aboard_memo" ); 
 		if( !kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		Admin_bbs( $table_prefix , "admin_bbs" ); 
 		if( !kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			Ap_bbs( $table_prefix , "ap_bbs" ); 
+		if( !kapp_DB_table_check( $table_prefix . "ap_bbs_curl" ) )	Ap_bbs_curl( $table_prefix . "ap_bbs_curl" ); 
 		if( !kapp_DB_table_check( $table_prefix . "menuskin" ) )		Menuskin( $table_prefix , "menuskin" ); 
 		if( !kapp_DB_table_check( $table_prefix . "webeditor" ) )		Webeditor( $table_prefix , "webeditor" ); 
 		if( !kapp_DB_table_check( $table_prefix . "webeditor_comment"))	Webeditor_comment( $table_prefix , "webeditor_comment" ); 
@@ -575,6 +577,7 @@
 		fwrite($fsi," $" . "tkher['webeditor_comment_table']	= KAPP_TABLE_PREFIX.'webeditor_comment'; // webeditor comment   \r\n");
 		fwrite($fsi," $" . "tkher['menuskin_table']			= KAPP_TABLE_PREFIX.'menuskin';     // board menuskin   \r\n");
 		fwrite($fsi," $" . "tkher['ap_bbs_table']			= KAPP_TABLE_PREFIX.'ap_bbs';       // Bulletin Board Collect All Data   \r\n");
+		fwrite($fsi," $" . "tkher['ap_bbs_curl_table']	= KAPP_TABLE_PREFIX.'ap_bbs_curl';       //  All Data network curl  \r\n");
 		/*
 		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_table']		= KAPP_TABLE_PREFIX.'coin_group';   // 게시판 그룹 테이블   \r\n");
@@ -1866,6 +1869,35 @@ function Ap_bbs($t_head, $tab) {
         `up_day` datetime DEFAULT current_timestamp(),
         `reg_date` int(11) DEFAULT NULL,
 		`host` varchar(100) DEFAULT NULL,
+		`aboard_tab_enm` varchar(50) DEFAULT NULL,
+		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
+		`kapp_server` varchar(100) DEFAULT NULL,
+        PRIMARY KEY (`seqno`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        m_("Please check if the $tab table already exists.");
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Ap_bbs_curl($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE `".$t_head."ap_bbs_curl` (
+        `seqno` bigint(20) NOT NULL AUTO_INCREMENT,
+        `infor` bigint(20) NOT NULL,
+        `email` varchar(100) DEFAULT NULL,
+        `subject` varchar(100) NOT NULL,
+        `content` longblob NOT NULL,
+        `up_day` datetime DEFAULT current_timestamp(),
+        `reg_date` int(11) DEFAULT NULL,
+		`host` varchar(100) DEFAULT NULL,
+		`aboard_tab_enm` varchar(50) DEFAULT NULL,
+		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
+		`kapp_server` varchar(100) DEFAULT NULL,
         PRIMARY KEY (`seqno`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
