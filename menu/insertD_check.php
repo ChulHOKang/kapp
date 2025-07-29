@@ -4,17 +4,18 @@
 	/*
 	  insertD_check.php - insertD.php
 	*/
-	$H_ID = get_session("ss_mb_id"); $ip = $_SERVER['REMOTE_ADDR'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id"); 
 	if( isset($H_ID) && $H_ID !=='' ) {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
-		$H_EMAIL= $member['mb_email'];  
+		$H_EMAIL = $member['mb_email'];  
 	} else {
 		$H_LEV	= 0;  
-		$H_NAME	= 'Guest';  
 		$H_NICK	= 'Guest';  
-		$H_EMAIL= '';  
+		$H_EMAIL = get_session("ss_mb_email"); 
+		if( $H_EMAIL == '' ) $H_EMAIL='Guest';
 	}
 	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else {

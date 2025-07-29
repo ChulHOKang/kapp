@@ -17,18 +17,18 @@
 <script type="text/javascript" src="../include/js/common.js"></script>
 <SCRIPT src="../include/js/contents_resize.js" type='text/javascript'></SCRIPT>
 <?php
-	$H_ID = get_session("ss_mb_id"); $ip = $_SERVER['REMOTE_ADDR'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id");
 	if( $H_ID && $H_ID !=='') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
-		$H_EMAIL= $member['mb_email'];  
 	} else {
 		$H_LEV	= 0;  
-		$H_NAME	= '';  
-		$H_NICK	= '';  
-		$H_EMAIL= '';  
+		$H_NAME	= 'Guest';  
+		$H_NICK	= 'Guest';  
 	}
+	$H_EMAIL = get_session("ss_mb_email"); 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
@@ -227,7 +227,7 @@ if( !$H_ID ){
 					</li>
 					<li>
 						<span class="t01">E-Mail</span>
-						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" value=''></span>
+						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" id='email' value=''></span>
 					</li>
 					<li class="pw_char">
 						<span class="t01">password</span>
