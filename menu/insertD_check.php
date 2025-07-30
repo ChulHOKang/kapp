@@ -1,6 +1,5 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-
 	/*
 	  insertD_check.php - insertD.php
 	*/
@@ -32,6 +31,7 @@
 			return $input; 
 		} 
 	}
+
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page =1;
 	if( isset($_POST['menu_mode']) ) $menu_mode	= $_POST['menu_mode'];
@@ -50,10 +50,25 @@
 	$in_dateA	= date("Y-m-d H:i:s", time());
 	$in_date	= time();
 
-	$q = " INSERT INTO {$tkher['ap_bbs_table']} set infor=$infor, email='$H_EMAIL', subject='$subject', content='$content', reg_date='$in_date', aboard_tab_enm='$tab_enm', aboard_tab_hnm='$tab_hnm', host='".KAPP_URL_T_."' ";
+	$q = " INSERT INTO {$tkher['ap_bbs_table']} set infor=$infor, email='$H_EMAIL', subject='$subject', content='$content', reg_date=$in_date,  host='".KAPP_URL_T_."' ";
 	$result = sql_query($q); //$result = $mysqli->query($q);
 	if( $result){
 		m_("ap_bbs - insert OK");
+
+		$kapp_theme0 = '';
+		$kapp_theme1 = '';
+		$kapp_theme = $config['kapp_theme'];
+		$kapp_theme = explode('^', $kapp_theme );	//$n = sizeof($server_);
+//		$kapp_theme0 = "https://modumodu.net/biog7/kapp"; //"https://fation.net/kapp";//$kapp_theme[0];
+		$kapp_theme0 = "https://fation.net/kapp";//$kapp_theme[0];
+		$kapp_theme1 = $kapp_theme[1];
+		if( $kapp_theme0 ) {
+			if( Ap_bbs_curl_send( $kapp_theme0, $infor, $H_EMAIL, $subject, $content, $in_date, $tab_enm, $tab_hnm, KAPP_URL_T_ ) ) {
+				if( $kapp_theme1 ) Ap_bbs_curl_send( $kapp_theme1, $infor, $H_EMAIL, $subject, $content, $in_date, $tab_enm, $tab_hnm, KAPP_URL_T_ );
+			}
+		}
+		m_("ap_bbs_curl --- insert ok");			//return true;
+
 	} else {
 		m_("ap_bbs - insert error");
 		echo "sql: " . $q; exit;
@@ -73,36 +88,6 @@
 	$upfile2	= "";
 	$file_ext	= "";
 	$f_path2	= "";
-	/*
-	if( $fileup_yn > 0 && $upfile_name !== "" ){
-		$file_ext		= $_POST['file_ext'];
-		$fileup_ynX	= $fileup_yn * 1000000; // fileup_yn = $mf_infor[3] 업로드 가능한 크기.
-		if( $upfile_size >  $fileup_ynX ) { 
-			m_("$fileup_yn Mb Only uploaded below"); // $fileup_yn Mb 이하만 업로드 가능합니다 
-			echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
-			exit;
-		}
-		$f_path1 = KAPP_PATH_T_ . "/file/" . $mf_infor[53];	// 53:maker id.
-		$f_path2 = $f_path1 . "/aboard_".$mf_infor[2];      // 2: board name
-		if( !is_dir($f_path1) ) {                           // contents + userid Dir error
-			if( !@mkdir( $f_path1, 0755 ) ) {
-				echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
-				m_(" Error: f_path1 : " . $f_path1 . " Failed to create directory. ");
-				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-			}
-		}
-		if( !is_dir($f_path2) ) { // contents + userid + board name Dir error
-			if ( !@mkdir( $f_path2, 0755 ) ) {
-				echo " Error: f_path2 : " . $f_path2 . " Failed to create directory. ";
-				m_(" Error: f_path2 : " . $f_path2 . " Failed to create directory. ");
-				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-			}
-		}
-		$upfile2 = $H_ID . "_" . time() . "_" . $upfile_name;
-		//$H_ID."_".time().$file_ext;//$ext_name;
-		move_uploaded_file( $_FILES["fileA"]["tmp_name"], $f_path2 . "/" . $upfile2 );
-	}
-	*/
 	if( $fileup_yn > 0 && isset($upfile_name) && $upfile_name !== '' ) {
 		$file_ext		= $_POST['file_ext'];
 		$upload_file_size_limit	= $fileup_yn * 1000000; // fileup_yn = $mf_infor[3] upload limit size
@@ -141,7 +126,6 @@
 		$rs = sql_fetch_array( $mq );
 		$target = $rs['no']+1;
 	}
-
 	$query = "insert into aboard_".$mf_infor[2]." set
 	infor = $infor,
 	id = '$H_ID',
@@ -164,18 +148,16 @@
 	re = 0,
 	security = '$security' ";
 	$result = sql_query( $query );
+	if( $result==false) {
+		$_SESSION['writing_status'] = 'NO';
+		echo "write---NO";
+		m_("write Error, url:" . KAPP_URL_T_);
+	} else {
+		$_SESSION['writing_status'] = 'YES';
+		echo "write---YES";
+		m_("write OK, url:" . KAPP_URL_T_);
+	}
 
-//----------------------------------------------------------------------
-if( $result==false) {
-    $_SESSION['writing_status'] = 'NO';
-	echo "write---NO";
-	m_("write Error, url:" . KAPP_URL_T_);
-} else {
-    $_SESSION['writing_status'] = 'YES';
-	echo "write---YES";
-	m_("write OK, url:" . KAPP_URL_T_);
-}
-
-header('Location: listD.php?infor='.$infor.'&page='.$page.'&menu_mode='.$menu_mode);
+	header('Location: listD.php?infor='.$infor.'&page='.$page.'&menu_mode='.$menu_mode);
 
 ?>

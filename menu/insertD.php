@@ -118,17 +118,15 @@
 		else {$return = false;}
 	  return $return;
 	}
-
+/*
 	 function back_go(infor,list_no, page) {
  		x = document.tx_editor_form;
-
 		x.infor.value=infor;
 		x.list_no.value=list_no;
 		x.page.value=page;
-		
 		x.action=x.previous.value;
 		x.submit();
-	}
+	}*/
 </script>
 
 <script>
@@ -208,7 +206,6 @@
 		<input type='hidden' name='file_ext'    value=''>
 		<input type='hidden' name='list_no'     value=''>
 		<input type='hidden' name='page'        value=''>
-		<input type="hidden" name='previous'	value='<?=$_REQUEST['previous']?>' />
 		<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
 			
 			<div class="boardView">
