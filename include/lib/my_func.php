@@ -1,7 +1,8 @@
 <?php
-/*
-	: connect_count_search($call_pg ,$id, $ipcheck, $sdata) add
-*/
+if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
+	/*
+		: connect_count_search($call_pg ,$id, $ipcheck, $sdata) add
+	*/
 
 	$from_session_url = KAPP_URL_;
 	$kapp_cmop_nicknm ='K-APP';
@@ -312,7 +313,71 @@
 			echo 'curl : ' . $_ms;
 		} else {
 			$_ms = 'Sys_Menu_bom_curl_send_tabData api OK : ' . $response;
+			echo 'curl : ' . $_ms;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	function Ap_bbs_curl_send( $kapp_theme,  $infor, $email, $subject, $content, $reg_date, $aboard_tab_enm, $aboard_tab_hnm, $kapp_server){
+		global $H_ID, $H_EMAIL, $config, $kapp_iv, $kapp_key;
+
+		$tabData['data'][][] = array();
+		$cnt = 0;
+		$tabData['data'][$cnt]['infor']  = $infor;
+		$tabData['data'][$cnt]['email']    = $email;
+		$tabData['data'][$cnt]['subject']       = $subject;
+		$tabData['data'][$cnt]['content']     = $content;
+		$tabData['data'][$cnt]['reg_date']        = $reg_date;
+		$tabData['data'][$cnt]['aboard_tab_enm']      = $aboard_tab_enm;
+		$tabData['data'][$cnt]['aboard_tab_hnm']      = $aboard_tab_hnm;
+		$tabData['data'][$cnt]['host'] = KAPP_URL_T_;
+		$tabData['data'][$cnt]['kapp_server']      = $kapp_server;
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		
+		$url_ = $kapp_theme . '/_Curl/Ap_bbs_curl_get_ailinkapp.php';
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			$_ms = KAPP_URL_T_ .  ", Ap_bbs_curl_send fail : " . curl_error($curl);
+			echo 'curl : ' . $_ms;
+		} else {
+			$_ms =KAPP_URL_T_ .  ', Ap_bbs_curl_send OK : ' . $response;
 			//echo 'curl : ' . $_ms;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	function Ap_bbs_curl_send_tabData( $curl_snm, $tabData ){
+		// use: Ap_bbs_curl_get_ailinkapp.php
+		global $kapp_iv, $kapp_key;
+
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+		$url_ = $curl_snm . '/_Curl/Ap_bbs_curl_get_ailinkapp.php'; 
+
+		$curl = curl_init(); 
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			echo 'Ap_bbs_curl_send_tabData curl Error : ' . curl_error($curl);
+		} else {
+			echo 'Ap_bbs_curl_send_tabData curl 응답 : ' . $response;
 		}
 		curl_close($curl);
 		return $response;
