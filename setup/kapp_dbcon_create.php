@@ -195,7 +195,7 @@
 		if( !kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		Aboard_memo( $table_prefix , "aboard_memo" ); 
 		if( !kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		Admin_bbs( $table_prefix , "admin_bbs" ); 
 		if( !kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			Ap_bbs( $table_prefix , "ap_bbs" ); 
-		if( !kapp_DB_table_check( $table_prefix . "ap_bbs_curl" ) )	Ap_bbs_curl( $table_prefix . "ap_bbs_curl" ); 
+		if( !kapp_DB_table_check( $table_prefix . "ap_bbs_curl" ) )	Ap_bbs_curl( $table_prefix , "ap_bbs_curl" ); 
 		if( !kapp_DB_table_check( $table_prefix . "menuskin" ) )		Menuskin( $table_prefix , "menuskin" ); 
 		if( !kapp_DB_table_check( $table_prefix . "webeditor" ) )		Webeditor( $table_prefix , "webeditor" ); 
 		if( !kapp_DB_table_check( $table_prefix . "webeditor_comment"))	Webeditor_comment( $table_prefix , "webeditor_comment" ); 
