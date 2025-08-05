@@ -76,7 +76,7 @@
 
 <html>
 <head>
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+<TITLE>K-APP. Made in Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -1034,7 +1034,7 @@ jQuery(document).ready(function ($) {
 
 	//$tabData['data'][][] = array();
 	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
-		m_("start --- TAB_curl_sendA ");
+		//m_("start --- TAB_curl_sendA ");
 		global $H_ID, $H_EMAIL, $group_code, $group_name;
 		$tabData['data'][][] = array();
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
@@ -1086,7 +1086,7 @@ jQuery(document).ready(function ($) {
 		return $response;
 	}
 	function PG_curl_sendA( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-		m_("start --- PG_curl_sendA ");
+		//m_("start --- PG_curl_sendA ");
 		// use: kapp_tabel_create.php, app_pg50RC.php,  table30m_A.php
 		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
 		global $H_ID, $H_EMAIL, $group_code, $group_name, $tab_hnm, $tab_enm; 
@@ -1154,8 +1154,9 @@ jQuery(document).ready(function ($) {
 		$if_data = "";
 		$item_cnt   = 0;
 		For( $ARR=1; $ARR < $line_set ; $ARR++ ) {
-			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
-			if( $fld_hnm ) {
+			if( isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !=='' ) $fld_hnm	=	$_POST["fld_hnm"][$ARR];
+			else $fld_hnm =	'';
+			if( $fld_hnm !== '' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
 				$fld_enm	=	$_POST["fld_enm"][$ARR];
 				$fld_hnm	=	$_POST["fld_hnm"][$ARR];
@@ -1208,14 +1209,14 @@ jQuery(document).ready(function ($) {
 			}
 		} else m_("INSERT table10_table ERROR create_func - tab seqno in ");
 
-		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt,  userid='$H_ID',  tab_mid='$H_ID' ";
+		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID',  tab_mid='$H_ID' ";
 		
 		$rets = sql_query($query);
 		if( $rets ){
-			m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
+			//m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
 			$Tret = TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
 			if( $Tret ) {
-				m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
+				//m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
 				$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $tab_enm; 
 				$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
 			} else  m_("TAB_curl_sendA -- Error");
