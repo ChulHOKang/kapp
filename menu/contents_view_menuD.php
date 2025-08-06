@@ -147,8 +147,6 @@ $in_dir		= substr($line['date'],0,7);
 $upfile		= $line['up_file'];
 $align			= $line['align']; 
 
-$addfile ='';
-
 if( isset($title) ) {
 	//m_("line OK sql_fetch_array "); //line OK sql_fetch_array 
 
@@ -177,17 +175,18 @@ if( isset($title) ) {
 		<input type='hidden' name='book_num'   value='<?=$book_name?>'>
 		<input type='hidden' name='target_run' value='<?=$target_run?>'>
 <?php
-	if( $upfile) $addfile="Attached file:[" . $align . "]";
+	if( $upfile ) $addfile="Attached file:[" . $align . "]";
+	else $addfile ='';
 	if( $H_ID and $H_ID == $row_user || $H_LEV > 7)  {
 ?>
 		<DIV style='background-color:yellow;color:black;text-align:left;'>
 		[ Title :<?=$title?> ] [user:<?=$row_user?> - point:<?=number_format( $member['mb_point'])?>] [view:<?=$view_cnt?>] :
 		<input type='button' value=' Change ' title='data change upd_func' style='border-radius:20px;' onClick="javascript:upd_func('<?=$num?>','update','1', '<?=$book_name?>', '<?=$target_run?>');">
 		&nbsp;<a href='./download.php?num=<?=$num?>'  style='background-color:blue;color:yellow;border-radius:20px;'><?=$addfile?></a>
-		&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='tree list'></a></DIV>
-<?php } else {?>
+		&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='List of Tree'></a></DIV>
+<?php } else { ?>
 		<DIV style='background-color:yellow;color:black;text-align:left'>
-		[ Title : <?=$title?> ] [user:<?=$row_user?>] [view:<?=$view_cnt?>]
+		[ Title : <?=$title?> ] [user:<?=$row_user?>] [view:<?=$view_cnt?>]&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='List of Tree'></a>
 		</DIV>
 <?php } ?>
 	</form>
