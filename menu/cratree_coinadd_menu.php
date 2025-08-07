@@ -54,9 +54,12 @@
 <script language="javascript">
 <!--
 	function submit_run( pg , target_ , jong, sys_pg, url_T , url_, sys_board_num) {
-		//alert(" pg: " +pg);//pg: https://fation.net/kapp/menu/tree_run.php?sys_pg=dao1745201802&open_mode=on&mid=dao&num=dao1745201802&sys_jong=note
-
-			if( pg.indexOf("blog.naver.com")>=0 ) {
+				//alert("pg:" + pg + " ---url_: " +url_); // pg:undefined ---url_: https://appgenerator.net
+				//pg:http:// ---url_: https://appgenerator.net
+			if( pg == 'http://' || pg == 'https://' ) {
+				window.close();
+				exit;
+			} else if( pg.indexOf("blog.naver.com")>=0 ) {
 						location.href=pg;
 			} else if( pg.indexOf("naver.com")>=0 ) {
 						document.click_run.target='_top';
@@ -74,16 +77,8 @@
 						document.click_run.target='_top';
 						location.href=pg;
 			} else if( pg.indexOf("index_bbs.php?infor")>=0 ) {
-				if( pg.indexOf("tree_run.php")>=0 ) { // add 2024-01-24 link Type='A' - board
-						document.click_run.action= pg;
-						document.click_run.submit();
-				} else {
 						//pgA = url_T + "/menu/" + pg; 					//alert("pgA: " + pgA); //pgA: index_bbs.php?infor=259
 						document.click_run.action= pg; // pg:index_bbs.php?infor=226 - insw
-						document.click_run.submit();
-				}
-			} else if( pg.indexOf("index5.php?infor")>=0 ) {
-						document.click_run.action= "index_bbs.php?infor=" + sys_board_num; // pg:index_bbs.php?infor=226 - insw
 						document.click_run.submit();
 			} else if( pg.indexOf("tree_run.php")>=0 ) {
 						document.click_run.target='_top';
@@ -103,25 +98,15 @@
 			} else if( pg.indexOf("contents_view_menuD.php")>=0 ) {
 						document.click_run.action= pg;
 						document.click_run.submit();
-			} else if( pg.indexOf("contents_view_menu.php")>=0 ) {
-						document.click_run.action= pg;
-						document.click_run.submit();
-			} else if( pg.indexOf("contents_view.php")>=0 ) {
-						document.click_run.target=target_;
-						document.click_run.action= pg;
-						document.click_run.submit();
-			} else if( pg.indexOf("contents/index.php?infor")>=0 ) {
-						run_pg = "../.." + pg;
-						document.click_run.target=target_;
-						document.click_run.action= run_pg;
-						document.click_run.submit();
 			} else if( pg.indexOf( url_) >= 0 ) { // alert(" ---url_: " +url_); // ---url_: https://fation.net
 						document.click_run.action= pg;
 						document.click_run.submit();
+			} else if( pg == 'undefined' ) {
+				window.close();
+				exit;
 			} else {
-						document.click_run.target=target_;
-						document.click_run.action= pg;
-						document.click_run.submit();
+						document.click_run.target='_top';
+						location.href=pg;
 			}
 	}
 //-->

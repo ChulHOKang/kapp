@@ -1,14 +1,7 @@
   <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
-	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
-	else $H_LEV = 0;
-	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
-	else $H_EMAIL = '';
-
-	connect_count($host_script, $H_ID, 0,$referer);	// log count
-   /* ------------------------------------------ 최종 사용 프로그램 임다. 중요.
-   /t/menu/tree_run.php <- /t/menu/index_menu.php <- /t/tree_menu_guest.php
+   /*
+   tree_run.php <- /t/menu/index_menu.php <- /t/tree_menu_guest.php
                           : Guest View Mobile <- /t/menu/tree_menu_updateM2.php 을 copy
                           : /t/menu/tree_menu_updateM2.php 사용 하지 않음.
 						  /t/my_list_menu.php에서도 call.중요.
@@ -19,7 +12,14 @@
 		             최초 r1_my.php : my page에서 실행한다.
 
 	http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
-   -------------------------------------------------------- */
+   */
+	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
+	else $H_LEV = 0;
+	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
+	else $H_EMAIL = '';
+
+	connect_count($host_script, $H_ID, 0,$referer);	// log count
    //m_("mid:" . $_REQUEST['mid']);
    //link, link src: https://ailinkapp.com/t/https://ailinkapp.com/t/bbs/board_list3m.php
    if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
@@ -226,11 +226,9 @@ function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, t
 		document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php'; // root 하단 목록.
 		document.click_run.submit();     
 	} else if( runtype =='' || runtype=='run'){
-		if( pg.indexOf( 'contents_view_menu')>=0 ) { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
+		if( pg == 'http://' || pg == 'https://' )  { 
+			alert("pg: "+pg + ", title_: " + title_);
+			return;
 		} else if( pg.indexOf( target_ )>=0 )  { 
 			//alert("tree run - target_: " + target_); //target_: https://ailinkapp.com
 			document.click_run.target='run_menu';  
@@ -253,13 +251,9 @@ function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, t
 			document.click_run.target='run_menu';  
 			document.click_run.target_.value='run_menu'; 
 			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			//document.click_run.action= pg; 
 			document.click_run.submit();  
-		}else if( pg.indexOf( 'ailinkapp.com')>=0 )  { 
-			document.click_run.target ='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
+			//	document.click_run.target='_top';
+			//	location.href=pg;
 		}else if( pg.indexOf( 'https://')>=0 )  { 
 			document.click_run.target ='_blank';  
 			document.click_run.target_.value='_top'; //'_blank';  
@@ -478,7 +472,6 @@ if ( $tot == 0 ) {
              <td height='15' align='left' title='Ktree List'>
 			 <!-- <a href='<?=KAPP_URL_T_?>/menu/cratree_my_list_menu.php?mid=<?=$mid?>' id='<?=$sys_pg?>' target='run_menu' style='color:#33FF33;font-size:15'><?php echo $img_v; ?><strong> Tree-List </strong></a> -->
 			 <a href='<?=KAPP_URL_T_?>/menu/index.php?mid=<?=$mid?>' id='<?=$sys_pg?>' target='run_menu' style='color:#33FF33;font-size:15'><?php echo $img_v; ?><strong> Tree-List </strong></a>
-			<!-- ------------------------------------------------------------ -->			 
 			<SELECT name='sys_pg_sel' onchange="sys_pg_change(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" <?php echo" title='Upgrade the program.' "; ?> >
 <?php 
 		if( $mode=='SearchPG') {

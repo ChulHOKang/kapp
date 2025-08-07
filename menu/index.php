@@ -62,7 +62,7 @@
 		document.sys_form.action='./treebom_dropdown_menu_create.php';
 		document.sys_form.submit();
 	}
-	function treeDN_func(mid, sys_pg, run_mode, point ){
+	function treeDN_func( mid, sys_pg, run_mode, point ){
 		if( !document.sys_form.Hid.value ) {
 			alert('Login please!'); return false;
 		}
@@ -321,38 +321,22 @@ if( $result ){
 			echo "
 			<tr>
 				<td align='center'>$ln $iconX</td>
-				<td>
-					<a href='$run' target='_top' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a>
-				</td>
-				<td>
-				<input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'>
-				</td>
-				<td>
-				<input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'>
-				</td>
+				<td><a href='$run' target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
+				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a></td>
+				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
+				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<!-- 2021-10-09 : <td>
-				<input type='button' value='Tree Create' onclick=\"tree_func('$mid', '$sys_pg', '$run_mode');\" style='background-color:black;color:yellow;' title='Recreate the tree menu of $subtit'>
-				</td>
-				<td>
-				<input type='button' value='Popup Create' onclick=\"popup_func('$mid', '$sys_pg', '$run_mode');\" style='background-color:black;color:yellow;' title='Recreate the popup menu of $subtit'>
-				</td> -->
+				<input type='button' value='Tree Create' onclick=\"tree_func('$mid', '$sys_pg', '$run_mode');\" style='background-color:black;color:yellow;' title='Recreate the tree menu of $subtit'>	</td>
+				<td><input type='button' value='Popup Create' onclick=\"popup_func('$mid', '$sys_pg', '$run_mode');\" style='background-color:black;color:yellow;' title='Recreate the popup menu of $subtit'></td> -->
 			</tr>";
 		} else {
 			echo "
 			<tr>
 				<td align='center'>$ln $iconX</td>
-				<td>
-					<a href='$run' target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:cyan' title='-Launch the popup menu:$runM'>Popup</a>
-				</td>
-				<td>
-				<input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'>
-				</td>
-				<td>
-				<input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'>
-				</td>
-				<td align='center'> --- </td>
+				<td><a href='$run' target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a></td>
+				<td align='center'><a href='$run' target='_blank' style='color:cyan' title='run: $run'>Popup</a></td>
+				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
+				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td align='center'> --- </td>
 			</tr>";
 		}
