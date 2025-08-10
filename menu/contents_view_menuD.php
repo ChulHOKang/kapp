@@ -1,25 +1,24 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/*
+		contents_view_menuD.php : Note View 
+		view count add , point add
+		comment delete : h_lev=1
+		change : contents_view_menuD_main.php
+	*/
 
 	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
 	else $H_LEV = 0;
 	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
 	else $H_EMAIL = '';
-	/* -----------------------------------------------------------------------------
-		contents_view_menuD.php : Note View - 현재 2023-11-01 사용.
-		view count add , point add
-		comment delete : h_lev=1
-		change : contents_view_menuD_main.php
-	----------------------------------------------------------------------------- */
 	function special_chk ($input) { // 특수문자 제거. "'"만 제거한다.
-		if (is_array($input)) { //m_("---1");
+		if (is_array($input)) { 
 			return array_map('special_chk', $input); 
 		} 
-		else if (is_scalar($input)) { //m_("---2");
+		else if (is_scalar($input)) { 
 				return preg_replace("/'/i", "", $input); //return preg_replace("/[ #\/\\\:;,'\"`<>()]/i", "", $input);
-		} 
-		else { //m_("---3");
+		} else {
 			return $input; 
 		} 
 	}
@@ -27,20 +26,16 @@
 	else $xmode = '';
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
-
 	if( isset($_POST['target_run']) ) $target_run = $_POST['target_run'];
 	else $target_run = '';
-
 	$num = '';
-	if( isset($_POST['num']) && $_POST['num'] !=='') $num = $_POST['num'];	//$content	= $_REQUEST['content'];
-	else if( isset($_REQUEST['num']) && $_REQUEST['num'] !=='') $num = $_REQUEST['num'];	//$content	= $_REQUEST['content'];
-	else { m_("error num: " . $num); exit; }//m_("".$num);
-
+	if( isset($_POST['num']) && $_POST['num'] !=='') $num = $_POST['num'];	
+	else if( isset($_REQUEST['num']) && $_REQUEST['num'] !=='') $num = $_REQUEST['num'];
+	else { m_("error num: " . $num); exit; }
 	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
 	else $mid = '';
 	if( isset($_POST['seq']) ) $seq = $_POST['seq'];
 	else $seq = '';
-	
 	if( $mode == 'del_comment'){
 		$doc_userid	= $_POST['doc_userid'];
 		$sql= "Update {$tkher['webeditor_comment_table']} SET del='1' where seq='$seq' and ( user='$mid' or doc_userid='$doc_userid') "; 
@@ -59,7 +54,7 @@
 			echo "<script> window.open('$rungo', '_top', ''); </script>";
 		}
 		$up_day	= date("Y-m-d H:i:s",time());
-		$sql	= "INSERT INTO {$tkher['webeditor_comment_table']} SET num='$num', doc_userid='$mid', user='$H_ID', reply='$reply', title='$title', diff='1', date='$up_day' "; // diff='1'은 Daum type 게시판으로 새로 생성한 것을 적용하기 위함.
+		$sql	= "INSERT INTO {$tkher['webeditor_comment_table']} SET num='$num', doc_userid='$mid', user='$H_ID', reply='$reply', title='$title', diff='1', date='$up_day' "; // diff='1'은 Dm type 게시판 생성 적용
 		$retV   = sql_query( $sql );
 		if( $retV ){
 			$rungo = $tkher_iurl . "/" . $_SERVER['SCRIPT_NAME'];
@@ -73,7 +68,7 @@
 <html>
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-APP, Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -83,39 +78,36 @@
 	<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
 	<script src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js" type="text/javascript" charset="utf-8"></script>
 <script>
- //alert(" script ----------- menuD"); ok
 		function upd_func( num, mode, diff, book_name, target_run){
-			//alert('upd_func - num: ' + num+ ', '  + mode+ ', '  + diff + ', book_name: ' +  book_name + ', ' + target_run);
 			if( book_name) {
 				document.edit_form.target="_self";
 				document.edit_form.mode.value="update";
 				document.edit_form.num.value=num;
-				document.edit_form.action="contents_view_menuD_main.php"; // my_editor2_book_menu.php
+				document.edit_form.action="contents_view_menuD_main.php";
 				document.edit_form.submit();
 			}
 		}
-		function upd_func_comment(seq,mode,num,mid, target_run){ //diff
-			//alert('upd_func_comment - ');
+		function upd_func_comment(seq,mode,num,mid, target_run){
 				document.delete_form.mode.value="change_comment";
 				document.delete_form.mid.value=mid;
 				document.delete_form.seq.value=seq;
 				document.delete_form.num.value=num;
 				document.delete_form.target="_self";
-				document.delete_form.action="contents_view_menuD_change.php?num="+num+"&seq="+seq;	// my_editor2_book_comment_menu.php
+				document.delete_form.action="contents_view_menuD_change.php?num="+num+"&seq="+seq;	
 				document.delete_form.submit();
 		}
 		function del_func_comment(seq,mode,num,mid, doc_userid){
-			if( !confirm('Do you want to delete?') ) {	// 
+			if( !confirm('Do you want to delete?') ) {
 				return false;
 			}
-				document.delete_form.mode.value="del_comment";
-				document.delete_form.doc_userid.value=doc_userid;
-				document.delete_form.mid.value=mid;
-				document.delete_form.seq.value=seq;
-				document.delete_form.num.value=num;
-				document.delete_form.target="_self";
-				document.delete_form.action="contents_view_menuD.php?num="+num;
-				document.delete_form.submit();
+			document.delete_form.mode.value="del_comment";
+			document.delete_form.doc_userid.value=doc_userid;
+			document.delete_form.mid.value=mid;
+			document.delete_form.seq.value=seq;
+			document.delete_form.num.value=num;
+			document.delete_form.target="_self";
+			document.delete_form.action="contents_view_menuD.php?num="+num;
+			document.delete_form.submit();
 		} 
 		function ins_func(){
 
@@ -133,23 +125,21 @@
 $query	= "SELECT * from {$tkher['webeditor_table']} where num = '".$num . "' ";
 $result	= sql_query( $query );
 $line	= sql_fetch_array($result);
-if( isset($line['user'])) $row_user = $line['user'];
-else $row_user = ''; 
-if( $row_user == $line['book_name'])
-		$savetype = '1';//단독등록 구분 
-else	$savetype = '0';
-
-$h_lev		= $line['h_lev'];
-$book_name = $line['book_name'];
-$mid			= $line['user'];
-$title			= $line['title'];
-$in_dir		= substr($line['date'],0,7);
-$upfile		= $line['up_file'];
-$align			= $line['align']; 
 
 if( isset($title) ) {
-	//m_("line OK sql_fetch_array "); //line OK sql_fetch_array 
+	if( isset($line['user'])) $row_user = $line['user'];
+	else $row_user = ''; 
+	if( $row_user == $line['book_name'])
+			$savetype = '1';
+	else	$savetype = '0';
 
+	$h_lev		= $line['h_lev'];
+	$book_name = $line['book_name'];
+	$mid			= $line['user'];
+	$title			= $line['title'];
+	$in_dir		= substr($line['date'],0,7);
+	$upfile		= $line['up_file'];
+	$align			= $line['align']; 
 	$content   = $line['content'];
 	$backcolor = $line['backgroundcolor'];
 	$fcolor = 'gray';
@@ -162,10 +152,7 @@ if( isset($title) ) {
 	}
 	</style>
 	<body bgProperties="" leftmargin="0" topmargin="0" height='100%' >
-	<?php
-	$cur='C';
-	//include "./menu_run_menu.php"; // note tree
-	?>
+
 	<form name='edit_form' METHOD='POST' enctype="multipart/form-data">
 		<input type='hidden' name='mid'   value='<?=$row_user?>'>
 		<input type='hidden' name='mode'  value=''>
@@ -318,7 +305,7 @@ if( isset($title) ) {
         var i, input;
         var form = editor.getForm();
         var content = editor.getContent();
-        // 본문 내용을 필드를 생성하여 값을 할당하는 부분
+        /* 본문 내용을 필드를 생성하여 값을 할당하는 부분 */
         var textarea = document.createElement('textarea');
         textarea.name = 'content';
         textarea.value = content;
@@ -327,11 +314,11 @@ if( isset($title) ) {
          첨부된 데이터 중에 주어진 종류(image,file..)에 해당하는 것만 배열로 넘겨준다. */
         var images = editor.getAttachments('image');
         for (i = 0; i < images.length; i++) {
-            if (images[i].existStage) { //// existStage는 현재 본문에 존재하는지 여부
+            if (images[i].existStage) { /*  existStage는 현재 본문에 존재하는지 여부 */
                 input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'attach_image';
-                input.value = images[i].data.imageurl;  // 예에서는 이미지경로만 받아서 사용
+                input.value = images[i].data.imageurl;  /* 예에서는 이미지경로만 받아서 사용 */
                 form.createField(input);
             }
         }

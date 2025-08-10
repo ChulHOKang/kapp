@@ -145,11 +145,14 @@
 			//m_("2---- tot:" . $tot); // 2---- tot:0
 	$day	= date("Y-m-d");
 	$up_day = date("Y-m-d h:i:s");
-	$query = "update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno=" . $_POST['seqno']; // 2024-01-24 seqno 보완
-	$ret = sql_query($query); // 여기에서만 add 기존에 tree_run.php, contents_view_menuD.php에서도 add 하였다.	//m_("update sys_menu_bom set view_cnt - 3");
-
-	$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_pg='" . $_POST['num'] . "' and sys_subtit='" . $_POST['title_'] ."' "; // 2025-04-22  보완
-	$ret = sql_query($query); // 여기에서만 add 기존에 tree_run.php, contents_view_menuD.php에서도 add 하였다.	//m_("update sys_menu_bom set view_cnt - 3");
+	/*if( isset($_POST['seqno']) && $_POST['seqno'] !=='' ){
+		$query = "update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno=" . $_POST['seqno'];
+		$ret = sql_query($query);
+	}*/
+	if( isset($_POST['num']) && isset($_POST['title_']) ){
+		$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_pg='" . $_POST['num'] . "' and sys_subtit='" . $_POST['title_'] ."' "; 
+		$ret = sql_query($query);
+	}
 
 		$SQL	= " SELECT * from {$tkher['coin_view_table']} where url='$link_' and makeid='$mid' ";
 		$ret = sql_query($SQL);

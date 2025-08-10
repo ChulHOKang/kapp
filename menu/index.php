@@ -316,7 +316,8 @@ if( $result ){
 		}
 		$day = substr($line['up_day'], 0 , 10);
 		$subtit = $line['sys_subtit'];
-		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num ;
+		$job_addr='contents_view_menuD.php?num=' . $num;
+		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr;
 		if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
 			echo "
 			<tr>
