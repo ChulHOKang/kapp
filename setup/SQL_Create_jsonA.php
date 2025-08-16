@@ -23,7 +23,7 @@ function Delete_tableX($_prefix, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Delete Success : $tab");
     }
@@ -51,7 +51,7 @@ function Aboard_admin($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         //m_("Create Success : $tab");
 
@@ -63,7 +63,7 @@ function Aboard_admin($t_head, $tab) {
 
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");//table이 이미 존재하는지 확인 바랍니다
+            //echo "Please check if the $tab table already exists. <br>";//table이 이미 존재하는지 확인 바랍니다
         } else {
             m_("Create Success and Record Create Success : $tab");
         }
@@ -128,7 +128,7 @@ function Aboard_infor($t_head, $tab) {
         title_text_color varchar(20) DEFAULT NULL,
         security char(1) DEFAULT NULL,
         lev char(1) DEFAULT NULL,
-        make_id varchar(50) NOT NULL DEFAULT '',
+        make_id varchar(50) NOT NULL,
         make_club varchar(255) DEFAULT NULL,
         sunbun int(4) DEFAULT 0,
         memo text DEFAULT NULL
@@ -137,7 +137,7 @@ function Aboard_infor($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
 
 		//$admin_id
@@ -150,7 +150,7 @@ function Aboard_memo($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."aboard_memo (
         no int(11) auto_increment NOT NULL,
-        board_name varchar(50) NOT NULL DEFAULT '',
+        board_name varchar(50) NOT NULL,
         list_no int(11) NOT NULL DEFAULT 0,
         name varchar(50) NOT NULL,
         memo text DEFAULT NULL,
@@ -162,7 +162,7 @@ function Aboard_memo($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -207,7 +207,7 @@ function Admin_bbs($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -230,7 +230,7 @@ function Bbs_history($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -244,7 +244,7 @@ function Coin_view($t_head, $tab) {
         id varchar(50) NOT NULL,
         makeid varchar(50) NOT NULL,
         title varchar(255) NOT NULL,
-        url varchar(255) NOT NULL DEFAULT '',
+        url varchar(255) NOT NULL,
         up_day varchar(25) NOT NULL,
         ip varchar(15) NOT NULL,
         host varchar(100) NOT NULL,
@@ -257,7 +257,7 @@ function Coin_view($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -268,8 +268,8 @@ function Ip_info($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."ip_info (
         no int(10) auto_increment NOT NULL,
-        ip1 varchar(30) NOT NULL DEFAULT '',
-        ip2 varchar(30) NOT NULL DEFAULT '',
+        ip1 varchar(30) NOT NULL,
+        ip2 varchar(30) NOT NULL,
         ipno1 bigint(11) NOT NULL DEFAULT 0,
         ipno2 bigint(11) NOT NULL DEFAULT 0,
         country_cd varchar(5) DEFAULT NULL,
@@ -279,7 +279,7 @@ function Ip_info($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -301,7 +301,7 @@ function Visit_sum($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -314,7 +314,7 @@ function Menuskin($t_head, $tab) {
         seqno int(11) auto_increment NOT NULL,
         user_id varchar(50) DEFAULT NULL,
         sys_pg varchar(50) DEFAULT NULL,
-        sys_subtit varchar(50) NOT NULL DEFAULT '',
+        sys_subtit varchar(50) NOT NULL,
         sys_link varchar(100) DEFAULT NULL,
         bgcolor varchar(10) DEFAULT NULL,
         fontcolor varchar(10) DEFAULT NULL,
@@ -331,7 +331,7 @@ function Menuskin($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -343,7 +343,7 @@ function Sajin_group($t_head, $tab) {
         CREATE TABLE ".$t_head."sajin_group (
         no int(10) auto_increment NOT NULL,
         g_code varchar(50) DEFAULT NULL,
-        g_name varchar(50) NOT NULL DEFAULT '',
+        g_name varchar(50) NOT NULL,
         g_class_code varchar(50) DEFAULT NULL,
         g_class_name varchar(50) DEFAULT NULL,
         userid varchar(50) DEFAULT NULL,
@@ -354,7 +354,7 @@ function Sajin_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -382,7 +382,7 @@ function Sajin_jpg($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -408,7 +408,7 @@ function Table10($t_head, $tab) {
         if_data text DEFAULT NULL,
         relation_data text DEFAULT NULL,
         memo text NOT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        upday timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL,
         grant_write int(3) DEFAULT 0,
         grant_view int(3) DEFAULT 0,
@@ -419,7 +419,7 @@ function Table10($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -445,7 +445,7 @@ function Table10_pg($t_head, $tab) {
         group_code varchar(50) DEFAULT NULL,
         group_name varchar(50) DEFAULT NULL,
         disno int(5) DEFAULT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        upday timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL,
         tab_mid varchar(50) NOT NULL,
         del varchar(1) DEFAULT NULL,
@@ -457,7 +457,7 @@ function Table10_pg($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -479,7 +479,7 @@ function Job_link_table($t_head, $tab) {
         price int(11) DEFAULT 0,
         user_id varchar(50) DEFAULT NULL,
         club_url varchar(50) DEFAULT NULL,
-        up_day timestamp NULL DEFAULT current_timestamp(),
+        up_day timestamp DEFAULT current_timestamp(),
         memo text DEFAULT NULL,
         view_cnt int(13) DEFAULT 0,
         ip varchar(255) DEFAULT NULL
@@ -488,7 +488,7 @@ function Job_link_table($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -516,7 +516,7 @@ function Sys_menu_bom($t_head, $tab) {
         view_cnt int(11) DEFAULT 0,
         tit_gubun char(1) DEFAULT NULL,
         book_num varchar(50) DEFAULT NULL,
-        up_day timestamp NULL DEFAULT current_timestamp(),
+        up_day timestamp DEFAULT current_timestamp(),
         sys_comp varchar(200) DEFAULT NULL,
         ip varchar(20) DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -524,7 +524,7 @@ function Sys_menu_bom($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -552,7 +552,7 @@ function Table10_curl($t_head, $tab) {
   `if_data` text DEFAULT NULL,
   `relation_data` text DEFAULT NULL,
   `memo` text DEFAULT NULL,
-  `upday` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `upday` timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `userid` varchar(50) NOT NULL,
   `grant_write` varchar(3) DEFAULT NULL,
   `grant_view` varchar(3) DEFAULT NULL,
@@ -563,7 +563,7 @@ function Table10_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -590,7 +590,7 @@ function Table10_pg_curl($t_head, $tab) {
   `group_code` varchar(50) NOT NULL,
   `group_name` varchar(50) NOT NULL,
   `disno` int(5) DEFAULT NULL,
-  `upday` timestamp NOT NULL DEFAULT current_timestamp(),
+  `upday` timestamp DEFAULT current_timestamp(),
   `userid` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
   `del` varchar(1) DEFAULT NULL,
@@ -601,7 +601,7 @@ function Table10_pg_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -618,7 +618,7 @@ function Job_link_table_curl($t_head, $tab) {
   `link_url` text DEFAULT NULL,
   `link_type` char(1) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
-  `up_day` timestamp NULL DEFAULT current_timestamp(),
+  `up_day` timestamp DEFAULT current_timestamp(),
   `memo` text DEFAULT NULL,
   `user_ip` varchar(255) DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -626,7 +626,7 @@ function Job_link_table_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -656,7 +656,7 @@ function Sys_menu_bom_curl($t_head, $tab) {
   `view_cnt` int(11) DEFAULT 0,
   `tit_gubun` char(1) DEFAULT NULL,
   `book_num` varchar(50) DEFAULT NULL,
-  `up_day` timestamp NULL DEFAULT current_timestamp(),
+  `up_day` timestamp DEFAULT current_timestamp(),
   `ip` varchar(20) DEFAULT NULL,
   `bgcolor` varchar(10) DEFAULT NULL,
   `fontcolor` varchar(10) DEFAULT NULL,
@@ -670,7 +670,7 @@ function Sys_menu_bom_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -684,14 +684,14 @@ function table10_group($t_head, $tab) {
         group_code varchar(50) NOT NULL,
         group_name varchar(50) NOT NULL,
         memo text NOT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        upday timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -711,7 +711,7 @@ function Tkher_main_img($t_head, $tab) {
         g_file1 varchar(100) DEFAULT NULL,
         g_file2 varchar(100) DEFAULT NULL,
         g_file3 varchar(100) DEFAULT NULL,
-        day timestamp NULL DEFAULT current_timestamp(),
+        day timestamp DEFAULT current_timestamp(),
         url varchar(200) DEFAULT NULL,
         userid varchar(50) NOT NULL,
         delay_time int(11) NOT NULL DEFAULT 3000
@@ -720,7 +720,7 @@ function Tkher_main_img($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         //m_("Create Success : $tab");
 
@@ -747,7 +747,7 @@ function Tkher_main_img($t_head, $tab) {
 
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+            //echo "Please check if the $tab table already exists. <br>";
         } else {
             m_("Create Success and Record Create Success : $tab");
         }
@@ -771,7 +771,7 @@ function Tkher_my_control($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         //m_("Create Success : $tab");
 
@@ -783,7 +783,7 @@ function Tkher_my_control($t_head, $tab) {
 
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+            //echo "Please check if the $tab table already exists. <br>";
         } else {
             m_("Create Success and Record Create Success : $tab");
         }
@@ -795,7 +795,7 @@ function Url_group($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."url_group (
         no int(10) auto_increment NOT NULL,
-        g_name varchar(200) NOT NULL DEFAULT '',
+        g_name varchar(200) NOT NULL,
         g_num varchar(50) DEFAULT NULL,
         g_class varchar(20) DEFAULT NULL,
         g_class_num int(11) DEFAULT NULL,
@@ -806,7 +806,7 @@ function Url_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -821,11 +821,11 @@ function Webeditor($t_head, $tab) {
         user varchar(30) DEFAULT 'solpakan',
         h_lev char(1) DEFAULT NULL,
         id varchar(50) DEFAULT NULL,
-        title varchar(255) NOT NULL DEFAULT '',
+        title varchar(255) NOT NULL,
         align varchar(255) DEFAULT NULL,
         content longblob  DEFAULT NULL,
         reply longblob  DEFAULT NULL,
-        date timestamp NULL DEFAULT current_timestamp(),
+        date timestamp DEFAULT current_timestamp(),
         backgroundcolor varchar(7) DEFAULT NULL,
         backgroundimage varchar(100) DEFAULT NULL,
         diff char(1) DEFAULT NULL,
@@ -838,7 +838,7 @@ function Webeditor($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -869,7 +869,7 @@ function Webeditor_comment($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -877,7 +877,6 @@ function Webeditor_comment($t_head, $tab) {
 
 function Member($t_head, $tab) {
     $tab = $t_head.$tab;
-    // 2024-03-26 mb_zip1 char(3) => char(10) 변경
     $SQL = "
 			CREATE TABLE ".$table_prefix."member (
 			  mb_no int(11) auto_increment NOT NULL,
@@ -936,7 +935,7 @@ function Member($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -950,7 +949,7 @@ function Log_info($t_head, $tab) {
         url varchar(255) DEFAULT NULL,
         name varchar(100) NOT NULL,
         id varchar(50) NOT NULL,
-        uptime datetime NOT NULL DEFAULT current_timestamp(),
+        uptime datetime DEFAULT current_timestamp(),
         ip varchar(20) DEFAULT NULL,
         msg text DEFAULT NULL,
         country_cd char(5) DEFAULT NULL,
@@ -958,14 +957,12 @@ function Log_info($t_head, $tab) {
         type char(10) DEFAULT NULL,
         start_pg char(255) DEFAULT NULL,
         email varchar(255) DEFAULT NULL,
-        PRIMARY KEY (no),
-        KEY no (no)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        PRIMARY KEY (no) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -979,7 +976,7 @@ function Point($t_head, $tab) {
         mb_id varchar(50) NOT NULL,
         po_datetime datetime DEFAULT current_timestamp(),
         po_title varchar(100) NOT NULL,
-        po_content varchar(255) NOT NULL DEFAULT '',
+        po_content varchar(255) NOT NULL,
         po_point int(11) NOT NULL DEFAULT 0,
         po_use_point int(11) NOT NULL DEFAULT 0,
         po_expired tinyint(4) NOT NULL DEFAULT 0,
@@ -987,7 +984,7 @@ function Point($t_head, $tab) {
         po_mb_point int(11) NOT NULL DEFAULT 0,
         po_rel_table varchar(100) NOT NULL,
         po_rel_id varchar(50) NOT NULL,
-        po_rel_action varchar(255) NOT NULL DEFAULT '',
+        po_rel_action varchar(255) NOT NULL,
         PRIMARY KEY (po_id),
         KEY index2 (po_expire_date)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -995,7 +992,7 @@ function Point($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -1005,8 +1002,8 @@ function Config($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
         CREATE TABLE ".$t_head."config (
-        kapp_title varchar(255) NOT NULL DEFAULT '',
-        kapp_admin varchar(255) NOT NULL DEFAULT '',
+        kapp_title varchar(255) NOT NULL,
+        kapp_admin varchar(255) NOT NULL,
         kapp_admin_email varchar(255) DEFAULT NULL,
         kapp_admin_email_name varchar(255) DEFAULT NULL,
         kapp_admin_level int(3) DEFAULT 8,
@@ -1073,7 +1070,7 @@ function Config($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         //m_("Create Success : $tab");
 
@@ -1147,7 +1144,7 @@ function Config($t_head, $tab) {
 
         if( !$result ){
             m_("SQL_Create_jsonA $tab Table Insert Invalid query: ");
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+            //echo "Please check if the $tab table already exists. <br>";
         } else {
             m_("Create Success and Record Create Success : $tab");
         }
@@ -1159,7 +1156,7 @@ function Visit($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."visit (
         vi_id int(11) auto_increment NOT NULL,
-        vi_ip varchar(255) NOT NULL DEFAULT '',
+        vi_ip varchar(255) NOT NULL,
         vi_date date NOT NULL DEFAULT '0000-00-00',
         vi_time time NOT NULL DEFAULT '00:00:00',
         vi_referer text DEFAULT NULL,
@@ -1175,7 +1172,7 @@ function Visit($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -1202,7 +1199,7 @@ function Ap_bbs($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -1228,11 +1225,148 @@ function Ap_bbs_curl($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
 }
+
+function My_schedule($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."my_schedule (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `id` varchar(50) NOT NULL,
+		  `year` char(4) NOT NULL,
+		  `month` char(2) NOT NULL,
+		  `day` char(2) NOT NULL,
+		  `lyear` char(4) DEFAULT NULL,
+		  `lmonth` char(2) DEFAULT NULL,
+		  `lday` char(2) DEFAULT NULL,
+		  `comment` varchar(250) DEFAULT NULL,
+		  `uptime` int(10) DEFAULT NULL,
+		  `sday` timestamp DEFAULT current_timestamp(),
+		  `uselunar` char(1) DEFAULT NULL,
+		  `lnm` char(5) DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function My_everlasting_schedule($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."my_everlasting_schedule (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `id` varchar(50) NOT NULL,
+		  `month` char(2) NOT NULL,
+		  `day` char(2) NOT NULL,
+		  `um_month` char(2) DEFAULT NULL,
+		  `um_day` char(2) DEFAULT NULL,
+		  `comment` varchar(250) DEFAULT NULL,
+		  `uptime` int(10) DEFAULT NULL,
+		  `sday` datetime DEFAULT current_timestamp(),
+		  `uselunar` char(1) DEFAULT NULL,
+		  `yundal` char(5) DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
+function Income($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."income (
+		  `num` int(11)  auto_increment NOT NULL,
+		  `userid` varchar(50) NOT NULL,
+		  `incomeinfo` varchar(150) NOT NULL,
+		  `income_code` char(30) NOT NULL,
+		  `money` int(11) NOT NULL DEFAULT 0,
+		  `memo` varchar(255) NOT NULL,
+		  `incomedate` date DEFAULT NULL,
+		  `day` datetime DEFAULT current_timestamp()
+        , primary key(num) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Income_code($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."income_code (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `income_code` char(30) NOT NULL,
+		  `incomeinfo` char(150) NOT NULL,
+		  `day` datetime DEFAULT current_timestamp(),
+		  `userid` char(50) NOT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Pay($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."pay (
+		  `num` int(11)  auto_increment NOT NULL,
+		  `userid` varchar(50) NOT NULL,
+		  `payinfo` varchar(150) NOT NULL,
+		  `pay_code` char(30) NOT NULL,
+		  `money` int(11) NOT NULL DEFAULT 0,
+		  `memo` varchar(255) NOT NULL,
+		  `paydate` date DEFAULT NULL,
+		  `day` datetime DEFAULT current_timestamp()
+        , primary key(num) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Pay_code($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."pay_code (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `pay_code` char(30) NOT NULL,
+		  `payinfo` char(150) NOT NULL,
+		  `day` datetime DEFAULT current_timestamp(),
+		  `userid` char(50) NOT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
 
 function E_list($t_head, $tab) {
     $tab = $t_head.$tab;
@@ -1250,7 +1384,7 @@ function E_list($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -1289,7 +1423,7 @@ function Pri_contect($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         //m_("Create Success : $tab");
         $query = "
@@ -1301,7 +1435,7 @@ function Pri_contect($t_head, $tab) {
 
         if( !$result ){
             m_("$tab Table Insert Invalid query: " . $query);
-            //m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+            //echo "Please check if the $tab table already exists. <br>";
         } else {
             m_("Create Success and Record Create Success : $tab");
         }
@@ -1334,7 +1468,7 @@ function Project($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -1344,13 +1478,13 @@ function Tkher_content($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
     CREATE TABLE `".$t_head."tkher_content` (
-    `co_id` varchar(50) NOT NULL DEFAULT '',
+    `co_id` varchar(50) NOT NULL,
     `co_html` tinyint(4) NOT NULL DEFAULT 0,
-    `co_subject` varchar(255) NOT NULL DEFAULT '',
+    `co_subject` varchar(255) NOT NULL,
     `co_content` longtext NOT NULL,
     `co_mobile_content` longtext NOT NULL,
-    `co_skin` varchar(255) NOT NULL DEFAULT '',
-    `co_mobile_skin` varchar(255) NOT NULL DEFAULT '',
+    `co_skin` varchar(255) NOT NULL,
+    `co_mobile_skin` varchar(255) NOT NULL,
     `co_tag_filter_use` tinyint(4) NOT NULL DEFAULT 0,
     `co_hit` int(11) NOT NULL DEFAULT 0,
     `co_include_head` varchar(255) NOT NULL,
@@ -1361,7 +1495,7 @@ function Tkher_content($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
@@ -1393,7 +1527,7 @@ function Pri_maintenance($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");// table이 이미 존재하는지 확인 바랍니다
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Create Success : $tab");
     }
