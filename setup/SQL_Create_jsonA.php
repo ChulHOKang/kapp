@@ -613,14 +613,14 @@ function Job_link_table_curl($t_head, $tab) {
         CREATE TABLE ".$t_head."job_link_table_curl (
         `seqno` int(11) auto_increment NOT NULL,
 		`host` varchar(100) NOT NULL,
-  `kapp_server` varchar(100) DEFAULT NULL,
+  `kapp_server` varchar(250) DEFAULT NULL,
   `link_title` varchar(200) DEFAULT NULL,
   `link_url` text DEFAULT NULL,
   `link_type` char(1) DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
   `up_day` timestamp DEFAULT current_timestamp(),
   `memo` text DEFAULT NULL,
-  `user_ip` varchar(255) DEFAULT NULL
+  `user_ip` varchar(15) DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
