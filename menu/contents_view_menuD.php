@@ -126,7 +126,8 @@ $query	= "SELECT * from {$tkher['webeditor_table']} where num = '".$num . "' ";
 $result	= sql_query( $query );
 $line	= sql_fetch_array($result);
 
-if( isset($title) ) {
+//if( isset($title) ) {
+if( isset($line['title']) ) {
 	if( isset($line['user'])) $row_user = $line['user'];
 	else $row_user = ''; 
 	if( $row_user == $line['book_name'])

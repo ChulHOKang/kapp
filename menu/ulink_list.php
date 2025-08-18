@@ -4,8 +4,8 @@
 		ulink_list.php, ulist.php : table : {$tkher['job_link_table']} 
 		cratree_my_list_menu.php - inc menu_run.php - search call
 	*/
-	if( isset($member['mb_id']) && $member['mb_id'] !== "") {
-		$H_ID	= get_session("ss_mb_id"); 
+	$H_ID	= get_session("ss_mb_id"); 
+	if( $H_ID !== "") {
 		if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
 		else $H_LEV = 0;
 		if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
@@ -361,7 +361,7 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 						//console.log(data);				//alert("OK ---" + seq_no);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-						alert(" 올바르지 않습니다.-- ulink_ajax.php");
+						alert(" error.-- ulink_list, ajax.php");
 						console.log(jqXHR);
 						console.log(textStatus);
 						console.log(errorThrown);
@@ -798,8 +798,8 @@ jQuery(document).ready(function ($) {
 			<TH>Project</TH>
 			<!-- <TH>User</TH> -->
 			<TH>Title</TH>
-			<!-- <TH>Link Url</TH> -->
-			<TH>type</TH>
+			<TH>Link Url</TH>
+			<!-- <TH>type</TH> -->
 			<TH>View</TH>
 			<TH>date</TH>
 			<!-- <TH>lev</TH>-->
@@ -875,6 +875,7 @@ jQuery(document).ready(function ($) {
 			$sys_label	= $rs['job_name'];	
 			$sys_name	= $rs['user_name']; //title
 			$rs_job_addr	= $rs['job_addr'];
+			$rs_club_url	= $rs['club_url'];
 			$num		= $rs['num'];
 			$user_id	= $rs['user_id'];	
 			$seqno		= $rs['seqno'];
@@ -907,15 +908,15 @@ jQuery(document).ready(function ($) {
 				  <td  bgcolor='black' title='<?=$user_id?>' width='30' ><img src='<?=$icon?>' width='30'></td>
 				  <td  bgcolor='black' style="width:15%;color:<?=$t_color?>;"><?=$sys_group?></td>
 <?php if( $rs['job_name']=='Note') { ?>
-				  <td bgcolor='<?=$td_bg?>' align='left' title='<?=$user_id?>:<?=$rs_job_addr?>'>
-					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a>
-				  </td>
+				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
+					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_club_url?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;"><?=$rs_club_url?></a></td>
 <?php } else {?>
-				  <td bgcolor='<?=$td_bg?>' align='left' title='<?=$user_id?>:<?=$rs_job_addr?>'>
-					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a>
-				  </td>
+				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
+					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr ?></a></td>
 <?php }?>
-				  <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$i_tit ?></td>
+				  <!-- <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$i_tit ?></td> -->
 				  <td style="background-color:black;color:<?=$t_color?>;width:30px;" ><?=$rs['view_cnt'] ?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:120px;" ><?=$rs['up_day'] ?></td>
 				</tr> 
