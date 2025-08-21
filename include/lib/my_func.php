@@ -22,11 +22,10 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	$kapp_iv = "~`!@#$%^&*()-_=+";
 	$link_secret_iv = "#@$%^&*()_+=-";
 	$send_mail = "solpakan@naver.com";
-	$user_admin_pass = 'ad2457807';
 	$id= "editor";	// admin
 	$pw	= "Edi!))$35";
 
-/* start program design. */
+	/* start program design. */
 	$is_mobile = false;
 	//$is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $_SERVER['HTTP_USER_AGENT']);
 	if( $is_mobile ) {
@@ -54,8 +53,11 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 
 	function TAB_curl_send( $curl_snm, $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		// use: kapp_tabel_create.php , table30m_A.php
-		global $H_ID, $H_EMAIL, $group_code, $group_name, $config, $kapp_iv, $kapp_key;
+		global $H_ID, $H_EMAIL, $group_code, $group_name, $config, $kapp_iv, $kapp_key, $tkher;
 		$tabData['data'][][] = array();
+
+//		$tabData['data'][$cnt]['hash_block_table']  = $config['hash_block_table'];
+		
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
 		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
 		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
@@ -76,12 +78,18 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$tabData['data'][$cnt]['if_data']    = $if_data;
 		$tabData['data'][$cnt]['relation_data']    = $relation_data;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+
+		//$ret = sql_query( "update {$tkher['config_table']} SET hash_block_table = '$sendData' " ); //where kapp_title ='K-App' 
+		//if( !$ret) 	echo "<br> config_table hash_block_table update Error. --- TAB_curl_send";	
+		//else echo "<br> config_table hash_block_table update OK --- TAB_curl_send";
+
 		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
 
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_table'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
 			'iv' => $kapp_iv
 		));
@@ -102,6 +110,8 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
 		$tabData['data'][][] = array();
 		$cnt = 0;
+//		$tabData['data'][$cnt]['hash_block_pg']  = $config['hash_block_pg'];
+
 		$tabData['data'][$cnt]['pg_code']  = $pg_code;
 		$tabData['data'][$cnt]['pg_name']  = $pg_name;
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
@@ -126,6 +136,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_pg'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
 			'iv' => $kapp_iv
 		));
@@ -144,7 +155,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	} // function
 	function TAB_curl_send_tabData( $curl_snm, $tabData ){
 		// use: table_curl_get_ailinkapp.php
-		global $kapp_iv, $kapp_key;
+		global $kapp_iv, $kapp_key, $config;
 
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
@@ -153,6 +164,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_table'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
 			'iv' => $kapp_iv
 		));
@@ -170,13 +182,14 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	}
 	function PG_curl_send_tabData( $curl_snm, $tabData ){
 		// use: pg_curl_get_ailinkapp.php
-		global $kapp_iv, $kapp_key; 
+		global $kapp_iv, $kapp_key, $config; 
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 		$url_ = $curl_snm . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_pg'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
 			'iv' => $kapp_iv
 		));
@@ -195,7 +208,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		return $response;
 	} // function
 	function Link_Table_curl_send_tabData( $kapp_theme, $tabData ){
-		global $kapp_iv, $kapp_key;
+		global $kapp_iv, $kapp_key, $config;
 
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 		$url_ = $kapp_theme . '/_Curl/Link_Table_curl_get_ailinkapp.php';
@@ -203,6 +216,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_job'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
 			'iv' => $kapp_iv
 		));
@@ -229,8 +243,6 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$from_session_url = KAPP_URL_T_; //$_SERVER['HTTP_HOST'];
 		$up_day  = date("Y-m-d-H:i:s");
 		$result = sql_fetch("SELECT * from {$tkher['job_link_table']} where user_id='$H_ID' and user_name='$sys_subtit' and job_addr='$sys_link' ");
-		//$tot = sql_num_rows($result);
-		//if( $tot < 1 ) {
 		if( !isset($result['user_id']) && !isset($result['user_name']) && !isset($result['job_arrd'])  ) {
 			$up_day = date("Y-m-d H:i:s");
 			$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID',  email='$H_EMAIL', job_name='$job_name', user_name='$sys_subtit', num='$sys_pg_root', aboard_no='$aboard_no', job_addr='$sys_link', jong='$jong', job_group='$job_group', club_url='$from_session_url', job_level='0', ip='$ip', up_day='$up_day' ";
@@ -247,8 +259,8 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				m_("job_link_table --- insert ok");
 				return true;
 			} else {
-				m_("my_func - job_link_table_add error ");
-				//echo "my_func, job_link_table_add error sql: " .$sqlA; exit;
+				//m_("my_func - job_link_table_add error ");
+				echo "my_func, job_link_table_add error sql: " .$sqlA; exit;
 				return false;
 			}
 		}
@@ -259,6 +271,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 
 		$tabData['data'][][] = array();
 		$cnt = 0;
+		//$tabData['data'][$cnt]['hash_block_job']  = $config['hash_block_job'];
 		$tabData['data'][$cnt]['link_title']  = $sys_subtit;
 		$tabData['data'][$cnt]['link_url']    = $sys_link;
 		$tabData['data'][$cnt]['link_type']   = $jong;
@@ -275,6 +288,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_job'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
 			'iv' => $kapp_iv
 		));
@@ -292,6 +306,77 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_close($curl);
 		return $response;
 	}
+	function sys_menu_bom_curl_send( $sys_pg ){
+		global $tabData, $H_ID, $H_EMAIL;
+		global $sys_subtit, $sys_memo, $config, $kapp_key;
+		global $imgtype1, $imgtype2, $imgtype3, $bgcolor, $fontcolor, $fontface, $fontsize;
+
+		$sys_userid		= $H_ID;	
+		$sys_menu		= $sys_pg;
+		$sys_submenu	= $sys_pg;
+		$sys_rcnt		= 0;
+		$sys_cnt		= 0;
+		$sys_disno		= 0;
+		$sys_level		= "mroot";
+		$sys_menutit	= "mroot";
+		$view_lev  = '0';
+		$cnt = 0;
+		$sys_link = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$H_ID . '&num=' . $sys_pg. '&sys_jong=M';
+		//	$tabData['data'][0]['hash_block_bom']  = $config['hash_block_bom'];
+		$tabData['data'][0]['sys_pg']      = $sys_pg;
+		$tabData['data'][0]['sys_subtit']  = $sys_subtit;
+		$tabData['data'][0]['sys_memo']    = $sys_memo;
+		$tabData['data'][0]['sys_menu']    = $sys_pg;
+		$tabData['data'][0]['sys_submenu'] = $sys_pg;
+		$tabData['data'][0]['sys_link']    = $sys_link;
+		$tabData['data'][0]['sys_level']   = "mroot";
+		$tabData['data'][0]['sys_menutit'] = "mroot";
+		$tabData['data'][0]['sys_rcnt']    = 0;
+		$tabData['data'][0]['sys_cnt']     = 0;
+		$tabData['data'][0]['sys_disno']   = 0;
+		$tabData['data'][0]['view_cnt']	  = 0;
+		$tabData['data'][0]['view_lev']    = '0';
+		$tabData['data'][0]['tit_gubun']   = 'M';
+		$tabData['data'][0]['book_num']    = $sys_pg;
+		$tabData['data'][0]['bgcolor']     = $bgcolor;
+		$tabData['data'][0]['fontcolor']   = $fontcolor;
+		$tabData['data'][0]['fontface']    = $fontface;
+		$tabData['data'][0]['fontsize']    = $fontsize;
+		$tabData['data'][0]['imgtype1']    = $imgtype1;
+		$tabData['data'][0]['imgtype2']    = $imgtype2;
+		$tabData['data'][0]['imgtype3']    = $imgtype3;
+
+		$tabData['data'][0]['host']       = KAPP_URL_T_; 
+		$tabData['data'][0]['sys_userid'] = $H_ID;
+		$tabData['data'][0]['email']      = $H_EMAIL;
+
+		$iv = "~`!@#$%^&*()-_=+";
+		$sendData = encryptA( $tabData , $kapp_key, $iv);
+
+		$url_ =  'https://fation.net/kapp/_Curl/sys_menu_bom_curl_get_ailinkapp.php';
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_bom'],
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
+			'iv' => $iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);	//echo "curl --- response: " . $response;
+		if( $response == false) {
+			$_ms = "cratreebook_make_create_menu curl Fail : " . curl_error($curl);
+			echo 'curl Fail : ' . curl_error($curl);		//m_(" ------------ : " . $_ms);
+		} else {
+			//$_ms = 'cratreebook_make_create_menu curl OK: ' . $response;
+			//echo 'curl 응답 : ' . $response;
+		}
+		curl_close($curl);	
+		return true;
+	}
 	function Sys_Menu_bom_curl_send_tabData( $kapp_theme, $tabData ){
 		global $kapp_iv, $kapp_key;
 
@@ -301,6 +386,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_bom'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
 			'iv' => $kapp_iv
 		));
@@ -323,6 +409,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 
 		$tabData['data'][][] = array();
 		$cnt = 0;
+//		$tabData['data'][$cnt]['hash_block_ab']  = $config['hash_block_ab'];
 		$tabData['data'][$cnt]['infor']  = $infor;
 		$tabData['data'][$cnt]['email']    = $email;
 		$tabData['data'][$cnt]['subject']       = $subject;
@@ -339,6 +426,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_ab'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE), 
 			'iv' => $kapp_iv
 		));
@@ -367,6 +455,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
 		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'hash_block' => $config['hash_block_ab'],
 			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
 			'iv' => $kapp_iv
 		));
