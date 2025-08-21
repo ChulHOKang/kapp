@@ -3,19 +3,17 @@
 	/*
         kapp_dbcon_create.php : 
 		: call : setup.php에서 call한다. 
-			- create table 'kapp_member' and 'DB의 id, pw record'를 생성한다 중요!
+			- create table 'kapp_member' and 'DB의 id, pw record' create
 			- DB_curl_get_ailinkapp.php : curl_server setting
-		out 1 : 'kapp_dbcon.php'       를 생성한다.
-		    2 : 'tkher_dbcon_Table.php' 를 생성한다.
-		out 3 : kapp_DB table create, 'kapp_member' Table and 'DB의 id, pw record'를 생성한다 중요!
-		: call : setup.php에서 call한다. 
+		out 1 : 'kapp_dbcon.php' create
+				2 : 'tkher_dbcon_Table.php' create
+		out 3 : kapp_DB table create, 'kapp_member' Table and 'DB id, pw record' create
+		: call : setup.php. 
 		- call : DB_curl_get_ailinkapp.php - DB server url setting
 		- DB : kapp_DB , kapp_DB_curl
 		- function : create_kapp_dbcon() , kapp_DB_table_create(), kapp_DB_record_create(), DB_curl_send( $ip, $server_name_set, $upday, $memo, $pw_md5 )
-
-		-file : /var/www/html/biog7/kapp/data/kapp_dbcon.php created. 
+		-ex) file : /var/www/html/biog7/kapp/data/kapp_dbcon.php created. 
 		-kapp_member Insert Success
-		-
 	*/
 	$tabData['data'][][] = array();
 	$db_host 		= "";
@@ -264,30 +262,27 @@
 			  mb_name varchar(255) NOT NULL,
 			  mb_nick varchar(255) ,
 			  mb_nick_date date,
-			  mb_email varchar(255) NOT NULL,
+			  mb_email varchar(50) NOT NULL,
 			  mb_photo varchar(255) ,
 			  mb_homepage varchar(255) ,
 			  mb_level tinyint(4),
 			  mb_sex char(1) ,
-			  mb_birth varchar(255) ,
-			  mb_tel varchar(255) ,
-			  mb_hp varchar(255) ,
+			  mb_birth varchar(5) ,
+			  mb_tel varchar(20) ,
+			  mb_hp varchar(20) ,
 			  mb_certify varchar(20) ,
 			  mb_adult tinyint(4) ,
-			  mb_dupinfo varchar(255) ,
-			  mb_zip1 char(4) ,
-			  mb_zip2 char(4) ,
+			  mb_dupinfo varchar(20) ,
+			  mb_zip1 char(10) ,
 			  mb_addr1 varchar(255) ,
 			  mb_addr2 varchar(255) ,
-			  mb_addr3 varchar(255) ,
-			  mb_addr_jibeon varchar(255) ,
 			  mb_signature text,
 			  mb_recommend varchar(255) ,
 			  mb_point int(11) DEFAULT 0,
 			  mb_today_login datetime,
-			  mb_login_ip varchar(255) ,
+			  mb_login_ip varchar(20) ,
 			  mb_datetime datetime ,
-			  mb_ip varchar(255) ,
+			  mb_ip varchar(20) ,
 			  mb_leave_date varchar(8) ,
 			  mb_intercept_date varchar(8) ,
 			  mb_email_certify datetime,
@@ -302,7 +297,12 @@
 			  mb_memo_call varchar(255),
 			  mb_penalty int(11) DEFAULT 0,
 			  mb_gpt_key varchar(255),
-			  mb_gpt_model varchar(255)
+			  mb_gpt_model varchar(255),
+			  hash_block_ab longblob DEFAULT NULL,
+			  hash_block_job longblob DEFAULT NULL,
+			  hash_block_bom longblob DEFAULT NULL,
+			  hash_block_table longblob DEFAULT NULL,
+			  hash_block_pg longblob  DEFAULT NULL
 			  , PRIMARY KEY (mb_no)
 			  , UNIQUE KEY mb_id (mb_id)
 			  , KEY mb_today_login (mb_today_login)
@@ -713,8 +713,12 @@ function Config($t_head, $tab) {
         kapp_naver_client_secret varchar(255) DEFAULT NULL,
         kapp_pay_point int(11) DEFAULT 1,
         kapp_slide_time int(11) DEFAULT 6000,
-		PRIMARY KEY (kapp_title)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		  hash_block_ab longblob,
+		  hash_block_job longblob,
+		  hash_block_bom longblob,
+		  hash_block_table longblob,
+		  hash_block_pg longblob
+		, PRIMARY KEY (kapp_title) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
@@ -1414,28 +1418,29 @@ function Table10_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` varchar(100) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `group_code` varchar(50)   DEFAULT NULL,
-  `group_name` varchar(50)   DEFAULT NULL,
-  `disno` int(5) NOT NULL,
-  `tab_enm` varchar(50) NOT NULL,
-  `tab_hnm` varchar(50) NOT NULL,
-  `fld_enm` varchar(50) NOT NULL,
-  `fld_hnm` varchar(50) NOT NULL,
-  `fld_type` varchar(20) NOT NULL,
-  `fld_len` int(10) NOT NULL,
-  `if_line` tinyint(3) DEFAULT NULL,
-  `if_type` text DEFAULT NULL,
-  `if_data` text DEFAULT NULL,
-  `relation_data` text DEFAULT NULL,
-  `memo` text DEFAULT NULL,
-  `upday` timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `userid` varchar(50) NOT NULL,
-  `grant_write` varchar(3) DEFAULT NULL,
-  `grant_view` varchar(3) DEFAULT NULL,
-  `table_yn` varchar(3) DEFAULT NULL,
-  `sqltable` text DEFAULT NULL
+		  `host` varchar(100) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `group_code` varchar(50)   DEFAULT NULL,
+		  `group_name` varchar(50)   DEFAULT NULL,
+		  `disno` int(5) NOT NULL,
+		  `tab_enm` varchar(50) NOT NULL,
+		  `tab_hnm` varchar(50) NOT NULL,
+		  `fld_enm` varchar(50) NOT NULL,
+		  `fld_hnm` varchar(50) NOT NULL,
+		  `fld_type` varchar(20) NOT NULL,
+		  `fld_len` int(10) NOT NULL,
+		  `if_line` tinyint(3) DEFAULT NULL,
+		  `if_type` text DEFAULT NULL,
+		  `if_data` text DEFAULT NULL,
+		  `relation_data` text DEFAULT NULL,
+		  `memo` text DEFAULT NULL,
+		  `upday` timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		  `userid` varchar(50) NOT NULL,
+		  `grant_write` varchar(3) DEFAULT NULL,
+		  `grant_view` varchar(3) DEFAULT NULL,
+		  `table_yn` varchar(3) DEFAULT NULL,
+		  `sqltable` text DEFAULT NULL,
+		  `hash_block_table` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -1451,28 +1456,29 @@ function Table10_pg_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_pg_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` varchar(100) NOT NULL,
-  `pg_code` varchar(50) NOT NULL,
-  `pg_name` varchar(50) NOT NULL,
-  `tab_enm` varchar(50) NOT NULL,
-  `tab_hnm` varchar(50) NOT NULL,
-  `item_cnt` tinyint(3) DEFAULT NULL,
-  `item_array` text NOT NULL,
-  `if_type` text DEFAULT NULL,
-  `if_data` text DEFAULT NULL,
-  `pop_data` text DEFAULT NULL,
-  `relation_data` text DEFAULT NULL,
-  `relation_type` varchar(255) DEFAULT NULL,
-  `memo` text DEFAULT NULL,
-  `group_code` varchar(50) NOT NULL,
-  `group_name` varchar(50) NOT NULL,
-  `disno` int(5) DEFAULT NULL,
-  `upday` timestamp DEFAULT current_timestamp(),
-  `userid` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `del` varchar(1) DEFAULT NULL,
-  `del_date` datetime DEFAULT NULL,
-  `sys_link` varchar(255) NOT NULL
+		  `host` varchar(100) NOT NULL,
+		  `pg_code` varchar(50) NOT NULL,
+		  `pg_name` varchar(50) NOT NULL,
+		  `tab_enm` varchar(50) NOT NULL,
+		  `tab_hnm` varchar(50) NOT NULL,
+		  `item_cnt` tinyint(3) DEFAULT NULL,
+		  `item_array` text NOT NULL,
+		  `if_type` text DEFAULT NULL,
+		  `if_data` text DEFAULT NULL,
+		  `pop_data` text DEFAULT NULL,
+		  `relation_data` text DEFAULT NULL,
+		  `relation_type` varchar(255) DEFAULT NULL,
+		  `memo` text DEFAULT NULL,
+		  `group_code` varchar(50) NOT NULL,
+		  `group_name` varchar(50) NOT NULL,
+		  `disno` int(5) DEFAULT NULL,
+		  `upday` timestamp DEFAULT current_timestamp(),
+		  `userid` varchar(50) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `del` varchar(1) DEFAULT NULL,
+		  `del_date` datetime DEFAULT NULL,
+		  `sys_link` varchar(255) NOT NULL,
+		  `hash_block_pg` longblob  DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -1489,14 +1495,15 @@ function Job_link_table_curl($t_head, $tab) {
         CREATE TABLE ".$t_head."job_link_table_curl (
         `seqno` int(11) auto_increment NOT NULL,
 		`host` varchar(100) NOT NULL,
-  `kapp_server` varchar(250) DEFAULT NULL,
-  `link_title` varchar(200) DEFAULT NULL,
-  `link_url` text DEFAULT NULL,
-  `link_type` char(1) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `up_day` timestamp DEFAULT current_timestamp(),
-  `memo` text DEFAULT NULL,
-  `user_ip` varchar(15) DEFAULT NULL
+		  `kapp_server` varchar(250) DEFAULT NULL,
+		  `link_title` varchar(200) DEFAULT NULL,
+		  `link_url` text DEFAULT NULL,
+		  `link_type` char(1) DEFAULT NULL,
+		  `email` varchar(50) DEFAULT NULL,
+		  `up_day` timestamp DEFAULT current_timestamp(),
+		  `memo` text DEFAULT NULL,
+		  `user_ip` varchar(15) DEFAULT NULL,
+		 `hash_block_job` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -1513,34 +1520,35 @@ function Sys_menu_bom_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."sys_menu_bom_curl (
         `seqno` int(11) auto_increment NOT NULL,
-  `host` varchar(100) DEFAULT NULL,
-  `sys_userid` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `sys_pg` varchar(50) NOT NULL,
-  `sys_rcnt` int(11) DEFAULT 0,
-  `sys_disno` int(11) DEFAULT 0,
-  `sys_subtit` varchar(50) DEFAULT NULL,
-  `sys_link` varchar(250) NOT NULL,
-  `sys_level` varchar(50) DEFAULT NULL,
-  `sys_menu` varchar(100) NOT NULL,
-  `sys_submenu` varchar(100) NOT NULL,
-  `sys_cnt` int(11) DEFAULT 0,
-  `sys_memo` text DEFAULT NULL,
-  `sys_file` varchar(50) DEFAULT NULL,
-  `sys_menutit` varchar(100) DEFAULT NULL,
-  `view_lev` char(1) DEFAULT NULL,
-  `view_cnt` int(11) DEFAULT 0,
-  `tit_gubun` char(1) DEFAULT NULL,
-  `book_num` varchar(50) DEFAULT NULL,
-  `up_day` timestamp DEFAULT current_timestamp(),
-  `ip` varchar(20) DEFAULT NULL,
-  `bgcolor` varchar(10) DEFAULT NULL,
-  `fontcolor` varchar(10) DEFAULT NULL,
-  `fontface` varchar(10) DEFAULT NULL,
-  `fontsize` varchar(10) DEFAULT NULL,
-  `imgtype1` varchar(100) DEFAULT NULL,
-  `imgtype2` varchar(100) DEFAULT NULL,
-  `imgtype3` varchar(100) DEFAULT NULL
+		  `host` varchar(100) DEFAULT NULL,
+		  `sys_userid` varchar(50) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `sys_pg` varchar(50) NOT NULL,
+		  `sys_rcnt` int(11) DEFAULT 0,
+		  `sys_disno` int(11) DEFAULT 0,
+		  `sys_subtit` varchar(50) DEFAULT NULL,
+		  `sys_link` varchar(250) NOT NULL,
+		  `sys_level` varchar(50) DEFAULT NULL,
+		  `sys_menu` varchar(100) NOT NULL,
+		  `sys_submenu` varchar(100) NOT NULL,
+		  `sys_cnt` int(11) DEFAULT 0,
+		  `sys_memo` text DEFAULT NULL,
+		  `sys_file` varchar(50) DEFAULT NULL,
+		  `sys_menutit` varchar(100) DEFAULT NULL,
+		  `view_lev` char(1) DEFAULT NULL,
+		  `view_cnt` int(11) DEFAULT 0,
+		  `tit_gubun` char(1) DEFAULT NULL,
+		  `book_num` varchar(50) DEFAULT NULL,
+		  `up_day` timestamp DEFAULT current_timestamp(),
+		  `ip` varchar(20) DEFAULT NULL,
+		  `bgcolor` varchar(10) DEFAULT NULL,
+		  `fontcolor` varchar(10) DEFAULT NULL,
+		  `fontface` varchar(10) DEFAULT NULL,
+		  `fontsize` varchar(10) DEFAULT NULL,
+		  `imgtype1` varchar(100) DEFAULT NULL,
+		  `imgtype2` varchar(100) DEFAULT NULL,
+		  `imgtype3` varchar(100) DEFAULT NULL,
+			  `hash_block_bom` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -1741,33 +1749,30 @@ function Member($t_head, $tab) {
         mb_id varchar(50) NOT NULL,
         mb_sn varchar(255) DEFAULT NULL,
         mb_password varchar(255) DEFAULT NULL,
-        mb_name varchar(255) DEFAULT NULL,
-        mb_nick varchar(255) DEFAULT NULL,
+        mb_name varchar(100) DEFAULT NULL,
+        mb_nick varchar(50) DEFAULT NULL,
         mb_nick_date date DEFAULT '0000-00-00',
         mb_email varchar(255) NOT NULL,
         mb_photo varchar(255) DEFAULT NULL,
         mb_homepage varchar(255) DEFAULT NULL,
         mb_level tinyint(4) DEFAULT 0,
         mb_sex char(1) DEFAULT NULL,
-        mb_birth varchar(255) DEFAULT NULL,
-        mb_tel varchar(255) DEFAULT NULL,
-        mb_hp varchar(255) DEFAULT NULL,
+        mb_birth varchar(5) DEFAULT NULL,
+        mb_tel varchar(20) DEFAULT NULL,
+        mb_hp varchar(20) DEFAULT NULL,
         mb_certify varchar(20) DEFAULT NULL,
         mb_adult tinyint(4) NOT NULL DEFAULT 0,
-        mb_dupinfo varchar(255) DEFAULT NULL,
+        mb_dupinfo varchar(20) DEFAULT NULL,
         mb_zip1 char(10) DEFAULT NULL,
-        mb_zip2 char(3) DEFAULT NULL,
         mb_addr1 varchar(255) DEFAULT NULL,
         mb_addr2 varchar(255) DEFAULT NULL,
-        mb_addr3 varchar(255) DEFAULT NULL,
-        mb_addr_jibeon varchar(255) DEFAULT NULL,
         mb_signature text DEFAULT NULL,
         mb_recommend varchar(255) DEFAULT NULL,
         mb_point int(11) DEFAULT 0,
         mb_today_login datetime DEFAULT '0000-00-00 00:00:00',
-        mb_login_ip varchar(255) DEFAULT NULL,
+        mb_login_ip varchar(20) DEFAULT NULL,
         mb_datetime datetime DEFAULT current_timestamp(),
-        mb_ip varchar(255) DEFAULT NULL,
+        mb_ip varchar(20) DEFAULT NULL,
         mb_leave_date varchar(8) DEFAULT NULL,
         mb_intercept_date varchar(8) DEFAULT NULL,
         mb_email_certify datetime DEFAULT '0000-00-00 00:00:00',
@@ -1779,8 +1784,11 @@ function Member($t_head, $tab) {
         mb_open tinyint(4) DEFAULT 0,
         mb_open_date date DEFAULT '0000-00-00',
         mb_profile text DEFAULT NULL,
-        mb_memo_call varchar(255) DEFAULT NULL,
-        PRIMARY KEY (mb_no),
+		  mb_memo_call varchar(255),
+		  mb_penalty int(11) DEFAULT 0,
+		  mb_gpt_key varchar(255),
+		  mb_gpt_model varchar(255)
+          , PRIMARY KEY (mb_no),
         UNIQUE KEY mb_id (mb_id),
         KEY mb_today_login (mb_today_login),
         KEY mb_datetime (mb_datetime),
@@ -1916,8 +1924,8 @@ function Ap_bbs_curl($t_head, $tab) {
 		`aboard_tab_enm` varchar(50) DEFAULT NULL,
 		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
 		`kapp_server` varchar(100) DEFAULT NULL,
-        PRIMARY KEY (`seqno`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		`hash_block_ab` longblob DEFAULT NULL
+		, PRIMARY KEY (`seqno`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){

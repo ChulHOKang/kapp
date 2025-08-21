@@ -536,28 +536,29 @@ function Table10_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` varchar(100) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `group_code` varchar(50)  DEFAULT NULL,
-  `group_name` varchar(50)  DEFAULT NULL,
-  `disno` int(5) NOT NULL,
-  `tab_enm` varchar(50) NOT NULL,
-  `tab_hnm` varchar(50) NOT NULL,
-  `fld_enm` varchar(50) NOT NULL,
-  `fld_hnm` varchar(50) NOT NULL,
-  `fld_type` varchar(20) NOT NULL,
-  `fld_len` int(10) NOT NULL,
-  `if_line` tinyint(3) DEFAULT NULL,
-  `if_type` text DEFAULT NULL,
-  `if_data` text DEFAULT NULL,
-  `relation_data` text DEFAULT NULL,
-  `memo` text DEFAULT NULL,
-  `upday` timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `userid` varchar(50) NOT NULL,
-  `grant_write` varchar(3) DEFAULT NULL,
-  `grant_view` varchar(3) DEFAULT NULL,
-  `table_yn` varchar(3) DEFAULT NULL,
-  `sqltable` text DEFAULT NULL
+		  `host` varchar(100) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `group_code` varchar(50)  DEFAULT NULL,
+		  `group_name` varchar(50)  DEFAULT NULL,
+		  `disno` int(5) NOT NULL,
+		  `tab_enm` varchar(50) NOT NULL,
+		  `tab_hnm` varchar(50) NOT NULL,
+		  `fld_enm` varchar(50) NOT NULL,
+		  `fld_hnm` varchar(50) NOT NULL,
+		  `fld_type` varchar(20) NOT NULL,
+		  `fld_len` int(10) NOT NULL,
+		  `if_line` tinyint(3) DEFAULT NULL,
+		  `if_type` text DEFAULT NULL,
+		  `if_data` text DEFAULT NULL,
+		  `relation_data` text DEFAULT NULL,
+		  `memo` text DEFAULT NULL,
+		  `upday` timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		  `userid` varchar(50) NOT NULL,
+		  `grant_write` varchar(3) DEFAULT NULL,
+		  `grant_view` varchar(3) DEFAULT NULL,
+		  `table_yn` varchar(3) DEFAULT NULL,
+		  `sqltable` text DEFAULT NULL,
+		  `hash_block_table` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -574,28 +575,29 @@ function Table10_pg_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_pg_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` varchar(100) NOT NULL,
-  `pg_code` char(50) NOT NULL,
-  `pg_name` char(50) NOT NULL,
-  `tab_enm` varchar(50) NOT NULL,
-  `tab_hnm` varchar(50) NOT NULL,
-  `item_cnt` tinyint(3) DEFAULT NULL,
-  `item_array` text NOT NULL,
-  `if_type` text DEFAULT NULL,
-  `if_data` text DEFAULT NULL,
-  `pop_data` text DEFAULT NULL,
-  `relation_data` text DEFAULT NULL,
-  `relation_type` varchar(255) DEFAULT NULL,
-  `memo` text DEFAULT NULL,
-  `group_code` varchar(50) NOT NULL,
-  `group_name` varchar(50) NOT NULL,
-  `disno` int(5) DEFAULT NULL,
-  `upday` timestamp DEFAULT current_timestamp(),
-  `userid` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `del` varchar(1) DEFAULT NULL,
-  `del_date` datetime DEFAULT NULL,
-  `sys_link` varchar(255) NOT NULL
+		  `host` varchar(100) NOT NULL,
+		  `pg_code` char(50) NOT NULL,
+		  `pg_name` char(50) NOT NULL,
+		  `tab_enm` varchar(50) NOT NULL,
+		  `tab_hnm` varchar(50) NOT NULL,
+		  `item_cnt` tinyint(3) DEFAULT NULL,
+		  `item_array` text NOT NULL,
+		  `if_type` text DEFAULT NULL,
+		  `if_data` text DEFAULT NULL,
+		  `pop_data` text DEFAULT NULL,
+		  `relation_data` text DEFAULT NULL,
+		  `relation_type` varchar(255) DEFAULT NULL,
+		  `memo` text DEFAULT NULL,
+		  `group_code` varchar(50) NOT NULL,
+		  `group_name` varchar(50) NOT NULL,
+		  `disno` int(5) DEFAULT NULL,
+		  `upday` timestamp DEFAULT current_timestamp(),
+		  `userid` varchar(50) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `del` varchar(1) DEFAULT NULL,
+		  `del_date` datetime DEFAULT NULL,
+		  `sys_link` varchar(255) NOT NULL,
+		  `hash_block_pg` longblob  DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -613,14 +615,15 @@ function Job_link_table_curl($t_head, $tab) {
         CREATE TABLE ".$t_head."job_link_table_curl (
         `seqno` int(11) auto_increment NOT NULL,
 		`host` varchar(100) NOT NULL,
-  `kapp_server` varchar(250) DEFAULT NULL,
-  `link_title` varchar(200) DEFAULT NULL,
-  `link_url` text DEFAULT NULL,
-  `link_type` char(1) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `up_day` timestamp DEFAULT current_timestamp(),
-  `memo` text DEFAULT NULL,
-  `user_ip` varchar(15) DEFAULT NULL
+		  `kapp_server` varchar(250) DEFAULT NULL,
+		  `link_title` varchar(200) DEFAULT NULL,
+		  `link_url` text DEFAULT NULL,
+		  `link_type` char(1) DEFAULT NULL,
+		  `email` varchar(50) DEFAULT NULL,
+		  `up_day` timestamp DEFAULT current_timestamp(),
+		  `memo` text DEFAULT NULL,
+		  `user_ip` varchar(15) DEFAULT NULL,
+		 `hash_block_job` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -637,34 +640,35 @@ function Sys_menu_bom_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."sys_menu_bom_curl (
         `seqno` int(11) auto_increment NOT NULL,
-  `host` varchar(100) DEFAULT NULL,
-  `sys_userid` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `sys_pg` varchar(50) NOT NULL,
-  `sys_rcnt` int(11) DEFAULT 0,
-  `sys_disno` int(11) DEFAULT 0,
-  `sys_subtit` varchar(50) DEFAULT NULL,
-  `sys_link` varchar(250) NOT NULL,
-  `sys_level` varchar(50) DEFAULT NULL,
-  `sys_menu` varchar(100) NOT NULL,
-  `sys_submenu` varchar(100) NOT NULL,
-  `sys_cnt` int(11) DEFAULT 0,
-  `sys_memo` text DEFAULT NULL,
-  `sys_file` varchar(50) DEFAULT NULL,
-  `sys_menutit` varchar(100) DEFAULT NULL,
-  `view_lev` char(1) DEFAULT NULL,
-  `view_cnt` int(11) DEFAULT 0,
-  `tit_gubun` char(1) DEFAULT NULL,
-  `book_num` varchar(50) DEFAULT NULL,
-  `up_day` timestamp DEFAULT current_timestamp(),
-  `ip` varchar(20) DEFAULT NULL,
-  `bgcolor` varchar(10) DEFAULT NULL,
-  `fontcolor` varchar(10) DEFAULT NULL,
-  `fontface` varchar(10) DEFAULT NULL,
-  `fontsize` varchar(10) DEFAULT NULL,
-  `imgtype1` varchar(100) DEFAULT NULL,
-  `imgtype2` varchar(100) DEFAULT NULL,
-  `imgtype3` varchar(100) DEFAULT NULL
+		  `host` varchar(100) DEFAULT NULL,
+		  `sys_userid` varchar(50) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `sys_pg` varchar(50) NOT NULL,
+		  `sys_rcnt` int(11) DEFAULT 0,
+		  `sys_disno` int(11) DEFAULT 0,
+		  `sys_subtit` varchar(50) DEFAULT NULL,
+		  `sys_link` varchar(250) NOT NULL,
+		  `sys_level` varchar(50) DEFAULT NULL,
+		  `sys_menu` varchar(100) NOT NULL,
+		  `sys_submenu` varchar(100) NOT NULL,
+		  `sys_cnt` int(11) DEFAULT 0,
+		  `sys_memo` text DEFAULT NULL,
+		  `sys_file` varchar(50) DEFAULT NULL,
+		  `sys_menutit` varchar(100) DEFAULT NULL,
+		  `view_lev` char(1) DEFAULT NULL,
+		  `view_cnt` int(11) DEFAULT 0,
+		  `tit_gubun` char(1) DEFAULT NULL,
+		  `book_num` varchar(50) DEFAULT NULL,
+		  `up_day` timestamp DEFAULT current_timestamp(),
+		  `ip` varchar(20) DEFAULT NULL,
+		  `bgcolor` varchar(10) DEFAULT NULL,
+		  `fontcolor` varchar(10) DEFAULT NULL,
+		  `fontface` varchar(10) DEFAULT NULL,
+		  `fontsize` varchar(10) DEFAULT NULL,
+		  `imgtype1` varchar(100) DEFAULT NULL,
+		  `imgtype2` varchar(100) DEFAULT NULL,
+		  `imgtype3` varchar(100) DEFAULT NULL,
+		  `hash_block_bom` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -878,59 +882,56 @@ function Webeditor_comment($t_head, $tab) {
 function Member($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
-			CREATE TABLE ".$table_prefix."member (
-			  mb_no int(11) auto_increment NOT NULL,
-			  mb_id varchar(50) NOT NULL,
-			  mb_sn varchar(255) ,
-			  mb_password varchar(255) NOT NULL,
-			  mb_name varchar(255) NOT NULL,
-			  mb_nick varchar(255) ,
-			  mb_nick_date date,
-			  mb_email varchar(255) NOT NULL,
-			  mb_photo varchar(255) ,
-			  mb_homepage varchar(255) ,
-			  mb_level tinyint(4),
-			  mb_sex char(1) ,
-			  mb_birth varchar(255) ,
-			  mb_tel varchar(255) ,
-			  mb_hp varchar(255) ,
-			  mb_certify varchar(20) ,
-			  mb_adult tinyint(4) ,
-			  mb_dupinfo varchar(255) ,
-			  mb_zip1 char(4) ,
-			  mb_zip2 char(4) ,
-			  mb_addr1 varchar(255) ,
-			  mb_addr2 varchar(255) ,
-			  mb_addr3 varchar(255) ,
-			  mb_addr_jibeon varchar(255) ,
-			  mb_signature text,
-			  mb_recommend varchar(255) ,
-			  mb_point int(11) DEFAULT 0,
-			  mb_today_login datetime,
-			  mb_login_ip varchar(255) ,
-			  mb_datetime datetime ,
-			  mb_ip varchar(255) ,
-			  mb_leave_date varchar(8) ,
-			  mb_intercept_date varchar(8) ,
-			  mb_email_certify datetime,
-			  mb_email_certify2 varchar(255) ,
-			  mb_memo text NOT NULL,
-			  mb_lost_certify varchar(255),
-			  mb_mailling tinyint(4),
-			  mb_sms tinyint(4),
-			  mb_open tinyint(4),
-			  mb_open_date date,
-			  mb_profile text,
-			  mb_memo_call varchar(255),
-			  mb_penalty int(11) DEFAULT 0,
-			  mb_gpt_key varchar(255),
-			  mb_gpt_model varchar(255)
-			  , PRIMARY KEY (mb_no)
-			  , UNIQUE KEY mb_id (mb_id)
-			  , KEY mb_today_login (mb_today_login)
-			  , KEY mb_datetime (mb_datetime)
-			  , KEY mb_email (mb_email)
-			  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        CREATE TABLE ".$t_head."member (
+        mb_no int(11) auto_increment NOT NULL,
+        mb_id varchar(50) NOT NULL,
+        mb_sn varchar(255) DEFAULT NULL,
+        mb_password varchar(255) DEFAULT NULL,
+        mb_name varchar(100) DEFAULT NULL,
+        mb_nick varchar(50) DEFAULT NULL,
+        mb_nick_date date DEFAULT '0000-00-00',
+        mb_email varchar(255) NOT NULL,
+        mb_photo varchar(255) DEFAULT NULL,
+        mb_homepage varchar(255) DEFAULT NULL,
+        mb_level tinyint(4) DEFAULT 0,
+        mb_sex char(1) DEFAULT NULL,
+        mb_birth varchar(5) DEFAULT NULL,
+        mb_tel varchar(20) DEFAULT NULL,
+        mb_hp varchar(20) DEFAULT NULL,
+        mb_certify varchar(20) DEFAULT NULL,
+        mb_adult tinyint(4) NOT NULL DEFAULT 0,
+        mb_dupinfo varchar(20) DEFAULT NULL,
+        mb_zip1 char(10) DEFAULT NULL,
+        mb_addr1 varchar(255) DEFAULT NULL,
+        mb_addr2 varchar(255) DEFAULT NULL,
+        mb_signature text DEFAULT NULL,
+        mb_recommend varchar(255) DEFAULT NULL,
+        mb_point int(11) DEFAULT 0,
+        mb_today_login datetime DEFAULT '0000-00-00 00:00:00',
+        mb_login_ip varchar(20) DEFAULT NULL,
+        mb_datetime datetime DEFAULT current_timestamp(),
+        mb_ip varchar(20) DEFAULT NULL,
+        mb_leave_date varchar(8) DEFAULT NULL,
+        mb_intercept_date varchar(8) DEFAULT NULL,
+        mb_email_certify datetime DEFAULT '0000-00-00 00:00:00',
+        mb_email_certify2 varchar(255) DEFAULT NULL,
+        mb_memo text DEFAULT NULL,
+        mb_lost_certify varchar(255) DEFAULT NULL,
+        mb_mailling tinyint(4) DEFAULT 0,
+        mb_sms tinyint(4) DEFAULT 0,
+        mb_open tinyint(4) DEFAULT 0,
+        mb_open_date date DEFAULT '0000-00-00',
+        mb_profile text DEFAULT NULL,
+		  mb_memo_call varchar(255),
+		  mb_penalty int(11) DEFAULT 0,
+		  mb_gpt_key varchar(255),
+		  mb_gpt_model varchar(255)
+          , PRIMARY KEY (mb_no),
+        UNIQUE KEY mb_id (mb_id),
+        KEY mb_today_login (mb_today_login),
+        KEY mb_datetime (mb_datetime),
+        KEY mb_email (mb_email)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
@@ -999,7 +1000,9 @@ function Point($t_head, $tab) {
 }
 
 function Config($t_head, $tab) {
+	global $admin_email, $table_prefix, $admin_id;
     $tab = $t_head.$tab;
+	$optm = date("Y-m-d", time());
     $SQL = "
         CREATE TABLE ".$t_head."config (
         kapp_title varchar(255) NOT NULL,
@@ -1064,8 +1067,12 @@ function Config($t_head, $tab) {
         kapp_naver_client_secret varchar(255) DEFAULT NULL,
         kapp_pay_point int(11) DEFAULT 1,
         kapp_slide_time int(11) DEFAULT 6000,
-		PRIMARY KEY (kapp_title)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		  hash_block_ab longblob,
+		  hash_block_job longblob,
+		  hash_block_bom longblob,
+		  hash_block_table longblob,
+		  hash_block_pg longblob
+		, PRIMARY KEY (kapp_title) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
@@ -1090,8 +1097,8 @@ function Config($t_head, $tab) {
 			kapp_nick_modify=60,
 			kapp_new_rows=15,
 			kapp_read_point=100,
-			kapp_write_point=3000,
-			kapp_comment_point=1000,
+			kapp_write_point=1000,
+			kapp_comment_point=500,
 			kapp_download_point=-1000,
 			kapp_write_pages=10,
 			kapp_mobile_pages=5,
@@ -1103,9 +1110,9 @@ function Config($t_head, $tab) {
 			kapp_syndi_token='',
 			kapp_syndi_except='',
 			kapp_register_level=2,
-			kapp_register_point=30000,
+			kapp_register_point=10000,
 			kapp_use_recommend=1,
-			kapp_recommend_point=1000,
+			kapp_recommend_point=500,
 			kapp_leave_day=30,
 			kapp_search_part=1000,
 			kapp_prohibit_id='admin,administrator,webmaster,sysop,manager,root,su,guest',
@@ -1114,14 +1121,14 @@ function Config($t_head, $tab) {
 			kapp_memo_del=180,
 			kapp_visit_del=365,
 			kapp_popular_del=180,
-			kapp_optimize_date='',
+			kapp_optimize_date='$optm',
 			kapp_login_minutes=10,
 			kapp_image_extension='gif|jpg|png',
 			kapp_movie_extension='asx|asf|wmv|wma|mpg|mpeg|mov|avi|mp3',
 			kapp_formmail_is_member=1,
 			kapp_page_rows=15,
 			kapp_mobile_page_rows=10,
-			kapp_visit='today:2, yestday:, max:2, Total:2',
+			kapp_visit='today:0, yestday:0, max:0, Total:0',
 			kapp_max_po_id=0,
 			kapp_stipulation='',
 			kapp_privacy='',
@@ -1219,7 +1226,8 @@ function Ap_bbs_curl($t_head, $tab) {
 		`aboard_tab_enm` varchar(50) DEFAULT NULL,
 		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
 		`kapp_server` varchar(100) DEFAULT NULL,
-        PRIMARY KEY (`seqno`)
+		`hash_block_ab` longblob DEFAULT NULL
+        , PRIMARY KEY (`seqno`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
