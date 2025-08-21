@@ -133,90 +133,8 @@ if( isset($sys_pg) && $sys_pg !=='' ) {
 </html>
 
 <?php
-function sys_menu_bom_curl_send( $sys_pg ){
-	//m_("start sys_menu_bom_curl_send sys_pg: " . $sys_pg);
-	//echo "<br>start sys_menu_bom_curl_send sys_pg: " . $sys_pg;
-	/*
-	start sys_menu_bom_curl_send sys_pg: solpakan_naver_1753083888curl 응답 : {"message":"https:\/\/fation.net\/kapp_api OK"}
-	curl : Sys_Menu_bom_curl_send_tabData api OK : {"message":"https:\/\/modumodu.net\/biog7\/kapp_api OK"}
-	curl : Sys_Menu_bom_curl_send_tabData api OK : {"message":"https:\/\/biogplus.iwinv.net\/kapp_api OK"}
-	curl : Sys_Menu_bom_curl_send_tabData api OK : {"message":"https:\/\/moado.net\/kapp_api OK"}
-	curl : Sys_Menu_bom_curl_send_tabData api OK : {"message":"http:\/\/modumodu.net\/kapp_api OK"}
-	curl : Sys_Menu_bom_curl_send_tabData api OK : {"message":"http:\/\/modumodu.net\/biogplus\/kapp_api OK"}
-	curl : Sys_Menu_bom_curl_send_tabData api OK : {"message":"https:\/\/24c.kr\/kapp_api OK"}
-	*/
-	global $tabData, $H_ID, $H_EMAIL;
-	global $sys_subtit, $sys_memo, $config, $kapp_key;
-	global $imgtype1, $imgtype2, $imgtype3, $bgcolor, $fontcolor, $fontface, $fontsize;
 
-	$sys_userid		= $H_ID;	
-	$sys_menu		= $sys_pg;
-	$sys_submenu	= $sys_pg;
-	$sys_rcnt		= 0;
-	$sys_cnt		= 0;
-	$sys_disno		= 0;
-	$sys_level		= "mroot";
-	$sys_menutit	= "mroot";
-	$view_lev  = '0';
-	$cnt = 0;
-	$sys_link = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$H_ID . '&num=' . $sys_pg. '&sys_jong=M';
-	$tabData['data'][0]['sys_pg']      = $sys_pg;
-	$tabData['data'][0]['sys_subtit']  = $sys_subtit;
-	$tabData['data'][0]['sys_memo']    = $sys_memo;
-	$tabData['data'][0]['sys_menu']    = $sys_pg;
-	$tabData['data'][0]['sys_submenu'] = $sys_pg;
-	$tabData['data'][0]['sys_link']    = $sys_link;
-	$tabData['data'][0]['sys_level']   = "mroot";
-	$tabData['data'][0]['sys_menutit'] = "mroot";
-	$tabData['data'][0]['sys_rcnt']    = 0;
-	$tabData['data'][0]['sys_cnt']     = 0;
-	$tabData['data'][0]['sys_disno']   = 0;
-	$tabData['data'][0]['view_cnt']	  = 0;
-	$tabData['data'][0]['view_lev']    = '0';
-	$tabData['data'][0]['tit_gubun']   = 'M';
-	$tabData['data'][0]['book_num']    = $sys_pg;
-	$tabData['data'][0]['bgcolor']     = $bgcolor;
-	$tabData['data'][0]['fontcolor']   = $fontcolor;
-	$tabData['data'][0]['fontface']    = $fontface;
-	$tabData['data'][0]['fontsize']    = $fontsize;
-	$tabData['data'][0]['imgtype1']    = $imgtype1;
-	$tabData['data'][0]['imgtype2']    = $imgtype2;
-	$tabData['data'][0]['imgtype3']    = $imgtype3;
-
-	$tabData['data'][0]['host']       = KAPP_URL_T_; 
-	$tabData['data'][0]['sys_userid'] = $H_ID;
-	$tabData['data'][0]['email']      = $H_EMAIL;
-
-	//$key = 'appgenerator';
-    $iv = "~`!@#$%^&*()-_=+";
-    $sendData = encryptA( $tabData , $kapp_key, $iv);
-
-    $url_ =  'https://fation.net/kapp/_Curl/sys_menu_bom_curl_get_ailinkapp.php';
-	$curl = curl_init();
-	curl_setopt( $curl, CURLOPT_URL, $url_);
-    curl_setopt( $curl, CURLOPT_POST, true);
-
-    curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-        'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-        'iv' => $iv
-    ));
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($curl);
-	curl_setopt($curl, CURLOPT_FAILONERROR, true);
-	echo curl_error($curl);	//echo "curl --- response: " . $response;
-	if( $response == false) {
-        $_ms = "cratreebook_make_create_menu curl Fail : " . curl_error($curl);
-		echo 'curl Fail : ' . curl_error($curl);		//m_(" ------------ : " . $_ms);
-    } else {
-        $_ms = 'cratreebook_make_create_menu curl OK: ' . $response;
-		//echo 'curl 응답 : ' . $response;
-		//m_( "sys_menu_bom_curl_send response: ". $_ms );
-    }
-    curl_close($curl);	
-	return true;
-}
-
-	function job_link( $url_ ){
+	/*function job_link( $url_ ){
 		global $H_ID, $H_EMAIL, $sys_pg, $sys_subtit, $sys_link, $view_lev, $from_session_url, $up_day, $ip;
 		global $tkher;
 
@@ -227,7 +145,7 @@ function sys_menu_bom_curl_send( $sys_pg ){
 			m_("Curl job link table error");
 			exit;
 		}
-	}
+	}*/
 
 	/*
 		source_html_create()
