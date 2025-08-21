@@ -3,10 +3,15 @@
 	/*
 	  sys_menu_bom_curl_get_ailinkapp.php : /t/menu/treebom_updw_new_menu.php - update 시에 실행.
 	   - Table: kapp_sys_menu_bom_curl
-	  작업 결과 : 성공, 2023-07-27
 	*/
-	//$key = 'appgenerator';    //$iv = "~`!@#$%^&*()-_=+";
-    $responseData = $_POST['tabData'];  //json_decode($_POST['tabData'], true);
+    //$hash_block_bom = $_POST['hash_block'];  
+    $hash_block_bom = $config['hash_block_bom'];  // prev block
+    $responseData = $_POST['tabData'];                     //new data
+
+	$ret = sql_query( "update {$tkher['config_table']} set hash_block_bom = '$responseData' " ); //where kapp_title ='K-App' 
+	if( !$ret) 	echo "<br> config_table hash_block_bom update Error. --- Api sys_menu_bom_curl_get";	
+	else echo "<br> config_table hash_block_bom update OK --- Api sys_menu_bom_curl_get";
+
     $iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $iv);
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
@@ -55,7 +60,8 @@
 			fontsize   = '".$tabData['data'][$i]['fontsize']."'  , 
 			imgtype1   = '".$tabData['data'][$i]['imgtype1']."'  , 
 			imgtype2   = '".$tabData['data'][$i]['imgtype2']."'  , 
-			imgtype3   = '".$tabData['data'][$i]['imgtype3']."'
+			imgtype3   = '".$tabData['data'][$i]['imgtype3']."' ,
+			hash_block_bom = '$hash_block_bom'   
 		 ";  
 		$resultA = $connect_db->query( $sql );
         if ( !$resultA) {

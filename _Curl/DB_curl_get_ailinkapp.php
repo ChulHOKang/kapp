@@ -8,9 +8,9 @@
 	  : $url_ = $A . '/_Curl/Curl_Server_get.php';
 	*/
 	//------------------------------------------------------------------------------------------------------------------
-    $responseData = $_POST['tabData']; //   $responseData = json_decode($_POST['tabData'], true);
-    $iv = $_POST['iv'];
-	$kapp_key = 'appgenerator';    //$iv = "~`!@#$%^&*()-_=+";
+    $responseData = $_POST['tabData'];  
+
+	$iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $iv);
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
 	$tabData = json_decode($tabData, true);

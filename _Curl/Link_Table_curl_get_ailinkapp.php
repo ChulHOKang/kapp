@@ -4,7 +4,14 @@
 		Link_Table_curl_get_ailinkapp.php
 		-app_pg50RC.php
 	*/
-    $responseData = $_POST['tabData']; 
+	//$hash_block_job = $_POST['hash_block'];  // prev block
+    $hash_block_job = $config['hash_block_job'];  // prev block
+    $responseData = $_POST['tabData'];          // new data
+
+	$ret = sql_query( "update {$tkher['config_table']} set hash_block_job = '$responseData' " ); //where kapp_title ='K-App' 
+	if( !$ret) 	echo "<br> config_table hash_block_job update Error. --- Api Link_Table_curl_get";	
+	else echo "<br> config_table hash_block_job update OK --- Api Link_Table_curl_get";
+
     $kapp_iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
@@ -34,7 +41,8 @@
 			kapp_server = '".$tabData['data'][$i]['kapp_server']."'  , 
 			user_ip     = '".$tabData['data'][$i]['user_ip']."'  , 
 			memo        = '".$tabData['data'][$i]['memo']."'  , 
-			up_day      = '".$tabData['data'][$i]['up_day']."' 
+			up_day      = '".$tabData['data'][$i]['up_day']."' , 
+			hash_block_job = '$hash_block_job'   
 		"; 
 		$resultA = $connect_db->query( $sql );
         if( !$resultA) {

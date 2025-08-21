@@ -4,8 +4,14 @@
 		Ap_bbs_curl_get_ailinkapp.php
 		-insertD_check.php
 	*/
-    $responseData = $_POST['tabData']; 
-    $kapp_iv = $_POST['iv'];
+    $hash_block_ab = $config['hash_block_ab'];  // prev block
+    $responseData = $_POST['tabData'];          // new data
+
+	$ret = sql_query( "update {$tkher['config_table']} set hash_block_ab = '$responseData' " ); //where kapp_title ='K-App' 
+	if( !$ret) 	echo "<br> config_table hash_block_ab update Error. --- Api AP_bbs_curl_get";	
+	else echo "<br> config_table hash_block_ab update OK --- Api Ap_bbs_curl_get";
+
+	$kapp_iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
 	$tabData = json_decode($tabData, true);
@@ -34,7 +40,8 @@
 			aboard_tab_enm        = '".$tabData['data'][$i]['aboard_tab_enm']."'  , 
 			aboard_tab_hnm        = '".$tabData['data'][$i]['aboard_tab_hnm']."'  ,
 			host = '".$tabData['data'][$i]['host']."'  ,
-			kapp_server = '".$tabData['data'][$i]['kapp_server']."'  
+			kapp_server = '".$tabData['data'][$i]['kapp_server']."'  ,
+			hash_block_ab = '$hash_block_ab'   
 		"; 
 		$resultA = $connect_db->query( $sql );
         if( !$resultA) {

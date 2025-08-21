@@ -3,20 +3,23 @@
 	/*
 		table_curl_get_ailinkapp.php
 	*/
-	$responseData = $_POST['tabData'];  
-	//$responseData = json_decode($_POST['tabData'], true);
-	//$tabData = json_decode($_POST['tabData'], JSON_UNESCAPED_UNICODE);
+	//$hash_block_table = $_POST['hash_block'];  // prev block
+    $hash_block_table = $config['hash_block_table'];  // prev block
+    $responseData = $_POST['tabData'];             // new data
+
+	$ret = sql_query( "update {$tkher['config_table']} set hash_block_table = '$responseData' " ); //where kapp_title ='K-App' 
+	if( !$ret) 	echo "<br> config_table hash_block_table update Error. --- Api table_curl_get";	
+	else echo "<br> config_table hash_block_table update OK --- Api table_curl_get";
+
     $kapp_iv = $_POST['iv'];
-	//$tabData = $_POST['tabData'];  
     $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
-	//------------------- 배열 재 구성 --------------------------
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
 	$tabData = json_decode($tabData, true);
-	//--------------------------------------------------------
+
     if( isset( $tabData) ){
-        $message = '_api table data 전달 완료';
+        $message = '_api table data ok';
     } else {
-        $message = '_api table data 전달 실패';
+        $message = '_api table data fail';
     }
 	echo "<br>message: " . $message;
 	echo "table_curl_get_ailinkapp tab_enm: " . $tabData['data'][0]['tab_enm'];
@@ -68,7 +71,8 @@
 					if_data    = '".$tabData['data'][$i]['if_data']."'  , 
 					relation_data = '".$tabData['data'][$i]['relation_data']."'  , 
 					sqltable      = '".$tabData['data'][$i]['sqltable']."'  , 
-					memo          = '".$tabData['data'][$i]['memo']."' 
+					memo          = '".$tabData['data'][$i]['memo']."' ,
+					hash_block_table = '$hash_block_table'   
 				";
 			}
 			$resultA = $connect_db->query( $sql );

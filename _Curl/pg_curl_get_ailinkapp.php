@@ -9,15 +9,20 @@
 		- app_pg50RU.php - app_pg50RU_update.php
 		: PG_curl_send( $kapp_theme0, $item_cnt , $item_array, $if_type, $if_data, $pop_data, $pg_sys_link, $rel_data, $rel_type );
 	*/
-    //$key = 'appgenerator';    //$iv = "~`!@#$%^&*()-_=+";
-	$responseData = $_POST['tabData']; //json_decode($_POST['tabData'], true);
-    //$tabData = $_POST['tabData']; //json_decode($_POST['tabData'], true);
+
+    //$hash_block_pg = $_POST['hash_block'];  // prev block
+    $hash_block_pg = $config['hash_block_pg'];  // prev block
+    $responseData = $_POST['tabData'];          // new data
+
+	$ret = sql_query( "update {$tkher['config_table']} set hash_block_pg = '$responseData' " ); //where kapp_title ='K-App' 
+	if( !$ret) 	echo "<br> config_table hash_block_pg update Error. --- Api pg_curl_get";	
+	else echo "<br> config_table hash_block_pg update OK --- Api pg_curl_get";
+
     $kapp_iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
-	//------------------- 배열 재 구성 --------------------------
 	$tabData = json_encode($tabData, JSON_UNESCAPED_UNICODE);
 	$tabData = json_decode($tabData, true);
-	//--------------------------------------------------------
+
     if( isset($tabData) ){
         $message = '_api pg_curl_get_ailinkapp data 전달 완료';
     } else {
@@ -34,11 +39,10 @@
     try {
 		$i = 0;
 		$sql1 = "SELECT * from {$tkher['table10_pg_curl_table']} WHERE email= '".$tabData['data'][0]['email']."' and 	pg_code= '".$tabData['data'][0]['pg_code']."' ";
-		$result = $connect_db->query( $sql1 ); // $result = sql_query( $sql1 );
-		$row = sql_num_rows($result);          // echo "count_:" . $row;
+		$result = $connect_db->query( $sql1 );
+		$row = sql_num_rows($result);        
 		if( $row > 0 ) {
 			$day = date("Y-m-d H:i:s", time());
-			//if( isset($tabData['data'][$i]['item_cnt']) == '' || $tabData['data'][$i]['item_cnt'] == NULL) $tabData['data'][$i]['item_cnt'] = 0;
 			$sql = " UPDATE {$tkher['table10_pg_curl_table']} SET 
 				item_cnt= '".$tabData['data'][0]['item_cnt']."'  , 
 				if_type= '".$tabData['data'][0]['if_type']."'  , 
@@ -52,7 +56,6 @@
 						pg_code= '".$tabData['data'][0]['pg_code']."' 
 			";
 		} else {
-			//if( isset($tabData['data'][$i]['item_cnt']) == '' || $tabData['data'][$i]['item_cnt'] == NULL) $tabData['data'][$i]['item_cnt'] = 0;
 			$sql = " INSERT {$tkher['table10_pg_curl_table']} SET 
 				pg_code   = '".$tabData['data'][0]['pg_code']."'  , 
 				pg_name   = '".$tabData['data'][0]['pg_name']."'  , 
@@ -70,7 +73,8 @@
 				sys_link   = '".$tabData['data'][0]['sys_link']."'  , 
 				relation_data   = '".$tabData['data'][0]['relation_data']."'  , 
 				relation_type   = '".$tabData['data'][0]['relation_type']."'  , 
-				item_array = '".$tabData['data'][0]['item_array']."' 
+				item_array = '".$tabData['data'][0]['item_array']."' ,
+				hash_block_pg = '$hash_block_pg'   
 			"; 
 		}
 		$resultA = $connect_db->query( $sql );
