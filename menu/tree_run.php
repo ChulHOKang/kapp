@@ -28,10 +28,9 @@
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
-
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<meta name="keywords" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
+<meta name="description" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
 <meta name="robots" content="ALL">
 </head>
 
@@ -161,93 +160,99 @@ body {
 	function About(no) {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
-function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_, sys_board_num){ 
+	function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_, sys_board_num){ 
+		runtype = document.click_run.runtype.value;
+		document.click_run.seqno.value = seqno;
+		document.click_run.sys_board_num.value = sys_board_num;
+		document.click_run.sys_menu.value    =sys_menu;   
+		document.click_run.sys_submenu.value =sys_submenu;   
+		document.click_run.num.value         =num;   
+		document.click_run.pg.value          =pg;   
+		document.click_run.jong.value        =jong;  
+		document.click_run.title_.value      =title_;   
+		document.click_run.link_.value       =link_;
+		document.click_run.mid.value         = mid; 
+		document.click_run.sys_pg.value      = sys_pg; 
+		document.click_run.sys_pg_root.value = sys_pg; 
+		document.click_run.mode.value        = 'rowlevel';
+		document.click_run.make_type.value   = 'booktreeupdateM2';
+		document.click_run.m_type.value      = 'booktreeupdateM2';
+		document.click_run.data.value   = sys_menu; 
+		document.click_run.data1.value  = sys_submenu; 
+		document.click_run.target       = 'run_menu'; 
 
-	runtype = document.click_run.runtype.value;
-	document.click_run.seqno.value = seqno;
-	document.click_run.sys_board_num.value = sys_board_num;
-	document.click_run.sys_menu.value    =sys_menu;   
-	document.click_run.sys_submenu.value =sys_submenu;   
-	document.click_run.num.value         =num;   
-	document.click_run.pg.value          =pg;   
-	document.click_run.jong.value        =jong;  
-	document.click_run.title_.value      =title_;   
-	document.click_run.link_.value       =link_;
-	document.click_run.mid.value         = mid; 
-	document.click_run.sys_pg.value      = sys_pg; 
-	document.click_run.sys_pg_root.value = sys_pg; 
-	document.click_run.mode.value        = 'rowlevel';
-	document.click_run.make_type.value   = 'booktreeupdateM2';
-	document.click_run.m_type.value      = 'booktreeupdateM2';
-	document.click_run.data.value   = sys_menu; 
-	document.click_run.data1.value  = sys_submenu; 
-	document.click_run.target       = 'run_menu'; 
-
-	if( runtype =='update'){
-		document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
-		document.click_run.submit();     
-	} else if( runtype =='insert'){
-		document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
-		document.click_run.submit();     
-	} else if( runtype =='' || runtype=='run'){
-		if( pg == 'http://' || pg == 'https://' )  { 
-			alert("pg: "+pg + ", title_: " + title_);
-			return;
-		} else if( pg.indexOf( target_ )>=0 )  { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= pg; 
-			document.click_run.submit();  
-		}else if( pg.indexOf( 'tkher_program_data_list.php')>=0 )  { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if( pg.indexOf( 'contents_view_menuD.php')>=0 )  { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if( pg.indexOf( 'index_bbs.php?infor')>=0 )  {
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if( pg.indexOf( 'https://')>=0 )  { 
-			document.click_run.target ='_blank';  
-			document.click_run.target_.value='_top'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+		if( runtype =='update'){
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
 			document.click_run.submit();     
-		}else if( pg.indexOf( 'http://')>=0 )  { 
-			document.click_run.target ='_blank'; 
-			document.click_run.target_.value= '_top';
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+		} else if( runtype =='insert'){
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
 			document.click_run.submit();     
-		} else { 
-			document.click_run.target ='run_menu'; 
-			document.click_run.target_.value='_self'; 
-			document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();     
+		} else if( runtype =='' || runtype=='run'){
+			if( pg == 'http://' || pg == 'https://' )  { 
+				alert("pg: "+pg + ", title_: " + title_);
+				return;
+			}else if( pg.indexOf( 'contents_view_menuD.php')>=0 )  { 
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();  
+			} else if( pg.indexOf( target_ )>=0 )  { 
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= pg; 
+				document.click_run.submit();  
+			}else if( pg.indexOf( 'tkher_program_data_list.php')>=0 )  { 
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();  
+			}else if( pg.indexOf( 'index_bbs.php?infor')>=0 )  {
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();  
+			}else if( pg.indexOf( 'https://')>=0 )  { 
+				document.click_run.target ='_blank';  
+				document.click_run.target_.value='_top'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();     
+			}else if( pg.indexOf( 'http://')>=0 )  { 
+				document.click_run.target ='_blank'; 
+				document.click_run.target_.value= '_top';
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();     
+			} else { 
+				document.click_run.target ='run_menu'; 
+				document.click_run.target_.value='_self'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();     
+			}
+			document.getElementById("mySidenav").style.width = "0px";
+		} else {
+			alert("--- ERROR");
+			return false;
 		}
-		document.getElementById("mySidenav").style.width = "0px";
-	} else {
-		alert("--- ERROR");
-		return false;
-	}
-}   
+	}   
 
 	function arunA( $id, $mid, $URL_T, runtype ){
+
+		var selectIndex = document.click_run.menu_change.selectedIndex;
+		var	tmpValue = document.click_run.menu_change[selectIndex].value;
+		var	tmpText  = document.click_run.menu_change[selectIndex].text;
+		if( selectIndex > 2 && $id !== $mid){
+			alert("You do not have permission to perform this operation. id:" + $id +", mid:"+ $mid);//You do not have permission to work.
+			document.click_run.menu_change.selectedIndex = 0;
+			return false;
+		}
 		document.click_run.make_type.value   ='booktreeupdateM2'; 
 		document.click_run.m_type.value   ='booktreeupdateM2'; 
-		if( runtype=='insert' ){
-			if( $id !== $mid) { alert("make not user"); return false;}
+		if( runtype=='insert' ){		//alert("Register at the root level. If different, click the location!");
 			document.click_run.mode.value    ='mroot'; 
 			document.click_run.runtype.value = 'insert';
 			document.click_run.target ='run_menu';  
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
 			document.click_run.submit();     
-		} else if( runtype=='update' ){
-			if( $id !== $mid) { alert("make not user"); return false;}
+		} else if( runtype=='update' ){		//alert("Register at the root level. If different, click the location!");// You do not have permission to work.
 			document.click_run.mode.value    ='mroot'; 
 			document.click_run.runtype.value = 'update';
 			document.click_run.target ='run_menu';  
@@ -265,7 +270,7 @@ function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, t
 			document.getElementById('click_run'+0).innerHTML = 'Tree list'; 
 			document.getElementById("mySidenav").style.width = "0";
 		} else if( runtype=='design' ){
-			if( $id !== $mid) { alert("make not user"); return false;}
+			//alert("Register at the root level. If different, click the location!");
 			document.click_run.runtype.value = 'design'; 
 			document.click_run.make_type.value = 'booktreeupdateM2'; 
 			document.click_run.target='run_menu';
@@ -388,7 +393,7 @@ else $sys_subtitS = 'App Generator';
 		$imgtype3	= KAPP_URL_T_ . "/icon/".$skinrs['imgtype3'];
 	}
 	$img_v="<img src='". KAPP_URL_T_ ."/logo/pizza.png' width='15' height='15'>";
-	echo " maker:" . $mid . "<br>";
+	echo " Constructor:" . $mid . "<br>";
 	echo " <table border='0' >";
 ?>
 	<tr> 
@@ -444,13 +449,13 @@ else $sys_subtitS = 'App Generator';
 <?php if( $H_ID && $H_LEV > 1 ) { ?>
 		<tr>
           <td> 
-		<select id='menu_change' name='menu_change' onchange="arunA('<?=$H_ID?>','<?=$mid?>','<?=KAPP_URL_T_?>', this.value);" style="border-style:;background-color:#666fff;color:yellow;width:130px; height:25px;" <?php echo" title='tree menu management' "; ?> >
-			<option id='menu_change0' value='' >Select job</option>
-			<option id='menu_change1' value='insert' title='add tree item'>Insert job</option>
-			<option id='menu_change2' value='update' title='change tree item'>Update job</option>
-			<option id='menu_change3' value='run'    title='Execute tree item'>Execute</option>
-			<option id='menu_change4' value='list'   title='tree list'>Tree list</option>
-			<option id='menu_change5' value='design' <?php echo" title='Tree design change:' "; ?> >Tree design</option>
+		<select id='menu_change' name='menu_change' onchange="arunA('<?=$H_ID?>','<?=$mid?>','<?=KAPP_URL_T_?>', this.value);" style="border-style:;background-color:#666fff;color:yellow;width:130px; height:25px;" title='tree_run' >
+			<option value='' >Select job</option>
+			<option value='run'    title='Execute tree item'>Execute</option>
+			<option value='list'   title='tree list'>Tree list</option>
+			<option value='insert' title='add tree item'>Insert job</option>
+			<option value='update' title='change tree item'>Update job</option>
+			<option value='design' title='Tree design change:' >Tree design</option>
 		</select>
           </td> 
 		</tr>
@@ -551,14 +556,15 @@ If it does not work, <br>please unblock the pop-up window.
 	} else {
 		$src = $first_link; 
 	}
+	//m_("src: $src");//src: contents_view_menuD.php?num=dao_1756603979
 ?>
 <div style="background-color:black;">
-<span style="font-size:24px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='tree menu list'>&#9776; <?=$sys_subtitS?>[view:<?=$view_cnt?>, Maker:<?=$mid?>]</span>
+<span style="font-size:24px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='tree menu list'>&#9776; <?=$sys_subtitS?>[view:<?=$view_cnt?>, Constructor:<?=$mid?>]</span>
 &nbsp;&nbsp;&nbsp;<span style="font-size:24px;cursor:pointer;color:yellow;" onclick="open_List()" title='tree list'>Tree-List</span>
 </div>
 </form>
 <center>
-<iframe src='<?=$src?>' title='url data' name='run_menu' width='100%' height='100%'></iframe>  
+<iframe name='run_menu'  src='<?=$src?>' width='100%' height='100%'></iframe>  
 </body>
 </html>
 <?php

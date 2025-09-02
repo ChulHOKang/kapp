@@ -69,10 +69,10 @@
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <TITLE>K-APP, Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<meta name="keywords" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
+<meta name="description" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
 <meta name="robots" content="ALL">
 	<link href="<?=KAPP_URL_T_?>/menu/css/main.css" rel="stylesheet">
 	<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/>
@@ -168,13 +168,13 @@ if( isset($line['title']) ) {
 	if( $H_ID and $H_ID == $row_user || $H_LEV > 7)  {
 ?>
 		<DIV style='background-color:yellow;color:black;text-align:left;'>
-		[ Title :<?=$title?> ] [user:<?=$row_user?> - point:<?=number_format( $member['mb_point'])?>] [view:<?=$view_cnt?>] :
+		[ Title :<?=$title?> ] [view:<?=$view_cnt?>] :
 		<input type='button' value=' Change ' title='data change upd_func' style='border-radius:20px;' onClick="javascript:upd_func('<?=$num?>','update','1', '<?=$book_name?>', '<?=$target_run?>');">
 		&nbsp;<a href='./download.php?num=<?=$num?>'  style='background-color:blue;color:yellow;border-radius:20px;'><?=$addfile?></a>
 		&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='List of Tree'></a></DIV>
 <?php } else { ?>
 		<DIV style='background-color:yellow;color:black;text-align:left'>
-		[ Title : <?=$title?> ] [user:<?=$row_user?>] [view:<?=$view_cnt?>]&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='List of Tree'></a>
+		[ Title : <?=$title?> ] [view:<?=$view_cnt?>]&nbsp;&nbsp;&nbsp;<a href='./' ><img src='<?=KAPP_URL_T_?>/icon/_tree_.png' style='height:25px;margine-top:2px;' title='List of Tree'></a>
 		</DIV>
 <?php } ?>
 	</form>

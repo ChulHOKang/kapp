@@ -1,33 +1,24 @@
 <?php
 	include_once('../tkher_start_necessary.php');
+	/* --------------------------------------------------------------------------
+		treebom_insert2_book_menu.php : 
+		run : treebom_insw_book_menu.php -> tree_create_menu.php: Record .
+			$url='contents_view_menuD.php?num=' . $max_num;
+	 * treebom_insert2_new.php
+	 * tree_menu_updateM2.php 
+	----------------------------------------------------------------------------- */
 	$H_ID	= get_session("ss_mb_id");	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
 	else $H_LEV = 0;
 	if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
 	else $H_EMAIL = '';
 
-	/* --------------------------------------------------------------------------
-	 *  *** 중요 - book 다중등록시에만 사용:
-		treebom_insert2_book_menu.php : 
-		2023-08-09 : CURL 작업 추가 - treebom_insw_book_menu.php 
-		2021-02 , 2022-01-27보완:$sys_pg null error, tree_in_sert(mtype, sys_pg, data1)보완 sys_pg, data1추가
-		/t/tree_menu_guest.php에서도 사용함. : 2021-06-03
-		run : treebom_insw_book_menu.php -> tree_create_menu.php: Record 다중 등록.
-			$url='contents_view_menu.php?num=' . $max_num;
-	 * treebom_insert2_new.php는 크라트리와 Board 만 같이 사용하고 북 BOOK은 이것을 사용함. 링크 정보가 달라...2018-04-07
-	 * tree_menu_updateM2.php : call 추가. 2021-05-30 : 모바일용 통합프로그램. 
-
-	 중요 : 게시판 테이블명으로 사용됨. query_ok_new.php 에서도 같은 방법 사용
-	 $uid = explode('@', $H_ID); // 2024-04-05
-	 $max_num = $uid[0] . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨. query_ok_new.php 에서도 같은 방법 사용
-	----------------------------------------------------------------------------- */
 	if (!$H_ID || $H_LEV < 1) {
 		m_(" Please login. ");
 		$rungo = "/";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
 	}
-
 	//m_("post make_type:" . $_POST['make_type']); // tree_menu_updateM.php- booktreeupdateM
 	if( isset($_POST['make_type'] )){
 		$sys_pg_root= $_POST['sys_pg_root'];
@@ -36,7 +27,6 @@
 		$mode		= $_POST['mode'];
 		$data		= $_POST['data'];		
 		$data1		= $_POST['data1'];
-		$target_my	= $_POST['target_my'];
 	} else if( isset($_REQUEST['make_type']) ) {
 		$sys_pg_root= $_REQUEST['sys_pg_root'];
 		$make_type	= $_REQUEST['make_type'];
@@ -44,7 +34,6 @@
 		$mode		= $_REQUEST['mode'];
 		$data		= $_REQUEST['data'];		
 		$data1		= $_REQUEST['data1'];
-		$target_my	= $_REQUEST['target_my'];
 	} else {
 		$sys_pg_root= '';
 		$make_type	= '';
@@ -52,12 +41,20 @@
 		$mode		= '';
 		$data		= '';
 		$data1		= '';
-		$target_my	= '';
 	}
+	if( isset($_POST['target_my']) ) $target_my= $_POST['target_my'];
+	else if( isset($_REQUEST['target_my']) ) $target_my= $_REQUEST['target_my'];
+	else $target_my	= '';
+
+	//m_( "2 sys_pg_root: " . $sys_pg_root . ", data: " . $data . ", data1: " . $data1);
+	//2 sys_pg_root: link, data: dao_1756603979, data1: https://ailinkapi.com/kapp
+	//2 sys_pg_root: dao_1756603979, data: dao_1756603979_r, data1: dao_1756603979_r02
+
 	if( !$data1 || !$sys_pg_root ){
-		m_( "sys_pg_root: " . sys_pg_root . ", data1: " . $data1 . " - Error treebom_insert2_book_menu" ); exit;
+		m_( "sys_pg_root: " . $sys_pg_root . ", data1: " . $data1 . " - Error treebom_insert2_book_menu" ); exit;
 	}
-	$sql="select * from {$tkher['sys_menu_bom_table']} where sys_menu ='$data' and sys_submenu = '$data1' ";
+	if( $sys_pg_root == 'link' ) $sql="select * from {$tkher['sys_menu_bom_table']} where sys_menu ='$data' and sys_submenu = '$data' ";
+	else  $sql="select * from {$tkher['sys_menu_bom_table']} where sys_menu ='$data' and sys_submenu = '$data1' ";
 	$result = sql_query( $sql);	
 	$rs		= sql_fetch_array($result);
 	$mid	= $rs['sys_userid']; 
@@ -68,7 +65,7 @@
 
 	if ( $H_ID != $mid ) {
 		//m_(" You do not have permission to work. \\n 작업권한이 없습니다. mid:$mid, data:$data, data1:$data1");
-		m_(" You do not have permission to work.");
+		m_(" You do not have permission to work.  mid:$mid, " . $H_ID); //You do not have permission to work.  mid:, dao
 		$rungo = "./" . $rs['sys_userid'] . "/". $xsys_pg . "_runf.html";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
@@ -77,11 +74,11 @@
 <html> 
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>tree Update M AppGeneratorSystem. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<meta name="keywords" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
+<meta name="description" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
 <meta name="robots" content="ALL">
 </head>
 <body bgcolor='black'> <font color='yellow'>
@@ -209,11 +206,9 @@ if( $mode=='mroot' ) {
 		$recordcount = $rs['sys_rcnt'];
 		$xm1 = $rs['sys_menu'];	
 		$xm2 = $rs['sys_submenu'];	
-
 		$xroot_chk	= $rs['sys_menutit']; 
 		$xroot_cnt	= $rs['sys_rcnt'];
 		$xlow_cnt	= $rs['sys_cnt'];
-
 		if( $mode == "mroot" ){ 
 			$recordcount = $xroot_cnt;							
 		} else if ( $xroot_chk == "root" ) {
@@ -226,7 +221,6 @@ for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {
      if( $mode == 'mroot' && $xroot_level=='mroot') { // 2021-12-09
              $low_cnt = $recordcount + $i; 
              $xdata1 = $sys_pg . "_r";
-             
              if ( strlen($low_cnt) == 1 ){
 				$xdata2 = $sys_pg . "_r" . "0" . $low_cnt; 
              } else {
@@ -242,8 +236,7 @@ for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {
 			$xdata2 = $data1 . "_" . $low_cnt;	// $xdata2 = $data1 . "_" . $low_cnt;	
 		}
 	 } 
-	$uid = explode('@', $H_ID); // 2024-04-05
-	$max_num = $uid[0] . (time() + $j);	//$max_num - 중요 : 게시판 테이블명으로 사용됨. query_ok_new.php 에서도 같은 방법 사용
+	$max_num = $H_ID . (time() + $j);
 ?>
 		<tr valign='middle' style='background-color:black;color:white;'> 
 		  <td align='center' bgcolor='black'><font color='green' size='4'><?=$low_cnt?></td>
@@ -266,7 +259,6 @@ for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {
 			</select>
 		</td>
 		  <?php
-			//$url='../t/menu/contents_view_menu.php?num=' . $max_num;
 			$url='contents_view_menuD.php?num=' . $max_num;
 		  ?>
 		  <td> 

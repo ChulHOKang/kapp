@@ -1,7 +1,5 @@
 <?php 
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$from_session_id = $H_ID;
 	/*
 		tree_menu_update.php : tree_menu_updateM.php, tree_menu_updateM2.php 에서 콜. 중요.
 		                     : root 하단의 수정할 목록을 출력.
@@ -15,50 +13,64 @@
 				//B:  m_type:booktreeupdate
 				//G : m_type:bbstreeupdate 
 	*/
-	if (!$from_session_id) {
-		my_msg(" Please login.");
-		$rungo = "/";
+	$H_ID	= get_session("ss_mb_id");
+	if( !$H_ID ) {
+		m_(" Please login.");
+		$rungo = KAPP_URL_T_;
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
 	}
-	$mode	= $_POST['mode'];
-	//m_("-update sys_pg_root:" . $_REQUEST['sys_pg_root']);
-	if( isset($_REQUEST['sys_pg_root']) ) {
-		$sys_pg_root= $_REQUEST['sys_pg_root'];
-		$data	= $_REQUEST['data'];
-		$data1	= $_REQUEST['data1'];
-		$mid	= $_REQUESTST['mid'];
-		//m_("tree_menu_update - mid:$mid sys_pg_root:$sys_pg_root, data:$data, data1:$data1, mode:$mode ");
-	} else if( isset($_POST['sys_pg_root']) ) {
-		$sys_pg_root= $_POST['sys_pg_root'];
-		$data	= $_POST['data'];
-		$data1	= $_POST['data1'];
-		$mid	= $_POST['mid'];
-		//m_("tree_menu_update - mid:$mid sys_pg_root:$sys_pg_root, data:$data, data1:$data1, mode:$mode ");
-	}
+	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
+	else if( isset($_POST['mode']) ) $mode	= $_POST['mode'];
+	else $mode ='';
+	
+	if( isset($_REQUEST['sys_pg_root']) )	$sys_pg_root= $_REQUEST['sys_pg_root'];
+	else if( isset($_POST['sys_pg_root']) ) $sys_pg_root= $_POST['sys_pg_root'];
+	else $sys_pg_root= '';
+
+	if( isset($_REQUEST['data']) )	$data= $_REQUEST['data'];
+	else if( isset($_POST['data']) ) $data= $_POST['data'];
+	else $data= '';
+	if( isset($_REQUEST['data1']) )	$data1= $_REQUEST['data1'];
+	else if( isset($_POST['data1']) ) $data1= $_POST['data1'];
+	else $data1= '';
+
+	m_("-update sys_pg_root:" . $sys_pg_root . ", mode: " . $mode);
+	//-update sys_pg_root:link, mode: mroot
+
+	if( isset($_REQUEST['mid']) ) $mid	= $_REQUEST['mid'];
+	else if( isset($_POST['mid']) ) $mid	= $_POST['mid'];
+	else $mid='';
 	if( $mode == 'mroot' ){ // Update job select click - 여기로
-		$sys_pg		= $_REQUEST['data'];
-		$sys_pg_root= $_REQUEST['data'];
+		$sys_pg		= $data;
+		$sys_pg_root= $data;
 		//m_($mode . ", sys_pg:".$sys_pg . ", sys_pg_root:" . $sys_pg_root); // mroot, sys_pg:dao1642213611, sys_pg_root:dao1642213611
-		if( $_REQUEST['data'] !== $_REQUEST['data1'] ) {
-			$sys_pg		= $_REQUEST['sys_pg_root'];
-			//$xsys_pg	= $_REQUEST['sys_pg_root'];
-			$sys_pg_root= $_REQUEST['sys_pg_root'];
+		if( $data !== $data1 ) {
+			$sys_pg		= $sys_pg_root;			//$xsys_pg	= $_REQUEST['sys_pg_root'];
+			$sys_pg_root= $sys_pg_root;
 		}
 	} else {
-		if( isset($sys_pg_root) ) {
-			$sys_pg_root= $_REQUEST['sys_pg_root'];
-			$sys_pg		= $_REQUEST['sys_pg_root'];
+		if( $sys_pg_root )  {
+			$sys_pg_root= $sys_pg_root;
+			$sys_pg		= $sys_pg_root;
 			//$xsys_pg	= $_REQUEST['sys_pg_root'];
-		} else my_msg(" ERROR : sys_pg_root:$sys_pg_root, data:$data, data1:$data1, mode:$mode ");
+		} else m_(" ERROR : sys_pg_root:$sys_pg_root, data:$data, data1:$data1, mode:$mode ");
 
 	}
-	$first_mode	= $_POST['first_mode'];
-	$make_type	= $_POST['make_type'];
-	$m_type	    = $_POST['m_type'];
+	if( isset($_POST['first_mode']) ) $first_mode	= $_POST['first_mode'];
+	else $first_mode='';;
+	if( isset($_POST['make_type']) ) $make_type	= $_POST['make_type'];
+	else $make_type='';;
+	if( isset($_POST['m_type']) ) $m_type	= $_POST['m_type'];
+	else $m_type='';;
 	//m_("tree_menu_update - make_type:$make_type, m_type:$m_type ");
-
+if( $sys_pg_root =='link')
+	$sql = "select * from {$tkher['sys_menu_bom_table']} where sys_pg ='$sys_pg' and sys_submenu = '$sys_pg' and sys_level='mroot' order by sys_disno";
+else
 	$sql = "select * from {$tkher['sys_menu_bom_table']} where sys_pg ='$sys_pg_root' and sys_submenu = '$sys_pg_root' and sys_level='mroot' order by sys_disno";
+
+	//echo "$sys_pg_root, sql: " . $sql; exit;
 	$result = sql_query( $sql);	
 	$rs   = sql_fetch_array($result);
 	$mid  = $rs['sys_userid']; 
@@ -69,28 +81,28 @@
 	//else if($mt == 'M')		$m_type='booktreeupdateM';
 	//else if($mt == 'G')		$m_type='booktreeupdateM';//bbstreeupdate
 	//else {
-	//	my_msg("ERROR type:$mt, ");
+	//	m_("ERROR type:$mt, ");
 	//	$m_type='booktreeupdateM';
 	//}
 	$my_page_run=get_session("my_page_run");	
 	set_session("my_page_run", "");
-	//my_msg("222 m_type:$m_type, make_type:$make_type, my_page_run:$my_page_run ");
+	//m_("222 m_type:$m_type, make_type:$make_type, my_page_run:$my_page_run ");
 
-	if ( $from_session_id !== $mid ) {
-		my_msg(" You do not have permission to work.");// \\n 작업권한이 없습니다. 
-		$rungo = "./" . $mid . "/". $sys_pg_root . "_runf.html";
-		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
+	if ( $H_ID !== $mid ) {
+		m_("tree_run_update You do not have permission to work. mid:$mid, id:$H_ID");// \\n 작업권한이 없습니다. 
+		//$rungo = "./" . $mid . "/". $sys_pg_root . "_runf.html";
+		//echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
 	}
 ?>
 <html>   
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Appgenerator Tree Menu. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="/logo/logo25a.jpg">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<meta name="keywords" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
+<meta name="description" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
 <meta name="robots" content="ALL">
 
 <script language=javascript> 
@@ -137,7 +149,7 @@
 <?php  
 		//m_("tree_menu_update mode:" . $_REQUEST['mode']);
 	  $first = $sys_pg_root."_r";
-      if ( $_REQUEST['mode'] !== 'rowlevel' ) {
+      if ( $mode !== 'rowlevel' ) {
 		//m_("no rowlevel mode:" . $_REQUEST['mode']);
 			$sql= " select * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg_root' and (sys_level='mroot' or sys_level='sroot')  order by sys_disno";
       } else if ( $mode == 'mroot' ) {
@@ -171,19 +183,19 @@
 	<input type='hidden' name="m_level"		value=<?=$m_level?> >
 	<input type='hidden' name="my_page_run"	value=<?=$my_page_run?> >
 
-<center><font color=green><h3>Change Link Tree menu <br> Click on the left menu for individual changes 
-</h3></font></center><!-- [개별변경은 왼쪽메뉴를 클릭] -->
+<center><font color=green><h3>Change Link Tree menu <br> Click on the left menu for individual changes</h3></font></center>
+<!-- [개별변경은 왼쪽메뉴를 클릭] -->
 
-<body leftmargin=0 topmargin=0 bgcolor=black> 
+<body style="background-color:black; margin-top:0; text-align: center;"> 
 	<center>
-<table border=1 cellspacing=0 cellpadding=0 bgcolor=black> 
-	<tr>
-		<th><font color=cyan <?php echo "title='Set output order. The first line is unchangeable! ' "; ?>> NO </th><!-- \n 출력순서 설정, 첫라인은 변경불가! -->
-		<th><font color=cyan>Find</th>
-		<th><font color=cyan>Title </th>
-		<th><font color=cyan> Link URL </th>
-		<th><font color=cyan> Memo </th>
-		<th><font color=cyan>Delete</th>
+<table border=1 style="background-color:black; margin-top:0; "> 
+	<tr style="background-color:black; color:cyan;">
+		<th> NO </th><!-- \n 출력순서 설정, 첫라인은 변경불가! -->
+		<th>Find</th>
+		<th>Title </th>
+		<th> Link URL </th>
+		<th> Memo </th>
+		<th>Delete</th>
 	</tr>
 <?php
 	$recordcount = sql_num_rows($result);  
@@ -230,7 +242,7 @@
       <td> <input type='text' name="sys_link_<?=$j?>" size='60' maxlength='120' value='<?=$xlink?>' style="background-color:<?php if($j==0) echo 'red'; else echo 'black';?>;ime-mode:active;height:30;color:yellow" <?php if($j==0) echo 'readonly'; ?>> </td>
 <?php
     } else {	  
-	  if ( $j == 0 and $data==$data1) {
+	  if ( $j == 0 && $data==$data1) {
 ?>
 	       <td align=center> <input type='text' name="sys_disno_<?=$j?>" size='3' value='<?=$xdisno?>' readonly style="background-color:red;ime-mode:active;height:30;color:yellow;"> </td>
 		  <td align='left' size='10'>
@@ -267,11 +279,9 @@
 <?php
 	}
 ?>
-      <td align='left'><input type='text' name="sys_memo_<?=$j?>" size='19' maxlength='250' value='<?=$xmemo?>' style="background-color:black;ime-mode:active;height:30;color:yellow;"> </td>
-
-	  <!-- --------------- tree Delete-------------- -->
+      <td align='left'><input type='text' name="sys_memo_<?=$j?>" value='<?=$xmemo?>' style="background-color:black;ime-mode:active;height:30;color:yellow;"> </td>
 	  <td>
-	  <?php if($rs['sys_userid']==$H_ID){  ?>
+<?php if( $rs['sys_userid']==$H_ID){  ?>
 		<input type='button' name='del' onclick="javascript:del_ete('<?=$m_type?>','<?=$Rsys_pg?>','<?=$xmenu?>','<?=$xsubmenu?>','<?=$xbook_num?>');" value="delete" style="background-color:red;color:yellow;height:25;" <?php echo "title='$xsubtit \n $Rsys_pg-$xseqno\n $xmenu \n $xsubmenu \n Delete the tree. Be careful!'"; ?> >
 	  <?php } else{ ?>
 	  <?php }       ?>
@@ -287,10 +297,6 @@
 	if ( $main_level == "mroot" and $m_level != "up_root"  ) {
 ?>
 		<input type='button' name=upd onclick="javascript:up_date('<?=$m_type?>');" value=" (Save) " style="border-style:;background-color:blue;color:yellow;height:25;">
-
-		<!-- <font color=red > <br>
-		※ 최상위 메뉴항목 변경은 트리 변경에서 가능합니다. 첫항목은 삭제를 하실수 없습니다.
-		</font> -->
 <?php
 	} else if ( $m_level == "up_root" ) {
 ?>
@@ -305,7 +311,7 @@
 ?>
 
 <?php
-	if ( $_REQUEST['mode'] == 'rowlevel' ) {
+	if( $mode == 'rowlevel' ) {
 ?>
 		 <input type='button' name='root_dis' onclick="javascript:root_up_date(this.form);" value="Main List" title='Print the main list.' style="border-style:;background-color:blue;color:yellow;height:25;">
 <?php
