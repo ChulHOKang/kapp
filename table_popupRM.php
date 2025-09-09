@@ -1,17 +1,5 @@
 <?php
 	include_once('./tkher_start_necessary.php');
-?>
-<html>
-<head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="/logo/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
-<meta name="robots" content="ALL">
-</head>
-<?php
 	/*
 	 *  table_popupRM.php : PopUp Window setup 프로그램. <- table_popupR.php
         call : app_pg50RU.php 에서 콜.
@@ -25,16 +13,27 @@
 
 		group_code: solpakanA_naver_1750725492, if_line: 1
 	 */
+?>
+<html>
+<head>
+<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+<TITLE>K-APP, Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+<link rel="shortcut icon" href="./icon/logo25a.jpg">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+<meta name="keywords" content="k-app, app generator, web app, web development, php, source code, open source,  app tool">
+<meta name="description" content="k-app, app generator, web app, web development, php source code, open source, app tool">
+<meta name="robots" content="ALL">
+</head>
+<?php
 	
 	$H_ID  = get_session("ss_mb_id");	
 	//You need to login. pg_codeS:dao_1540279192:생산정보-A:dao_1536028075:생산정보::, tab_hnmS:dao_1536028075:생산정보, sellist:
 	if( !$H_ID || $H_ID =='' ){
-		my_msg("You need to login. ");
-		$url="/";
+		m_("You need to login. ");
+		$url=KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-
 	$H_LEV = $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	$if_type  = array();
 	$if_data  = array();
@@ -79,19 +78,21 @@
 	else $if_column = "";
 	$tab_enm_pop = "";
 	$tab_hnm_pop = "";
-	$table_item_run30 = "";
-	$table_item_run50 = "";
-	$table_item_run50R = "";
-	$table_item_run70 = "";
+//	$table_item_run30 = "";
+//	$table_item_run50 = "";
+//	$table_item_run50R = "";
+//	$table_item_run70 = "";
 	$app_pg50RU = "";
 	$app_pg50RC = "";
-	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
+/*	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
 	else if( $mode_call == 'table_item_run50' ) $table_item_run50 = 'on';
 	else if( $mode_call == 'table_item_run50R' ) $table_item_run50R = 'on';
 	else if( $mode_call == 'table_item_run70' ) $table_item_run70 = 'on';
-	else if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
+	else */
+	if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
 	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
-
+//m_("pg_code:$pg_code, mode_call:$mode_call,  mode:$mode");
+//pg_code:dao_1757215251, mode_call:app_pg50RU,  mode:
 	if( $mode=='') {	
 		if( isset($pop_table) ) $_SESSION['old_pop_tab']= $pop_table;
 		else $_SESSION['old_pop_tab'] = "";
@@ -213,9 +214,6 @@
 		// 배열[0]은:컬럼이동정보저장.-컬럼구분자는 '$'이고 영문컬럼구분자는 '|' 이다. 
 		// 배열[1]...은: 팝업창에 사용되는 컬럼정보이다.
 		// $dt[0] -> $fld_1:상품명|fld_1:상품$fld_4:판매가|fld_3:단가
-		-------------------------------------------------------*/
-		/*
-		'@'로 분류한다. 0:다시 $로 분류한다 = 컬럼 이동식이다. 1:부터 컬럼 목록이다.
 		pop_dataA:$fld_1:상품명|fld_3:제품명$fld_8:재고|fld_4:수량
 		@fld_1:상품명@fld_2:규격@fld_3:원가@fld_4:판매가
 		@fld_5:구분@fld_6:거래처@fld_8:재고@ 
@@ -236,21 +234,28 @@
 		$tab_hnm_pop = $pop_[1];
 		$pop_table   = ""; //$pop_[0];	처음 팝업 테이블 선택시에 set 한다 중요.
 	} else if( $mode =="Save_End" ) {
-		m_('============= 사용 되지 않는다? Save_End 확인 테스트, mode: ' + $mode ); // 확인필요...
+		m_('=============  No use,  Save_End , mode: ' + $mode ); // 확인필요...
 		if( isset($if_data[$if_line]) ) $pop_table	    = $if_data[$if_line];	
 		else $pop_table	    = "";	
 		$move_pop_data	= $_POST["move_pop_data"];
+	} else if( $mode =="table_popup_save" ) {
+			//m_("--- if_typeD:". $if_typeD);
+			//--- if_typeD:|13|1|3||
 	} else { // 팝업이 설정되지않은 상테에서 처음 실행할때 탄다.
 		if( $mode_call=="app_pg50RC" || $mode_call=="app_pg50RU" ){ // add 2023-09-12 : if 추가 else 이전 까지  - 테스트 미완성 중요.
 			$ln	= $if_line + 1;
-			$type_[$ln] = '13'; // 13:popup column으로 설정.
+			$if_type[$ln] = '13'; // 13:popup column으로 설정.
+			//$type_[$ln] = '13'; // 13:popup column으로 설정.
 			$item_cnt = $_POST['item_cnt'];	
-			$if_type = "";
+			$if_typeX = "";
 			for( $i=0; $i< $item_cnt; $i++ ) {
-				if( isset($type_[$i]) ) $if_type = $if_type . $type_[$i] . "|";
-				else $if_type = $if_type . "|";
+				//if( isset($type_[$i]) ) $if_type = $if_type . $type_[$i] . "|";
+				if( isset($if_type[$i]) ) $if_typeX = $if_typeX . $if_type[$i] . "|";
+				else $if_typeX = $if_typeX . "|";
 			}
-			$if_typeD = $if_type;
+			$if_typeD = $if_typeX;
+			//m_("if_typeD:". $if_typeD);
+			//if_typeD:|13|1|3||
 		} else {
 			$ln	= $if_line + 1;
 			$type_ = explode("|", $if_typeD ); // $if_typeD=rsPG['if_type'] 
@@ -360,7 +365,6 @@
 <SCRIPT language=JavaScript src="./include/js/board_func.js"></SCRIPT>
 <script language="JavaScript"> 
 <!--
-
 	function sellist_pop_onclickTT( j ){
 		document.makeform.pop_tab1_click.value = j;
 		ss = document.getElementById('sellist_tab1'+j).value;
@@ -390,9 +394,19 @@
 		var fld2h = fld2ex[1]; 
 	}
 	function popup_confirm() { 
-		makeform.mode.value="table_popup_save";
-		makeform.action="table_popupRM.php";
-		makeform.submit();
+		var selind = makeform.pop_tabS.selectedIndex;
+		var pop_tabS_text	 = makeform.pop_tabS[selind].text;
+		var pop_tabS_value = 	makeform.pop_tabS[selind].value;
+		if( pop_tabS_value == '' ) {
+			//alert( pop_tabS_text + ", pop_tabS_value: " + pop_tabS_value + ", selind: " +selind );
+			alert("Select a pop-up table and specify the columns!"); return false;//팝업 테이블을 선택하고 컬럼을 지정 하세요!
+		}
+		if( !confirm(' Would you like to save it?') ) return false;
+		else {
+			makeform.mode.value="table_popup_save";
+			makeform.action="table_popupRM.php";
+			makeform.submit();
+		}
 	}
 	function Back_func( $mode_call ) {
 		pg_codeS = makeform.pg_codeS.value;
@@ -877,7 +891,7 @@ PopUp Window Column Setup <font color='gray'>(user lev:<?=$H_LEV?>)</font>
 </form>
 <?php
 if( $mode == 'table_popup_save' ){
-	if( $table_item_run30 == 'on' ) {
+	/*if( $table_item_run30 == 'on' ) {
 		$url = "table_pg30.php";
 	} else if( $table_item_run50R == 'on' ) {
 		set_session('pg_codeS',  $pg_codeS);
@@ -885,7 +899,8 @@ if( $mode == 'table_popup_save' ){
 	} else if( $table_item_run70 == 'on' ) {
 		set_session('pg_codeS',  $pg_codeS);
 		$url = "table_pg70.php";
-	} else if( $app_pg50RU == 'on' ) {
+	} else */
+	if( $app_pg50RU == 'on' ) {
 		set_session('pg_codeS',  $pg_codeS);
 		$url = "app_pg50RU.php";
 	} else if( $app_pg50RC == 'on' ) {

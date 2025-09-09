@@ -443,7 +443,7 @@ function upItemA() {
 		alert('top_line j:' + j);
 		return false; // down은 마지막 컬럼이면 return false
 	}
-	if (j < 0 ) {
+	if( j < 0 ) {
 		alert(' Please select a column! ' );
 		return false;
 	}
@@ -851,11 +851,12 @@ function Save_and_Run( pg)
 	var str_array= "";
 
 	//중요! - 컬럼 순서변경, 컬럼명칭 변경, 컬럼 조건및 조건데이터 처리 에따른 item_array 재생성.18-09-11
-	for (i = 0; i < item_cnt; i++) {
+	for( i = 0; i < item_cnt; i++) {
 		colnm_value = colnm[i].value;
 		st = colnm_value.split('|');
 		str_array = str_array + st[0] +'|'+ st[1] +'|'+ st[2] +'|'+ st[3]+'|'+ st[4]+'@';	
 	} 
+	//alert("str_array: "+ str_array); return;
 	document.makeform.item_array.value = str_array;
 	
 	if( mode_session == "POPUP" || mode_session == "Formula") {
@@ -1076,7 +1077,6 @@ function Save_and_Run( pg)
 				 <td valign="top">
 	<div id="here">
 <?php
-//축구  야구  골프  족구  농구  당구  탁구  Warning: Undefined array key 7 in /home1/kappsystem/public_html/kapp/tkher_program_run.php on line 480 
 	$ss = "";
 	$ckv = "";	
 	if( isset( $table10_pg) && $table10_pg !=='' ){ 
@@ -1086,10 +1086,10 @@ function Save_and_Run( pg)
 					if( $if_line_session == $j) $ckv = " checked "; 
 					else $ckv = "";
 				}
-				$it = explode("|", $itX[$j] );	//라벨만을 변경해야 하므로 lavel이 2개있다 중요.
-				$val = $itX[$j]; 	//m_( "itX: " . $itX[$j] . "  : $j, val:$val");	//itX: |fld_1|fld1|VARCHAR|15  : 0, val:|fld_1|fld1|VARCHAR|15
-				$ifd = explode("|", $if_data ); // $if_data= |||Attached file||||Attached file|Password| , $if_type = |||9||||9|7|
-				$tit_val = $j . " - " . $val . " : " . $ifd[$j+1]; //
+				$it = explode("|", $itX[$j] );
+				$val = $itX[$j];
+				$ifd = explode("|", $if_data );
+				$tit_val = $j . " - " . $val . " : " . $ifd[$j+1]; 
 
 				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA( this.value, " .$j. " )' value='".$val."'><label title='".$tit_val."' id='columnR".$j."'>".$it[2] ."(".$it[3].")</label></label><br>";
 			} //for
@@ -1099,7 +1099,8 @@ function Save_and_Run( pg)
 	//  $qna = "프로그램의 작업에서 가능하지 않는 것은?|컬럼순서 변경|컬럼명 변경|컬럼삭제|컬럼추가";
 	//	$qna = "What is not possible in the work of the program here?|Change column order|Change column name|Delete column|Add column|4^프로그램의 작업에서 가능하지 않는 것은?|컬럼순서 변경|컬럼명 변경|컬럼삭제|컬럼추가|4^프로그램의 작업순서가 아닌것은?|프로그램명설정-테이블선택-생성버턴|테이블선택-프로그램명설정-생성버턴|프로그램명설정-생성버턴|3";
 	//  ^문제 부뉴, |문항 분류 마지막 숫자는 정답. 중요. 
-	$qna = "sequence of the work|Select Project.|Select Program.|Select column.|Column attribute definition.|Click Save and RUN button.|4^작업순서|Project 선택|Program 선택|컬럼을 선택한다.|컬럼의 속성을 정의 한다.|Save and RUN 버턴 클릭.|4";
+	//$qna = "sequence of the work|Select Project.|Select Program.|Select column.|Column attribute definition.|Click Save and RUN button.|4^작업순서|Project 선택|Program 선택|컬럼을 선택한다.|컬럼의 속성을 정의 한다.|Save and RUN 버턴 클릭.|4";
+	$qna = "sequence of the work|Select Project.|Select Program.|Select column.|Column attribute definition.|Click Save and RUN button.|4";
 	echo "<script> rr_func(\"".$ss."\", \"".$qna."\");</script> "; // 최초화면에 설문지 출력 중요.
 ?>
 		<!-- </select> -->
@@ -1203,7 +1204,7 @@ function Save_and_Run( pg)
 <?php
 					}			
 			} else {
-				//my_msg("ERROR Fetch------------table10_pg:$table10_pg , table10_tab:$table10_tab ");//첫실행시에 온다.
+				//m_("ERROR Fetch------------table10_pg:$table10_pg , table10_tab:$table10_tab ");//첫실행시에 온다.
 			}
 ?>
 					 </td>
