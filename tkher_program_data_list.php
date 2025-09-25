@@ -329,7 +329,7 @@ $(function () {
 	$item		= array(); 
 	$ddd		= "";
 	$list		= explode("@", $item_array);
-	for ( $i=0; $list[$i] != ""; $i++ ){
+	for ( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){
 		$ddd				= $list[$i];
 		$item				= explode("|", $ddd);
 		$fld_enm[$i]	= $item[1];

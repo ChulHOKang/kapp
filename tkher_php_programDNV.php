@@ -273,7 +273,7 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 				$iftype		= explode("|", $iftypeX);
 				$ifdataX		= $rsPG['if_data'];
 				$ifdata		= explode("|", $ifdataX);
-			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
+			for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 					$ddd		= $list[$i];
 					$typeX	= $iftype[$j];
 					$if_fld	= explode(":", $ifdata[$j]); 
@@ -399,7 +399,7 @@ fwrite($fsw,"			else $"."seqno='';  \r\n");
 	fwrite($fsw,"			$"."ff_nm = time() . '_';  \r\n"); // add : 2023-0905
 	fwrite($fsw,"			$"."f_path = './' . $"."ff_nm;   // $"."f_path='./file/';  // dir add     \r\n"); // add : 2023-0905
 
-		for ( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
+		for ( $i=0, $j=1; isset($list[$i]) && $list[$i] != ""; $i++,$j++ ){
 					$ddd		= $list[$i];
 					$typeX	= $iftype[$j];
 					$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
@@ -650,7 +650,7 @@ fwrite($fsw,"					<input type=hidden name='page'				value='<?=$"."page?>' />   \
 				$ifdataX		= $rsPG['if_data'];
 				$ifdata		= explode("|", $ifdataX);
 
-			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
+			for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 					$ddd		= $list[$i];
 					$typeX	= $iftype[$j];
 
@@ -734,7 +734,7 @@ fwrite($fsw," <div class='blankA'> </div>    \r\n");
 					fwrite($fsw,"<SELECT NAME='".$fld[1]."' SIZE='1' style='border-style:;height:25;'>   \r\n");
 					fwrite($fsw,"<?php 	   \r\n");
 					fwrite($fsw,"		$"."if_fld = " . $nT . "; 	   \r\n");
-					fwrite($fsw,"		for ( $"."k=0; $"."if_fld[$"."k] != \"\"; $"."k++ ){   \r\n");
+					fwrite($fsw,"		for ( $"."k=0; isset($"."if_fld[$"."k]) && $"."if_fld[$"."k] != \"\"; $"."k++ ){   \r\n");
 					fwrite($fsw,"			if( $"."if_fld[$"."k] == $"."row['".$fldenm."'] ) $"."sel = 'selected';  \r\n");
 					fwrite($fsw,"			else	  $"."sel ='';    \r\n");
 					fwrite($fsw,"			echo \"<OPTION $"."sel >$"."if_fld[$"."k]</OPTION> \";  \r\n");
@@ -755,7 +755,7 @@ fwrite($fsw," <div class='blankA'> </div>    \r\n");
 					fwrite($fsw," $"."kk = count($"."ck); 	   \r\n");
 
 					fwrite($fsw,"		$"."if_fld = " . $nT . "; 	   \r\n");
-					fwrite($fsw," for ( $"."k=0; $"."if_fld[$"."k] != \"\"; $"."k++ ){   \r\n");
+					fwrite($fsw," for ( $"."k=0; isset($"."if_fld[$"."k]) && $"."if_fld[$"."k] != \"\"; $"."k++ ){   \r\n");
 					fwrite($fsw," 	$"."mm = \" \"; 	   \r\n");
 					fwrite($fsw," 	for($"."ii=0;$"."ii<$"."kk;$"."ii++) { 	   \r\n");
 					fwrite($fsw," 		if( $"."if_fld[$"."k] == $"."ck[$"."ii] ) $"."mm=\" checked \"; 	   \r\n");
@@ -773,7 +773,7 @@ fwrite($fsw," <div class='blankA'> </div>    \r\n");
 
 					fwrite($fsw,"<?php 	   \r\n");
 					fwrite($fsw,"		$"."if_fld = " . $nT . "; 	   \r\n");
-					fwrite($fsw," for ( $"."k=0; $"."if_fld[$"."k] != \"\"; $"."k++ ){   \r\n");
+					fwrite($fsw," for ( $"."k=0; isset($"."if_fld[$"."k]) && $"."if_fld[$"."k] != \"\"; $"."k++ ){   \r\n");
 					fwrite($fsw," 	if( $"."if_fld[$"."k] == $"."row['".$fldenm."'] )  \r\n");
 					fwrite($fsw,"           echo \"<input type = 'radio' name='" . $fld[1] . "' value='$"."if_fld[$"."k]' checked >$"."if_fld[$"."k] &nbsp; \";  \r\n");
 					fwrite($fsw," 	else	echo \"<input type = 'radio' name='" . $fld[1] . "' value='$"."if_fld[$"."k]' >$"."if_fld[$"."k] &nbsp; \";  \r\n");

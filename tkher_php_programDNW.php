@@ -95,7 +95,7 @@
 	}
 
 	$list		= explode("@", $item_array);
-	
+	$search_fld = '';
 	for ( $i=0; $list[$i] != ""; $i++ ){
 		$ddd			= $list[$i];
 		$item			= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
@@ -327,7 +327,7 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 					if( $typeX == "1" ) { // radio button
 							fwrite($fsi," <div class='menu1T' align='center'><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fld[2]."</span></div>  \r\n");
 							fwrite($fsi," <div class='ListBox1A'><span> \r\n");
-						for ( $k=0; $if_fld[$k] != ""; $k++ ){
+						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 							fwrite($fsi," <input type='radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' class='input1A'>" . $if_fld[$k] . " &nbsp;  \r\n");
 						}
 							fwrite($fsi," </span></div>  \r\n");
@@ -335,7 +335,7 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 					} else if( $typeX == "3" ) { //check box
 							fwrite($fsi," <div class='menu1T' align='center'><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fld[2]."</span></div>  \r\n");
 							fwrite($fsi," <div class='ListBox1A'><span> \r\n");
-							for ( $k=0; $if_fld[$k] != ""; $k++ ){
+							for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 								fwrite($fsi," <input type='Checkbox' name='" . $fld[1] .  "[]'  value='" . $if_fld[$k] . "' >" . $if_fld[$k] . " &nbsp; \r\n");
 							}
 							fwrite($fsi," </span></div>  \r\n");
@@ -344,7 +344,7 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 							fwrite($fsi," <div class='menu1T' align='center'><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fld[2]."</span></div>  \r\n");
 							fwrite($fsi," <div class='ListBox1A'> \r\n");
 							fwrite($fsi," <SELECT NAME='".$fld[1]."' SIZE='1' style='border-style:;height:25;'>  \r\n");
-						for ( $k=0; $if_fld[$k] != ""; $k++ ){
+						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 							fwrite($fsi,"<OPTION SELECTED>".$if_fld[$k]."</OPTION> \r\n");
 						}
 							fwrite($fsi,"</SELECT> \r\n");
@@ -407,10 +407,9 @@ fwrite($fsi,"                                 \r\n");
 fwrite($fsi,"<script language='JavaScript'>   \r\n"); 
 fwrite($fsi,"<!--   \r\n");
 fwrite($fsi,"	function popup_callDN(if_dataPG, pop_dataPG, if_typePG , host_url, i) {   \r\n");
-fwrite($fsi,"	substring = 'appgenerator.net'; \r\n"); // $_SERVER['HTTP_HOST']
-
-//fwrite($fsi,"	if( host_url.includes(substring) ) Trun='../../t/popup_callDN.php?fld_session='+i; \r\n"); 
-fwrite($fsi,"	if( host_url.includes(substring) ) Trun='../../popup_callDN.php?fld_session='+i; \r\n"); 
+//fwrite($fsi,"	substring = 'appgenerator.net'; \r\n"); // $_SERVER['HTTP_HOST']
+fwrite($fsi,"	substring = '".$_SERVER['HTTP_HOST']."'; \r\n");
+fwrite($fsi,"	if( host_url.includes(substring) ) Trun='../../popup_call.php?fld_session='+i; \r\n"); 
 fwrite($fsi,"	else Trun='./popup_callDN.php?fld_session='+i; \r\n");
 
 fwrite($fsi,"		window.open( Trun,'', 'alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes');   \r\n");

@@ -288,7 +288,7 @@ fwrite($fsr,"			else $"."search_choice='';  \r\n");
 	$item		= array(); 
 	$ddd		= "";
 	$list		= explode("@", $item_array);
-	for ( $i=0; $list[$i] != ""; $i++ ){
+	for ( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){ 
 		$ddd			= $list[$i];
 		$item			= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
 		$fld_enm[$i]	= $item[1];
