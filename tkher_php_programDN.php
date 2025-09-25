@@ -35,6 +35,7 @@
 
 	fwrite($fsr,"<?php \r\n");
 
+/*
 fwrite($fsr,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
 fwrite($fsr,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
 fwrite($fsr,"	$"."searchNameA = 'appgenerator.net';  \r\n");
@@ -51,6 +52,20 @@ fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
 fwrite($fsr,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
 fwrite($fsr,"		// tkher_dbcon_create.php에서 generator.  \r\n");
 fwrite($fsr,"	}  \r\n");
+*/
+//fwrite($fsr,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
+//fwrite($fsr,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
+fwrite($fsr,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+fwrite($fsr,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+fwrite($fsr,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsr,"	    // 포함  \r\n");
+fwrite($fsr,"	} else {    \r\n");
+fwrite($fsr,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
+fwrite($fsr,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
+fwrite($fsr,"		// tkher_dbcon_create.php에서 generator.  \r\n");
+fwrite($fsr,"	}  \r\n");
+
 
 //	fwrite($fsr," include './table_paging.php';	\r\n"); // 2023-07-06 tkher_db_lib.php에 pagingA()로 적용함 -- 중요
 	fwrite($fsr,"?> \r\n");
@@ -222,11 +237,27 @@ fwrite($fsr,"	}  \r\n");
 	fwrite($fsr," </script> \r\n");
 	//------------------------------------- end ---------------------------
 	fwrite($fsr,"<?php \r\n");
-	fwrite($fsr,"	$"."c_sel		= $"."_POST['c_sel']; \r\n");
-	fwrite($fsr,"	$"."c_sel3		= $"."_POST['c_sel3']; \r\n");
-	fwrite($fsr,"	$"."search_fld	= $"."_POST['search_fld']; \r\n");
-	fwrite($fsr,"	$"."search_text	= $"."_POST['search_text']; \r\n");
-	fwrite($fsr,"	$"."search_choice = $"."_POST['search_choice']; \r\n");
+
+fwrite($fsr,"			if( isset($"."_POST['page']) ) $"."page=$"."_POST['page'];  \r\n");
+fwrite($fsr,"			else $"."page=1;   \r\n");
+fwrite($fsr,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
+fwrite($fsr,"			else $"."mode='';  \r\n");
+
+//	fwrite($fsr,"	$"."c_sel		= $"."_POST['c_sel']; \r\n");
+fwrite($fsr,"			if( isset($"."_POST['c_sel']) ) $"."c_sel=$"."_POST['c_sel']; \r\n");
+fwrite($fsr,"			else $"."c_sel='';  \r\n");
+//	fwrite($fsr,"	$"."c_sel3		= $"."_POST['c_sel3']; \r\n");
+fwrite($fsr,"			if( isset($"."_POST['c_sel3']) ) $"."c_sel3=$"."_POST['c_sel3']; \r\n");
+fwrite($fsr,"			else $"."c_sel3='';  \r\n");
+//	fwrite($fsr,"	$"."search_fld	= $"."_POST['search_fld']; \r\n");
+fwrite($fsr,"			if( isset($"."_POST['search_fld']) ) $"."search_fld=$"."_POST['search_fld']; \r\n");
+fwrite($fsr,"			else $"."search_fld='';  \r\n");
+//	fwrite($fsr,"	$"."search_text	= $"."_POST['search_text']; \r\n");
+fwrite($fsr,"			if( isset($"."_POST['search_text']) ) $"."search_text=$"."_POST['search_text']; \r\n");
+fwrite($fsr,"			else $"."search_text='';  \r\n");
+//	fwrite($fsr,"	$"."search_choice = $"."_POST['search_choice']; \r\n");
+fwrite($fsr,"			if( isset($"."_POST['search_choice']) ) $"."search_choice=$"."_POST['search_choice']; \r\n");
+fwrite($fsr,"			else $"."search_choice='';  \r\n");
 
 	fwrite($fsr,"	$"."tab_enm	    = \"" .$tab_enm. "\"; \r\n");
 	fwrite($fsr,"	$"."tab_hnm	    = \"" .$tab_hnm. "\"; \r\n");
@@ -270,8 +301,10 @@ fwrite($fsr,"	}  \r\n");
 	//$page		= $_POST[page];
 	//$in_day		= date("Y-m-d H:i");
 
-fwrite($fsr,"			$"."line_cnt	= $"."_POST['line_cnt'];	 \r\n");
-fwrite($fsr,"			if( !$"."line_cnt  ) $"."line_cnt	= 10;					 \r\n");
+//fwrite($fsr,"			$"."line_cnt	= $"."_POST['line_cnt'];	 \r\n");
+fwrite($fsr,"			if( isset($"."_POST['line_cnt']) ) $"."line_cnt=$"."_POST['line_cnt']; \r\n");
+fwrite($fsr,"			else $"."line_cnt=10;  \r\n");
+//fwrite($fsr,"			if( !$"."line_cnt  ) $"."line_cnt	= 10;					 \r\n");
 fwrite($fsr,"			$"."page_num = 10;			// #[1] [2] [3] 갯수  - 10:고정.  \r\n");
 
 fwrite($fsr," ?> \r\n");

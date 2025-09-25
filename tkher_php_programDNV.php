@@ -20,20 +20,26 @@
 
 	$pg_code 	= $_REQUEST['pg_code'];
 	$mode 		= $_POST['mode'];
-	if($mode=='view') {
+	if( $mode=='view') {
 		if( $H_ID != 'dao' ) coin_minus_func($H_ID, 1000);
 		$seqno		= $_POST['seqno'];
 		$tab_enm	= $_POST['tab_enm'];
 		$item_cnt	= $_POST['item_cnt'];
-		$item_array = $_POST['item_array'];
+		if( isset($_POST['item_array']) ) $item_array = $_POST['item_array'];
+		else $item_array = '';
 
-		$if_type 	= $_SESSION['if_typePG'];
-		$if_typePG 	= $_SESSION['if_typePG'];
-		$if_data 	= $_SESSION['if_dataPG'];
-		$if_dataPG 	= $_SESSION['if_dataPG'];
-		$pop_dataPG 	= $_SESSION['pop_dataPG'];
-		$relation_dataPG= $_SESSION['relation_dataPG'];
-		$relation_data 	= $_SESSION['relation_dataPG'];
+//		if( isset($_SESSION['if_typePG']) ) $if_type 	= $_SESSION['if_typePG'];
+//		if( isset($_SESSION['if_dataPG']) ) $if_data 	= $_SESSION['if_dataPG'];
+//		if( isset($_SESSION['relation_dataPG']) ) $relation_data 	= $_SESSION['relation_dataPG'];
+
+		if( isset($_SESSION['if_typePG']) ) $if_typePG 	= $_SESSION['if_typePG'];
+		else $if_typePG 	='';
+		if( isset($_SESSION['if_dataPG']) ) $if_dataPG 	= $_SESSION['if_dataPG'];
+		else $if_dataPG 	='';
+		if( isset($_SESSION['pop_dataPG']) ) $pop_dataPG 	= $_SESSION['pop_dataPG'];
+		else $pop_dataPG 	='';
+		if( isset($_SESSION['relation_dataPG']) ) $relation_dataPG= $_SESSION['relation_dataPG'];
+		else $relation_dataPG 	='';
 
 	} else{
 		m_("write_r : Error, "); exit();
@@ -45,7 +51,7 @@
 	$fsi			= fopen("$runF3","w+");		//write file
 
 	fwrite($fsi,"<?php \r\n");
-
+/*
 fwrite($fsi,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
 fwrite($fsi,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
 fwrite($fsi,"	$"."searchNameA = 'appgenerator.net';  \r\n");
@@ -62,7 +68,16 @@ fwrite($fsi,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
 fwrite($fsi,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
 fwrite($fsi,"		// tkher_dbcon_create.php에서 generator.  \r\n");
 fwrite($fsi,"	}  \r\n");
-
+*/
+fwrite($fsi,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+fwrite($fsi,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+fwrite($fsi,"			include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsi,"	} else {    \r\n");
+fwrite($fsi,"			include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsi,"			include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
+fwrite($fsi,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
+fwrite($fsi,"		// tkher_dbcon_create.php에서 generator.  \r\n");
+fwrite($fsi,"	}  \r\n");
 
 //fwrite($fsi," include './table_paging.php';	\r\n"); // 2023-07-06 tkher_db_lib.php 에 pagingA()로 생성 사용
 fwrite($fsi,"?> \r\n");
@@ -223,6 +238,9 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 	fwrite($fsi,"		<div class='viewSubjX'><span title='(appgenerator.net:".$pg_code.":".$tab_hnm.")'>".$pg_name."</span> </div>   \r\n");
 	fwrite($fsi,"		<div class='blankA'> </div>   \r\n");
 	fwrite($fsi,"<?php   \r\n");
+
+	fwrite($fsi,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
+	fwrite($fsi,"			else $"."mode='';  \r\n");
 	fwrite($fsi,"		if( $"."mode=='data_delete' ) {   \r\n");
 
 //				$SQL = " delete from ksd39673976_1687747338 where seqno=". $_REQUEST['seqno'];   
@@ -330,7 +348,7 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 	$fsw = fopen("$updfile","w+");		//write file
 
 	fwrite($fsw,"<?php \r\n");
-
+/*
 	fwrite($fsw,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
 	fwrite($fsw,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
 	fwrite($fsw,"	$"."searchNameA = 'appgenerator.net';  \r\n");
@@ -347,12 +365,29 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 	fwrite($fsw,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
 	fwrite($fsw,"		// tkher_dbcon_create.php에서 generator.  \r\n");
 	fwrite($fsw,"	}  \r\n");
+*/
+fwrite($fsw,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+fwrite($fsw,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+fwrite($fsw,"			include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsw,"	} else {    \r\n");
+fwrite($fsw,"			include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsw,"			include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
+fwrite($fsw,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
+fwrite($fsw,"		// tkher_dbcon_create.php에서 generator.  \r\n");
+fwrite($fsw,"	}  \r\n");
 
 	fwrite($fsw,"                                \r\n");
 	fwrite($fsw,"	$"."upfile	 = '';  \r\n");
 	fwrite($fsw,"	$"."upfileX	= '';  \r\n");
-	fwrite($fsw,"	$"."mode = $"."_POST[\"mode\"];  \r\n");
-	fwrite($fsw,"	$"."seqno = $"."_REQUEST[\"seqno\"];  \r\n");
+
+//	fwrite($fsw,"	$"."mode = $"."_POST[\"mode\"];  \r\n");
+fwrite($fsw,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
+fwrite($fsw,"			else $"."mode='';  \r\n");
+//	fwrite($fsw,"	$"."seqno = $"."_REQUEST[\"seqno\"];  \r\n");
+fwrite($fsw,"			if( isset($"."_POST['seqno']) ) $"."seqno=$"."_POST['seqno']; \r\n");
+fwrite($fsw,"			else if( isset($"."_REQUEST['seqno']) ) $"."seqno=$"."_REQUEST['seqno']; \r\n");
+fwrite($fsw,"			else $"."seqno='';  \r\n");
+
 	fwrite($fsw,"	if( $"."mode == 'record_update' ) {  \r\n");
 
 	fwrite($fsw," 			$"."query			= \" UPDATE ". $tab_enm." SET  \"; \r\n");
@@ -375,9 +410,12 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 								fwrite($fsw," 			$"."aa		= @implode(\",\", $"."_POST['". $fld[1]. "']); ");
 								fwrite($fsw," 			$"."query	= $"."query . \"".$fld[1]."= '\" . $"."aa . \"' \"; \r\n");
 
-							} else if( $typeX=='9' ) {	// 3:체크박스 배열 처리
+							} else if( $typeX=='9' ) {	// 9:
 
-									fwrite($fsw,"			$"."upfile = $"."_POST['upfile'];  \r\n");
+									//fwrite($fsw,"			$"."upfile = $"."_POST['upfile'];  \r\n");
+									fwrite($fsw,"			if( isset($"."_POST['upfile']) ) $"."upfile=$"."_POST['upfile']; \r\n");
+									fwrite($fsw,"			else $"."upfile='';  \r\n");
+
 									fwrite($fsw," 			$"."upfileX	  = $"."_FILES[\"".$nm."\"][\"name\"];  \r\n");
 									fwrite($fsw," 			$"."fld_enm = $"."_FILES[\"".$nm."\"][\"name\"];   \r\n");
 									fwrite($fsw," 			if ( $"."_FILES[\"".$nm."\"][\"error\"] > 0){								// 에러가 있는지 검사하는 구문  \r\n");
@@ -392,7 +430,7 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 									fwrite($fsw,"           			}              \r\n");
 									fwrite($fsw," 			}                  \r\n");
 					fwrite($fsw," 			if( $"."upfileX ) $"."query = $"."query . \"".$fld[1]."= '\" . $"."_FILES[\"".$nm."\"][\"name\"] . \"' \";   \r\n");
-/*	*/								
+
 							} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 									fwrite($fsw," 			$"."query = $"."query . \"".$fld[1]."= '\" . $"."_POST['".$fld[1]."'] . \"' \";   \r\n");
 							} ELSE {
@@ -404,9 +442,11 @@ fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 								fwrite($fsw," 			$"."aa = @implode(\",\" , $"."_POST['".$fld[1]."'] );	// 3:체크박스 배열처리.   \r\n");
 								//fwrite($fsw," 			$"."query = $"."query . \"".$fld[1]."= '\" . $"."aa . \"', \"; \r\n");
 								fwrite($fsw," 			$"."query = $"."query . \",".$fld[1]."= '\" . $"."aa . \"' \"; \r\n");
-							} else if( $typeX=='9' ) {	// 3:체크박스 배열 처리
+							} else if( $typeX=='9' ) {	// 9:add file
 /**/
-								fwrite($fsw,"			$"."upfile = $"."_POST['upfile'];  \r\n");
+								//fwrite($fsw,"			$"."upfile = $"."_POST['upfile'];  \r\n");
+									fwrite($fsw,"			if( isset($"."_POST['upfile']) ) $"."upfile=$"."_POST['upfile']; \r\n");
+									fwrite($fsw,"			else $"."upfile='';  \r\n");
 								fwrite($fsw," 			$"."fld_enm = $"."_FILES[\"".$nm."\"][\"name\"];    \r\n");
 								fwrite($fsw," 			$"."upfileX = $"."_FILES[\"".$nm."\"][\"name\"];    \r\n");
 								fwrite($fsw," 			if ( $"."_FILES[\"".$nm."\"][\"error\"] > 0){    \r\n");
@@ -506,7 +546,6 @@ fwrite($fsw,"</style>  \r\n");
 //---------- end style
 fwrite($fsw,"   <script type=\"text/javascript\">  \r\n");
 	
-//----------------- add 2021-02-04 popup window -------------
 /*
 fwrite($fsw,"	function popup_callDN(if_dataPG, pop_dataPG, if_typePG ) {   \r\n");
 fwrite($fsw,"	    Trun='./popup_callDN.php'; \r\n");
@@ -516,14 +555,13 @@ fwrite($fsw,"	}   \r\n");
 */
 
 fwrite($fsw,"	function popup_callDN(if_dataPG, pop_dataPG, if_typePG , host_url, i) {   \r\n");
-fwrite($fsw,"	substring = 'appgenerator.net'; \r\n"); // $_SERVER['HTTP_HOST']
-//fwrite($fsw,"	if( host_url.includes(substring) ) Trun='../../t/popup_callDN.php?fld_session='+i; \r\n"); 
-fwrite($fsw,"	if( host_url.includes(substring) ) Trun='../../popup_callDN.php?fld_session='+i; \r\n"); 
+//fwrite($fsw,"	substring = 'appgenerator.net'; \r\n"); // $_SERVER['HTTP_HOST']
+fwrite($fsw,"	substring = '".$_SERVER['HTTP_HOST']."'; \r\n"); // $_SERVER['HTTP_HOST']
+fwrite($fsw,"	if( host_url.includes(substring) ) Trun='../../popup_call.php?fld_session='+i; \r\n"); 
 fwrite($fsw,"	else Trun='./popup_callDN.php?fld_session='+i; \r\n");
 fwrite($fsw,"		window.open( Trun,'', 'alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes');   \r\n");
 fwrite($fsw,"		return true;     \r\n");
 fwrite($fsw,"	}   \r\n");
-//----------------------------- add end ---- 2021-02-04 ----------
 
 fwrite($fsw,"  	function table_data_list($"."pg_code) {  \r\n");
 fwrite($fsw,"  		document.tkher_form.action=\"".$pg_code."_run.php?pg_code=\" + $"."pg_code;  \r\n");
@@ -584,7 +622,7 @@ fwrite($fsw,"			</form>   \r\n");
 fwrite($fsw,"	<div class='boardViewX'>   \r\n");
 fwrite($fsw,"		<div class='viewHeader'>   \r\n");
 fwrite($fsw,"			<span title='tab_update_pg70'>Date:<?=date(\"Y-m-d H:i:s\" ); ?></span>   \r\n");
-fwrite($fsw,"			<input type=button value='List' onclick=\"javascript:table_data_list('<?=$pg_code?>');\" class='Btn_List01A'>   \r\n");
+fwrite($fsw,"			<input type=button value='List' onclick=\"javascript:table_data_list('<?=$"."_REQUEST['pg_code']?>');\" class='Btn_List01A'>   \r\n");
 fwrite($fsw,"		</div>   \r\n");
 				
 fwrite($fsw,"		<div class='viewSubjX'><span>".$pg_name."</span> </div>   \r\n");

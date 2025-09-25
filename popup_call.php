@@ -13,30 +13,48 @@
 	*		table_item_run.php, table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
 	------------------------------------------------------------------------------------------ */
 	// 컬럼 순서를 조정해도 이상없이 작동한다.  table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
-	$iftype_db		= $_REQUEST['if_typePG'];
-	$ifdata_db		= $_REQUEST['if_dataPG'];
-	$if_dataPG		= $_REQUEST['if_dataPG'];
-	$pop_dataPG		= $_REQUEST['pop_dataPG'];
-	if( !$iftype_db ) {
+	if( isset($_POST['sel_g_name']) ) $sf = $_POST['sel_g_name'];
+	else	$sf	= "";
+	if( isset($_POST['search_data']) ) $sd	= $_POST['search_data'];
+	else	$sd	= "";
+
+	if( isset($_REQUEST['if_typePG']) ) $iftype_db = $_REQUEST['if_typePG'];
+	else $iftype_db = "";
+
+	if( isset($_REQUEST['if_dataPG']) ) $ifdata_db = $_REQUEST['if_dataPG'];
+	else $ifdata_db = "";
+
+	if( isset($_POST['if_dataPG']) ) $if_dataPG = $_POST['if_dataPG'];
+	else $if_dataPG = "";
+
+	if( isset($_REQUEST['_POST']) ) $pop_dataPG = $_POST['pop_dataPG'];
+	else $pop_dataPG = "";
+
+//	if( !$iftype_db ) {
+	if( !$iftype_db || $iftype_db == '') {
 		$iftype_db		= $_SESSION["iftype_db"];
 		$ifdata_db		= $_SESSION["ifdata_db"];
 		$if_dataPG		= $_SESSION["if_dataPG"];	//iftype_db X
 		$pop_dataPG		= $_SESSION["pop_dataPG"];  //$_SESSION['pop_dataPG']= $pop_dataPG;
+		//m_("iftype_db : $iftype_db, pop_dataPG:$pop_dataPG");
+		//iftype_db : |13|1|5|||, pop_dataPG:^$fld_1:fld1|fld_1:fld1$fld_4:fld4|fld_4:fld4$fld_5:fld5|fld_5:fld5@fld_1:fld1@fld_2:fld2@fld_3:fld3@fld_4:fld4@fld_5:fld5@^^^^^
 	}
-	if( isset($_POST['fld_session']) ){ // 2022-06-25 보완.
+	if( isset($_POST['fld_session']) ){
 		$fld_session = $_POST['fld_session'];
-	} else {
-		$fld_session= $_REQUEST["fld_session"];		// table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
-	}
+	} else if( isset($_REQUEST['fld_session']) ){
+		$fld_session= $_REQUEST["fld_session"];	
+	} else $fld_session= "";
+
 	$idata		= explode("|", $ifdata_db);
 	$itype		= explode("|", $iftype_db);
-	$pdataA		= explode("^", $pop_dataPG); // 2022-02-19 add 멀티 팝업 처리.
-	$pop_if		= $itype[$fld_session+1];
-	$pop_db		= $idata[$fld_session+1];
+	$pdataA		= explode("^", $pop_dataPG);
+	$it = (int)$fld_session+1;
+	$pop_if		= $itype[$it];
+	$pop_db		= $idata[$it];
 	$tdata		= explode(":", $pop_db);
 	$tab_enm	= $tdata[0];
 	$tab_hnm	= $tdata[1];
-	$pdata		= explode("@", $pdataA[$fld_session+1]);  // 2022-02-19 
+	$pdata		= explode("@", $pdataA[$it]);
 	$mpxcol		= array();
 	$mwxcol		= array();
 	$movecol	= explode("$", $pdata[0]);
@@ -46,8 +64,8 @@
 		$mpcol	= explode(":", $mp0 );
 		array_push( $mpxcol, $mpcol );	
 		$mp1		= $mmcol[1];
-		$mwcol	= explode(":", $mp1 );	 // 0:// pop 컬럼, 
-		array_push( $mwxcol, $mwcol );	// win 컬럼.
+		$mwcol	= explode(":", $mp1 );
+		array_push( $mwxcol, $mwcol );	
 	}
 	$pxcol = array();
 	for( $i=0, $j=1; $pdata[$j] != ""; $i++, $j++ ) {
@@ -125,7 +143,7 @@
 									$fpe=$pxcol[$i][0];	
 									$fph=$pxcol[$i][1];
 ?>
-										<option value='<?=$fpe?>' <?php if( $fpe ==$_POST['sel_g_name']) echo "selected"; ?> ><?=$fph?></option>
+										<option value='<?=$fpe?>' <?php if( $fpe ==$sf) echo "selected"; ?> ><?=$fph?></option>
 <?php
 							}
 ?>
@@ -144,7 +162,7 @@
 <table width="650" border="1" cellspacing="0" cellpadding="0">
 	<tr align='center'>
 <?php
-			for ( $i=0; $pxcol[$i][1]!=""; $i++) {
+			for ( $i=0; isset($pxcol[$i][1]) && $pxcol[$i][1]!=""; $i++) {
 				$t = $pxcol[$i][1];	// 팝업창 컬럼 타이틀 부분......
 ?>
 				<td><font color='yellow' size='3'><?=$t?></td> 
@@ -154,10 +172,10 @@
 				<td><font color='yellow'>Select</td>
 	</tr>
 <?php
-	if ( $_POST['sel_g_name'] != "" && $_POST['search_data'] != "") {
-		$sf	= $_POST['sel_g_name'];
-		$sd	= $_POST['search_data'];
-		$w		= " WHERE ( ".$_POST['sel_g_name']." like '%".$_POST['search_data']."%' ) ";
+	if ( $sf != "" && $sd != "") {
+		//$sf	= $_POST['sel_g_name'];
+		//$sd	= $_POST['search_data'];
+		$w		= " WHERE ( ".$sf." like '%".$sd."%' ) ";
 		$ls		= "SELECT * FROM ". $tab_enm . $w;
 	}
 	else $ls	= "SELECT * FROM ". $tab_enm . " ";
@@ -172,10 +190,10 @@
 				$fieldp	= "";
 				$fieldw	= "";
 				$kkk		= 1;
-			for ( $i=0; $pxcol[$i][0] != ""; $i++) {
+			for ( $i=0; isset($pxcol[$i][0]) && $pxcol[$i][0] != ""; $i++) {
 				$pf = $pxcol[$i][0];
 				$pd = $rs[$pf];		// data
-				for( $k=0; $mpxcol[$k] != ""; $k++ ) {	// 데이터 출력 컬럼 
+				for( $k=0; isset($mpxcol[$k]) && $mpxcol[$k] != ""; $k++ ) {	// 데이터 출력 컬럼 
 						$fp0=$mpxcol[$k];				// 이동식 팝업창 컬럼
 						$fw0		= $mwxcol[$k];		// 이동식 프로그램 화면 컬럼.
 						$ppc		= $fp0[0];

@@ -710,6 +710,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 						echo " <div class='blankA'> </div> ";
 				}	//if
 			} //  for
+
 ?>
 				<input type="hidden" name='upfile'		value='<?=$upfile?>' />
 				<div class="viewHeader">

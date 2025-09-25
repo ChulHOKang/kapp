@@ -110,15 +110,11 @@ fwrite($fsi,"<?php \r\n");
 //fwrite($fsi," include_once('./tkher_db_lib.php'); \r\n");
 //fwrite($fsi," include './tkher_dbcon_Table.php';		\r\n");// tkher_dbcon.php
 //fwrite($fsi," include './table_paging.php';	\r\n");
-
+/*
 fwrite($fsi,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
 fwrite($fsi,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
-
 fwrite($fsi,"	$"."searchNameA = 'appgenerator.net';  \r\n");
 fwrite($fsi,"	$"."searchNameB = 'appgenerator.net';  \r\n");
-
-//$_SERVER['DOCUMENT_ROOT']
-//fwrite($fsi,"	if( strpos($"."tkher_iurl, $"."searchNameA) !== false ) {   \r\n");
 fwrite($fsi,"	if( $"."_SERVER['HTTP_HOST'] == $"."searchNameA ) {   \r\n");
 fwrite($fsi,"       include '../../tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
 fwrite($fsi,"		include '../../tkher_dbconX.php';		  \r\n");
@@ -131,6 +127,19 @@ fwrite($fsi,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
 fwrite($fsi,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
 fwrite($fsi,"		// tkher_dbcon_create.php에서 generator.  \r\n");
 fwrite($fsi,"	}  \r\n");
+*/
+fwrite($fsi,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+fwrite($fsi,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+fwrite($fsi,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsi,"	    // 포함  \r\n");
+fwrite($fsi,"	} else {    \r\n");
+fwrite($fsi,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsi,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
+fwrite($fsi,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
+fwrite($fsi,"		// tkher_dbcon_create.php에서 generator.  \r\n");
+fwrite($fsi,"	}  \r\n");
+
+
 
 fwrite($fsi,"?> \r\n");
 
@@ -147,7 +156,7 @@ fwrite($fsi,"</head> \r\n");
 fwrite($fsi,"<?php                                 \r\n");
 
 //fwrite($fsi,"	$"."menu1TWPer=15;  \r\n");
-	fwrite($fsi,"	define('KAPP_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony');	  \r\n");
+//	fwrite($fsi,"	define('KAPP_MOBILE_AGENT',   'phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony');	  \r\n");
 	
 	fwrite($fsi,"	$"."is_mobile = false;  \r\n");
 	fwrite($fsi,"	$"."is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $"."_SERVER['HTTP_USER_AGENT']);   \r\n");
@@ -216,22 +225,15 @@ fwrite($fsi,"	<P href='#' class='on' title='table code:".$tab_enm." , program na
 fwrite($fsi,"</div>   \r\n");
 fwrite($fsi,"	<div class='boardViewX'>   \r\n");
 fwrite($fsi,"		<div class='viewHeader'>   \r\n");
-
 fwrite($fsi,"<?php                                 \r\n");
-
 fwrite($fsi,"	// table: " . $tab_enm . " , table name:" . $tab_hnm . " \r\n");
-//KAPP_URL_
-//fwrite($fsi,"	$"."host_url = KAPP_URL_; \r\n");//$tkher_iurl
-fwrite($fsi,"	$"."host_url = $"."tkher_iurl; \r\n");//$tkher_iurl
-//fwrite($fsi,"	//$"."host_url = KAPP_URL_; \r\n");
-//fwrite($fsi,"	m_(\"host_url:\".$"."host_url); \r\n");
+fwrite($fsi,"	$"."host_url = $"."tkher_iurl; \r\n");
 
 fwrite($fsi,"	$"."relation_dataPG = '" . $relation_dataPG . "'; \r\n");
-fwrite($fsi,"	$"."relation_typePG = '" . $relation_typePG . "'; \r\n"); // add : 2022-02-16
+fwrite($fsi,"	$"."relation_typePG = '" . $relation_typePG . "'; \r\n");
 fwrite($fsi,"	$"."if_typePG  = '" . $if_typePG . "'; \r\n"); // popup_callDN.php 에서 use.
 fwrite($fsi,"	$"."if_dataPG  = '" . $if_dataPG . "'; \r\n");
 fwrite($fsi,"	$"."pop_dataPG = '" . $pop_dataPG . "'; \r\n");
-
 fwrite($fsi,"	$"."item_array		= '" . $item_array . "';    \r\n");
 
 fwrite($fsi,"	$"."_SESSION['if_typePG'] = $"."if_typePG;\r\n");//popup_callDN.php 에서 use.
@@ -378,7 +380,9 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 		}//for
 		
 fwrite($fsi,"<?php                                 \r\n");
-		fwrite($fsi," $"."_SESSION['fld_session'] = $"."fld_session;	// 팝업창 테이블 위치 : if_dataPG     \r\n");
+	//	fwrite($fsi," $"."_SESSION['fld_session'] = $"."fld_session;	// 팝업창 테이블 위치 : if_dataPG     \r\n");
+	fwrite($fsi,"			if( isset($"."fld_session) ) $"."_SESSION['fld_session']=$"."fld_session; \r\n");
+	fwrite($fsi,"			else $"."_SESSION['fld_session']='';  \r\n");
 
 fwrite($fsi,"?>                                 \r\n");
 
@@ -478,42 +482,17 @@ $fsw = fopen("$insfile_r","w+");		//write file
 
 fwrite($fsw,"<?php \r\n");
 
-//fwrite($fsw," include 'tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-
-fwrite($fsw,"     \r\n");
-/*
-//fwrite($fsw,"	//$"."searchNameA = 'http://urllink';  \r\n");
-//fwrite($fsw,"	//$"."searchNameB = 'https://urllink';  \r\n");
-//fwrite($fsw,"	substring = $_SERVER['HTTP_HOST']; \r\n"); // 
-
-fwrite($fsw,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
-fwrite($fsw,"	$"."searchNameBB = $"."_SERVER['HTTP_HOST'];  \r\n");
-
-fwrite($fsw,"	$"."searchNameA = 'appgenerator.net';  \r\n");
-fwrite($fsw,"	$"."searchNameB = 'appgenerator.net';  \r\n");
-
-
-fwrite($fsw,"	if( strpos($"."tkher_iurl, $"."searchNameA) !== false ) {   \r\n");
-fwrite($fsw,"       include '../../t/tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-fwrite($fsw,"		include '../../t/tkher_dbconX.php';		  \r\n");
-//fwrite($fsw,"	} else if( strpos($"."tkher_iurl, $"."searchNameB) !== false ) {   \r\n");
-//fwrite($fsw,"       include '../../t/tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-//fwrite($fsw,"		include '../../t/tkher_dbconX.php';		  \r\n");
-fwrite($fsw,"	} else {  \r\n");
+fwrite($fsw,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+fwrite($fsw,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+fwrite($fsw,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");	//	call:tkher_config_link.php 
+fwrite($fsw,"	} else {    \r\n");
 fwrite($fsw,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
 fwrite($fsw,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
 fwrite($fsw,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
 fwrite($fsw,"		// tkher_dbcon_create.php에서 generator.  \r\n");
 fwrite($fsw,"	}  \r\n");
-*/
 
-fwrite($fsw,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
-fwrite($fsw,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
-fwrite($fsw,"	$"."searchNameA = 'appgenerator.net';  \r\n");
-fwrite($fsw,"	$"."searchNameB = 'appgenerator.net';  \r\n");
-fwrite($fsw,"	if( $"."_SERVER['HTTP_HOST'] == $"."searchNameA ) {   \r\n");
-fwrite($fsw,"       include '../../tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-fwrite($fsw,"		include '../../tkher_dbconX.php';		  \r\n");
+/*
 fwrite($fsw,"	} else if( $"."_SERVER['HTTP_HOST'] == $"."searchNameB ) {   \r\n");
 fwrite($fsw,"       include '../../tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
 fwrite($fsw,"		include '../../tkher_dbconX.php';		  \r\n");
@@ -523,11 +502,17 @@ fwrite($fsw,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
 fwrite($fsw,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
 fwrite($fsw,"		// tkher_dbcon_create.php에서 generator.  \r\n");
 fwrite($fsw,"	}  \r\n");
-
+*/
 //fwrite($fsw," include 'tkher_dbcon.php';		\r\n");
 
 fwrite($fsw,"                                \r\n");
-fwrite($fsw,"	$"."mode = $"."_POST['mode'];  \r\n");
+
+fwrite($fsw,"			if( isset($"."_POST['page']) ) $"."page=$"."_POST['page'];  \r\n");
+fwrite($fsw,"			else $"."page=1;   \r\n");
+fwrite($fsw,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
+fwrite($fsw,"			else $"."mode='';  \r\n");
+//fwrite($fsw,"	$"."mode = $"."_POST['mode'];  \r\n");
+
 fwrite($fsw,"	if( $"."mode != 'Tkher_write' ) {  \r\n");
 fwrite($fsw,"		m_(\"Abnormal approach. \");  \r\n");
 fwrite($fsw,"		$"."rungo = '".$runF1."';  \r\n");
