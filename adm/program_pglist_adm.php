@@ -45,7 +45,6 @@
 	else $tab_hnmS = '';
 	if( isset($_POST["pg_codeS"]) ) $pg_codeS = $_POST['pg_codeS'];
 	else $pg_codeS = '';
-m_("---- ");
 ?>
 <link rel="stylesheet" type="text/css" href="admin.css">
 <body leftmargin="0" topmargin="0">
@@ -156,16 +155,14 @@ m_("---- ");
 		}	else fld='';
 		makeform.pg_array.value=fld_h;
 		rrr = pgR[5];
-		//alert('rrr:'+rrr);	 //rrr:dao_1537844601:입고정보$fld_1:상품|=|fld_1:상품$fld_2:수량|=|fld_2:수량$fld_2:수량|=|fld_3:재고$fld_5:일자|=|fld_4:일자
 		if( rrr ) {
 			rel = rrr.split("$");
 			rtb = rel[0];
 			rtab = rtb.split(":");
 			makeform.tb_relation.value = rtab[1];
-			makeform.pg_relation.value = rdata_sel( rrr );			//
+			makeform.pg_relation.value = rdata_sel( rrr );	
 		}
 	}
-
 	function change_table_func(tab) {
 		tab = document.makeform.tab_hnmS.value;
 		document.makeform.mode.value='SearchTAB';	// table_relation.php에 전달한다.
@@ -173,7 +170,6 @@ m_("---- ");
 		document.makeform.target='runf_main';
 		document.makeform.submit();
 	}
-
 	function change_program_func(pg) {
 		pg = document.makeform.pg_codeS.value;
 		document.makeform.mode.value='SearchPG';
@@ -182,25 +178,20 @@ m_("---- ");
 		document.makeform.submit();
 		return;
 	}
-
-	function relation_setup(pg)
-	{
+	function relation_setup(pg){
 		pg_name = document.makeform.pg_name.value;
 		if( !pg_name ) {
 			alert(" Please select or enter program name!");
 			document.makeform.pg_name.focus();
 			return false;
 		}
-
 		document.makeform.mode.value = 'SearchPG';
 		document.makeform.mode_call.value = 'program_pglist';
 		document.makeform.action='table_relation.php';
 		document.makeform.target='tab_pg_list';
 		document.makeform.submit();
 	}
-
-	function run_pg(pg_code)
-	{
+	function run_pg(pg_code){
 		pg_name = document.makeform.pg_name.value;
 		if( !pg_name ) {
 			alert(" Please select a program! ");
@@ -209,16 +200,11 @@ m_("---- ");
 		}
 		document.makeform.mode.value = 'program_pglist';
 		document.makeform.mode_call.value = 'program_pglist';
-		//document.makeform.action='tkher_program_run.php';
 		document.makeform.action='tkher_program_run.php?pg_code='+pg_code;
-//		document.makeform.action='table_pg70_write.php';
-//		document.makeform.action='table_item_run70.php';
 		document.makeform.target= 'tab_pg_list';
 		document.makeform.submit();
 	}
-
-	 function run_tablelist(pg)
-	{
+	 function run_tablelist(pg){
 			pg_name = document.makeform.pg_name.value;
 			if( !pg_name ) {
 				alert(" Please select a Program! ");
@@ -235,9 +221,7 @@ m_("---- ");
 				tab_hnm = document.makeform.pg_name.value;
 			}
 	}
-
-	 function run_pg_list(pg)
-	{
+	function run_pg_list(pg){
 			pg_name = document.makeform.pg_name.value;
 			if( !pg_name ) {
 				alert(" Please select a Program! ");
@@ -251,9 +235,7 @@ m_("---- ");
 				tab_hnm = document.makeform.pg_name.value;
 			}
 	}
-	
-	function program_search_onclick()
-	{
+	function program_search_onclick()	{
 			pg_name = document.makeform.program_name_search.value;
 			if( !pg_name ) {
 				alert(" Please enter the program name! ");
@@ -264,15 +246,12 @@ m_("---- ");
 			document.makeform.target='_self';
 			document.makeform.submit();
 	}
-
 	function group_code_change_func(cd){
 		index = document.makeform.group_code.selectedIndex;
-		//alert('index: ' + index );
 		nm = document.makeform.group_code.options[index].text;
 		document.makeform.group_name.value = nm;
 		vv = document.makeform.group_code.options[index].value;
 		document.makeform.group_codeX.value = vv;
-		//alert('cd: ' + cd + ', nm: ' + nm);
 		document.makeform.mode.value = "project_search";
 		document.makeform.action ="program_pglist_adm.php";
 		document.makeform.submit();
@@ -285,10 +264,6 @@ m_("---- ");
 	$w='100%';
 	$w2='200';
 	$pg_code = $H_ID . "_" . time();
-	//if( $mode_session == 'POPUP') {
-	//} else if( $mode_session == 'Formula') {
-	//}
-	//---------------------------------------------------------------------------------------------------------
 	if( $mode == 'SearchTAB' ){
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
@@ -327,16 +302,12 @@ m_("---- ");
 			$rel_data	= $rsPG['relation_data'];
 			$tab_hnmS= $tab_enm . ":" . $tab_hnm;
 	}	// mode search end
-
 	if( isset($_POST["group_name"]) ) $group_name = $_POST['group_name'];
 	else $group_name = '';
 ?>
-
 <center>
-
 <div id='menu_normal'>
    <table cellspacing='0' cellpadding='4' width='<?=$w2?>' border='1' class="c1">
-
 		<form name="makeform" method="post" >
 			<input type="hidden" name="mode" value="" >
 			<input type="hidden" name="param" value="" > 
@@ -372,21 +343,14 @@ m_("---- ");
 					while( $rs = sql_fetch_array( $result)) {
 ?>
 							<option value='<?=$rs['group_code']?>'><?=$rs['group_name']?></option>
-							<!-- <option value='<?=$rs['group_code']?>' <?php if($rs['group_name']==$group_name) echo "selected"; ?>><?=$rs['group_name']?></option> -->
 <?php
 					}
 ?>
 			</select>
-			
-			
 			<b>[ Program List ]</b> <br> 
 		</tr>
 		<tr>
 		   <td width="100%" valign="top" align="left">
-			  <!-- <div id='menu_normal'> -->
-							<!-- <table cellspacing="0" cellpadding="0" width="200" border="0">
-								  <tr>
-                                     <td valign="top"> -->
 			<select id="sellist" name="sellist" onDblClick="run_tablelist('program_pglist')" onChange="" onClick="sellist_onclick()" multiple='multiple' size="14" <?php echo "title=' Double-click to view the data list.' "; ?> style="border-style:;background-color:black;color:cyan; WIDTH: 315px; height:150;">
 <?php
 			$program_name_search = $_POST['program_name_search'];
@@ -408,9 +372,6 @@ m_("---- ");
 			}
 ?>
 		</select>
-                                    <!--  </td>
-                                   </tr>
-                            </table> -->
                        </div>
                       </td>
 					</tr>
@@ -435,16 +396,8 @@ m_("---- ");
 						<br><textarea id='pg_array' name='pg_array' rows='3' cols='38' style="border-style:;background-color:black;color:yellow;height:60;width:315;" readonly></textarea>
 						 </td>
 					   </tr>
-                            <!-- </table>
-                          </td>
-                         </tr>
-                       </table>
-                       </div>
-                      </td>
-                     </tr> -->
 					<tr>
                       <td align="center" >
-
 Program<input type='text' id='pg_name' name='pg_name' value='' maxlength='200' style="border-style:;background-color:black;color:yellow;width:110px;height:25;" value=''  <?php echo" title='Enter the name of the program to be created! pg_code:$pg_code' "; ?> readonly>
 <input type='button' value='Run' <?php echo "title=' Run the data registration program.' "; ?> onClick="run_pg('<?=$pg_code?>')"  style="border-style:;background-color:#666666;color:yellow;width:75px; height:25px;" >
 						</td>
@@ -452,10 +405,6 @@ Program<input type='text' id='pg_name' name='pg_name' value='' maxlength='200' s
 
 		</form>
 	</table>
-
-	<!-- </td>
-  </tr> -->
 	</div>
-
 </body>
 </html>

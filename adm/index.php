@@ -1,16 +1,14 @@
   <?php
 	include_once('../tkher_start_necessary.php'); // kapp_start_necessary_TT.php, tkher_start_necessary.php
 	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	if($H_LEV < 8) {
+	if( $H_LEV < 8) {
 		m_("admin page");
 		echo("<meta http-equiv='refresh' content='0; URL=/'>"); exit;
 	}
 
 	date_default_timezone_set("Asia/Seoul");
 	$day		= date("Y-m-d H:i:s");
-   /* ------------------------------------------ 최종 사용 프로그램 임다. 중요.
-
-  --- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
+   /* -----------------------------------
   1. 이것은 나의 미래를 결정한다.
   2. 이것은 나의 경쟁력이다.
   3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
@@ -20,18 +18,6 @@
   tkher_my_control, tkher_main_img
   $sql = " SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
   $sql = " SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher' and group_name='main' order by view_no ";
-
-
-   /t/tree_menu_guest.php : Guest View Mobile <- /t/menu/tree_menu_updateM2.php 을 copy
-                          : /t/menu/tree_menu_updateM2.php 사용 하지 않음.
-						  /t/my_list_menu.php에서도 call.중요.
-
-   http://urllinkcoin.com/t/tree_run_menuM_guest.php?num=dao_1612581000&mid=dao 사용자 통합실행용. 중요.
-
-		tree_run_menu.php -> runf_my_create.php -> tree_run_generator.php -> r1_my.php
-		             최초 r1_my.php : my page에서 실행한다.
-
-	http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
    -------------------------------------------------------- */
 
 	$r = explode("/", $_SERVER['SCRIPT_FILENAME'] );
@@ -61,7 +47,7 @@
 <html> 
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
+<TITLE>K-App. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
 <link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 <meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
@@ -144,155 +130,9 @@ body {
 	function About(no) {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
-/*
-function submit_run( mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_){ 
-
-	runtype = document.click_run.runtype.value;
-		document.click_run.sys_menu.value    =sys_menu;   
-		document.click_run.sys_submenu.value =sys_submenu;   
-		document.click_run.num.value         =num;   
-		document.click_run.pg.value          =pg;   
-		document.click_run.jong.value        =jong;  
-		document.click_run.title_.value      =title_;   
-		document.click_run.link_.value       =link_;
-	document.click_run.mid.value         =mid; 
-	document.click_run.sys_pg.value      =sys_pg; 
-	document.click_run.sys_pg_root.value =sys_pg; 
-	document.click_run.mode.value        ='rowlevel'; ///////////////////////////////////////// 
-	document.click_run.make_type.value   ='booktreeupdateM2'; // newcratree
-	document.click_run.m_type.value   ='booktreeupdateM2'; // newcratree
-	document.click_run.data.value   =sys_menu; 
-	document.click_run.data1.value  =sys_submenu; 
-	document.click_run.target = 'run_menu'; 
-	if( runtype=='update'){
-		document.click_run.action = './menu/tree_menu_update.php'; // root 하단 목록.
-		document.click_run.submit();     
-	} else if(runtype=='insert'){
-		document.click_run.action = './menu/treebom_insert2_book_menu.php'; // root 하단 목록.
-		document.click_run.submit();     
-	} else if(runtype=='' || runtype=='run'){
-		if (pg.indexOf( 'contents_view_menu.php')>=0 ) { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if (pg.indexOf( 'contents/index.php?infor')>=0 )  { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if (pg.indexOf( 'https://')>=0 )  { 
-			document.click_run.target='_blank';  
-			document.click_run.target_.value='_top'; //'_blank';  
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();     
-		}else if (pg.indexOf( 'http://')>=0 )  { 
-			document.click_run.target='_blank'; 
-			document.click_run.target_.value= '_top';//target_;//'_top'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();     
-		} else { 
-			document.click_run.target='run_menu'; 
-			document.click_run.target_.value='_self'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();     
-		}
-		document.getElementById("mySidenav").style.width = "0px";
-	} else {
-		if (link_.indexOf( 'contents_view_menu.php')>=0 ) { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if (link_.indexOf( 'contents/index.php?infor')>=0 )  { 
-			document.click_run.target='run_menu';  
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();  
-		}else if (pg.indexOf( 'https://')>=0 )  { 
-			//alert('-- https');
-			document.click_run.target='_blank';  
-			document.click_run.target_.value='_top'; //'_blank';  
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();     
-		} else { // 일반 http://사이트
-			//document.click_run.target='run_menu'; 
-			document.click_run.target='_blank'; 
-			document.click_run.target_.value='run_menu'; 
-			document.click_run.action= './menu/cratree_coinadd_menu.php'; 
-			document.click_run.submit();     
-		}
-		//document.getElementById("mySidenav").style.width = "250px";
-		document.getElementById("mySidenav").style.width = "0px";
-	}
-
-}   
-	function arunA( runtype ){ //menu_change
-		document.click_run.make_type.value   ='booktreeupdateM2'; // newcratree
-		document.click_run.m_type.value   ='booktreeupdateM2'; // newcratree
-		if( runtype=='insert' ){
-			document.click_run.mode.value    ='mroot'; ////////////// add 2021-09-19 - test OK
-			document.click_run.runtype.value = 'insert';
-			document.click_run.target='run_menu';  
-			document.click_run.action = './menu/treebom_insert2_book_menu.php'; // root 하단 목록.
-			document.click_run.submit();     
-		} else if( runtype=='update' ){
-			document.click_run.mode.value    ='mroot'; ////////////// add 2021-09-19 - test OK
-			document.click_run.runtype.value = 'update';
-			document.click_run.target='run_menu';  
-			document.click_run.action = './menu/tree_menu_update.php'; // root 하단 목록.
-			document.click_run.submit();     
-		} else if( runtype=='run' ){
-			document.click_run.runtype.value = 'run';
-		} else if( runtype=='list' ){
-			document.click_run.target='run_menu';
-			document.click_run.action = './menu/cratree_my_list_menu.php';
-			document.click_run.submit();
-			click_run.menu_change[0].value   = 'list';
-			click_run.menu_change[0].text    = 'Tree list';
-			document.getElementById('click_run'+0).value = 'list';
-			document.getElementById('click_run'+0).innerHTML = 'Tree list'; // 출력.
-			document.getElementById("mySidenav").style.width = "0";
-		} else if( runtype=='design' ){
-			document.click_run.runtype.value = 'design'; 
-			document.click_run.make_type.value = 'booktreeupdateM2'; 
-			document.click_run.target='run_menu';
-			document.click_run.action = './menu/tree_remake_book_menu.php';
-			document.click_run.submit();
-			click_run.menu_change[0].value   = 'design';
-			click_run.menu_change[0].text    = 'Tree design';
-			document.getElementById('click_run'+0).value = 'design';
-			document.getElementById('click_run'+0).innerHTML = 'Tree design'; // 출력.
-			document.getElementById("mySidenav").style.width = "0";
-		} else {
-			document.click_run.runtype.value = 'run'; 
-		}
-	}
-	function arunG( r, sys_pg, tit ){
-		f = document.click_run;
-		f.sys_pgS.value = sys_pg;
-		f.sys_subtitS.value = tit;
-		f.target = '_blank';
-		f.action = r; 
-		f.submit();
-	}
-	function sys_pg_change( sys_pg ) {  
-		pg = sys_pg.split(":");
-		document.click_run.sys_pgS.value = pg[0];
-		document.click_run.sys_subtitS.value = pg[1];
-		document.click_run.sys_pg.value = pg[0];
-		document.click_run.treetype.value = 'B';
-		document.click_run.mode.value='SearchPG';
-		document.click_run.target='_self';
-		document.click_run.action='./tree_menu_guest.php';
-		document.click_run.submit();
-	    document.getElementById("mySidenav").style.width = "250px";
-	}
-*/
 	function run_on(){
 		document.getElementById("mySidenav").style.width = "0";
 	}
-
 	function init() {  
 	    document.getElementById("mySidenav").style.width = "250px";
 	}
@@ -301,7 +141,7 @@ function submit_run( mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, 
 <body onLoad="init()" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white'> 
 <?php
 
-$sys_subtitS = 'Admin App Generator';
+$sys_subtitS = 'Admin K-App';
 
 	if( isset( $_REQUEST['sys_pg'] ) ) { 
 		$sys_pg	= $_REQUEST['sys_pg']; 
@@ -317,7 +157,19 @@ $sys_subtitS = 'Admin App Generator';
 	} else {
 		$sys_pg	= get_session("sys_pg"); 
 	}
-	if( $sys_pg && $mid ) {
+	/*
+	m_("$sys_pg , $mid");//link , 
+	if( $sys_pg=='link' || $sys_pg=='' ) {
+		//$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and tit_gubun !='' and sys_level = 'mroot' order by up_day desc";
+		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_level = 'mroot' order by up_day desc";
+		$rt = sql_query( $sql);
+		$rs	= sql_fetch_array($rt);
+		if( isset($rs['tit_gubun']) ) $gubun  = $rs['tit_gubun'];
+		else $gubun  = '';
+		if( isset($rs['sys_pg']) ) $sys_pg = $rs['sys_pg'];
+		else $sys_pg = '';
+		if( isset($rs['sys_subtit']) ) $sys_subtitS = $rs['sys_subtit'];
+	} else if( $sys_pg && $mid ) {
 		$sqlupdate = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg'";
 		$rtup = sql_query( $sqlupdate);
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
@@ -329,16 +181,9 @@ $sys_subtitS = 'Admin App Generator';
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
 		$sys_subtitS = $rs['sys_subtit'];
-	} else if( !$sys_pg ) {
-		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and tit_gubun !='' and sys_level = 'mroot' order by up_day desc";
-		$rt = sql_query( $sql);
-		$rs	= sql_fetch_array($rt);
-		if( isset($rs['tit_gubun']) ) $gubun  = $rs['tit_gubun'];
-		else $gubun  = '';
-		if( isset($rs['sys_pg']) ) $sys_pg = $rs['sys_pg'];
-		else $sys_pg = '';
-		if( isset($rs['sys_subtit']) ) $sys_subtitS = $rs['sys_subtit'];
 	} 
+	m_("sys_subtitS: $sys_subtitS , sys_pg: $sys_pg");//sys_subtitS: AI TIDEWAVE , sys_pg: dao_1756937625 
+	*/
 	$kapp = "K-App Admin";
 ?>
 <form name='click_run' action='' method='post' enctype='multipart/form-data' target='run_menu'> 
@@ -380,8 +225,6 @@ $sys_subtitS = 'Admin App Generator';
 
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<li style='font-size:11;color:#fff;height:9px;line-height:1'><?=$config['kapp_visit']?><br>
-	We call it mining to register in the tree menu.<br><!-- 우리는 트리 메뉴에 등록하는것을 채굴이라 한다 -->
-	Points will be paid in coins in the future.<br><!-- 포인트는 향후에 코인으로 지급될것이다. -->
 	If it does not work, <br>please unblock the pop-up window.<!-- 작동하지 않으면 팝업 창을 차단 해제하십시오. -->
 	</li>
 </div>
