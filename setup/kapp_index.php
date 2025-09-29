@@ -19,7 +19,7 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
-<TITLE>K-App Generator is generator program. Made in Korea</TITLE>
+<TITLE>K-App. Made in Korea solpakan89@gmail.com, Chul ho, Kang</TITLE>
 <link rel='shortcut icon' href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
 <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'>
 <meta name='keywords' content='App Generator, app maker, app, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '>
@@ -552,7 +552,7 @@ function func_login_check($email, $pw){ // admin login check   // 2024-01-04 사
 <div id="ins_ft">
     <strong>K-APP</strong>
     <p>OPEN SOURCE K-APP Generator</p>
-    <p>solpakan@naver.com : <a href='https://ailinkapp.com' target='_BLANK'>ailinkapp.com</a> </p>
+    <p>solpakan@naver.com : <a href='https://ailinkapi.com' target='_BLANK'>ailinkapi.com</a> </p>
 </div>
 
 			</body>
