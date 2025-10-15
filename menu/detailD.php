@@ -16,7 +16,7 @@
 		$H_NAME = $member['mb_name']; 
 		$H_NICK = $member['mb_nick'];
 	} else {
-		$H_LEV= 0; 
+		$H_LEV= 1; 
 		$H_NAME = ''; 
 		$H_NICK = '';
 	}
