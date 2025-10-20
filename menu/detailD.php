@@ -179,7 +179,10 @@
 	$mf		= sql_fetch_row($mq);
 	$mid	= $mf_infor[53]; // 53:make_id , $mf[2];
 	$fsize	= $mf[14];
-	$f_path1= KAPP_PATH_T_ . "/file/" . $mf_infor[53];	// 53:maker id.
+
+	if( $mf_infor[2] == 'kapp_Notice' || $mf_infor[2] == 'kapp_news' || $mf_infor[2] == 'kapp_qna' || $mf_infor[2] == 'kapp_free') $f_path1	= KAPP_PATH_T_ . "/file/";
+	else $f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
+	//$f_path1= KAPP_PATH_T_ . "/file/" . $mf_infor[53];	// 53:maker id.
 	$fpath	= $f_path1 . "/aboard_".$mf_infor[2]; // 2: board name
 	$mf[7]	= date("y/m/d H:i", $mf[7]);
 	$mf[8]	= iconv_substr($mf[8], 0, 50, 'utf-8');// . "...";
@@ -201,7 +204,7 @@
 	$cur='B';
 	if( $menu_mode != 'off') include_once "../menu_run.php";
 	function get_size( $tmp_file, $infor2) {
-		global $width, $height, $mid, $fpath;;
+		global $width, $height, $mid, $fpath;
 		$size_factor	= 500;
 		$size0			= @GetImageSize("$fpath/$tmp_file"); 
 		$x					= $size0[0];

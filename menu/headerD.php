@@ -10,7 +10,7 @@ $url['root'] = $http . $_SERVER['HTTP_HOST'] . '/contents/'; // $url['root'] = '
 ?>
 <HTML>
     <HEAD>
-        <TITLE>기본 틀</TITLE>
+        <TITLE>Basic design</TITLE>
         <meta charset="utf-8">
         
         <link href="./css/main.css" rel="stylesheet">

@@ -58,8 +58,7 @@
 		$kapp_theme0 = '';
 		$kapp_theme1 = '';
 		$kapp_theme = $config['kapp_theme'];
-		$kapp_theme = explode('^', $kapp_theme );	//$n = sizeof($server_);
-//		$kapp_theme0 = "https://modumodu.net/biog7/kapp"; //"https://fation.net/kapp";//$kapp_theme[0];
+		$kapp_theme = explode('^', $kapp_theme );
 		$kapp_theme0 = "https://fation.net/kapp";//$kapp_theme[0];
 		$kapp_theme1 = $kapp_theme[1];
 		if( $kapp_theme0 ) {
@@ -95,7 +94,9 @@
 			echo "<script>history.go(-1);</script>";
 			exit;
 		}
-		$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
+		//if( $mf_infor[2] == 'kapp_Notice' || $mf_infor[2] == 'kapp_news' || $mf_infor[2] == 'kapp_qna' || $mf_infor[2] == 'kapp_free') $f_path1	= KAPP_PATH_T_ . "/file/";
+		//else $f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
+		$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53]; // make_id
 		$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];
 		if( !is_dir($f_path1) ) {
 			if( !@mkdir( $f_path1, 0755 ) ) {

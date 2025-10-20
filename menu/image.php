@@ -59,13 +59,26 @@ body {
 		 $infor = ''; 
 	}
 
-//	if( isset($infor) ){ // 게시판이면.
 	if( $infor > 0 ){ // 게시판이면.
-		 m_("--- image.php infor: ".$infor);
+
 		include_once( './infor.php');
-			$mid = $mf_infor[53];
-			$f_path1			= KAPP_URL_T_ ."/file/" . $mf_infor[53]; // 53:maker id. $mf_infor[53], $mf_infor[2]
-			$f_path2			= $f_path1 . "/aboard_".$mf_infor[2] . "/"; // 2: board name
+		$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53]; // make_id
+		$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];
+		if( !is_dir($f_path1) ) {
+			if( !@mkdir( $f_path1, 0755 ) ) {
+				echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
+				echo "<script>history.go(-1); </script>";exit;
+			}
+		}
+		if( !is_dir($f_path2) ) {
+			if( !@mkdir( $f_path2, 0755 ) ) {
+				echo " Error: f_path2 : " . $f_path2 . " Failed to create directory. ";
+				echo "<script>history.go(-1); </script>";exit;
+			}
+		}
+		$mid = $mf_infor[53];
+		$f_path1			= KAPP_URL_T_ ."/file/" . $mid; // 53:maker id. $mf_infor[53], $mf_infor[2]
+		$f_path2			= $f_path1 . "/aboard_".$mf_infor[2] . "/"; // 2: board table_name
 	} else { // 게시판이 아니면. note 이면.
 			$f_path2			= KAPP_URL_T_ ."/file/uploads/";  // url을 사용해야한다 중요.
 	}

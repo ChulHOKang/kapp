@@ -17,17 +17,17 @@
 							@decsription
 							<li></li> 단위로 위치를 이동할 수 있다.
 						-->
-						<li class="tx-list"><!--화일위치 C:\_php\appgenerator\contents\bbs\images\icon\editor\skin\06\tx_text2.gif -->
+						<li class="tx-list">
 							<div unselectable="on" id="tx_image" class="tx-image tx-btn-trans">
 								<a href="javascript:;" title="---Image" class="tx-text">Image</a>
 							</div>
 						</li>
 						<!-- 이미지 첨부 버튼 끝 --><!-- 2022-1-31 제거 칸. -->
-						<li class="tx-list">
+						<!-- <li class="tx-list">
 							<div unselectable="on" id="tx_file" class="tx-file tx-btn-trans">
 								<a href="javascript:;" title="File" class="tx-text">파일</a>
 							</div>
-						</li>
+						</li> -->
 
 						<!-- YouTube 영상 삽입 커스텀 버튼 시작 -->
 
