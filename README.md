@@ -1,6 +1,8 @@
-A tool for creating web programs without coding on the web.
-웹상에서 코딩을 하지 않고 웹프로그램을 제작하는 도구
-- K-APP 
+K-APP System 특징. 
+K-APP 이란. 인터넷 웹상 에서 코딩을 하지않고 웹 프로그램을 제작 하는 개발도구 이다. 웹 소스코드를 자동생성 한다
+
+- K-APP Features?
+- The K-APP System is a development tool that allows you to create web programs without coding on the Internet. It automatically generates web source code.
 
 --- 운영 서버 환경 ---
 서버 문자셋: UTF-8 Unicode (utf8)
