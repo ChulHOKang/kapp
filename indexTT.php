@@ -171,7 +171,7 @@
     }
 ?>
         <h1>
-            <a href=<?=KAPP_URL_T_?>" target='_top' class="logo" title='development man'>
+            <a href="<?=KAPP_URL_T_?>" target='_blank' class="logo" title='KAPP Home development man'>
                 <img src="<?=$gsajin?>" class="logo_web" style="opacity:0.3;width:200px" title="K-APP Home" />
             </a>
         </h1>

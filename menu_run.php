@@ -226,11 +226,10 @@
     </form>
     <ul id='nav'>
         <li <?php if( $cur=='A') echo "class='current'"; ?>>
-            <a href="#" title='HOME'><img src='<?=KAPP_URL_T_?>/icon/logo60.png'
-                    style='border-style:;height:20px;'></a>
+            <a href="<?=KAPP_URL_?>" target='_blank' title='HOME'><img src='<?=KAPP_URL_T_?>/icon/logo60.png' style='border-style:;height:20px;'></a>
             <ul>
                 <li align='left'>
-                    <a href="<?=KAPP_URL_T_?>" target='_top'>0. Home</a>
+                    <a href="<?=KAPP_URL_?>" target='_blank' title='KAPP HOME'>0. Home</a>
                 </li>
                 <li align='left'>
                     <a href="<?=KAPP_URL_T_?>/privacy_policy_en.html" target='_blank'>1. Privacy Policy</a>
@@ -404,15 +403,10 @@ if( !$H_ID  ) {
         <table board='0'>
             <FORM name="fsearchbox" method="post" action="<?=$Search_run?>">
                 <input type='hidden' name='Search_Mode' value='<?=$Search_Mode?>' />
-                <td><a href="/kapp" target='_top'><img src="<?=KAPP_URL_T_?>/icon/logo.png" height='30'
-                            title='appgenerator home'></a></td>
-                <td><input type="text" name="sdata" value="<?=$sdata?>" maxlength="250" style='height:30;'>
-                </td>
-                <td><input type="button" id="sch_submit" value=" Search " onclick='search_run("<?=KAPP_URL_T_?>")'
-                        style='height:30;' title='ulist mode:<?=$Search_Mode?>'></td>
-                <td><input type="button" id="sch_submit" value=" Tree-Search "
-                        onclick='search_Tree("<?=KAPP_URL_T_?>")' style='height:30;'
-                        title='Tree mode:<?=$Search_Mode?>'></td>
+                <td><a href="<?=KAPP_URL_T_?>" target='_top' title='KAPP HOME'><img src="<?=KAPP_URL_T_?>/icon/logo.png" height='30'></a></td>
+                <td><input type="text" name="sdata" value="<?=$sdata?>" maxlength="250" style='height:30;'></td>
+                <td><input type="button" id="sch_submit" value=" Search " onclick='search_run("<?=KAPP_URL_T_?>")' style='height:30;' title='Link List mode:<?=$Search_Mode?>'></td>
+                <td><input type="button" id="sch_submit" value=" Tree-Search " onclick='search_Tree("<?=KAPP_URL_T_?>")' style='height:30;' title='Tree mode:<?=$Search_Mode?>'></td>
             </form>
         </table>
     </div>

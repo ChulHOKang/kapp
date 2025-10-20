@@ -44,7 +44,6 @@
 	if( $mode == 'Google_Login') {
 		set_session("urllink_login_type", $_POST['modeG']);
 	}
-	$_url = KAPP_URL_T_;
 	if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
 	else $mid = "";
 	if( $mode == 'SearchPG'){
@@ -361,7 +360,7 @@ body {
 		<div id="mySidenav" class="sidenav">
 			  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 				<center>
-				<a href='<?=$_url?>' target='_top'><img src="<?=KAPP_URL_T_?>/logo/logo.png" title='K-APP - home'></a>
+				<a href='<?=KAPP_URL_T_?>' target='_top'><img src="<?=KAPP_URL_T_?>/logo/logo.png" title='K-APP Home'></a>
 		<?php
 				$run_target='run_menu';
 				$img_v="<img src='".KAPP_URL_T_ . "/logo/pizza.png' width='22' height='22'>";
@@ -376,7 +375,6 @@ body {
 			<li style='font-size:18;color:cyan;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
-			<!-- <li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10u1_PC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>Table Permissions</a></li> -->
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
 
@@ -397,7 +395,7 @@ body {
 
 <div style="background-color:black;">
 	<span style="font-size:26px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='KAPP:<?=KAPP_URL_T_?>: tree menu list'>&#9776; K-APP</span>&nbsp;&nbsp;&nbsp;&nbsp;
-	<a href='./' style="margin:3px auto 0px;"><img src="<?=KAPP_URL_T_?>/logo/logo120-120.png" style="margin:3px auto 0px;height:26px;" title='Home K-APP'></a>
+	<a href='<?=KAPP_URL_T_?>' style="margin:3px auto 0px;"><img src="<?=KAPP_URL_T_?>/logo/logo120-120.png" style="margin:3px auto 0px;height:26px;" title='K-APP Home'></a>
 </div>
 
 <center>
