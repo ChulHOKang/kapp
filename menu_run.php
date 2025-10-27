@@ -303,14 +303,14 @@
                 <li align='left'> <a href='#' target='_self'
                         <?php echo " title='Manage user schedule. ' "; ?>>B2.Schedule</a>
                     <ul>
-                        <li align='left'> <a href="<?=KAPP_URL_?>/calendar/" target='_top'
+                        <li align='left'> <a href="<?=KAPP_URL_T_?>/calendar/" target='_top'
                                 <?php echo " title='Manage user schedule.' "; ?>>1.Daily schedule</a></li>
-                        <li align='left'> <a href="<?=KAPP_URL_?>/calendar/index_year.php" target='_top'
+                        <li align='left'> <a href="<?=KAPP_URL_T_?>/calendar/index_year.php" target='_top'
                                 <?php echo " title=' Manage annual schedules.' "; ?>>2.Year Schedule</a></li>
                     </ul>
 
                 </li>
-                <li align='left'><a href='<?=KAPP_URL_?>/accountbook/' target='_self'
+                <li align='left'><a href='<?=KAPP_URL_T_?>/accountbook/' target='_self'
                         <?php echo " title='Manage user accountbook.' "; ?>>B3.Account book</a></li>
                 <li align='left'>
                     <div class="SSS">
