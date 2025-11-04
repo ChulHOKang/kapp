@@ -172,6 +172,14 @@
 		}
 	}
 
+    function Admin_info_check() {
+        global $member;
+        global $tkher, $config;
+        /*if( $config['kapp_googl_shorturl_apikey'] == '' || $config['kapp_kakao_js_apikey'] == '' || $config['kapp_naver_client_id'] == ''|| $config['kapp_naver_client_secret'] == '') {
+            Add_Admin_Info();
+        }*/
+            Add_Admin_Info();
+    }
     function Member_info_check() {
         global $member;
         global $tkher;
@@ -182,6 +190,21 @@
         }
     }
 
+    function Add_Admin_Info() { // 고객 추가정보(생년월일, 성별, 연락처, 주소) 입력 팝업 호출
+
+        echo "<script>
+        const f_popup_w = '900';
+        const f_popup_h = '900';
+
+        const f_popup_left = Math.ceil((window.screen.width - f_popup_w) / 2);
+        const f_popup_top = Math.ceil((window.screen.height - f_popup_h) / 2);
+
+        var win = window.open('".KAPP_URL_T_."/setup/ksd39673976_1711436495_kapp_config.php', '_blank',
+            'toolbar=yes,scrollbars=yes,resizable=yes,top=' + f_popup_top + ',left=' + f_popup_left +
+            ',width=' + f_popup_w +
+            ',height=' + f_popup_h);
+        </script>";
+    }
     function Add_Info() { // 고객 추가정보(생년월일, 성별, 연락처, 주소) 입력 팝업 호출
 
         echo "<script>
@@ -201,6 +224,7 @@
 	$H_LEV= $member['mb_level'];
 	$ip   = $_SERVER['REMOTE_ADDR'];
 	$cur="";
+    if( $H_ID && $H_LEV > 7 && get_cookie('add_admin_info') != 'next') Admin_info_check();
     if( $H_ID && $H_LEV > 1 && get_cookie('add_info') != 'next') Member_info_check();
 ?>
 
