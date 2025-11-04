@@ -18,7 +18,7 @@ if($_POST['mode'] === 'config_update'){
     $key = 'modumoa';
     $iv = '~!@#$%^&*()_+';
 
-    if($enc_check) $data = Encrypt($data, $key, $iv);
+    //if($enc_check) $data = Encrypt($data, $key, $iv);
 
     //echo json_encode($data);
 
@@ -36,10 +36,10 @@ function Record_Update($_column, $_data) {
 
     $ret = sql_query( $query );
     if(!$ret) {
-        echo json_encode("{$tkher['config_table']} 업데이트에 문제가 발생했습니다. ---".$query);
+        echo json_encode("{$tkher['config_table']} Update Error. ---".$query);
         exit;
     } else {
-        echo json_encode("저장 완료");
+        echo json_encode("Save OK");
         exit;
     }
     

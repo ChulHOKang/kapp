@@ -5,7 +5,7 @@
 		echo "<script>window.open( './index.php' , '_self');</script>";
 	}
 
-	$menu1TWPer=15;  
+	$menu1TWPer=25;  
 	$menu1AWPer=100 - $menu1TWPer;  
 	$menu2TWPer=10;  
 	$menu2AWPer=50 - $menu2TWPer;  
@@ -17,6 +17,16 @@
 	/* $Bwidth=5; // 버튼 % */
 	$Xheight='100%';  
 	$Text_height='60px';  
+
+
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode = '';
+    if( $mode == 'next_input') {
+        set_cookie('add_admin_info', 'next', 43200); // 12시간 저장
+        echo "<script>window.open('', '_self').close();</script>";
+        exit;
+    }
+
 ?>
 <style>
 * {
@@ -302,7 +312,7 @@ radio1A {
 }
 
 .Btn_List02A {
-    width: 64px;
+    width: 88px;
     height: 33px;
     display: inline-block;
     line-height: 33px;
@@ -416,7 +426,7 @@ function Back($pg_code) {
 ?>
         <div class="HeadTitle01AX">
             <P href='#' class='on' title='table code:ksd39673976_1711436495 , program name:kapp_config_v1'>
-                kapp_config_v1</P>
+                Admin kapp_config Setting</P>
         </div>
         <form name='tkher_form' method='post' enctype='multipart/form-data'>
             <input type=hidden name='mode' value='' />
@@ -528,14 +538,14 @@ function Back($pg_code) {
                 <div class='menu1T' align=center><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_googl_shorturl_apikey</span></div>
                 <div class='menu1A'><input type='VARCHAR' name='kapp_googl_shorturl_apikey'
-                        value='<?=Decrypt($row['kapp_googl_shorturl_apikey'], $key, $iv)?>'
+                        value='<?=$row['kapp_googl_shorturl_apikey']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_googl_shorturl_apikey.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align=center><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_kakao_js_apikey</span></div>
                 <div class='menu1A'><input type='VARCHAR' name='kapp_kakao_js_apikey'
-                        value='<?=Decrypt($row['kapp_kakao_js_apikey'], $key, $iv)?>'
+                        value='<?=$row['kapp_kakao_js_apikey']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_kakao_js_apikey.'></div>
 
@@ -544,14 +554,14 @@ function Back($pg_code) {
                 <div class='menu1T' align=center><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>naver client id</span></div>
                 <div class='menu1A'><input type='VARCHAR' name='kapp_naver_client_id'
-                        value='<?=Decrypt($row['kapp_naver_client_id'], $key, $iv)?>'
+                        value='<?=$row['kapp_naver_client_id']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_naver_client_id.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align=center><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>naver client secret</span></div>
                 <div class='menu1A'><input type='VARCHAR' name='kapp_naver_client_secret'
-                        value='<?=Decrypt($row['kapp_naver_client_secret'], $key, $iv)?>'
+                        value='<?=$row['kapp_naver_client_secret']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_naver_client_secret.'></div>
 
@@ -566,13 +576,19 @@ function Back($pg_code) {
                 </div>
             </form>
         </div>
-        <?php   
+                        <input type=button value='Enter next' onclick="Next_input()"  class="Btn_List02A">
+<?php   
 	}  //query false   
 ?>
 </body>
 <script>
 Add_Btn('.menu1A');
 
+function Next_input() {
+    document.makeform.mode.value = 'next_input'
+    document.makeform.action = '../adm/add_admin_info.php';
+    document.makeform.submit();
+}
 function Add_Btn(_class) {
 
     let itemList = document.querySelectorAll(_class);
@@ -600,13 +616,13 @@ function update_ajax(_this) {
             "column": JSON.stringify(_this.previousElementSibling.name),
             "data": JSON.stringify(_this.previousElementSibling.value)
         },
-        url: "./config_update_ajax.php",
+        url: "config_update_ajax.php",
         success: function(data) {
             //console.log(data);
             alert(data);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- config_update_ajax.php");
+            alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- config_update_ajax.php errorThrown: " +errorThrown);
             console.log(jqXHR);
             console.log(textStatus);
             console.log(errorThrown);
