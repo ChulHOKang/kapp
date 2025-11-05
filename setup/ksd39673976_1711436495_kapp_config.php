@@ -552,14 +552,14 @@ function Back($pg_code) {
 				
                 <div class='blankA'> </div>
                 <div class='menu1T' align=center><span
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>naver client id</span></div>
+                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_naver_client_id</span></div>
                 <div class='menu1A'><input type='VARCHAR' name='kapp_naver_client_id'
                         value='<?=$row['kapp_naver_client_id']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_naver_client_id.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align=center><span
-                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>naver client secret</span></div>
+                        style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_naver_client_secret</span></div>
                 <div class='menu1A'><input type='VARCHAR' name='kapp_naver_client_secret'
                         value='<?=$row['kapp_naver_client_secret']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
