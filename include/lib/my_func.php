@@ -45,9 +45,11 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	$Text_height='60px';
 
 	/* 자동등록방지.  */
-	$strT  = "abcdefghijklmnopqrstuvwxyz";
+	/*$strT  = "abcdefghijklmnopqrstuvwxyz";
     $strT .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $strT .= "0123456789";
+	*/
+    $strT = "0123456789";
 	$shuffled_str = str_shuffle($strT);
 	$auto_char=substr($shuffled_str, 0, 6); // insertD.php, updateD.php, replyD.php
 
