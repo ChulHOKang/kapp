@@ -168,7 +168,7 @@
 			if( auto_check == auto_char ) {
 				x.submit();
 			} else {
-				alert(' The automatic characters do not match. \n 자동문자가 일치하지않습니다. 확인바랍니다. ');
+				alert(' The automatic characters do not match.');
 				return false;
 			}
 		});	
@@ -282,7 +282,7 @@ if( !$H_ID ){
 						</li>
 <?php } ?>
 						<li>
-							<span class="t01">Auto-Protect : <?=$auto_char?></span>
+							<span class="t01">Auto-Protect : <b><?=$auto_char?></b></span>
 							<span class="t02"><!-- 대소문자 구분! -->
 							<input type="text" name="auto_check"  placeholder="Please enter the Auto-Protect text on the left! Case sensitivity! " required="required"></span>
 							</span>
