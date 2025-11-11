@@ -93,6 +93,7 @@
 	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
 //m_("pg_code:$pg_code, mode_call:$mode_call,  mode:$mode");
 //pg_code:dao_1757215251, mode_call:app_pg50RU,  mode:
+$pop_move_data = '';
 	if( $mode=='') {	
 		if( isset($pop_table) ) $_SESSION['old_pop_tab']= $pop_table;
 		else $_SESSION['old_pop_tab'] = "";

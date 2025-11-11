@@ -13,10 +13,10 @@
 	*		table_item_run.php, table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
 	------------------------------------------------------------------------------------------ */
 	// 컬럼 순서를 조정해도 이상없이 작동한다.  table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
-	if( isset($_POST['sel_g_name']) ) $sf = $_POST['sel_g_name'];
-	else	$sf	= "";
-	if( isset($_POST['search_data']) ) $sd	= $_POST['search_data'];
-	else	$sd	= "";
+	if( isset($_POST['sel_g_name']) ) $sel_g_name = $_POST['sel_g_name'];
+	else	$sel_g_name	= "";
+	if( isset($_POST['search_data']) ) $search_data	= $_POST['search_data'];
+	else	$search_data	= "";
 
 	if( isset($_REQUEST['if_typePG']) ) $iftype_db = $_REQUEST['if_typePG'];
 	else $iftype_db = "";
@@ -54,11 +54,12 @@
 	$tdata		= explode(":", $pop_db);
 	$tab_enm	= $tdata[0];
 	$tab_hnm	= $tdata[1];
+
 	$pdata		= explode("@", $pdataA[$it]);
 	$mpxcol		= array();
 	$mwxcol		= array();
 	$movecol	= explode("$", $pdata[0]);
-	for( $i=0, $j=1; $movecol[$j] != ""; $i++ , $j++) {
+	for( $i=0, $j=1; isset($movecol[$j]) && $movecol[$j] != ""; $i++ , $j++) {
 		$mmcol	= explode("|", $movecol[$j]);	 // j=1부터 데이터가있다. 중요.
 		$mp0		= $mmcol[0];
 		$mpcol	= explode(":", $mp0 );
@@ -135,24 +136,24 @@
 		<input type='hidden'  name='g_name'>
 		<input type='hidden' name='fld_session' value='<?=$fld_session?>'>
 		<table width="750" border="0" cellspacing="0" cellpadding="0" height="25">
-			<tr>
-					<td  rowspan="1" width="330" align="right" height="25" valign=center><font color=yellow>&nbsp; Column :
+		<tr>
+			<td rowspan="1" width="330" align="right" height="25" valign='center'><font color='yellow'>
+				&nbsp; Column :
 						<select name='sel_g_name' onchange="change_g_name_func(this.value);" style="HEIGHT: 20px" title='change name '>
 <?php
-							for( $i=0; $pxcol[$i][0] != ""; $i++ ) {
-									$fpe=$pxcol[$i][0];	
-									$fph=$pxcol[$i][1];
-?>
-										<option value='<?=$fpe?>' <?php if( $fpe ==$sf) echo "selected"; ?> ><?=$fph?></option>
+			for( $i=0; isset($pxcol[$i][0]) && $pxcol[$i][0] != ""; $i++ ) {
+						$fpe=$pxcol[$i][0];	
+						$fph=$pxcol[$i][1];
+?>						<option value='<?=$fpe?>' <?php if( $fpe ==$sel_g_name) echo "selected"; ?> ><?=$fph?></option>
 <?php
-							}
+			}
 ?>
 						</select>
 					</td>
-					<td rowspan="2"  align="left" height="30">
-						<font color='yellow'><input type="text" name="search_data" size="20" maxlength="50" value='<?=$search_data?>'>
+					<td rowspan="2" align="left" height="30"><font color='yellow'>
+						<input type="text" name="search_data" size="20" maxlength="50" value='<?=$search_data?>'>
 						<input type='button' value='Confirm' onclick='doSubmit()'>
-						</td>
+					</td>
 			</tr>
 		</table>
 	</form>
@@ -172,10 +173,10 @@
 				<td><font color='yellow'>Select</td>
 	</tr>
 <?php
-	if ( $sf != "" && $sd != "") {
-		//$sf	= $_POST['sel_g_name'];
-		//$sd	= $_POST['search_data'];
-		$w		= " WHERE ( ".$sf." like '%".$sd."%' ) ";
+	if ( $sel_g_name != "" && $search_data != "") {
+		//$sel_g_name	= $_POST['sel_g_name'];
+		//$search_data	= $_POST['search_data'];
+		$w		= " WHERE ( ".$sel_g_name." like '%".$search_data."%' ) ";
 		$ls		= "SELECT * FROM ". $tab_enm . $w;
 	}
 	else $ls	= "SELECT * FROM ". $tab_enm . " ";
