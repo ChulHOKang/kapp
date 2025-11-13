@@ -36,12 +36,15 @@
 	else $mode = "";
 	if( isset($_POST['mode_call']) ) $mode_call = $_POST['mode_call'];
 	else $mode_call = "";
+	
 	if( isset($_POST['project_nmS']) ) $project_nmS = $_POST['project_nmS'];
 	else $project_nmS = "";
 	if( isset($_POST['project_code']) ) $project_code = $_POST['project_code'];
-	else $project_code = "ETC";
+	else $project_code = '';//"ETC";
 	if( isset($_POST['project_name']) ) $project_name = $_POST['project_name'];
-	else $project_name = "ETC";
+	else $project_name = '';//"ETC";
+	$_SESSION['project_name'] = $project_name;
+	$_SESSION['project_code'] = $project_code;
 	if( isset($_POST["pg_codeS"]) ) $pg_codeS = $_POST["pg_codeS"]; //$_POST["pg_codeS"]
 	else $pg_codeS = "";	 // pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
 	if( isset($_POST["tab_hnmS"]) ) $tab_hnmS = $_POST["tab_hnmS"];
@@ -54,6 +57,8 @@
 	else $pg_code = "";
 	if( isset($_POST["pg_name"]) ) $pg_name = $_POST["pg_name"]; 
 	else $pg_name = "";
+	$_SESSION['pg_name'] = $pg_name;
+	$_SESSION['pg_code'] = $pg_code;
 
 	$table_item_run30 = "";
 	$table_item_run70 = "";
@@ -61,13 +66,14 @@
 	$app_pg50RC = "";
 	$app_pg50RU = "";
 	$app_pg50RU_New = "";
-	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
+
+	/*if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
 	else if( $mode_call == 'table_item_run70' ) $table_item_run70 = 'on';
 	else if( $mode_call == 'table_item_run50R' ) $table_item_run50R = 'on';
 	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
 	else if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
 	else if( $mode_call == 'app_pg50RU_New' ) $app_pg50RU_New = 'on';
-
+	*/
  	$iftype  = array();
 	$if_data = array();
 	$idata = array();
@@ -86,6 +92,9 @@
 	$idata   = $if_data[$if_line];
 	if( isset($_POST['sellist']) ) $sellist  = $_POST['sellist'];		// 선택한 컬럼. 팝업에 적용할 컬럼.//sellist:277|fld_1|상품|CHAR|20
 	else $sellist  = 0;
+	$_SESSION['sellist'] = $sellist;
+	//formula sellist: |fld_7|금액|INT|255, if_line: 6
+	
 	$idata1 = ""; 
 	$idata2 = ""; 
 	$fd1 = ""; 
@@ -101,7 +110,7 @@
 		if( isset($dt[0]) ) $fd1 = $dt[0]; // $dt[1]은 '='
 		if( isset($dt[2]) ) $fd2 = $dt[2]; 
 		if( isset($dt[3]) ) $fd3 = $dt[3]; 
-		if( isset($dt[4]) ) $fd4 = $dt[4]; 	//m_("0:$fd1, 2:$fd2, 3:$fd3, 4:$fd4");//$dt[0]:fld_4,$dt[2]:fld_2,$dt[3]:*,$dt[4]:fld_3
+		if( isset($dt[4]) ) $fd4 = $dt[4]; 	//$dt[0]:fld_4,$dt[2]:fld_2,$dt[3]:*,$dt[4]:fld_3
 	} else {
 		$idata2 = ""; 
 		$idata1 = ""; 
@@ -115,8 +124,8 @@
 	$fld_ = explode("|", $sellist);
 	$fld_enm_sel_column = $fld_[1];
 	$fld_hnm_sel_column = $fld_[2];
-	if ( !$pg_codeS || !$tab_hnmS || !$sellist ) {
-			$url="./";	//$PHP_SELF;
+	if( !$pg_codeS || !$tab_hnmS || !$sellist ) {
+			$url="app_pg50RU.php";	//$PHP_SELF;
 			echo("<meta http-equiv='refresh' content='0; URL=$url'>");
 		exit;
 	}
@@ -296,8 +305,9 @@
   <tr>
     <td height="30" align="center" style="border-style:;background-color:#666666;color:cyan;" <?php echo " title='For example, If the quantity and unit price are input, the amount is calculated and output. \n That is, the amount is automatically calculated without inputting.' "; ?>>
 	<!-- \n 예를들면, 수량 과 단가를 입력하면 금액을 계산하여 출력한다. \n 즉,금액은 입력하지않고 자동으로 계산된다. -->
-	<b><font color='white'>Program Name: <font color='yellow'><?=$pg_name?>(<?=$pg_code?>)<br>
-	<b><font color='white'>Table Name: <font color='yellow'><?=$tab_hnm?>(<?=$tab_enm?>)<br>
+	<b><font color='white'>Project Name: <font color='yellow'><?=$project_name?>(<?=$project_code?>)<br>
+	<font color='white'>Program Name: <font color='yellow'><?=$pg_name?>(<?=$pg_code?>)<br>
+	<font color='white'>Table Name: <font color='yellow'><?=$tab_hnm?>(<?=$tab_enm?>)<br>
 	<b><font color='white'>Formula Column Name: <font color='yellow'><?=$fld_hnm_sel_column?>(<?=$fld_enm_sel_column?>) =</b>
 	</td>
   </tr>
@@ -436,7 +446,7 @@ if( $mode == 'table_formula' ){
 	$calcX = "";
 	$nmx2 = ""; 
 	$ifT	= "";
-	$ifD= "";	//m_("cnt: " . $item_cnt . ", if_line:" . $if_line); //cnt: 6, if_line:3
+	$ifD= "";
 	for( $i=0; $i<$item_cnt; $i++){
 		if( $i == $if_line ) {
 			if( isset($_POST['calcX']) ) $calcX = $_POST['calcX']; 
@@ -460,8 +470,7 @@ if( $mode == 'table_formula' ){
 			$iftype_db = $iftype_db . "|" . $ifT;
 			$ifdata_db = $ifdata_db . "|" . $ifD;
 		}
-	}	//m_("idata11: " . $idata11 . ", iftype_db: " . $iftype_db . ", ifdata_db: " .$ifdata_db); 
-	//idata11: fld_4 = fld_5 * fld_5:fld4 = fld5 * fld5, iftype_db: |||13|11||, ifdata_db: |||dao_1744251268:testDDD|fld_4 = fld_5 * fld_5:fld4 = fld5 * fld5||
+	}
 	if( isset($table10_pg) ) {
 		$query="UPDATE {$tkher['table10_pg_table']} SET item_cnt=$item_cnt, item_array='$item_array',if_type='$iftype_db',if_data='$ifdata_db', pg_name='$pg_name' WHERE userid='$H_ID' and pg_code='$pg_code' ";
 		$ret = sql_query($query);
@@ -475,12 +484,12 @@ if( $mode == 'table_formula' ){
 		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$iftype_db', if_data='$ifdata_db', userid='$H_ID' ";
 		$ret = sql_query($query);
 	}
-	set_session('mode_session',  'Formula');
+	$_SESSION['mode_session']='Formula';
 	set_session('iftype_db',  $iftype_db);
 	set_session('if_line',  $if_line);
 	set_session('formula_data',  $idata11);
 	set_session('tab_hnmS',  $tab_hnmS);
-	set_session('item_array',  $item_array);	m_(" Complete calculation. ");
+	set_session('item_array',  $item_array);
 
 } else {	//if $mode == 'table_formula'
 		$iftype_db="";
@@ -504,6 +513,7 @@ if( $mode == 'table_formula' ){
 	</form>
 
 <?php
+/*
 	if( $mode == 'table_formula' ){
 		if( $table_item_run30 == 'on' ) {
 			$url = "table_pg30.php";
@@ -524,7 +534,7 @@ if( $mode == 'table_formula' ){
 			$url = "app_pg50RU_New.php";		//echo "<script>window.open('$url', '_self', '');</script>";
 		}
 		echo "<script>save_end_run( 'Save_End' );</script>";	
-	}
+	}*/
 ?>
 </body>
 </html>

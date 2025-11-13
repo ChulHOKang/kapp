@@ -2,6 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 		app_pg50RU.php   :
+		: kapp_column_change_ajax.php
 		: app_pg50RU_update.php - table_item_run50_pg50RU.php copy, table_pg50RU.php Copy : table_pg50R.php copy.
 		: PG_curl_send() - call: pg_curl_get_ailinkapp.php
 		: program_list3.php - call : upgrade
@@ -27,6 +28,7 @@
 	else $project_code = "";
 	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
 	else $pg_codeS = '';
+	//RU pg_codeS: crakan59_gmail_1762739131:매출장테이블:crakan59_gmail_1762739131:매출장테이블:crakan59_gmail_1762739078:ProjectA
 	if( isset($_POST['tab_hnmS']) ) $tab_hnmS = $_POST['tab_hnmS'];
 	else $tab_hnmS = '';
 	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS'];
@@ -444,7 +446,7 @@ function upItemA() {
 		return false; // down은 마지막 컬럼이면 return false
 	}
 	if( j < 0 ) {
-		alert(' Please select a column! ' );
+		alert('upItemA Please select a column! ' );
 		return false;
 	}
 	i = j*1 -1;
@@ -489,7 +491,7 @@ function del_func() {
 	}
 	var j = document.makeform.column_index.value;
 	if( j == '' ) {
-		alert(' Please select a column! ' );
+		alert('del_func Please select a column! ' );
 		return false;
 	}
 	resp = confirm(' Be careful when deleting columns! \n Are you sure you want to exclude columns?'); // \n 컬럼을 제외 하시겠습니까?
@@ -559,9 +561,12 @@ function ifcheck_onclickA( r, seq) {
 
 	var selind = document.makeform.column_index.value; // colunm index
 	if( selind == '' ){
-		alert(r+' : Please select a column! ' );
-		document.makeform.ifcheck[seq].checked=false;
-		return false;
+		var selind = document.makeform.if_line.value; // formula set and back colunm index
+		if( selind == '' ) {
+			alert(r+' : Please select a column! column_index = selind:' +selind );
+			document.makeform.ifcheck[seq].checked=false;
+			return false;
+		}
 	}
 	var pg = document.makeform.pg_codeS.value; 
 	var tab = document.makeform.tab_hnmS.value;
@@ -877,36 +882,25 @@ function Save_and_Run( pg)
 <body leftmargin="0" topmargin="0">
 
 <?php
-	//$uid = explode('@', $H_ID);
-	//$pg_code = $uid[0] . "_" . time();
-	//$pg_code = $H_ID . "_" . time();
 	if( isset($_POST['project_name']) && $_POST['project_name'] !=='' )  $project_name = $_POST['project_name'];
 	else $project_name = '';
-	//m_("project_name: " . $project_name);
-
 	if( isset($_POST['pg_code']) && $_POST['pg_code'] !=='' )  $pg_code = $_POST['pg_code'];
 	else $pg_code = '';
-	
 	if( isset($_POST['mode_session']) && $_POST['mode_session'] !=='' ) $mode_session   = $_POST['mode_session'];
-	$mode_session   = '';
-
+	else if( isset($_SESSION['mode_session']) && $_SESSION['mode_session'] !=='' ) $mode_session   = $_SESSION['mode_session'];
+	else $mode_session   = '';
 	if( isset($_POST['item_array']) && $_POST['item_array'] !=='') $post_item_array   = $_POST['item_array'];
 	else $post_item_array   = '';
-
 	if( isset($_POST['if_column']) && $_POST['if_column'] !=='' ) $if_column   = $_POST['if_column'];
 	else $if_column   = '';
-
 	if( isset($_POST['iftype_db']) && $_POST['iftype_db'] !=='') $iftype_db = $_POST['iftype_db'];
 	else $iftype_db = '';
-
 	$if_line_session= 0; $j=0;
 	$fld_sel_type	 = '';
 	$pg_name = '';
-
 	$column_attribute = ''; 
 	if( isset($_POST['if_line']) ) $if_line = $_POST['if_line'];
 	else $if_line = '';
-	
 	if( $mode_session == 'POPUP') {
 		if( isset($_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j= $if_line_session+1;
@@ -923,7 +917,8 @@ function Save_and_Run( pg)
 		$flda = explode('|', $arr);
 		if( isset( $flda[1]) && $flda[1] !=='' ) $fld_sel = $flda[1]; 
 		else  $fld_sel = '';; 
-		$mode_session = ''; set_session('mode_session',  '');
+		//$mode_session = '';
+		set_session('mode_session',  '');
 	} else if( $mode_session == 'Formula') {
 		if( isset( $_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j	 = $if_line_session+1;
@@ -942,7 +937,8 @@ function Save_and_Run( pg)
 		$flda				= explode('|', $arr);
 		if( isset($flda[1]) && $flda[1] !=='' ) $fld_sel= $flda[1]; 
 		else  $fld_sel =''; 
-		$mode_session= ''; set_session('mode_session',  '');
+		//$mode_session= '';
+		set_session('mode_session',  '');
 	}
 	if( $mode == 'SearchPG' ){
 		$pj= explode(':', $project_nmS);
@@ -1000,6 +996,9 @@ function Save_and_Run( pg)
 		}
 	}
 	$mode_session_ok = get_session("mode_session_ok");
+	$sellist = get_session("sellist");
+	$sel_col= explode('|', $sellist);
+	$formula_column = $sel_col[1];
 ?>
 <center>
 <div id='menu_normal'>
@@ -1060,7 +1059,7 @@ function Save_and_Run( pg)
 
 				while( $rs = sql_fetch_array($result)) {
 ?>
-					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" title="cd:<?=$pcd_nm[0]?>, nm:<?=$pcd_nm[1]?>"><?=$rs['pg_name']?></option>
+					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" title="cd:<?=$pcd_nm[0]?>, nm:<?=$pcd_nm[1]?>" <?php if($pcd_nm[0] == $rs['pg_code']) echo ' selected ' ?>><?=$rs['pg_name']?></option>
 <?php
 				}
 ?>
@@ -1083,6 +1082,7 @@ function Save_and_Run( pg)
 			$itX = explode("@", $item_array);
 			for( $j=0; $j < $item_cnt; $j++){
 				if( $mode_session == 'POPUP' || $mode_session == 'Formula' ) {
+					//m_("for mode_session: $mode_session, if_line_session: $if_line_session, $j, ckv: $ckv");
 					if( $if_line_session == $j) $ckv = " checked "; 
 					else $ckv = "";
 				}
@@ -1090,11 +1090,9 @@ function Save_and_Run( pg)
 				$val = $itX[$j];
 				$ifd = explode("|", $if_data );
 				$tit_val = $j . " - " . $val . " : " . $ifd[$j+1]; 
-
 				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA( this.value, " .$j. " )' value='".$val."'><label title='".$tit_val."' id='columnR".$j."'>".$it[2] ."(".$it[3].")</label></label><br>";
 			} //for
 	} else {
-		//m_("1370 table10_pg NULL : tab_enm: " . $tab_enm);
 	} //if( $table10_pg>0 or $table10_tab>0 ){ 
 	//  $qna = "프로그램의 작업에서 가능하지 않는 것은?|컬럼순서 변경|컬럼명 변경|컬럼삭제|컬럼추가";
 	//	$qna = "What is not possible in the work of the program here?|Change column order|Change column name|Delete column|Add column|4^프로그램의 작업에서 가능하지 않는 것은?|컬럼순서 변경|컬럼명 변경|컬럼삭제|컬럼추가|4^프로그램의 작업순서가 아닌것은?|프로그램명설정-테이블선택-생성버턴|테이블선택-프로그램명설정-생성버턴|프로그램명설정-생성버턴|3";
@@ -1106,23 +1104,23 @@ function Save_and_Run( pg)
 		<!-- </select> -->
 		</div>
 		<!-- </table> -->
-							 </td>
-						   </tr>
-						   <tr>
-							 <td bgcolor="#666666" height="27">&nbsp;&nbsp; 
-								<a href="javascript:downItemA()"><img src="./icon/bt_down_s01.gif" style="height:24px;CURSOR: hand" title="Move column order down." border="0" style='height:24px;'></a>
-								&nbsp;&nbsp;&nbsp;
-								<a href="javascript:upItemA()" ><img src="./icon/bt_up_s01.gif" style="height:24px;CURSOR: hand" title="Move the order of column up." border="0" style='height:24px;'></a>&nbsp;&nbsp;&nbsp;&nbsp; <!-- 컬럼삭제는 신중히하세요! -->
-								<a href="javascript:del_func()" ><img src="./icon/e_delete.gif" style="height:24px;CURSOR: hand" <?php echo "title='Delete column\n No columns are used in the program. \n Be careful when deleting columns!'";?> border="0" ></a>&nbsp;&nbsp;&nbsp;&nbsp; <!-- 컬럼삭제는 신중히하세요! -->
-							</td>
-						  </tr>
-						  <tr>
-							<td height="24" <?php echo "title='Enter the column name and click the button! ' "; ?> >
-							*Change column name<br>
-							    <input type='hidden' name='column_data_type' value=''>
-							    <input type='text' id='column_name_change' name='column_name_change' maxlength='200' size='15' style="border-style:;background-color:black;color:yellow;height:25;" value='' <?php echo "title=\" You can change the name of the column.\" "; ?>>
-								<input type='button' value='Confirm' name='title_changeX'  onClick="titlechange_btncfm_onclickA()"  style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\" You can change the name of the column. \" "; ?> ><br>
-							*Column attribute data<br>
+				 </td>
+			   </tr>
+			   <tr>
+				 <td bgcolor="#666666" height="27">&nbsp;&nbsp; 
+					<a href="javascript:downItemA()"><img src="./icon/bt_down_s01.gif" style="height:24px;CURSOR: hand" title="Move column order down." border="0" style='height:24px;'></a>
+					&nbsp;&nbsp;&nbsp;
+					<a href="javascript:upItemA()" ><img src="./icon/bt_up_s01.gif" style="height:24px;CURSOR: hand" title="Move the order of column up." border="0" style='height:24px;'></a>&nbsp;&nbsp;&nbsp;&nbsp; <!-- 컬럼삭제는 신중히하세요! -->
+					<a href="javascript:del_func()" ><img src="./icon/e_delete.gif" style="height:24px;CURSOR: hand" <?php echo "title='Delete column\n No columns are used in the program. \n Be careful when deleting columns!'";?> border="0" ></a>&nbsp;&nbsp;&nbsp;&nbsp; <!-- 컬럼삭제는 신중히하세요! -->
+				</td>
+			  </tr>
+			  <tr>
+				<td height="24" <?php echo "title='Enter the column name and click the button! ' "; ?> >
+				*Change column name<br>
+					<input type='hidden' name='column_data_type' value=''>
+					<input type='text' id='column_name_change' name='column_name_change' maxlength='200' size='15' style="border-style:;background-color:black;color:yellow;height:25;" value='' <?php echo "title=\" You can change the name of the column.\" "; ?>>
+					<input type='button' value='Confirm' name='title_changeX'  onClick="titlechange_btncfm_onclickA()"  style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\" You can change the name of the column. \" "; ?> ><br>
+				*Column attribute data<br>
 <label class="container" <?php echo "title='Only one selectable button. ' "; ?> >
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA( 0,0)" <?php if( !isset($fld_sel_type) ) echo " checked "; ?> >For general input
   <span class="checkmark"></span> 
@@ -1164,13 +1162,13 @@ function Save_and_Run( pg)
 </label>
 <br>
 
-							   <input type='text' id='column_attribute' name='column_attribute' maxlength='200' size='28' style="border-style:;background-color:black;color:yellow;height:25;" value='<?=$column_attribute?>' <?php echo "title=\"  hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?>>
-							   <!--  \n 입력예-취미:야구:축구:농구:테니스:골프 와 같이 구분자 ':' 를 사용하여 구분한다. -->
-							   <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
+   <input type='text' id='column_attribute' name='column_attribute' maxlength='200' size='28' style="border-style:;background-color:black;color:yellow;height:25;" value='<?=$column_attribute?>' <?php echo "title=\"  hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?>>
+   <!--  \n 입력예-취미:야구:축구:농구:테니스:골프 와 같이 구분자 ':' 를 사용하여 구분한다. -->
+   <input type='button' value='Apply Attribute' onclick='Apply_button();' style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\"hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?> > 
 <br>
 
 		<input type='hidden' id='column_attribute_index' name='column_attribute_index' >
-		<input type='hidden' id='column_index' name='column_index' >
+		<input type='hidden' id='column_index' name='column_index'>
 		<input type='hidden' name='tab_enm'  value='<?=$tab_enm?>' >
 		<input type='hidden' name='seqno'      value='<?=$seqno?>' >
 		<input type='hidden' name='item_cnt'   value='<?=$item_cnt?>' >
@@ -1178,14 +1176,14 @@ function Save_and_Run( pg)
 		<input type='hidden' name='if_column'  value="<?=$if_column?>" >
 		<input type='hidden' name='item_array' value='<?=$item_array?>' >
 <?php
-			if( isset($table10_pg) && $table10_pg !==''  ) { // table10_pg 테이블에 pg_code 가 존재하면.//if( $table10_pg>0 || $table10_tab>0 ) {
+			if( isset($table10_pg) && $table10_pg !==''  ) {
 					if( isset($if_type) && $if_type!=='' ) $iftypeR = explode("|", $if_type );
 					else $iftypeR = "";
 					if( isset($if_data) && $if_data!=='' ) $ifdataR = explode("|", $if_data );
 					else $ifdataR = "";
 					if( isset($item_array) && $item_array!=='' ) $itemR   = explode("@", $item_array );
 					else $itemR   = "";
-					if( isset($pop_data) && $pop_data!=='' ) $popdataR= explode("^", $pop_data );               // add 2022-02-19
+					if( isset($pop_data) && $pop_data!=='' ) $popdataR= explode("^", $pop_data ); 
 					else $popdataR= "";
 
 					for( $i=0, $j=1; $i < $item_cnt; $i++, $j++){
@@ -1204,7 +1202,6 @@ function Save_and_Run( pg)
 <?php
 					}			
 			} else {
-				//m_("ERROR Fetch------------table10_pg:$table10_pg , table10_tab:$table10_tab ");//첫실행시에 온다.
 			}
 ?>
 					 </td>
