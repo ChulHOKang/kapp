@@ -78,10 +78,6 @@
 	else $if_column = "";
 	$tab_enm_pop = "";
 	$tab_hnm_pop = "";
-//	$table_item_run30 = "";
-//	$table_item_run50 = "";
-//	$table_item_run50R = "";
-//	$table_item_run70 = "";
 	$app_pg50RU = "";
 	$app_pg50RC = "";
 /*	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
@@ -91,9 +87,8 @@
 	else */
 	if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
 	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
-//m_("pg_code:$pg_code, mode_call:$mode_call,  mode:$mode");
-//pg_code:dao_1757215251, mode_call:app_pg50RU,  mode:
-$pop_move_data = '';
+	
+	$pop_move_data = '';
 	if( $mode=='') {	
 		if( isset($pop_table) ) $_SESSION['old_pop_tab']= $pop_table;
 		else $_SESSION['old_pop_tab'] = "";
@@ -135,25 +130,25 @@ $pop_move_data = '';
 			$tab_hnm  = $rsPG['tab_hnm'];
 			if( isset( $rsPG['pop_data'] ) ){
 				$popup_data	= $rsPG['pop_data'];
-				$item_popA = explode( "^", $popup_data . ", ln:" . $ln);
+				$item_popA = explode( "^", $popup_data);
 				if( isset( $item_popA[$ln]) ) {
 					$item_pop  = $item_popA[$ln];
-					$pdata     = explode("@", $item_pop); //m_(" item_pop-".$ln. ": ". $item_pop[$ln]);
+					$pdata     = explode("@", $item_pop); 
 					$col_ = explode("@", $item_array);
-					$move_col = explode( "$", $pdata[0] ); //m_("mv_col:$mv_col ");//mv_col:$fld_1:상품명|fld_3:제품명$fld_8:재고|fld_4:수량 
-					$Column_movable = movable_func( $move_col );  //m_(" Column_movable: " . $Column_movable); // Column_movable: ->, ->, 
-					$pdata_cnt = count( $pdata); //m_(" pdata_cnt: " . $pdata_cnt); 7
+					$move_col = explode( "$", $pdata[0] );
+					$Column_movable = movable_func( $move_col );
+					$pdata_cnt = count( $pdata);
 					$pop_move_data = $pdata[0];
 					$pop='@'; 
 					for( $i=1; $i< $pdata_cnt-1; $i++) $pop = $pop . $pdata[$i]."@";
-					$pdata1         = $pop; //$pdata[1];
-					$item_array_pop = $pop; // add
+					$pdata1         = $pop;
+					$item_array_pop = $pop;
 					if( isset( $pop_tabS) ) {
-						$ifT = explode(":", $pop_tabS ); //$dd[$ln]
-						$tab_enm_pop    = $ifT[0]; //m_("tab_enm_pop: " . $tab_enm_pop);
-						$pop_table      = $ifT[0]; //m_("tab_enm_pop: " . $tab_enm_pop);
+						$ifT = explode(":", $pop_tabS );
+						$tab_enm_pop    = $ifT[0];
+						$pop_table      = $ifT[0];
 						$Colnm	= $col_[$if_line];
-						$ColnmA = explode("|", $Colnm); //$dd[$ln]
+						$ColnmA = explode("|", $Colnm);
 						$Column_name	= $ColnmA[2];
 					} else {
 						$tab_enm_pop    = "";
@@ -193,10 +188,9 @@ $pop_move_data = '';
 				$item_array = $_POST['item_array'];
 				$col_ = explode("@", $item_array);
 			} else $item_array = "";
-			// 277|fld_1|상품k|CHAR|20@275|fld_2|작업공정K|CHAR|10@276|fld_3|작업자k|CHAR|10@278|fld_4|생산수량|TINYINT|3@279|fld_5|메모k|TEXT|200@
-			if( isset($_POST['sellist']) ) $sellist  = $_POST['sellist'];		// 선택한 컬럼. 팝업에 적용할 컬럼.//sellist:277|fld_1|상품|CHAR|20
+			if( isset($_POST['sellist']) ) $sellist  = $_POST['sellist'];
 			else $sellist  = 0;
-			if( isset($_POST['if_line']) ) $if_line  = $_POST['if_line'];		//m_("if_line: " . $if_line); //if_line: 2
+			if( isset($_POST['if_line']) ) $if_line  = $_POST['if_line'];
 			else $if_line  = 0;
 			if( isset($_POST["move_pop_data"]) ) $move_pop_data = $_POST["move_pop_data"];
 			else  $move_pop_data ="";
@@ -240,13 +234,11 @@ $pop_move_data = '';
 		else $pop_table	    = "";	
 		$move_pop_data	= $_POST["move_pop_data"];
 	} else if( $mode =="table_popup_save" ) {
-			//m_("--- if_typeD:". $if_typeD);
-			//--- if_typeD:|13|1|3||
+			//m_("--- if_typeD:". $if_typeD);	//--- if_typeD:|13|1|3||
 	} else { // 팝업이 설정되지않은 상테에서 처음 실행할때 탄다.
 		if( $mode_call=="app_pg50RC" || $mode_call=="app_pg50RU" ){ // add 2023-09-12 : if 추가 else 이전 까지  - 테스트 미완성 중요.
 			$ln	= $if_line + 1;
 			$if_type[$ln] = '13'; // 13:popup column으로 설정.
-			//$type_[$ln] = '13'; // 13:popup column으로 설정.
 			$item_cnt = $_POST['item_cnt'];	
 			$if_typeX = "";
 			for( $i=0; $i< $item_cnt; $i++ ) {
@@ -254,9 +246,7 @@ $pop_move_data = '';
 				if( isset($if_type[$i]) ) $if_typeX = $if_typeX . $if_type[$i] . "|";
 				else $if_typeX = $if_typeX . "|";
 			}
-			$if_typeD = $if_typeX;
-			//m_("if_typeD:". $if_typeD);
-			//if_typeD:|13|1|3||
+			$if_typeD = $if_typeX;			//m_("if_typeD:". $if_typeD);			//if_typeD:|13|1|3||
 		} else {
 			$ln	= $if_line + 1;
 			$type_ = explode("|", $if_typeD ); // $if_typeD=rsPG['if_type'] 
@@ -267,7 +257,6 @@ $pop_move_data = '';
 				if( isset($type_[$i]) ) $if_type = $if_type . $type_[$i] . "|";
 				else $if_type = $if_type . "|";
 			}
-			//m_("if_type: " . $if_type); // if_type: ||13|||||
 			$if_typeD = $if_type;
 		}
 	}
@@ -278,17 +267,17 @@ $pop_move_data = '';
 	if( isset($pop_table) && $pop_table !=="" && $mode !== "SearchTAB" ) { 
 		$pop_tabS = $if_TabS;
 		$idata_ = explode(":", $if_TabS);
-		$tab_enm_pop = $idata_[0];	// table hnm	//$pop_tab_enm;	 // SearchTAB
-		$tab_hnm_pop = $idata_[1];	// table enm 
-		$dt = $pdata;			//explode("@", $pop_data); //$pdata
-		$tab_col = explode( "$", $dt[0] );  // m_("dt[0]:".$dt[0]); //dt[0]:$fld_1:product|fld_1:id$fld_4:price|fld_3:price
-		$tab_col_cnt = count($tab_col);     // array 크기? count($tab_col); //m_("tab_col_cnt:".$tab_col_cnt); // tab_col_cnt:3
-		for( $k=1; $k<$tab_col_cnt; $k++ ){ // m_(" tab_col k: ".$k. ", " . $tab_col[$k]); 
-			$pt_col = explode("|", $tab_col[$k]); // m_(" pt_col 0: ". $pt_col[0]. ", 1:" . $pt_col[1]);
-			$pp_col = explode(":", $pt_col[0]);   // m_("pt_col[0] pp_col 0:".$pp_col[0].", 1:".$pp_col[1]); 
+		$tab_enm_pop = $idata_[0];
+		$tab_hnm_pop = $idata_[1];
+		$dt = $pdata;
+		$tab_col = explode( "$", $dt[0] );
+		$tab_col_cnt = count($tab_col);
+		for( $k=1; $k<$tab_col_cnt; $k++ ){
+			$pt_col = explode("|", $tab_col[$k]);
+			$pp_col = explode(":", $pt_col[0]);
 			$pop_win_col[$k] = $pp_col[1];
 		}
-		$sellist_tab1 = ''; // popup column list 저장용.
+		$sellist_tab1 = '';
 		$item_array_pop = '@';
 		for( $i=1, $j=0; isset($dt[$i]) && $dt[$i] != ""; $i++, $j++ ) {	
 			$pcol = explode(":", $dt[$i]);
@@ -302,19 +291,20 @@ $pop_move_data = '';
 		}
 		$mv_col = $dt[0];// [0]:컬럼이동정보-컬럼구분자는 '$'이고  팝업과 프로그램의 컬럼구분자는 '|' 이다.
 		$pop_move_data = $dt[0];
-		$move_col = explode( "$", $mv_col ); //m_("mv_col:$mv_col ");//mv_col:$fld_1:상품명|fld_3:제품명$fld_8:재고|fld_4:수량 
+		$move_col = explode( "$", $mv_col ); //mv_col:$fld_1:상품명|fld_3:상품명$fld_2:가격|fld_6:단가$fld_3:단위|fld_5:단위 
+		
 		$Column_movable = "";
 		for( $i=1, $j=0; isset($move_col[$i]) && $move_col[$i] !== ""; $i++, $j++ ) {
-			$pc = $col_[$j];						//m_("col_ : $j:" . $pc);
-			$pg_col_ = explode("|", $col_[$j]);		//m_("col_ : $j:" . $pc . ", pg_col_:" . $pg_col_[1] );
-			$col1 = $move_col[$i];					// m_("i:$i col1:$col1 ");// 1번컬럼이동 정보. 0번은 없다 배열1번부터 컬럼이 존재한다. $dta[1]->fld_1:상품명|fld_1:상품
+			$pc = $col_[$j];
+			$pg_col_ = explode("|", $col_[$j]);		
+			$col1 = $move_col[$i];
 			$mcol = explode("|", $col1);
 			$pop_col1 = explode(":", $mcol[0]);
 			array_push($pop_col, $pop_col1);
 			$pg_col1 = explode(":", $mcol[1]);
-			array_push($pg_col, $pg_col1);					// $ppp = $pop_col[$j][1];
+			array_push($pg_col, $pg_col1);
 			$p0  = $pg_col[$j][0];		$p1  = $pg_col[$j][1];
-			$pp1 = $pg_col_[1];			$pp2 = $pg_col_[2]; //m_("pg_col_[1]:$pp1 ,pg_col_[2]:$pp2 , p0:$p0, p1:$p1");
+			$pp1 = $pg_col_[1];			$pp2 = $pg_col_[2];
 			$Column_movable = $Column_movable . $pop_col[$j][1] . "->";
 			$Column_movable = $Column_movable . $pg_col[$j][1] . ", ";	
 		}
@@ -710,7 +700,7 @@ $pop_move_data = '';
 	else $reset = "";
 ?>
 <center>
-PopUp Window Column Setup <font color='gray'>(user lev:<?=$H_LEV?>)</font>
+PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user lev:<?=$H_LEV?>)</font>
 <div id='menu_normal'>
    <table cellspacing='0' cellpadding='4' width='<?=$w2?>' border='1' class="c1">
 		<FORM name="makeform" method="post" >
@@ -813,12 +803,11 @@ PopUp Window Column Setup <font color='gray'>(user lev:<?=$H_LEV?>)</font>
                                   <tr>
                                      <td valign="top">
 <?php
-	$pg_col_chk=0;
 	for( $i=0; isset($col_[$i]) && $col_[$i] != '';$i++) {
-		$_col = explode("|", $col_[$i]);		//_col 1:".$_col[1].", 2:".$_col[2]. ", 3:".$_col[3] );
-		for( $j=0; isset($pg_col[$j]) && $pg_col[$j][0]!=""; $j++ ){
+		$_col = explode("|", $col_[$i]);
+		$pg_col_chk = 0;
+		for( $j=0; isset($pg_col[$j]) && $pg_col[$j][0]!=''; $j++ ){
 			if ( $pg_col[$j][0]==$_col[1] ) $pg_col_chk=1;
-			else $pg_col_chk=0;
 		}
 		if( $pg_col_chk==1) {
 			echo "<label style='background-color:cyan;'><input type='radio' id='sellist_tab2".$i."' name='sellist_tab2' value='".$_col[1].":".$_col[2]."' onClick='sellist_tab2_onclick($i)' title='".$_col[1]."'> ".$_col[2]." </label><br>";
@@ -839,7 +828,7 @@ PopUp Window Column Setup <font color='gray'>(user lev:<?=$H_LEV?>)</font>
 		$item_cnt = $_POST['item_cnt'];
 		$ppd1 = "";
 		for( $i=0; $i< $item_cnt; $i++){
-			if( $i == $ln ) $ppd1 = $ppd1 . $move_pop_data . "^";  // new data change
+			if( $i == $ln ) $ppd1 = $ppd1 . $move_pop_data . "^";
 			else {
 				if( isset($pd1[$i]) && $pd1[$i] !=='' ) $ppd1 = $ppd1 . $pd1[$i] . "^";
 				else $ppd1 = $ppd1 . "^";

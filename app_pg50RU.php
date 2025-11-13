@@ -998,7 +998,8 @@ function Save_and_Run( pg)
 	$mode_session_ok = get_session("mode_session_ok");
 	$sellist = get_session("sellist");
 	$sel_col= explode('|', $sellist);
-	$formula_column = $sel_col[1];
+	if( isset($sel_col[1]) ) $formula_column = $sel_col[1];
+	else $formula_column = '';
 ?>
 <center>
 <div id='menu_normal'>

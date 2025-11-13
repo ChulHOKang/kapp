@@ -305,7 +305,8 @@
   <tr>
     <td height="30" align="center" style="border-style:;background-color:#666666;color:cyan;" <?php echo " title='For example, If the quantity and unit price are input, the amount is calculated and output. \n That is, the amount is automatically calculated without inputting.' "; ?>>
 	<!-- \n 예를들면, 수량 과 단가를 입력하면 금액을 계산하여 출력한다. \n 즉,금액은 입력하지않고 자동으로 계산된다. -->
-	<b><font color='white'>Project Name: <font color='yellow'><?=$project_name?>(<?=$project_code?>)<br>
+	<b><font color='white'>PG: <font color='yellow'>/kapp/table_formulaM.php</b><br>
+	<b><font color='white'>Project Name: <font color='yellow'><?=$project_name?>(<?=$project_code?>)</b><br>
 	<font color='white'>Program Name: <font color='yellow'><?=$pg_name?>(<?=$pg_code?>)<br>
 	<font color='white'>Table Name: <font color='yellow'><?=$tab_hnm?>(<?=$tab_enm?>)<br>
 	<b><font color='white'>Formula Column Name: <font color='yellow'><?=$fld_hnm_sel_column?>(<?=$fld_enm_sel_column?>) =</b>
