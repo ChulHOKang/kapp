@@ -622,7 +622,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 				} else if ( $typeX == '13' ) {	// popup window
 						$fld_session = $i;	// popup column 
 						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-						echo " <div class='menu1A'><input type=text name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$ifdataX', '$pop_dataPG')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
+						echo " <div class='menu1A'><input type=text name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$ifdataX', '$pop_dataPG', '$i')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
 						echo " <div class='blankA'> </div> ";
 
 				} else if ( $typeX == '9' ) {	// add file
@@ -751,8 +751,9 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 	function Change_Csel_(c_sel){
 		document.makeform.c_sel.value=c_sel;
 	}
-	function popup_call(if_dataPG, pop_dataPG ) {
-		window.open("<?=KAPP_URL_T_?>/popup_call.php","","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
+	function popup_call(if_dataPG, pop_dataPG, i ) {
+		//window.open("<?=KAPP_URL_T_?>/popup_call.php","","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
+		window.open("popup_call.php?fld_session="+i,"","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
 		return true;  
 	}
 

@@ -17,33 +17,33 @@
 	else	$sel_g_name	= "";
 	if( isset($_POST['search_data']) ) $search_data	= $_POST['search_data'];
 	else	$search_data	= "";
-
+/*
 	if( isset($_REQUEST['if_typePG']) ) $iftype_db = $_REQUEST['if_typePG'];
 	else $iftype_db = "";
-
 	if( isset($_REQUEST['if_dataPG']) ) $ifdata_db = $_REQUEST['if_dataPG'];
 	else $ifdata_db = "";
-
 	if( isset($_POST['if_dataPG']) ) $if_dataPG = $_POST['if_dataPG'];
 	else $if_dataPG = "";
-
 	if( isset($_REQUEST['_POST']) ) $pop_dataPG = $_POST['pop_dataPG'];
 	else $pop_dataPG = "";
-
-//	if( !$iftype_db ) {
-	if( !$iftype_db || $iftype_db == '') {
+*/
+//	if( !$iftype_db || $iftype_db == '') {
 		$iftype_db		= $_SESSION["iftype_db"];
 		$ifdata_db		= $_SESSION["ifdata_db"];
 		$if_dataPG		= $_SESSION["if_dataPG"];	//iftype_db X
 		$pop_dataPG		= $_SESSION["pop_dataPG"];  //$_SESSION['pop_dataPG']= $pop_dataPG;
-		//m_("iftype_db : $iftype_db, pop_dataPG:$pop_dataPG");
+		//m_("iftype_db : $iftype_db, ifdata_db:$ifdata_db, pop_dataPG:$pop_dataPG");
+		//iftype_db : ||13|13||||11|1|, ifdata_db:||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가|현금:외상:어음:수표|, pop_dataPG:^^$fld_1:거래처명|fld_2:거래처@fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@^$fld_1:상품명|fld_3:상품명$fld_2:가격|fld_6:단가$fld_3:단위|fld_5:단위@fld_1:상품명@fld_2:가격@fld_3:단위@^^^^^^
+		//iftype_db : ||13|13||||11|1|, pop_dataPG:^^$fld_1:거래처명|fld_2:거래처@fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@^$fld_1:상품명|fld_3:상품명$fld_2:가격|fld_6:단가$fld_3:단위|fld_5:단위@fld_1:상품명@fld_2:가격@fld_3:단위@^^^^^^
 		//iftype_db : |13|1|5|||, pop_dataPG:^$fld_1:fld1|fld_1:fld1$fld_4:fld4|fld_4:fld4$fld_5:fld5|fld_5:fld5@fld_1:fld1@fld_2:fld2@fld_3:fld3@fld_4:fld4@fld_5:fld5@^^^^^
-	}
+//	}
 	if( isset($_POST['fld_session']) ){
 		$fld_session = $_POST['fld_session'];
 	} else if( isset($_REQUEST['fld_session']) ){
 		$fld_session= $_REQUEST["fld_session"];	
 	} else $fld_session= "";
+	//$fld_session= $_SESSION["fld_session"];
+	//m_("fld_session:$fld_session");
 
 	$idata		= explode("|", $ifdata_db);
 	$itype		= explode("|", $iftype_db);
@@ -180,7 +180,7 @@
 		$ls		= "SELECT * FROM ". $tab_enm . $w;
 	}
 	else $ls	= "SELECT * FROM ". $tab_enm . " ";
-	echo "sql:".$ls;//sql:SELECT * FROM dao_1656036131, SELECT * FROM WHERE ( fld_4 like '%정보%' )
+	//echo "sql:".$ls;//sql:SELECT * FROM dao_1656036131, SELECT * FROM WHERE ( fld_4 like '%정보%' )
 	$result	= sql_query(  $ls );
 	while ( $rs = sql_fetch_array( $result ) ) {
 ?>
