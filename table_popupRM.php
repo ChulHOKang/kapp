@@ -27,7 +27,6 @@
 <?php
 	
 	$H_ID  = get_session("ss_mb_id");	
-	//You need to login. pg_codeS:dao_1540279192:생산정보-A:dao_1536028075:생산정보::, tab_hnmS:dao_1536028075:생산정보, sellist:
 	if( !$H_ID || $H_ID =='' ){
 		m_("You need to login. ");
 		$url=KAPP_URL_T_;
@@ -66,6 +65,7 @@
 	else $pg_name = "";
 	if( isset($_POST['pop_tab']) ) $pop_table= $_POST['pop_tab'];
 	else $pop_table = "";
+
 	if( isset($_POST["if_line"]) ) {
 		$if_line = $_POST["if_line"]; 
 		$ln = $if_line+1;	  
@@ -76,21 +76,26 @@
 
 	if( isset($_POST['if_column']) &&  $_POST['if_column'] !=='' ) $if_column = $_POST["if_column"]; 
 	else $if_column = "";
+
 	$tab_enm_pop = "";
 	$tab_hnm_pop = "";
 	$app_pg50RU = "";
 	$app_pg50RC = "";
-/*	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
+	/*	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
 	else if( $mode_call == 'table_item_run50' ) $table_item_run50 = 'on';
 	else if( $mode_call == 'table_item_run50R' ) $table_item_run50R = 'on';
 	else if( $mode_call == 'table_item_run70' ) $table_item_run70 = 'on';
 	else */
 	if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
 	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
-	
 	$pop_move_data = '';
-	if( $mode=='') {	
-		if( isset($pop_table) ) $_SESSION['old_pop_tab']= $pop_table;
+	$Column_movable ='';
+	
+	if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt'];
+	else $item_cnt = '';
+
+	if( $mode=='') {	//popup_win_set
+		if( isset($pop_table) && $pop_table !='' ) $_SESSION['old_pop_tab']= $pop_table;
 		else $_SESSION['old_pop_tab'] = "";
 		$sqlPG = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 		$resultPG = sql_query($sqlPG);
@@ -100,7 +105,7 @@
 			$tab_hnm	=$rsPG['tab_hnm'];
 			$item_cnt	=$rsPG['item_cnt'];
 			$item_array=$rsPG['item_array'];
-			$tab_enm_pop=$rsPG['tab_enm'];
+			//$tab_enm_pop=$rsPG['tab_enm'];
 			$tab_hnm_pop=$rsPG['tab_hnm'];
 			$group_code	=$rsPG['group_code'];
 			$group_name	=$rsPG['group_name'];
@@ -114,8 +119,9 @@
 					$if_typeD = "";
 					$if_type  = "";
 			}
-			if( isset($rsPG["if_data"]) ) {
+			if( isset($rsPG["if_data"]) && $rsPG["if_data"] !=='' ) {
 					$if_dataD = $rsPG["if_data"]; 
+					m_("if_dataD:$if_dataD");
 					$dd = explode("|", $if_dataD );
 					$if_data  = $dd;
 					$if_TabS = $dd[$ln];
@@ -128,7 +134,8 @@
 			$pg_codeS = $rsPG['pg_code'] . ":" . $rsPG['pg_name'];
 			$tab_hnmS = $rsPG['tab_enm'] . ":" . $rsPG['tab_hnm'];
 			$tab_hnm  = $rsPG['tab_hnm'];
-			if( isset( $rsPG['pop_data'] ) ){
+			
+			if( isset($rsPG['pop_data']) && $rsPG['pop_data'] !='' ){
 				$popup_data	= $rsPG['pop_data'];
 				$item_popA = explode( "^", $popup_data);
 				if( isset( $item_popA[$ln]) ) {
@@ -169,9 +176,11 @@
 				$Column_name	= $ColnmA[$ln];
 				$Column_movable ='';
 				$popup_data	= "";
+				//m_("$ln - if_line: $if_line - col_: " . $col_[$if_line] );
+				//2 - if_line: 1 - col_: |fld_2|거래처|VARCHAR|15
 			}
 		}
-	} else {  // mode == '' 아니다		
+	} else {  // mode == 'popup_win_set' 아니다		
 			if( isset($_POST['tab_enm_pop']) ) $tab_enm_pop = $_POST['tab_enm_pop'];
 			else $tab_enm_pop = "";
 			if( isset($_POST['tab_hnm_pop']) ) $tab_hnm_pop = $_POST['tab_hnm_pop'];
@@ -234,7 +243,8 @@
 		else $pop_table	    = "";	
 		$move_pop_data	= $_POST["move_pop_data"];
 	} else if( $mode =="table_popup_save" ) {
-			//m_("--- if_typeD:". $if_typeD);	//--- if_typeD:|13|1|3||
+			//m_("11111---------------- mode: $mode, --- if_typeD:". $if_typeD);	//--- if_typeD:|13|1|3||
+			//11111---------------- mode: table_popup_save, --- if_typeD:|13|13|||||||
 	} else { // 팝업이 설정되지않은 상테에서 처음 실행할때 탄다.
 		if( $mode_call=="app_pg50RC" || $mode_call=="app_pg50RU" ){ // add 2023-09-12 : if 추가 else 이전 까지  - 테스트 미완성 중요.
 			$ln	= $if_line + 1;
@@ -264,6 +274,7 @@
 		$pg_col  = array();
 		$pop_fld = array();
 		$pop_win_col = array();
+
 	if( isset($pop_table) && $pop_table !=="" && $mode !== "SearchTAB" ) { 
 		$pop_tabS = $if_TabS;
 		$idata_ = explode(":", $if_TabS);
@@ -310,6 +321,7 @@
 		}
 		$move_col_cnt = $i-1;
 	} else { // 팝업테이블이 없고, 팝업 테이블을 선택하면 여기를 탄다. $pop_table none $mode =="SearchTAB" $_REQUEST['pop_tab'] = NULL
+
 		$sql = "select * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm_pop' order by tab_hnm";
 		$result = sql_query($sql);
 		$i=0;
@@ -337,17 +349,23 @@
 		exit;
 	}
 	$sqlPG = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-	$resultPG = sql_query($sqlPG);
-	$table10_pg = sql_num_rows($resultPG);
-	if( $table10_pg ) {
-		$rsPG = sql_fetch_array($resultPG);
-		$itype = explode("|", $rsPG['if_type']);
-		$idata = explode("|", $rsPG['if_data']);
-		$itp = $itype[$if_line+1];
-		if( $itp == "11" ) {
-			$idt = $idata[$if_line+1];
-			$cl = explode(":", $idt);
+	$rsPG = sql_fetch($sqlPG);
+	if( isset($rsPG['pg_code']) ) {
+		$table10_pg = $rsPG['pg_code'];
+		if(isset($rsPG['if_type'])) $itype = explode("|", $rsPG['if_type']);
+		else $itype = '';
+		if(isset($rsPG['if_data'])) $idata = explode("|", $rsPG['if_data']);
+		else $idata = '';
+		if( isset($itype[$if_line+1]) ){
+			$itp = $itype[$if_line+1];
+			if( $itp == "11" ) {
+				$idt = $idata[$if_line+1];
+				$cl = explode(":", $idt);
+			}
 		} else {
+			$itp = '';
+			$idt = '';
+			$cl ='';
 		}
 	} else m_("no found - table_popupRM.php - table10_pg:" .$table10_pg. " - pg_name:" . $pg_name);
 ?>
@@ -431,7 +449,7 @@
 		document.makeform.tab_enm_pop.value=tabsel[0];
 		document.makeform.tab_hnm_pop.value=tabsel[1];
 		old_pop_tab = document.makeform.old_pop_tab.value;
-		document.makeform.mode.value = ''; //Save_End
+		document.makeform.mode.value = 'Save_End'; //Save_End
 		document.makeform.action="table_popupRM.php?pg_code=" + pg_code+'&if_line='+if_line+'&pop_tab='+old_pop_tab;
 		document.makeform.submit();
 	}
@@ -488,13 +506,25 @@
 		const ln = if_line*1 + 1; // 중요. 계산은 *1 해야만 값이 계산된다. 안그러면 if_line이 1이면 11로 계산된다. 스크립트 버그?
 		var if_DD = '';
 		var DD = document.makeform.if_dataD.value; 
-		var if_D = DD.split("|");
-		var len = if_D.length - 1; // 컬럼수를 맞춰야한다. 중요. 8 , 7
-		if_D[ln] = tab;
-		for( i=0; i< len; i++) {
-			if_DD = if_DD + if_D[i] + "|";
+		item_cnt = document.makeform.item_cnt.value;
+		if(DD == ''){
+			for( i=0; i< item_cnt; i++) {
+				if( i == ln ) if_DD = if_DD + tab + "|";
+				else if_DD = if_DD + "|";
+			}
+		} else {
+			var if_D = DD.split("|");
+			var len = if_D.length - 1; // 컬럼수를 맞춰야한다. 중요. 8 , 7
+			if_D[ln] = tab;
+			for( i=0; i< len; i++) {
+				if_DD = if_DD + if_D[i] + "|";
+			}
 		}
+//alert( item_cnt + ", pop_table_func tab: " +tab +", if_line: " +if_line + ", if_DD: " + if_DD + ", DD: " + DD);
+//9, pop_table_func tab: crakan59_gmail_1762740284:성품테이블, if_line: 2, 
+
 		document.makeform.if_dataD.value = if_DD;
+		alert("pop_table_func --- if_DD: " + if_DD);
 		document.makeform.mode.value='SearchTAB';
 		tabsel = tab.split(":");
 		document.makeform.tab_enm_pop.value=tabsel[0];
@@ -698,6 +728,7 @@
 	$w2='360';
 	if( isset($_POST['reset']) ) $reset = $_POST['reset'];
 	else $reset = "";
+
 ?>
 <center>
 PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user lev:<?=$H_LEV?>)</font>
@@ -729,10 +760,9 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 			<input type="hidden" name='project_nmS'   value='<?=$project_nmS?>' > 
   <tr>
     <td height="30" align="center" style="border-style:;background-color:#666666;color:cyan;"  >
-	Program Name:
-	<input type='text' name='pg_name' value='<?=$pg_[1]?>' style="border-style:;background-color:#666666;color:yellow;" readonly>
-	<br>&nbsp;&nbsp;&nbsp;&nbsp;Column Name:
-	<input type='text' name='Column_name' value='<?=$Column_name?>' style="border-style:;background-color:#666666;color:yellow;" readonly>
+	Program Name:<input type='text' name='pg_name' value='<?=$pg_[1]?>' style="border-style:;background-color:#666666;color:yellow;" readonly>
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;
+	Column Name:<input type='text' name='Column_name' value='<?=$Column_name?>' style="border-style:;background-color:#666666;color:yellow;" readonly>
 	<input type='hidden' name='tab_hnm' value='<?=$tab_[1]?>' style="border-style:;background-color:#666666;color:yellow;" readonly>&nbsp;&nbsp;
   </tr>
 			<tr>
@@ -827,6 +857,14 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 		$pd1_cnt = count( $pd1 ); 
 		$item_cnt = $_POST['item_cnt'];
 		$ppd1 = "";
+		//m_("-2222--  table_popup_save - if_dataD: $if_dataD, item_array_pop: $item_array_pop, pop_move_data: $pop_move_data, pdata1: $pdata1, move_pop_data: $move_pop_data");
+		//-2222--  table_popup_save - 
+		//if_dataD: , 
+		//item_array_pop: @fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@, 
+		//pop_move_data: $fld_1:거래처명|fld_2:거래처, 
+		//pdata1: @fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@, 
+		//move_pop_data: $fld_1:거래처명|fld_2:거래처@fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@
+		//-2222--  table_popup_save
 		for( $i=0; $i< $item_cnt; $i++){
 			if( $i == $ln ) $ppd1 = $ppd1 . $move_pop_data . "^";
 			else {
@@ -881,6 +919,8 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 </form>
 <?php
 if( $mode == 'table_popup_save' ){
+	//m_("333 ----------- table_popup_save ");
+	//333 ----------- table_popup_save 
 	/*if( $table_item_run30 == 'on' ) {
 		$url = "table_pg30.php";
 	} else if( $table_item_run50R == 'on' ) {

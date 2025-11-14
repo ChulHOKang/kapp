@@ -334,6 +334,7 @@
 		iftype = document.makeform["iftype[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
 		document.makeform.col_attr_old.value = iftype; // column attribute - old save
+		alert("column_list_onclickA iftype: "+iftype);//ifcheck_onclickA r: 13, column_index: 1
 		switch( iftype ){
 			case 0:
 				document.makeform.ifcheck[0].checked=true;
@@ -559,8 +560,13 @@ function ifcheck_onclickA( r, seq) {
 	col_attr_old = document.makeform.col_attr_old.value; // old attribute
 	if( col_attr_old=='') col_attr_old=0;
 
-	var selind = document.makeform.column_index.value; // colunm index
-	if( selind == '' ){
+	var column_index = document.makeform.column_index.value; // colunm index
+	var selind = column_index;
+	var if_line = document.makeform.if_line.value; // formula set and back colunm index
+	//alert("ifcheck_onclickA r: " + r + ", column_index: " + column_index + ", if_line: " + if_line);
+	//ifcheck_onclickA r: 13, column_index: 1, if_line: 0
+
+	if( column_index == '' ){
 		var selind = document.makeform.if_line.value; // formula set and back colunm index
 		if( selind == '' ) {
 			alert(r+' : Please select a column! column_index = selind:' +selind );
@@ -571,6 +577,7 @@ function ifcheck_onclickA( r, seq) {
 	var pg = document.makeform.pg_codeS.value; 
 	var tab = document.makeform.tab_hnmS.value;
 	var pg_name = document.makeform.pg_name.value;
+	
 	if( !pg_name) {
 		alert(' Please select or enter program name!' );
 		document.makeform.pg_name.focus();
@@ -583,6 +590,10 @@ function ifcheck_onclickA( r, seq) {
 	document.makeform.if_line.value = selind;
 	var colnm = document.getElementsByName('column_list');
 	var colnm_value = colnm[selind].value; //colnm_value: |fld_2|fld2|VARCHAR|15
+
+	//alert("ifcheck_onclickA -- colnm_value: " + colnm_value + ", selind: " + selind);
+	//ifcheck_onclickA -- colnm_value: |fld_2|거래처|VARCHAR|15, selind: 1
+	
 	st = colnm_value.split('|');
 	var col_len = st[4];
 	var new_column = st[0]+"|"+st[1]+"|"+st[2]+"|"+st[3]+"|" + "255";
@@ -861,7 +872,6 @@ function Save_and_Run( pg)
 		st = colnm_value.split('|');
 		str_array = str_array + st[0] +'|'+ st[1] +'|'+ st[2] +'|'+ st[3]+'|'+ st[4]+'@';	
 	} 
-	//alert("str_array: "+ str_array); return;
 	document.makeform.item_array.value = str_array;
 	
 	if( mode_session == "POPUP" || mode_session == "Formula") {
@@ -1017,12 +1027,12 @@ function Save_and_Run( pg)
 			<input type="hidden" name="project_nmSX"	value="<?=$project_nmS?>"> <!-- project_nmSX -->
 			<input type="hidden" name="project_code"	value="<?=$project_code?>"> 
 			<input type="hidden" name="col_attr_old"	value=""> 
- <table cellspacing='0' cellpadding='4' width='300' border='1' class="c1"> 
+ <table cellspacing='0' cellpadding='4' width='390' border='1' class="c1"> 
  <tr>
-    <td height="30" style="border-style:;background-color:#666666;color:cyan;" title='Program Upgrade:app_pg50RU'	align='center'>Program Upgrade<br>
+    <td height="30" style="font-size:21px;background-color:#666666;color:cyan;text-align:center;" title='app_pg50RU'>Program Upgrade<br>
 	<input type='hidden' name='project_name' value="<?=$project_name?>" readonly >
 	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" ><br>
-	<p align='left'>Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
+	<p align='left'>Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:180px; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
 
 			<option value=''>1.Select Project</option>
 <?php
@@ -1044,11 +1054,11 @@ function Save_and_Run( pg)
 ?>
 			</select>
 		<br>
-		Program:<SELECT name='pg_codeS' onchange="change_program_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" title='Upgrade the program.' >
+		Program:<SELECT name='pg_codeS' onchange="change_program_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" title='<?=$pg_code?>' >
 <?php 
 				if( $mode=='SearchPG' || $mode=='program_upgrade') {
 ?>
-					<option value="<?php echo $pg_codeS ?>"  selected ><?php echo $pg_name ?> </option>
+					<option value="<?php echo $pg_codeS ?>" selected title='<?php echo $pg_codeS ?>' ><?php echo $pg_name ?> </option>
 <?php
 				} else {
 ?>
@@ -1059,8 +1069,10 @@ function Save_and_Run( pg)
 				$result = sql_query( $sql );
 
 				while( $rs = sql_fetch_array($result)) {
+					$rspcode=$rs['pg_code'];
+					$rspname=$rs['pg_name'];
 ?>
-					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" title="cd:<?=$pcd_nm[0]?>, nm:<?=$pcd_nm[1]?>" <?php if($pcd_nm[0] == $rs['pg_code']) echo ' selected ' ?>><?=$rs['pg_name']?></option>
+					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" title="<?=$rspcode?>:<?=$rspname?>" <?php if($pg_code == $rs['pg_code']) echo ' selected ' ?>><?=$rs['pg_name']?></option>
 <?php
 				}
 ?>
@@ -1068,14 +1080,14 @@ function Save_and_Run( pg)
 </td>
 </tr>
 			  <tr>
-				<td align="left" <?php echo" title='Program Upgrade \n 1:Select Project \n 2:Select Program \n 3:Select column \n 4: Column attribute definition \n 5:Click Save and RUN button'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">use table:
+				<td align="left" <?php echo" title='Program Upgrade \n 1:Select Project \n 2:Select Program \n 3:Select column \n 4: Column attribute definition \n 5:Click Save and RUN button'  "; ?> style="font-size:21px;background-color:#666666;color:cyan;width:100%; height:20px;">use table:
 				<input type='hidden' name='tab_hnmS' value="<?=$tab_hnmS?>" ><?=$tab_enm?><br>
 				<input type='text'   name='tab_hnm'  value="<?=$tab_hnm?>" title="tab_hnmS:<?=$tab_hnmS?>" style="border-style:;background-color:#666666;color:yellow;width:100%; height:27px;font-size:15px;" readonly >
 				</td>
 			  </tr>
 			  <tr>
 				 <td valign="top">
-	<div id="here">
+	<div id="here" style="font-size:18px;">
 <?php
 	$ss = "";
 	$ckv = "";	
@@ -1100,7 +1112,7 @@ function Save_and_Run( pg)
 	//  ^문제 부뉴, |문항 분류 마지막 숫자는 정답. 중요. 
 	//$qna = "sequence of the work|Select Project.|Select Program.|Select column.|Column attribute definition.|Click Save and RUN button.|4^작업순서|Project 선택|Program 선택|컬럼을 선택한다.|컬럼의 속성을 정의 한다.|Save and RUN 버턴 클릭.|4";
 	$qna = "sequence of the work|Select Project.|Select Program.|Select column.|Column attribute definition.|Click Save and RUN button.|4";
-	echo "<script> rr_func(\"".$ss."\", \"".$qna."\");</script> "; // 최초화면에 설문지 출력 중요.
+	echo "<script> rr_func(\"".$ss."\", \"".$qna."\");</script> "; // job remark
 ?>
 		<!-- </select> -->
 		</div>
@@ -1120,8 +1132,9 @@ function Save_and_Run( pg)
 				*Change column name<br>
 					<input type='hidden' name='column_data_type' value=''>
 					<input type='text' id='column_name_change' name='column_name_change' maxlength='200' size='15' style="border-style:;background-color:black;color:yellow;height:25;" value='' <?php echo "title=\" You can change the name of the column.\" "; ?>>
-					<input type='button' value='Confirm' name='title_changeX'  onClick="titlechange_btncfm_onclickA()"  style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\" You can change the name of the column. \" "; ?> ><br>
-				*Column attribute data<br>
+					<input type='button' value='Confirm' name='title_changeX'  onClick="titlechange_btncfm_onclickA()"  style="border-style:;background-color:green;color:white;height:25;" <?php echo "title=\" You can change the name of the column. \" "; ?> >
+<div style="font-size:18px;">
+<br>*Column attribute data<br>
 <label class="container" <?php echo "title='Only one selectable button. ' "; ?> >
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA( 0,0)" <?php if( !isset($fld_sel_type) ) echo " checked "; ?> >For general input
   <span class="checkmark"></span> 
@@ -1161,6 +1174,7 @@ function Save_and_Run( pg)
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(13,7)" <?php if( $fld_sel_type=='13') echo " checked "; ?> >POPUPWindow <font color='blue'>[Setup]</font>
   <span class="checkmark"></span>
 </label>
+</div>
 <br>
 
    <input type='text' id='column_attribute' name='column_attribute' maxlength='200' size='28' style="border-style:;background-color:black;color:yellow;height:25;" value='<?=$column_attribute?>' <?php echo "title=\"  hobby:baseball:bootball:basketball:tennis:golf , Use delimiter ':' to separate.\" "; ?>>
@@ -1169,7 +1183,7 @@ function Save_and_Run( pg)
 <br>
 
 		<input type='hidden' id='column_attribute_index' name='column_attribute_index' >
-		<input type='hidden' id='column_index' name='column_index'>
+		<input type='hidden' id='column_index' name='column_index' >
 		<input type='hidden' name='tab_enm'  value='<?=$tab_enm?>' >
 		<input type='hidden' name='seqno'      value='<?=$seqno?>' >
 		<input type='hidden' name='item_cnt'   value='<?=$item_cnt?>' >
