@@ -11,7 +11,7 @@
 
 		'table_popupRM.php?pg_code='+pg_code+'&if_line='+selind;
 
-		group_code: solpakanA_naver_1750725492, if_line: 1
+		project_code: solpakanA_naver_1750725492, if_line: 1
 	 */
 ?>
 <html>
@@ -51,18 +51,18 @@
 	else $project_code = "";
 	if( isset( $_POST["project_name"]) ) $project_name = $_POST["project_name"]; 
 	else $project_name = "";
-	if( isset($_POST["group_code"]) ) $group_code = $_POST["group_code"]; 
-	else $group_code = "";
-	if( isset($_POST["group_name"]) ) $group_name = $_POST["group_name"]; 
-	else $group_name = "";
+	//if( isset($_POST["group_code"]) ) $group_code = $_POST["group_code"]; 
+	//else $group_code = "";
+	//if( isset($_POST["group_name"]) ) $group_name = $_POST["group_name"]; 
+	//else $group_name = "";
 	if( isset($_POST["pg_codeS"]) ) $pg_codeS = $_POST["pg_codeS"]; 
 	else $pg_codeS = "";
-	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS']; 
-	else $pop_tabS = "";
 	if( isset($_POST["pg_code"]) ) $pg_code = $_POST["pg_code"]; 
 	else $pg_code = "";
 	if( isset($_POST["pg_name"]) ) $pg_name = $_POST["pg_name"]; 
 	else $pg_name = "";
+	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS']; 
+	else $pop_tabS = "";
 	if( isset($_POST['pop_tab']) ) $pop_table= $_POST['pop_tab'];
 	else $pop_table = "";
 
@@ -94,21 +94,57 @@
 	if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt'];
 	else $item_cnt = '';
 
+	if( $mode == 'table_popup_save' ){
+		$pdata1 = "";
+		$if_typeD = $_POST['if_typeD'];
+		$if_dataD = $_POST['if_dataD'];
+		$item_array_pop = $_POST['item_array_pop'];	
+		$pop_move_data = $_POST['pop_move_data'];
+		$pdata1 = $_POST['pdata1'];
+		$move_pop_data = $pop_move_data . $pdata1; 
+		$pd1 = explode("^", $_POST['popup_data']);
+		$pd1_cnt = count( $pd1 ); 
+		$item_cnt = $_POST['item_cnt'];
+		$ppd1 = "";
+		for( $i=0; $i< $item_cnt; $i++){
+			if( $i == $ln ) $ppd1 = $ppd1 . $move_pop_data . "^";
+			else {
+				if( isset($pd1[$i]) && $pd1[$i] !=='' ) $ppd1 = $ppd1 . $pd1[$i] . "^";
+				else $ppd1 = $ppd1 . "^";
+			}
+		}
+		$popup_data = $ppd1;
+		$pop_tabS = $_POST['pop_tabS'];
+		if( isset( $if_dataD ) ) {
+			$query= "UPDATE {$tkher['table10_pg_table']} SET if_type='$if_typeD', if_data='$if_dataD', pop_data='$popup_data' WHERE pg_code='$pg_code' ";
+			$ret = sql_query($query);
+			if( $ret ) {
+				m_("Update OK!");
+			}
+		}
+		$mode='';
+	}
+
 	if( $mode=='') {	//popup_win_set
 		if( isset($pop_table) && $pop_table !='' ) $_SESSION['old_pop_tab']= $pop_table;
 		else $_SESSION['old_pop_tab'] = "";
-		$sqlPG = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-		$resultPG = sql_query($sqlPG);
-		if( $resultPG ) {
-			$rsPG = sql_fetch_array($resultPG);
+		
+		//$sqlPG = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+		//$resultPG = sql_query($sqlPG);
+
+		$Sql = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+		$rsPG = sql_fetch($Sql); //rs_data_get($pg_code);
+	
+		
+		if( $rsPG['group_code'] ) {
 			$tab_enm	=$rsPG['tab_enm'];
 			$tab_hnm	=$rsPG['tab_hnm'];
 			$item_cnt	=$rsPG['item_cnt'];
 			$item_array=$rsPG['item_array'];
 			//$tab_enm_pop=$rsPG['tab_enm'];
-			$tab_hnm_pop=$rsPG['tab_hnm'];
-			$group_code	=$rsPG['group_code'];
-			$group_name	=$rsPG['group_name'];
+			//$tab_hnm_pop=$rsPG['tab_hnm'];
+			//$group_code	=$rsPG['group_code'];
+			//$group_name	=$rsPG['group_name'];
 			$pg_code	=$rsPG['pg_code'];
 			$pg_name	=$rsPG['pg_name'];
 			if( isset($rsPG["if_type"]) ) {
@@ -121,7 +157,7 @@
 			}
 			if( isset($rsPG["if_data"]) && $rsPG["if_data"] !=='' ) {
 					$if_dataD = $rsPG["if_data"]; 
-					m_("if_dataD:$if_dataD");
+					//m_("if_dataD:$if_dataD");//if_dataD:||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가|현금:외상:어음:수표|
 					$dd = explode("|", $if_dataD );
 					$if_data  = $dd;
 					$if_TabS = $dd[$ln];
@@ -180,7 +216,7 @@
 				//2 - if_line: 1 - col_: |fld_2|거래처|VARCHAR|15
 			}
 		}
-	} else {  // mode == 'popup_win_set' 아니다		
+	} else {  // mode == '' 아니다		
 			if( isset($_POST['tab_enm_pop']) ) $tab_enm_pop = $_POST['tab_enm_pop'];
 			else $tab_enm_pop = "";
 			if( isset($_POST['tab_hnm_pop']) ) $tab_hnm_pop = $_POST['tab_hnm_pop'];
@@ -239,7 +275,7 @@
 		$pop_table   = ""; //$pop_[0];	처음 팝업 테이블 선택시에 set 한다 중요.
 	} else if( $mode =="Save_End" ) {
 		m_('=============  No use,  Save_End , mode: ' + $mode ); // 확인필요...
-		if( isset($if_data[$if_line]) ) $pop_table	    = $if_data[$if_line];	
+		if( isset($if_data[$if_line]) ) $pop_table = $if_data[$if_line];	
 		else $pop_table	    = "";	
 		$move_pop_data	= $_POST["move_pop_data"];
 	} else if( $mode =="table_popup_save" ) {
@@ -252,13 +288,16 @@
 			$item_cnt = $_POST['item_cnt'];	
 			$if_typeX = "";
 			for( $i=0; $i< $item_cnt; $i++ ) {
-				//if( isset($type_[$i]) ) $if_type = $if_type . $type_[$i] . "|";
-				if( isset($if_type[$i]) ) $if_typeX = $if_typeX . $if_type[$i] . "|";
-				else $if_typeX = $if_typeX . "|";
+				if( isset($if_type[$i]) && $if_type[$i] !='' ) $if_typeX = $if_typeX . $if_type[$i] . "|";
+				else $if_typeX = $if_typeX . "0|";
 			}
-			$if_typeD = $if_typeX;			//m_("if_typeD:". $if_typeD);			//if_typeD:|13|1|3||
+			$if_typeD = $if_typeX;			
+			//m_("mode: $mode, if_typeD:". $if_typeD);			//if_typeD:|13|1|3||
+			//mode: , if_typeD:0|0|13|13|0|0|0|0|0|
+			//mode: , if_typeD:||13|13||||||
 		} else {
-			$ln	= $if_line + 1;
+			m_("Error -- mode_call: $mode_call");
+			/*$ln	= $if_line + 1;
 			$type_ = explode("|", $if_typeD ); // $if_typeD=rsPG['if_type'] 
 			if( $type_[$ln] !== '13') m_("Reset to column using popup window."); // 팝업창을 사용하는 컬럼으로 재설정합니다.
 			$type_[$ln] = '13'; // 13:popup column으로 설정.
@@ -267,7 +306,7 @@
 				if( isset($type_[$i]) ) $if_type = $if_type . $type_[$i] . "|";
 				else $if_type = $if_type . "|";
 			}
-			$if_typeD = $if_type;
+			$if_typeD = $if_type; */
 		}
 	}
 		$pop_col = array();
@@ -429,13 +468,8 @@
 		makeform.action= $mode_call + ".php";
 		makeform.submit();
 	}
-	function create_after_run(pg_codeS, tab_hnmS){
-		document.makeform.mode.value		= "SearchPG"; 
-		document.makeform.target		='runf_main';
-		document.makeform.action		="table_pg70.php";
-		document.makeform.submit();
-	}
-	function save_end_run(mode, pop_tabS, if_line, move_pop_data){
+	function save_end_run( mode, pop_tabS, if_line, move_pop_data){
+		m_("save_end_run --- mode: " + mode); //XX on use
 		document.makeform.if_line.value = if_line; 
 		pg_code = document.makeform.pg_code.value; 
 		document.makeform.move_pop_data.value=move_pop_data;
@@ -524,7 +558,9 @@
 //9, pop_table_func tab: crakan59_gmail_1762740284:성품테이블, if_line: 2, 
 
 		document.makeform.if_dataD.value = if_DD;
-		alert("pop_table_func --- if_DD: " + if_DD);
+		//alert("pop_table_func --- if_DD: " + if_DD);
+		//pop_table_func --- if_DD: ||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||||
+
 		document.makeform.mode.value='SearchTAB';
 		tabsel = tab.split(":");
 		document.makeform.tab_enm_pop.value=tabsel[0];
@@ -752,8 +788,8 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 			<input type="hidden" name="pg_code"         value="<?=$pg_code?>">
 			<input type="hidden" name="project_code"  value="<?=$project_code?>">
 			<input type="hidden" name="project_name"  value="<?=$project_name?>">
-			<input type="hidden" name="group_code"	    value="<?=$group_code?>">
-			<input type="hidden" name="group_name"	  value="<?=$group_name?>">
+			<!-- <input type="hidden" name="group_code"	    value="<?=$group_code?>">
+			<input type="hidden" name="group_name"	  value="<?=$group_name?>"> -->
 			<input type="hidden" name='move_pop_data' value="<?=$move_pop_data?>" > 
 			<input type="hidden" name='pop_tab1_click' value='' > 
 			<input type="hidden" name='pg_tab2_click'   value='' > 
@@ -787,7 +823,7 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 						<option value=''>Select Popup Table</option>
 <?php
 				}
-				$result = sql_query( "select tab_enm, tab_hnm from {$tkher['table10_table']} where userid='$H_ID' and group_code='$group_code' and fld_enm='seqno' order by upday desc" );
+				$result = sql_query( "select tab_enm, tab_hnm from {$tkher['table10_table']} where userid='$H_ID' and group_code='$project_code' and fld_enm='seqno' order by upday desc" );
 				while( $rs = sql_fetch_array($result)) { // popup table list
 ?>
 						<option value='<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>' <?php echo" title='Table code:".$rs['tab_enm']. ", " .$rs['tab_hnm']."' "; ?> 
@@ -843,40 +879,6 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 			echo "<label style='background-color:cyan;'><input type='radio' id='sellist_tab2".$i."' name='sellist_tab2' value='".$_col[1].":".$_col[2]."' onClick='sellist_tab2_onclick($i)' title='".$_col[1]."'> ".$_col[2]." </label><br>";
 		}else{
 			echo "<label style='background-color:white;'><input type='radio' id='sellist_tab2".$i."' name='sellist_tab2' value='".$_col[1].":".$_col[2]."' onClick='sellist_tab2_onclick($i)' title='".$_col[1]."'> ".$_col[2]." </label><br>";
-		}
-	}
-	if( $mode == 'table_popup_save' ){
-		$pdata1 = "";
-		$if_typeD = $_POST['if_typeD'];
-		$if_dataD = $_POST['if_dataD'];
-		$item_array_pop = $_POST['item_array_pop'];	
-		$pop_move_data = $_POST['pop_move_data'];
-		$pdata1 = $_POST['pdata1'];
-		$move_pop_data = $pop_move_data . $pdata1; 
-		$pd1 = explode("^", $_POST['popup_data']);
-		$pd1_cnt = count( $pd1 ); 
-		$item_cnt = $_POST['item_cnt'];
-		$ppd1 = "";
-		//m_("-2222--  table_popup_save - if_dataD: $if_dataD, item_array_pop: $item_array_pop, pop_move_data: $pop_move_data, pdata1: $pdata1, move_pop_data: $move_pop_data");
-		//-2222--  table_popup_save - 
-		//if_dataD: , 
-		//item_array_pop: @fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@, 
-		//pop_move_data: $fld_1:거래처명|fld_2:거래처, 
-		//pdata1: @fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@, 
-		//move_pop_data: $fld_1:거래처명|fld_2:거래처@fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@
-		//-2222--  table_popup_save
-		for( $i=0; $i< $item_cnt; $i++){
-			if( $i == $ln ) $ppd1 = $ppd1 . $move_pop_data . "^";
-			else {
-				if( isset($pd1[$i]) && $pd1[$i] !=='' ) $ppd1 = $ppd1 . $pd1[$i] . "^";
-				else $ppd1 = $ppd1 . "^";
-			}
-		}
-		$popup_data = $ppd1;
-		$pop_tabS = $_POST['pop_tabS'];
-		if( isset($table10_pg) ) {
-			$query= "UPDATE {$tkher['table10_pg_table']} SET if_type='$if_typeD', if_data='$if_dataD', pop_data='$popup_data' WHERE pg_code='$pg_code' ";
-			$ret = sql_query($query);
 		}
 	}
 ?>
@@ -937,7 +939,8 @@ if( $mode == 'table_popup_save' ){
 		set_session('pg_codeS',  $pg_codeS);
 		$url = "app_pg50RC.php";
 	}
-	echo "<script>save_end_run('Save_End','$pop_tabS','$if_line','$move_pop_data');</script>";	
+	//m_("url: $url -- 333 pg_codeS: $pg_codeS ");//url: app_pg50RU.php -- 333 pg_codeS: crakan59_gmail_1763174071:매출장부 
+	//echo "<script>save_end_run('Save_End','$pop_tabS','$if_line','$move_pop_data');</script>";	
 }
 function movable_func( $move_col ){
 		$Column_movable = "";

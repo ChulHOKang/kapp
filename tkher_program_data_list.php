@@ -36,7 +36,7 @@
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
 		$item_array = $rsPG['item_array'];
 		$if_data = $rsPG['if_data'];
-		$iftype = $rsPG['if_type'];
+		$if_type = $rsPG['if_type'];
 		$tab_enm = $rsPG['tab_enm'];
 		$tab_hnm = $rsPG['tab_hnm'];
 		$item_cnt = $rsPG['item_cnt'];
@@ -539,7 +539,7 @@ if( $H_ID==$pg_mid ) {
 <?php
 				for( $i=0;$i<$item_cnt;$i++){
 ?>
-						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$iftype[$i]?>' >
+						<input type='hidden' name="if_type[<?=$i?>]" value='<?=$if_type[$i]?>' >
 						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
 <?php
 				}

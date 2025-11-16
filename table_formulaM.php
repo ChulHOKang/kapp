@@ -28,7 +28,7 @@
 	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	if( !$H_ID || $H_LEV < 2 )
 	{
-		$url="/";
+		$url=KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
@@ -74,10 +74,11 @@
 	else if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
 	else if( $mode_call == 'app_pg50RU_New' ) $app_pg50RU_New = 'on';
 	*/
- 	$iftype  = array();
+ 	$if_type  = array();
 	$if_data = array();
-	$idata = array();
+	$idata_ = array();
 	$col_ = array();
+	$idata = '';
 
 	if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt'];
 	else $item_cnt = 0;
@@ -85,24 +86,46 @@
 	else $tab_hnm = "";
 	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
 	else $tab_enm = "";
+
 	if( isset($_POST['if_data']) ) $if_data = $_POST['if_data'];
-	if( isset($_POST['iftype']) ) $iftype  = $_POST['iftype'];
+	if( isset($_POST['if_type']) ) $if_type = $_POST['if_type'];
+
 	if( isset($_POST['if_line']) ) $if_line  = $_POST['if_line'];		
 	else $if_line  = 0;
-	$idata   = $if_data[$if_line];
+	
 	if( isset($_POST['sellist']) ) $sellist  = $_POST['sellist'];		// 선택한 컬럼. 팝업에 적용할 컬럼.//sellist:277|fld_1|상품|CHAR|20
 	else $sellist  = 0;
 	$_SESSION['sellist'] = $sellist;
 	//formula sellist: |fld_7|금액|INT|255, if_line: 6
 	
+	if( isset( $if_data[$if_line]) ) $idata = $if_data[$if_line];
+
 	$idata1 = ""; 
 	$idata2 = ""; 
 	$fd1 = ""; 
 	$fd2 = ""; 
 	$fd3 = ""; 
 	$fd4 = ""; 
+$ifdata = '';
+$iftype = '';
 
-	if( isset($idata) ) {
+$ifline = $if_line +1;
+
+		for( $i=0; $i<$item_cnt; $i++){
+				if( isset($if_data[$i]) ) $ifdata = $ifdata . '|' . $if_data[$i]; 
+				if( isset($if_type[$i]) ) $iftype = $iftype . '|' . $if_type[$i]; 
+		}
+//m_("ifline:$ifline, ifdata:$ifdata, 11111--- iftype: $iftype");
+//ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |0|13|0|0|0|0|11|0|
+//if_line:6, ifdata:|||||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |||||||11||
+//ifdata:|||||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |||||||11||
+
+//m_("if_line:$if_line, 11111--- idata: $idata, if_data: ".$if_data[$if_line].", if_type: ".$if_type[$if_line]);
+//if_line:6, 11111--- idata: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가, if_data: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가, if_type: 11
+//11111--- idata: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가
+//if_line:6, if_data: Array, 11111--- idata: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가
+
+	if( isset($idata) && $idata !='') {
 		$idata_ = explode(":", $idata);
 		if( isset($idata_[1]) ) $idata2 = $idata_[1]; 
 		if( isset($idata_[0]) ) $idata1 = $idata_[0]; 
@@ -250,38 +273,145 @@
 	}
 //-->
 </script>
+<body leftmargin="0" topmargin="0">
+<center>
+<div id='menu_normal'>
+   <table cellspacing='0' cellpadding='4' width='600' border='1' class='c1'>
+		<FORM name="makeform" method="post" >
 
 <?php
+	if( $mode == 'table_formula' ){
+		$iftype_db="";
+		$ifdata_db="";
+		$calcX = "";
+		$nmx2 = ""; 
+		$ifT	= "";
+		$ifD= "";
+
+		$ifdata = $_POST['ifdata'];
+			$ifdata_ = explode("|", $ifdata);
+		$iftype = $_POST['iftype'];
+			$iftype_ = explode("|", $iftype);
+
+		if( isset($_POST['calcX']) ) $calcX = $_POST['calcX']; 
+		if( isset($_POST['nmx2']) ) $nmx2 = $_POST['nmx2']; 
+
+		$ifdata = '';
+		$iftype = '';
+		for( $i=0; $i<$item_cnt; $i++){
+				$ifD= "";
+				$ifT= "0";
+			if($i == $ifline){
+				$idata11 = $calcX . ":" . $nmx2;
+				$iftype_db = $iftype_db . "|" . "11";
+				if( isset($ifdata_[$i]) ) $ifdata = $ifdata. $idata11 . '|'; 
+				if( isset($iftype_[$i]) ) $iftype = $iftype. '11' . '|' ; 
+				$iftype_db = $iftype_db . "|" . "11";
+				$ifdata_db = $ifdata_db . "|" . $calcX . ":" . $nmx2;
+?>
+				<input type='hidden' name='if_type[<?=$i?>]'	 value='11' >
+				<input type='hidden' name='if_data[<?=$i?>]' value='<?=$idata11?>' > 
+<?php
+			} else {
+				if( isset($ifdata_[$i]) ) $ifdata = $ifdata . $ifdata_[$i] . '|'; 
+				if( isset($iftype_[$i]) ) $iftype = $iftype . $iftype_[$i] . '|'; 
+
+				if( isset($ifdata_[$i]) ) $ifD= $ifdata_[$i];
+				if( isset($iftype_[$i]) ) $ifT	= $iftype_[$i];
+?>
+				<input type='hidden' name='if_type[<?=$i?>]'  value='<?=$ifT?>' >
+				<input type='hidden' name='if_data[<?=$i?>]' value='<?=$ifD?>' > 
+<?php
+				$iftype_db = $iftype_db . "|" . $ifT;
+				$ifdata_db = $ifdata_db . "|" . $ifD;
+			}
+		}
+//m_(" $ifdata, $iftype");
+// ||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|1111|0|
+// ||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|1111|0|
+// ||crakan59_gmail_1762739990:거래처테이블|||||||||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|11|0||0|13|0|0|0|0|1111|0|
+//  Undefined variable $idata11 in <b>/home1/biogplus/public_html/kapp/table_formulaM.php</b> on line <b>578</b><br />
+		if( isset( $ifdata) ) {
+			$ifdata_db = $ifdata;
+			$iftype_db = $iftype;
+//m_("--- $ifdata_db, $iftype_db");
+//--- ResetCALC ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |0|13|0|0|0|0|11|0|
+//--- ||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|1111|0|
+//--- , |0|13|0|0|0|0|1111|0|
+//--- , |0|13|0|0|0|0|11|0||0|13|0|0|0|0|1111|0|
+			$query="UPDATE {$tkher['table10_pg_table']} SET if_type='$iftype_db',if_data='$ifdata_db' WHERE userid='$H_ID' and pg_code='$pg_code' ";
+			$ret = sql_query($query);
+			if( $ret ) m_("--- formula - Save OK!");
+			else {
+				m_("--- formula - Save ERROR!"); //	echo "sql: " . $query;
+				exit;
+			}
+		}
+		$_SESSION["mode_session"]='Formula'; //use - app_pg50RU.php
+		set_session('iftype_db',  $iftype_db);
+		set_session('if_line',  $if_line);
+		set_session('formula_data',  $idata11);
+		set_session('tab_hnmS',  $tab_hnmS);
+		set_session('item_array',  $item_array);
+		$mode = '';
+	}//if $mode == 'table_formula'
+
 	$sqlPG = "select * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$pg_code."' ";
-	$resultPG = sql_query($sqlPG);
-	$table10_pg = sql_num_rows($resultPG);
-	if( isset($table10_pg) ) {
-		$rsPG = sql_fetch_array($resultPG);
+	$rsPG = sql_fetch($sqlPG);
+	if( isset($rsPG['item_array']) ) {
 		$item_array = $rsPG['item_array'];
 		$col_ = explode("@", $item_array);		//m_( "111 :_col 1:".$col_[1].", 2:".$col_[2]. ", 3:".$col_[3] );
 		$itype = explode("|", $rsPG['if_type']);
-		$idata = explode("|", $rsPG['if_data']);
+		$idata_ = explode("|", $rsPG['if_data']);
+		$idata11 = $idata_[$if_line+1]; // $calcX . ":" . $nmx2;
 		$itp = $itype[$if_line+1];
 		if( $itp == "11" ) {
-			$idt = $idata[$if_line+1];
+			$idt = $idata_[$if_line+1];
 			$cl = explode(":", $idt);
 		}
 	}
-	if( $mode=="ResetPOP") { 
+	if( $mode=="ResetCALC") { 
 		$idata2 = ""; 
 		$idata1 = ""; 
 		$fd1 = ""; 
 		$fd2 = ""; 
 		$fd3 = ""; 
 		$fd4 = ""; 
+		$ifdata = $_POST['ifdata'];
+			$ifdata_ = explode("|", $ifdata);
+		$iftype = $_POST['iftype'];
+			$iftype_ = explode("|", $iftype);
+
+		//m_("ResetCALC ifline:$ifline, ifdata:$ifdata, iftype: $iftype");
+		//ResetCALC ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, iftype: |0|13|0|0|0|0|11|0|
+
+		$ifdata = '';
+		$iftype = '';
+		for( $i=0; $i<$item_cnt; $i++){
+				if( isset($ifdata_[$i]) ) $ifdata = $ifdata . $ifdata_[$i] . '|'; 
+				if( isset($iftype_[$i]) ) $iftype = $iftype . $iftype_[$i] . '|' ; 
+		}
+		//m_("--- ResetCALC ifline:$ifline, ifdata:$ifdata, 11111--- iftype: $iftype");
+		//ResetCALC ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |0|13|0|0|0|0|11|0|
+	} else {
+		//$idata_ = explode("|", $rsPG['if_data']);//$ifdata_db
+		//$idata_ = explode("|", $ifdata_db);//$ifdata_db
+		$idata = $idata_[$if_line+1];
+		if( isset($idata) && $idata !='') {
+			$idata_ = explode(":", $idata);
+			if( isset($idata_[1]) ) $idata2 = $idata_[1]; 
+			if( isset($idata_[0]) ) $idata1 = $idata_[0]; 
+			$dt = explode(" ", $idata1);
+			if( isset($dt[0]) ) $fd1 = $dt[0]; // $dt[1]은 '='
+			if( isset($dt[2]) ) $fd2 = $dt[2]; 
+			if( isset($dt[3]) ) $fd3 = $dt[3]; 
+			if( isset($dt[4]) ) $fd4 = $dt[4]; 	//$dt[0]:fld_4,$dt[2]:fld_2,$dt[3]:*,$dt[4]:fld_3
+		}
 	}
+
 ?>
 
-<body leftmargin="0" topmargin="0">
-<center>
-<div id='menu_normal'>
-   <table cellspacing='0' cellpadding='4' width='600' border='1' class='c1'>
-		<FORM name="makeform" method="post" >
+
 			<input type="hidden" name="mode"			value="" >
 			<input type="hidden" name="mode_call"	value="<?=$mode_call?>" >
 			<input type="hidden" name="tab_enm"		value="<?=$tab_enm?>">
@@ -293,6 +423,8 @@
 			<input type="hidden" name="if_line"			value="<?=$if_line?>">
 			<input type="hidden" name="item_cnt"		value="<?=$item_cnt?>">
 			<input type="hidden" name="item_array"	value="<?=$item_array?>">
+			<input type="hidden" name="iftype"	value="<?=$iftype?>">
+			<input type="hidden" name="ifdata"	value="<?=$ifdata?>">
 			<input type="hidden" name="pg_code"	    value="<?=$pg_code?>">
 			<input type="hidden" name="pg_name"	    value="<?=$pg_name?>">
 			<input type="hidden" name="group_code"	value="<?=$group_code?>">
@@ -303,13 +435,13 @@
 			<input type="hidden" name="pg_codeS"	value="<?=$pg_codeS?>"> 
 			<input type="hidden" name="tab_hnmS"	value="<?=$tab_hnmS?>">
   <tr>
-    <td height="30" align="center" style="border-style:;background-color:#666666;color:cyan;" <?php echo " title='For example, If the quantity and unit price are input, the amount is calculated and output. \n That is, the amount is automatically calculated without inputting.' "; ?>>
+    <td height="30" align="center" style="border-style:;background-color:#666666;color:cyan;" <?php echo " title='(PG:/kapp/table_formulaM.php)\n For example, If the quantity and unit price are input, the amount is calculated and output. \n That is, the amount is automatically calculated without inputting.' "; ?>>
 	<!-- \n 예를들면, 수량 과 단가를 입력하면 금액을 계산하여 출력한다. \n 즉,금액은 입력하지않고 자동으로 계산된다. -->
-	<b><font color='white'>PG: <font color='yellow'>/kapp/table_formulaM.php</b><br>
+	<b><font color='white'>Set calculation formula</b><br>
 	<b><font color='white'>Project Name: <font color='yellow'><?=$project_name?>(<?=$project_code?>)</b><br>
 	<font color='white'>Program Name: <font color='yellow'><?=$pg_name?>(<?=$pg_code?>)<br>
 	<font color='white'>Table Name: <font color='yellow'><?=$tab_hnm?>(<?=$tab_enm?>)<br>
-	<b><font color='white'>Formula Column Name: <font color='yellow'><?=$fld_hnm_sel_column?>(<?=$fld_enm_sel_column?>) =</b>
+	<b><font color='white'>Formula Column Name: <font color='yellow'><?=$fld_hnm_sel_column?>(<?=$fld_enm_sel_column?>) =</b><br>
 	</td>
   </tr>
 			<tr>
@@ -341,7 +473,7 @@
 			else if( $_col[3] =='DATE' ) continue;
 			else if( $_col[3] =='DATATIME' ) continue;
 			else if( $_col[3] =='TIMESTAMP' ) continue;
-		if( $fd2==$_col[1]) {
+		if( $fd2 == $_col[1]) {
 			$tab1_index = $j;
 			echo "<label style='background-color:cyan;'><input type='radio' id='sellist_tab1".$j."' name='sellist_tab1' value='".$_col[1].":".$_col[2]."' onClick=\"sellist_tab1_onclick('".$j."')\" title='".$_col[1]."' checked> ".$_col[2]." </label><br>";
 		}else{
@@ -366,7 +498,7 @@
                                   <td height="10">
 
 <?php
-			if($fd3=='+') $calc_index = 0;
+			if( $fd3=='+') $calc_index = 0;
 			else if($fd3=='-') $calc_index = 1;
 			else if($fd3=='*') $calc_index = 2;
 			else if($fd3=='/') $calc_index = 3;
@@ -440,71 +572,6 @@
                     </tr>
 	</table>
 
-<?php
-if( $mode == 'table_formula' ){
-	$iftype_db="";
-	$ifdata_db="";
-	$calcX = "";
-	$nmx2 = ""; 
-	$ifT	= "";
-	$ifD= "";
-	for( $i=0; $i<$item_cnt; $i++){
-		if( $i == $if_line ) {
-			if( isset($_POST['calcX']) ) $calcX = $_POST['calcX']; 
-			if( isset($_POST['nmx2']) ) $nmx2 = $_POST['nmx2']; 
-			$idata11 = $calcX . ":" . $nmx2;
-?>
-			<input type='hidden' name='iftype[<?=$i?>]'	 value='11' >
-			<input type='hidden' name='if_data[<?=$i?>]' value='<?=$idata11?>' > 
-<?php
-			$iftype_db = $iftype_db . "|" . "11";
-			$ifdata_db = $ifdata_db . "|" . $calcX . ":" . $nmx2;
-		} else {
-			if( isset($iftype[$i]) ) $ifT	= $iftype[$i];
-			else  $ifT	= "";
-			if( isset($if_data[$i]) ) $ifD= $if_data[$i];
-			else $ifD= "";
-?>
-			<input type='hidden' name='iftype[<?=$i?>]'  value='<?=$ifT?>' >
-			<input type='hidden' name='if_data[<?=$i?>]' value='<?=$ifD?>' > 
-<?php
-			$iftype_db = $iftype_db . "|" . $ifT;
-			$ifdata_db = $ifdata_db . "|" . $ifD;
-		}
-	}
-	if( isset($table10_pg) ) {
-		$query="UPDATE {$tkher['table10_pg_table']} SET item_cnt=$item_cnt, item_array='$item_array',if_type='$iftype_db',if_data='$ifdata_db', pg_name='$pg_name' WHERE userid='$H_ID' and pg_code='$pg_code' ";
-		$ret = sql_query($query);
-		if( $ret ) m_("OK!");
-		else {
-			echo "sql: " . $query;
-			exit;
-		}
-	} else {
-		$pg_code = $H_ID . '_' . time();
-		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$pg_code', pg_name='$pg_name', item_cnt=$item_cnt, item_array='$item_array', if_type='$iftype_db', if_data='$ifdata_db', userid='$H_ID' ";
-		$ret = sql_query($query);
-	}
-	$_SESSION['mode_session']='Formula';
-	set_session('iftype_db',  $iftype_db);
-	set_session('if_line',  $if_line);
-	set_session('formula_data',  $idata11);
-	set_session('tab_hnmS',  $tab_hnmS);
-	set_session('item_array',  $item_array);
-
-} else {	//if $mode == 'table_formula'
-		$iftype_db="";
-		$ifdata_db="";
-		for( $i=0; $i<$item_cnt; $i++){
-?>
-			<input type='hidden' name='iftype[<?=$i?>]'  value='<?=$iftype[$i]?>' >
-			<input type='hidden' name='if_data[<?=$i?>]' value='<?=$if_data[$i]?>' > 
-<?php
-			$iftype_db = $iftype_db . "|" . $iftype[$i];
-			$ifdata_db = $ifdata_db . "|" . $if_data[$i];
-		}
-}//if $mode == 'table_formula'
-?>
 			<input type="hidden" name="sellist_tab1_index"	value="<?=$tab1_index?>">
 			<input type="hidden" name="sellist_calc_index"	value="<?=$calc_index?>">
 			<input type="hidden" name="sellist_tab2_index"	value="<?=$tab2_index?>">

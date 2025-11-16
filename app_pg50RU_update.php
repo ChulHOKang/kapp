@@ -54,9 +54,9 @@
 	$iftype_db="";
 	$ifdata_db="";
 	$popdata_db="";
-	$iftype			= array();
-	$if_data		= array();
-	$popdata		= array();
+	$if_type = array();
+	$if_data = array();
+	$popdata = array();
 	if( $mode == 'Pg_Upgrade' ) {
 		$item_array		= $_POST['item_array']; 
 		$tab_hnm		= $_POST['tab_hnm'];
@@ -68,7 +68,7 @@
 		$pg_name		= $_POST['pg_name'];
 		$popdata		= $_POST['popdata'];
 		$if_data		= $_POST['if_data'];
-		$iftype			= $_POST['iftype'];
+		$if_type = $_POST['if_type'];
 		$item			= $_POST['item_array'];
 		$pop_data		= $_POST['pop_data'];
 		$rel_data		= $_POST['rel_data']; 
@@ -82,16 +82,16 @@
 			exit;
 	}
 	for( $i=0;$i<$item_cnt;$i++){
-			$ifT	= $iftype[$i];
+			$ifT	= $if_type[$i];
 			$ifD	= $if_data[$i];
 			$ifP	= $popdata[$i];
 			$itemx  = explode("@", $item_array);
 			$it		= $itemx[$i];
 			$it_fld = explode("|", $it);
-			$iftype_db = $iftype_db . "|" . $iftype[$i];
+			$iftype_db = $iftype_db . "|" . $if_type[$i];
 			$ifdata_db = $ifdata_db . "|" . $if_data[$i];
 			$popdata_db = $popdata_db . "^" . $popdata[$i]; 
-			$query = "UPDATE {$tkher['table10_table']} SET if_type='$iftype[$i]', if_data='$if_data[$i]' WHERE tab_enm='$tab_enm' and fld_enm='$it_fld[1]' ";
+			$query = "UPDATE {$tkher['table10_table']} SET if_type='$if_type[$i]', if_data='$if_data[$i]' WHERE tab_enm='$tab_enm' and fld_enm='$it_fld[1]' ";
 			sql_query($query);
 	}
 	if( $mode=="Pg_Upgrade" && $table10_pg > 0) {

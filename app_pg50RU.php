@@ -94,16 +94,16 @@
 			tmpValue = makeform.column_list[selectIndex -1].value;
 			tmpText  = makeform.column_list[selectIndex -1].text;
 			i = selectIndex -1;
-			tmpiftype = document.makeform["iftype[" + i + "]"].value;
+			tmpiftype = document.makeform["if_type[" + i + "]"].value;
 			tmpifdata = document.makeform["if_data[" + i + "]"].value;
 			tmppopdata = document.makeform["popdata[" + i + "]"].value;
 
 			document.makeform["popdata[" + i + "]"].value = document.makeform["popdata[" + selectIndex + "]"].value;
 			document.makeform["if_data[" + i + "]"].value = document.makeform["if_data[" + selectIndex + "]"].value;
-			document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + selectIndex + "]"].value;
+			document.makeform["if_type[" + i + "]"].value = document.makeform["if_type[" + selectIndex + "]"].value;
 			document.makeform["popdata[" + selectIndex + "]"].value   = tmppopdata;
 			document.makeform["if_data[" + selectIndex + "]"].value   = tmpifdata;
-			document.makeform["iftype[" + selectIndex + "]"].value    = tmpiftype;
+			document.makeform["if_type[" + selectIndex + "]"].value    = tmpiftype;
 
 			makeform.column_list[selectIndex-1].value = makeform.column_list[selectIndex].value;
 			makeform.column_list[selectIndex-1].text  = makeform.column_list[selectIndex].text;
@@ -131,14 +131,14 @@
 
 			tmppopdata = document.makeform["popdata[" + i + "]"].value;
 			tmpifdata = document.makeform["if_data[" + i + "]"].value;
-			tmpiftype = document.makeform["iftype[" + i + "]"].value;
+			tmpiftype = document.makeform["if_type[" + i + "]"].value;
 
 			document.makeform["popdata[" + i + "]"].value	= document.makeform["popdata[" + selectIndex + "]"].value;
 			document.makeform["if_data[" + i + "]"].value	= document.makeform["if_data[" + selectIndex + "]"].value;
-			document.makeform["iftype[" + i + "]"].value		= document.makeform["iftype[" + selectIndex + "]"].value;
+			document.makeform["if_type[" + i + "]"].value		= document.makeform["if_type[" + selectIndex + "]"].value;
 			document.makeform["popdata[" + selectIndex + "]"].value		= tmppopdata;
 			document.makeform["if_data[" + selectIndex + "]"].value		= tmpifdata;
-			document.makeform["iftype[" + selectIndex + "]"].value		= tmpiftype;
+			document.makeform["if_type[" + selectIndex + "]"].value		= tmpiftype;
 
 			makeform.column_list[selectIndex+1].value = makeform.column_list[selectIndex].value;
 			makeform.column_list[selectIndex+1].text  = makeform.column_list[selectIndex].text;
@@ -274,9 +274,9 @@
 		document.makeform.column_index.value = j;
 		document.makeform.column_name_change.value = col_attr[2];
 		document.makeform.column_data_type.value   = col_attr[3];
-		iftype  = document.makeform["iftype[" + j + "]"].value;
+		if_type  = document.makeform["if_type[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
-		switch( iftype ) {
+		switch( if_type ) {
 			case '0':
 				document.makeform.ifcheck[0].checked=true;
 				break;
@@ -331,11 +331,11 @@
 		document.makeform.column_index.value = j;
 		document.makeform.column_name_change.value = col_attr[2];
 		document.makeform.column_data_type.value   = col_attr[3];
-		iftype = document.makeform["iftype[" + j + "]"].value;
+		if_type = document.makeform["if_type[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
-		document.makeform.col_attr_old.value = iftype; // column attribute - old save
-		alert("column_list_onclickA iftype: "+iftype);//ifcheck_onclickA r: 13, column_index: 1
-		switch( iftype ){
+		document.makeform.col_attr_old.value = if_type; // column attribute - old save
+		alert("column_list_onclickA if_type: "+if_type);//ifcheck_onclickA r: 13, column_index: 1
+		switch( if_type ){
 			case 0:
 				document.makeform.ifcheck[0].checked=true;
 				break;
@@ -398,18 +398,18 @@ function downItemA() {
 	i = j*1 +1;
 	tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
 	tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
-	tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;
+	tmpiftypeJ = document.makeform["if_type[" + j + "]"].value;
 
 	tmppopdataK = document.makeform["popdata[" + i + "]"].value;
 	tmpifdataK = document.makeform["if_data[" + i + "]"].value;
-	tmpiftypeK = document.makeform["iftype[" + i + "]"].value;
+	tmpiftypeK = document.makeform["if_type[" + i + "]"].value;
 
 	document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value;
 	document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value;
-	document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + j + "]"].value;
+	document.makeform["if_type[" + i + "]"].value = document.makeform["if_type[" + j + "]"].value;
 	document.makeform["popdata[" + j + "]"].value= tmppopdataK;
 	document.makeform["if_data[" + j + "]"].value= tmpifdataK;
-	document.makeform["iftype[" + j + "]"].value = tmpiftypeK;
+	document.makeform["if_type[" + j + "]"].value = tmpiftypeK;
 
 	tmpValueJ = colnm[j].value;
 	tmpValueI = colnm[i].value;
@@ -453,17 +453,17 @@ function upItemA() {
 	i = j*1 -1;
 	tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
 	tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
-	tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;
+	tmpiftypeJ = document.makeform["if_type[" + j + "]"].value;
 
 	tmppopdataK = document.makeform["popdata[" + i + "]"].value;
 	tmpifdataK = document.makeform["if_data[" + i + "]"].value;
-	tmpiftypeK = document.makeform["iftype[" + i + "]"].value;
+	tmpiftypeK = document.makeform["if_type[" + i + "]"].value;
 	document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value;
 	document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value;
-	document.makeform["iftype[" + i + "]"].value = document.makeform["iftype[" + j + "]"].value;
+	document.makeform["if_type[" + i + "]"].value = document.makeform["if_type[" + j + "]"].value;
 	document.makeform["popdata[" + j + "]"].value= tmppopdataK;
 	document.makeform["if_data[" + j + "]"].value= tmpifdataK;
-	document.makeform["iftype[" + j + "]"].value = tmpiftypeK;
+	document.makeform["if_type[" + j + "]"].value = tmpiftypeK;
 
 	tmpValueJ = colnm[j].value;
 	tmpValueI = colnm[i].value;
@@ -524,7 +524,7 @@ function del_func() {
 			if( i == end_line ){
 				document.makeform["popdata[" + i + "]"].value = '';
 				document.makeform["if_data[" + i + "]"].value = '';
-				document.makeform["iftype[" + i + "]"].value = '';
+				document.makeform["if_type[" + i + "]"].value = '';
 			} else {
 				colnm_value = colnm[j].value;
 				document.getElementById('column_list'+i).value = colnm_value;
@@ -532,10 +532,10 @@ function del_func() {
 				document.getElementById('columnR'+i).innerHTML = st[2];
 				tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
 				tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
-				tmpiftypeJ = document.makeform["iftype[" + j + "]"].value;
+				tmpiftypeJ = document.makeform["if_type[" + j + "]"].value;
 				document.makeform["popdata[" + i + "]"].value = tmppopdataJ;
 				document.makeform["if_data[" + i + "]"].value = tmpifdataJ;
-				document.makeform["iftype[" + i + "]"].value = tmpiftypeJ;
+				document.makeform["if_type[" + i + "]"].value = tmpiftypeJ;
 			}
 		} else {
 			//colnm_value = colnm[i].value;
@@ -607,17 +607,17 @@ function ifcheck_onclickA( r, seq) {
 	switch( r ) {
 		case 0: //	msge="General Input";
 			document.makeform.column_attribute.value		= '';
-			document.makeform["iftype[" + selind + "]"].value = r;
+			document.makeform["if_type[" + selind + "]"].value = r;
 			break;
 		case 1: //	msge="Radio Button";	//alert( st[3] + ", r: " + r + ", col_attr_old: " + col_attr_old);//INT, r: 1, col_attr_old: 0
 			if( st[3] == 'TEXT' || st[3] == 'DATE'  || st[3] == 'TIME' || st[3] == 'DATETIME' || st[3] == 'PASSWORD' ){
 				alert( st[3] + ", type cannot be set" );
-				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform["if_type[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
 			} else  {
-				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform["if_type[" + selind + "]"].value = r;
 				if( !obj2 ) {
 					document.makeform.column_attribute.focus();
 					alert(" Enter column processing items using delimiter ':' as in a:b:c:d");	// \n 컬럼처리 항목을 a:b:c:d: 와같이 구분자 ':'을 사용하여 입력하세요!
@@ -626,14 +626,14 @@ function ifcheck_onclickA( r, seq) {
 			break;
 		case 3: //	Check Box Button 
 			if( st[3] == 'CHAR' || st[3] == 'VARCHAR') {
-				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform["if_type[" + selind + "]"].value = r;
 				if( !obj2 ) {
 					document.makeform.column_attribute.focus();
 					alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
 				}
 			} else {
 				alert( st[3] + ", type cannot be set" );
-				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform["if_type[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
@@ -642,12 +642,12 @@ function ifcheck_onclickA( r, seq) {
 		case 5: //	msge="List Box";
 			if( st[3] == 'TEXT' || st[3] == 'DATE'  || st[3] == 'TIME' || st[3] == 'DATETIME' || st[3] == 'PASSWORD' ) {
 				alert( st[3] + ", type cannot be set" );
-				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform["if_type[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
 			} else {
-				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform["if_type[" + selind + "]"].value = r;
 				if( !obj2 ) {
 					document.makeform.column_attribute.focus();
 					alert(" Enter column processing items using delimiter ':' as in a:b:c:d");
@@ -657,10 +657,10 @@ function ifcheck_onclickA( r, seq) {
 		case 7: //	msge="Password Type";
 			if( st[3] == 'CHAR' || st[3] == 'VARCHAR'){
 				document.makeform.column_attribute.value = 'Password';
-				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform["if_type[" + selind + "]"].value = r;
 			} else {
 				alert( st[3] + ", type cannot be set" );
-				document.makeform["iftype[" + selind + "]"].value = 0;
+				document.makeform["if_type[" + selind + "]"].value = 0;
 				document.makeform.column_attribute.value = '';
 				document.makeform.ifcheck[col_attr_old].checked=true;
 				return false;
@@ -673,7 +673,7 @@ function ifcheck_onclickA( r, seq) {
 					column_length_change( st[1], col_len, st[3] ); //colnm_value: |fld_2|fld2|VARCHAR|15, A 컬럼의 길이를 255로 설정 하였습니다.
 				}
 				document.makeform.column_attribute.value = 'Attached file';
-				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform["if_type[" + selind + "]"].value = r;
 			} else {
 				alert( st[3] + ", Numeric type cannot be set" );
 				document.makeform.column_attribute.value = '';
@@ -683,7 +683,7 @@ function ifcheck_onclickA( r, seq) {
 			break;
 		case 11: // Calculation formula msge="Formula.";
 			if( st[3]=='INT' || st[3]=='FLOAT' || st[3]=='DOUBLE' || st[3]=='TINYINT' || st[3]=='SMALLINT' || st[3]=='MEDIUMINT' || st[3]=='BIGINT' || st[3]=='DECIMAL' ){
-				document.makeform["iftype[" + selind + "]"].value = r;
+				document.makeform["if_type[" + selind + "]"].value = r;
 				document.makeform.target          = '_self';
 				document.makeform.action          = 'table_formulaM.php';
 				document.makeform.mode.value      = 'run13';
@@ -696,7 +696,7 @@ function ifcheck_onclickA( r, seq) {
 			}
 			break;
 		case 13: // popup window msge="Pop-up Window";
-			document.makeform["iftype[" + selind + "]"].value = r;
+			document.makeform["if_type[" + selind + "]"].value = r;
 			document.makeform.action          = 'table_popupRM.php';
 			document.makeform.mode.value      = '';
 			document.makeform.mode_call.value = 'app_pg50RU';
@@ -779,7 +779,7 @@ function column_length_change( fld_enm, fld_len, fld_type) { // title click run
 		var colnm_value = colnm[selind].value;
 		var col_attr = colnm_value.split('|');
 		colnm_hnm = col_attr[2];
-		ii = document.makeform["iftype[" + selind + "]"].value;
+		ii = document.makeform["if_type[" + selind + "]"].value;
 		if( ii==1 || ii==3 || ii==5 || ii==7|| ii==9  ){ // 1:radio button, 3:check box, 5:listbox, 7:pass, 9: attache file 만적용한다.
 			if(ii==1) msg='1:radio button';
 			else if(ii==3) msg='3:check box';
@@ -791,7 +791,7 @@ function column_length_change( fld_enm, fld_len, fld_type) { // title click run
 				return false;
 			}
 			document.makeform["if_data[" + selind + "]"].value = chgStr;
-			document.makeform["iftype[" + selind + "]"].value = ii;	//alert( colnm_hnm + ' , ' + msg + ', label=' +chgStr );
+			document.makeform["if_type[" + selind + "]"].value = ii;	//alert( colnm_hnm + ' , ' + msg + ', label=' +chgStr );
 			alert(' OK! ' );
 
 		} else {
@@ -1211,7 +1211,7 @@ function Save_and_Run( pg)
 						if( isset($popdataR[$j]) && $popdataR[$j] !=='' ) $pop= $popdataR[$j];
 						else $pop	= "";
 ?>
-						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$ifT?>' >
+						<input type='hidden' name="if_type[<?=$i?>]" value='<?=$ifT?>' >
 						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$ifD?>' > 
 						<input type='hidden' name="popdata[<?=$i?>]" value='<?=$pop?>' >
 <?php
