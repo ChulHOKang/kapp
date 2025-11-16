@@ -555,6 +555,7 @@
 			}
 		}
 //alert( item_cnt + ", pop_table_func tab: " +tab +", if_line: " +if_line + ", if_DD: " + if_DD + ", DD: " + DD);
+//9, pop_table_func tab: crakan59_gmail_1762739990:거래처테이블, if_line: 1, if_DD: ||, DD: ||
 //9, pop_table_func tab: crakan59_gmail_1762740284:성품테이블, if_line: 2, 
 
 		document.makeform.if_dataD.value = if_DD;

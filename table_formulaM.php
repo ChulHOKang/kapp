@@ -326,19 +326,9 @@ $ifline = $if_line +1;
 				$ifdata_db = $ifdata_db . "|" . $ifD;
 			}
 		}
-//m_(" $ifdata, $iftype");
-// ||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|1111|0|
-// ||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|1111|0|
-// ||crakan59_gmail_1762739990:거래처테이블|||||||||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|11|0||0|13|0|0|0|0|1111|0|
-//  Undefined variable $idata11 in <b>/home1/biogplus/public_html/kapp/table_formulaM.php</b> on line <b>578</b><br />
 		if( isset( $ifdata) ) {
 			$ifdata_db = $ifdata;
 			$iftype_db = $iftype;
-//m_("--- $ifdata_db, $iftype_db");
-//--- ResetCALC ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |0|13|0|0|0|0|11|0|
-//--- ||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, |0|13|0|0|0|0|1111|0|
-//--- , |0|13|0|0|0|0|1111|0|
-//--- , |0|13|0|0|0|0|11|0||0|13|0|0|0|0|1111|0|
 			$query="UPDATE {$tkher['table10_pg_table']} SET if_type='$iftype_db',if_data='$ifdata_db' WHERE userid='$H_ID' and pg_code='$pg_code' ";
 			$ret = sql_query($query);
 			if( $ret ) m_("--- formula - Save OK!");
@@ -363,6 +353,8 @@ $ifline = $if_line +1;
 		$col_ = explode("@", $item_array);		//m_( "111 :_col 1:".$col_[1].", 2:".$col_[2]. ", 3:".$col_[3] );
 		$itype = explode("|", $rsPG['if_type']);
 		$idata_ = explode("|", $rsPG['if_data']);
+		//m_("rs if_data: " . $rsPG['if_data']);
+		//rs if_data||
 		$idata11 = $idata_[$if_line+1]; // $calcX . ":" . $nmx2;
 		$itp = $itype[$if_line+1];
 		if( $itp == "11" ) {
