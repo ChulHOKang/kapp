@@ -41,17 +41,17 @@
 		$tab_mid		= $_POST['tab_mid'];
 		$item_array		= $_POST['item_array'];
 		$item_cnt		= $_POST['item_cnt'];
-		$iftypeX			= $_POST['iftypeX'];
-		$iftype			= explode("|", $iftypeX);
-		$list				= array();
-		$ddd				= "";
-		$list				= explode("@", $item_array);
+		$iftypeX		= $_POST['iftypeX'];
+		$if_type		= explode("|", $iftypeX);
+		$list			= array();
+		$ddd			= "";
+		$list			= explode("@", $item_array);
 		$upfileX = "";
 
 		$query			= " UPDATE $tab_enm SET  ";
 		for( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
 			$ddd  = $list[$i];
-			if( isset($iftype[$j]) ) $typeX = $iftype[$j];
+			if( isset($if_type[$j]) ) $typeX = $if_type[$j];
 			else $typeX = '';
 			$fld = explode("|", $ddd);
 			$fld_enm= $fld[1];
@@ -502,11 +502,11 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 		$item_array = $rsPG['item_array'];
 		$iftypeX	= $rsPG['if_type'];
 		$ifdataX	= $rsPG['if_data'];
+		$if_type		= explode("|", $iftypeX);
+		$if_data		= explode("|", $ifdataX);
 		$pop_dataPG	= $rsPG['pop_data'];
 		$relation_dataPG = $rsPG['relation_data'];
 		$relation_typePG = $rsPG['relation_type'];
-		$iftype		= explode("|", $iftypeX);
-		$ifdata		= explode("|", $ifdataX);
 		$popdata	= explode("^", $pop_dataPG);
 		$pg_mid			= $rsPG['userid'];
 		$_SESSION['iftype_db']		= $iftypeX;
@@ -533,19 +533,19 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 					<input type="hidden" name='item_array'	value='<?=$item_array?>' />
 					<input type="hidden" name='item_cnt'		value='<?=$item_cnt?>' />
 					<input type="hidden" name='iftypeX'		value='<?=$iftypeX?>' />
-					<input type="hidden" name='iftype'			value='<?=$iftype?>' />
+					<input type="hidden" name='if_type'			value='<?=$if_type?>' />
 					<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
 
 <?php
 		$list= explode("@", $item_array);
 		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
-				if( isset($iftype[$j])  && $iftype[$j] !=='') $typeX	= $iftype[$j];
+				if( isset($if_type[$j])  && $if_type[$j] !=='') $typeX	= $if_type[$j];
 				else $typeX	= '';
-				if( isset($ifdata[$j]) && $ifdata[$j] !=='' ) $dataX	= $ifdata[$j];
+				if( isset($if_data[$j]) && $if_data[$j] !=='' ) $dataX	= $if_data[$j];
 				else $dataX	= '';
 				if( isset($popdata[$j]) && $popdata[$j] !=='' ) $popX	= $popdata[$j]; 
 				else $popX	= '';
-				if( isset($ifdata[$j]) && $ifdata[$j] !=='') $if_fld= explode(":", $ifdata[$j]);
+				if( isset($if_data[$j]) && $if_data[$j] !=='') $if_fld= explode(":", $if_data[$j]);
 				else $if_fld	= '';
 				$ddd		= $list[$i];
 				$fld = explode("|", $ddd);

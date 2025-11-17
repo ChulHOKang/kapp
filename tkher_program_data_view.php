@@ -61,9 +61,9 @@
 	$seqno		= $_POST['seqno'];
 	$tab_hnm	= $_POST['tab_hnm'];
  	$if_data		= array();
-	$iftype		= array();
+	$if_type		= array();
 	$if_data		= $_POST['if_data'];
-	$iftype		= $_POST['iftype'];
+	$if_type		= $_POST['if_type'];
 	$item_cnt	= $_POST['item_cnt'];
 	$pg_name	= $_POST['pg_name'];
 	$line_cnt	= $_POST['line_cnt'];
@@ -495,6 +495,8 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 				<input type="hidden" name='pg_code'	value='<?=$pg_code?>' />
 				<input type="hidden" name='line_cnt'	value='<?=$line_cnt?>' />
 				<input type="hidden" name='item_cnt'	value='<?=$item_cnt?>' />
+				<input type="hidden" name='if_type'			value='<?=$if_type?>' />
+				<input type="hidden" name='if_data'			value='<?=$if_data?>' />
 			</form>
 
 	<div class="boardViewX">
@@ -511,7 +513,7 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 				printf("delete  Invalid query: %s\n", $SQL);
 				exit();
 			} else {
-				my_msg("Delete OK!");
+				m_("Delete OK!");
 				$rungo = "tkher_program_data_list.php";
 				echo "<script>table_data_list('$tab_hnm'); </script>";
 			}
@@ -533,14 +535,14 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 				$item_array= $rowPG['item_array'];
 				$list			= explode("@", $item_array);
 				$iftypeX		= $rowPG['if_type'];
-				$iftype		= explode("|", $iftypeX);
 				$ifdataX		= $rowPG['if_data'];
-				$ifdata		= explode("|", $ifdataX);
+				$if_type		= explode("|", $iftypeX);
+				$if_data		= explode("|", $ifdataX);
 			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
-				if( isset($iftype[$j]) ) $typeX= $iftype[$j];
+				if( isset($if_type[$j]) ) $typeX= $if_type[$j];
 				else $typeX= '';
-				if( isset($ifdata[$j]) ) $if_fld = explode(":", $ifdata[$j]); 
+				if( isset($if_data[$j]) ) $if_fld = explode(":", $if_data[$j]); 
 				else $if_fld = '';
 				$fld = explode("|", $ddd); 
 				$fldenm= $fld[1];

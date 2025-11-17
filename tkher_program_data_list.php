@@ -35,8 +35,12 @@
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
 		$item_array = $rsPG['item_array'];
-		$if_data = $rsPG['if_data'];
-		$if_type = $rsPG['if_type'];
+
+		$iftypeX	= $rsPG['if_type'];
+		$ifdataX	= $rsPG['if_data'];
+		$if_type		= explode("|", $iftypeX);
+		$if_data		= explode("|", $ifdataX);
+
 		$tab_enm = $rsPG['tab_enm'];
 		$tab_hnm = $rsPG['tab_hnm'];
 		$item_cnt = $rsPG['item_cnt'];
@@ -536,11 +540,13 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='search_fld'	value='<?=$search_fld?>' />
 						<input type="hidden" name='search_choice'		value='<?=$search_choice?>' />
 						<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
+						<!-- <input type='hidden' name="if_type" value='<?=$if_type?>' >
+						<input type='hidden' name="if_data" value='<?=$if_data?>' >  -->
 <?php
 				for( $i=0;$i<$item_cnt;$i++){
 ?>
-						<input type='hidden' name="if_type[<?=$i?>]" value='<?=$if_type[$i]?>' >
-						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
+ 						<input type='hidden' name="if_type[<?=$i?>]" value='<?=$if_type[$i]?>' >
+						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' >
 <?php
 				}
 ?>
