@@ -127,6 +127,7 @@
 	$bbs_lev		= $mf_infor[47];	// 47:grant_write
 
 	if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
+	else if( isset($_POST['line_cnt']) ) $line_cnt = $_POST['line_cnt'];
 	else if( isset($mf_infor[16]) ) $line_cnt = $mf_infor[16]; // $line_cnt; //  page line cnt
 	else $line_cnt = 15;
 	$page_cnt	= 10;					// $my_rs[page_num];		#[1] [2] [3] 갯수
@@ -224,10 +225,18 @@
 					<div><!--  class="fl" fr -->
 						<span>Total: <strong><?=$total_count?></strong> , Latest: <strong><?=$total_new?></strong>
 							&nbsp;, line : <select id='line_cntS' name='line_cntS' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
+							<?php
+if( $line_cnt == '10') echo "<option value='10' selected >$line_cnt</option>";
+else if( $line_cnt == '30') echo "<option value='30' selected >$line_cnt</option>";
+else if( $line_cnt == '50') echo "<option value='50' selected >$line_cnt</option>";
+else if( $line_cnt == '100') echo "<option value='100' selected >$line_cnt</option>";
+else echo "<option value='$line_cnt' selected >$line_cnt</option>";
+
+							?>
 								<option value='10'  <?php if($line_cnt=='10' )  echo " selected " ?> >10</option>
 								<option value='30'  <?php if($line_cnt=='30' )  echo " selected " ?> >30</option>
-								<option value='50'  <?php if($line_cnt=='50')   echo " selected" ?>  >50</option>
-								<option value='100' <?php if($line_cnt=='100')  echo " selected" ?>  >100</option>
+								<option value='50'  <?php if($line_cnt=='50')   echo " selected " ?> >50</option>
+								<option value='100' <?php if($line_cnt=='100')  echo " selected " ?> >100</option>
 							</select>
 						</span>
 					</div>
