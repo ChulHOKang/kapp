@@ -41,10 +41,10 @@
 						if( !$typeX ) { // 0 or ''
 						} else if( $typeX == "11" ) { // calc
 							$formula = explode(":", $dataX);
-							$formula_ = $formula[1];
+							if( isset($formula[1]) ) $formula_ = $formula[1];
 						} else if( $typeX == "13" ) { // 팝업창
 							$poptable = explode(":", $dataX);
-							$poptable_ = $poptable[1];
+							if( isset($poptable[1]) ) $poptable_ = $poptable[1];
 						} else {
 							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
 						}
