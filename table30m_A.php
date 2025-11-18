@@ -589,106 +589,106 @@ jQuery(document).ready(function ($) {
 		$Amemo		= array();
 	
 	if( $mode == 'Search' ){
-			$aa = explode(':', $tab_hnmS);
-			$tab_enm = $aa[0];
-			$tab_hnm = $aa[1];
-			$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
-			$record_cnt = sql_num_rows($result);
-			$ARR=0;
-			$item_array = "";
-			$if_type = "";
-			$if_data = "";
-			while( $rs = sql_fetch_array($result)) {
-					$fld_enm		= $rs['fld_enm'];
-					$fld_hnm		= $rs['fld_hnm'];
-				if($rs['fld_enm'] == 'seqno' )	{
-					$userid				= $rs['userid']; // 한번만 처리하기.
-					$group_code		= $rs['group_code'];
-					$group_name		= $rs['group_name'];
-					$tab_enm			= $rs['tab_enm'];
-					$tab_hnm			= $rs['tab_hnm'];
-					$table_yn			= $rs['table_yn'];
-					$disno				= $rs['disno'];//	m_("000 disno:" . $disno);
-					$Aseqno[0]			= $rs['seqno'];
-					$Afld_enm[0]		= $rs['fld_enm'];
-					$Afld_hnm[0]		= $rs['fld_hnm'];
-					$Afld_type[0]		= $rs['fld_type'];
-					$Afld_len[0]		= $rs['fld_len'];
-					$Amemo[0]			= $rs['memo'];
-				}else {
-					$table_yn			= $rs['table_yn']; // add 2023-08-18
-					$ARR++;
-					$Aseqno	[$ARR]		= $rs['seqno'];
-					$Afld_enm[$ARR]		= $rs['fld_enm'];
-					$Afld_hnm[$ARR]		= $rs['fld_hnm'];
-					$Afld_type[$ARR]		= $rs['fld_type'];
-					$Afld_len[$ARR]		= $rs['fld_len'];
-					$Amemo[$ARR]		= $rs['memo'];
-					$fld_type	= $rs['fld_type'];
-					$fld_len		= $rs['fld_len'];
-					$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
-					$if_type = $if_type . "|" . "0";
-					$if_data = $if_data . "|" . "";
-				}
-			}//while
-			$disno = $ARR +1;
-
-			if( $pg_mode=="on" ){
-				$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$tab_enm' ";
-				$resultPG = sql_query($sqlPG);
-				$table10_pg = sql_num_rows($resultPG);
-				if( $table10_pg ) {
-					$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', item_cnt=$ARR, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
-					sql_query($query);
-				} else {
-					$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt,  userid='$H_ID' ";
-					sql_query($query);
-					$link_ = KAPP_URL_T_ . "table30m_A.php";
-					//insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10_pg@table30m' ); //PG create point
-				}
-				$pg_mode="";
+		$aa = explode(':', $tab_hnmS);
+		$tab_enm = $aa[0];
+		$tab_hnm = $aa[1];
+		$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
+		$record_cnt = sql_num_rows($result);
+		$ARR=0;
+		$item_array = "";
+		$if_type = "";
+		$if_data = "";
+		while( $rs = sql_fetch_array($result)) {
+				$fld_enm		= $rs['fld_enm'];
+				$fld_hnm		= $rs['fld_hnm'];
+			if($rs['fld_enm'] == 'seqno' )	{
+				$userid				= $rs['userid']; // 한번만 처리하기.
+				$group_code		= $rs['group_code'];
+				$group_name		= $rs['group_name'];
+				$tab_enm			= $rs['tab_enm'];
+				$tab_hnm			= $rs['tab_hnm'];
+				$table_yn			= $rs['table_yn'];
+				$disno				= $rs['disno'];//	m_("000 disno:" . $disno);
+				$Aseqno[0]			= $rs['seqno'];
+				$Afld_enm[0]		= $rs['fld_enm'];
+				$Afld_hnm[0]		= $rs['fld_hnm'];
+				$Afld_type[0]		= $rs['fld_type'];
+				$Afld_len[0]		= $rs['fld_len'];
+				$Amemo[0]			= $rs['memo'];
+			}else {
+				$table_yn			= $rs['table_yn']; // add 2023-08-18
+				$ARR++;
+				$Aseqno	[$ARR]		= $rs['seqno'];
+				$Afld_enm[$ARR]		= $rs['fld_enm'];
+				$Afld_hnm[$ARR]		= $rs['fld_hnm'];
+				$Afld_type[$ARR]		= $rs['fld_type'];
+				$Afld_len[$ARR]		= $rs['fld_len'];
+				$Amemo[$ARR]		= $rs['memo'];
+				$fld_type	= $rs['fld_type'];
+				$fld_len		= $rs['fld_len'];
+				$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
+				$if_type = $if_type . "|" . "0";
+				$if_data = $if_data . "|" . "";
 			}
+		}//while
+		$disno = $ARR +1;
+
+		if( $pg_mode=="on" ){
+			$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$tab_enm' ";
+			$resultPG = sql_query($sqlPG);
+			$table10_pg = sql_num_rows($resultPG);
+			if( $table10_pg ) {
+				$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', item_cnt=$ARR, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+				sql_query($query);
+			} else {
+				$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
+				sql_query($query);
+				$link_ = KAPP_URL_T_ . "table30m_A.php";
+				//insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10_pg@table30m' ); //PG create point
+			}
+			$pg_mode="";
+		}
 	} else if( $mode == "line_set" ) {
-			$aa = explode(':', $tab_hnmS);
-			$tab_enm = $aa[0];
-			$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
-			$record_cnt = sql_num_rows($result);
-			$ARR=0;
-			while( $rs = sql_fetch_array($result)) {
-					$fld_enm		= $rs['fld_enm'];
-					$fld_hnm		= $rs['fld_hnm'];
-				if( $rs['fld_enm'] == 'seqno' )	{
-					$userid				= $rs['userid']; // 한번만 처리하기.
-					$tab_enm			= $rs['tab_enm'];
-					$tab_hnm			= $rs['tab_hnm'];
-					$table_yn			= $rs['table_yn'];
-					$disno				= $rs['disno'];
-					$Aseqno	[0]			= $rs['seqno'];
-					$Afld_enm[0]		= $rs['fld_enm'];
-					$Afld_hnm[0]		= $rs['fld_hnm'];
-					$Afld_type[0]		= $rs['fld_type'];
-					$Afld_len[0]		= $rs['fld_len'];
-					$Amemo[0]			= $rs['memo'];
-					$Aif_line[0]		= $rs['if_line']; 
-					$Aif_type[0]		= $rs['if_type']; 
-					$Aif_data[0]		= $rs['if_data']; 
-					$Arelation_data[0]	= $rs['Arelation_data']; 
-				} else {
-					$table_yn			= $rs['table_yn'];
-					$ARR++;
-					//$disno				= $rs['disno'];
-					$Aseqno	[$ARR]		= $rs['seqno'];
-					$Afld_enm[$ARR]		= $rs['fld_enm'];
-					$Afld_hnm[$ARR]		= $rs['fld_hnm'];
-					$Afld_type[$ARR]	= $rs['fld_type'];
-					$Afld_len[$ARR]		= $rs['fld_len'];
-					$Amemo[$ARR]		= $rs['memo'];
-					$Aif_line[$ARR]		= $rs['if_line']; 
-					$Aif_type[$ARR]		= $rs['if_type']; 
-					$Aif_data[$ARR]		= $rs['if_data']; 
-					$Arelation_data[$ARR]= $rs['Arelation_data']; 
-				}
-			}//while
+		$aa = explode(':', $tab_hnmS);
+		$tab_enm = $aa[0];
+		$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
+		$record_cnt = sql_num_rows($result);
+		$ARR=0;
+		while( $rs = sql_fetch_array($result)) {
+				$fld_enm		= $rs['fld_enm'];
+				$fld_hnm		= $rs['fld_hnm'];
+			if( $rs['fld_enm'] == 'seqno' )	{
+				$userid				= $rs['userid']; // 한번만 처리하기.
+				$tab_enm			= $rs['tab_enm'];
+				$tab_hnm			= $rs['tab_hnm'];
+				$table_yn			= $rs['table_yn'];
+				$disno				= $rs['disno'];
+				$Aseqno	[0]			= $rs['seqno'];
+				$Afld_enm[0]		= $rs['fld_enm'];
+				$Afld_hnm[0]		= $rs['fld_hnm'];
+				$Afld_type[0]		= $rs['fld_type'];
+				$Afld_len[0]		= $rs['fld_len'];
+				$Amemo[0]			= $rs['memo'];
+				$Aif_line[0]		= $rs['if_line']; 
+				$Aif_type[0]		= $rs['if_type']; 
+				$Aif_data[0]		= $rs['if_data']; 
+				$Arelation_data[0]	= $rs['Arelation_data']; 
+			} else {
+				$table_yn			= $rs['table_yn'];
+				$ARR++;
+				//$disno				= $rs['disno'];
+				$Aseqno	[$ARR]		= $rs['seqno'];
+				$Afld_enm[$ARR]		= $rs['fld_enm'];
+				$Afld_hnm[$ARR]		= $rs['fld_hnm'];
+				$Afld_type[$ARR]	= $rs['fld_type'];
+				$Afld_len[$ARR]		= $rs['fld_len'];
+				$Amemo[$ARR]		= $rs['memo'];
+				$Aif_line[$ARR]		= $rs['if_line']; 
+				$Aif_type[$ARR]		= $rs['if_type']; 
+				$Aif_data[$ARR]		= $rs['if_data']; 
+				$Arelation_data[$ARR]= $rs['Arelation_data']; 
+			}
+		}//while
 	}
 	if( isset($_POST['group_code_table']) ) $group_code_table = $_POST['group_code_table'];
 	$group_code_table ='';
@@ -1209,7 +1209,7 @@ jQuery(document).ready(function ($) {
 			}
 		} else m_("INSERT table10_table ERROR create_func - tab seqno in ");
 
-		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID',  tab_mid='$H_ID' ";
+		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 		
 		$rets = sql_query($query);
 		if( $rets ){
@@ -1246,7 +1246,7 @@ jQuery(document).ready(function ($) {
 			}
 			$mq1	=sql_query($query);
 			if( $mq1 ) {
-				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where userid='$H_ID' and seqno=$seqno " );
+				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where seqno=$seqno " );
 				m_(" column update OK!! ");
 			}
 			else {
@@ -1326,6 +1326,8 @@ jQuery(document).ready(function ($) {
 		$cnt=0;
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
 		$item_array = "";
@@ -1378,7 +1380,7 @@ jQuery(document).ready(function ($) {
 			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$cnt, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt,  userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
 			$link_ = KAPP_URL_T_ . "/table30m_A.php";
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point
@@ -1399,6 +1401,8 @@ jQuery(document).ready(function ($) {
 
 		$item_list  = " create table ". $tab_enm . " ( ";
 		$item_list  = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
 		$cnt = 1;
 		$item_array = "";
 			$if_type = "";
@@ -1453,7 +1457,7 @@ jQuery(document).ready(function ($) {
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
 			$rsPG = sql_fetch_array($resultPG);
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].",  userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].", userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);	// 중요.		//coin_add_func( $H_ID, 200 ); //OK !!!
 			$link_ = KAPP_URL_T_ . "/table30m_A.php";
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10_pg@table30m' );// PG create point
@@ -1475,16 +1479,21 @@ jQuery(document).ready(function ($) {
 		$cnt = 1;
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
 
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
+		$item_array = '';
+		$if_type = '';
+		$if_data = '';
 		For( $ARR=1; $_POST["fld_hnm"][$ARR] ; $ARR++ ) {
 			$fld_enmO	=	$_POST["Afld_enm"][$ARR];
 			$fld_hnmO	=	$_POST["Afld_hnm"][$ARR];
 			$fld_typeO	=	$_POST["Afld_type"][$ARR];
 			$fld_lenO	=	$_POST["Afld_len"][$ARR];
 			$fld_O      = "|". $fld_enmO ."|". $fld_hnmO  ."|". $fld_typeO ."|". $fld_lenO . "@";
-			$memoO		=	$_POST["Amemo"][$ARR];
+			//$memoO		=	$_POST["Amemo"][$ARR]; //Afld_memo
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 			if( $fld_hnm ) {
 				$seqno		=	$_POST["seqno"][$ARR];
@@ -1542,10 +1551,10 @@ jQuery(document).ready(function ($) {
 		$resultPG = sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
-			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array', tab_mid='$H_ID' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set,  userid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
 				$link_ = KAPP_URL_T_ . "/table30m_A.php";
 				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point - update_remake_func()
