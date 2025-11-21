@@ -45,6 +45,7 @@
 	}
 
 	function Servr_Update_curl_send( $server_name, $server_url, $admin_id, $admin_password ){
+		global $kapp_mainnet;
 
 		$up_day = date("Y-m-d H:i:s");
 		$tabData['data'][][] = array();

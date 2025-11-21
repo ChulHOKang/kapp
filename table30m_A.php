@@ -1036,6 +1036,7 @@ jQuery(document).ready(function ($) {
 	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		//m_("start --- TAB_curl_sendA ");
 		global $H_ID, $H_EMAIL, $group_code, $group_name;
+		global $kapp_mainnet;
 		$tabData['data'][][] = array();
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
 		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
@@ -1090,6 +1091,7 @@ jQuery(document).ready(function ($) {
 		// use: kapp_tabel_create.php, app_pg50RC.php,  table30m_A.php
 		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
 		global $H_ID, $H_EMAIL, $group_code, $group_name, $tab_hnm, $tab_enm; 
+		global $kapp_mainnet;
 		$pg_code = $tab_enm;
 		$pg_name = $tab_hnm;
 		$tabData['data'][][] = array();
