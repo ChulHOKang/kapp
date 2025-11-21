@@ -18,6 +18,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	$kapp_cmop_Htitle = "[K-APP] : ".$kapp_cmop_tel." Mail:".$kapp_cmop_mail;
 	$user_login_time = 6000000;
 
+	$kapp_mainnet = 'https://fation.net/kapp'; // Share start server main net - 
 	$kapp_key = 'appgenerator';
 	$kapp_iv = "~`!@#$%^&*()-_=+";
 	$link_secret_iv = "#@$%^&*()_+=-";
