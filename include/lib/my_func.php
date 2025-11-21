@@ -18,7 +18,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	$kapp_cmop_Htitle = "[K-APP] : ".$kapp_cmop_tel." Mail:".$kapp_cmop_mail;
 	$user_login_time = 6000000;
 
-	$kapp_mainnet = 'https://fation.net/kapp'; // Share start server main net - 
+	$kapp_mainnet = 'https://fation.net/kapp'; // Share start server main net, KAPP_MAINNET - setup/kapp_config.php
 	$kapp_key = 'appgenerator';
 	$kapp_iv = "~`!@#$%^&*()-_=+";
 	$link_secret_iv = "#@$%^&*()_+=-";
@@ -252,14 +252,20 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$ret = sql_query( $sqlA );
 			$memo = 'tit:' . $sys_subtit . ', sys_pg:' .$sys_pg_root. ', aboard_no:' . $aboard_no;
 			if( $ret ) {
-				$kapp_theme0 = "https://fation.net/kapp"; //$kapp_theme[0];
+				$kapp_theme0 = '';
 				$kapp_theme1 = '';
+				$kapp_theme = $config['kapp_theme'];
+				$kapp_theme = explode('^', $kapp_theme );
+				$kapp_theme0 = $kapp_theme[0];
+				$kapp_theme1 = $kapp_theme[1];
+
 				if( $kapp_theme0 ) {
+					$kapp_theme0 = $kapp_mainnet; //"https://fation.net/kapp"; // Share start server
 					if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day ) ) {
 						if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day );
 					}
+					m_("job_link_table --- insert ok");
 				}
-				m_("job_link_table --- insert ok");
 				return true;
 			} else {
 				//m_("my_func - job_link_table_add error ");
@@ -356,7 +362,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$iv = "~`!@#$%^&*()-_=+";
 		$sendData = encryptA( $tabData , $kapp_key, $iv);
 
-		$url_ =  'https://fation.net/kapp/_Curl/sys_menu_bom_curl_get_ailinkapp.php';
+		$url_ = $kapp_mainnet . '/_Curl/sys_menu_bom_curl_get_ailinkapp.php';
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
