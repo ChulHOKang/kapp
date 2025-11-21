@@ -59,18 +59,20 @@
 		$kapp_theme1 = '';
 		$kapp_theme = $config['kapp_theme'];
 		$kapp_theme = explode('^', $kapp_theme );
-		$kapp_theme0 = "https://fation.net/kapp";//$kapp_theme[0];
+		//$kapp_theme0 = "https://fation.net/kapp";//$kapp_theme[0];
+		$kapp_theme0 = $kapp_theme[0];
 		$kapp_theme1 = $kapp_theme[1];
-		if( $kapp_theme0 ) {
+		if( $kapp_theme0 != '' ) { // Only if you want to share : 공유를 원 할 경우에만 
+			$kapp_theme0 = $kapp_mainnet; //"https://fation.net/kapp"; // Share start server
 			if( Ap_bbs_curl_send( $kapp_theme0, $infor, $H_EMAIL, $subject, $content, $in_date, $tab_enm, $tab_hnm, KAPP_URL_T_ ) ) {
 				if( $kapp_theme1 ) Ap_bbs_curl_send( $kapp_theme1, $infor, $H_EMAIL, $subject, $content, $in_date, $tab_enm, $tab_hnm, KAPP_URL_T_ );
 			}
+			m_("ap_bbs_curl --- insert ok");			//return true;
 		}
-		m_("ap_bbs_curl --- insert ok");			//return true;
 
 	} else {
 		m_("ap_bbs - insert error");
-		echo "sql: " . $q; exit;
+		//echo "sql: " . $q; exit;
 	}
 	if( isset($_POST['password']) ) $pass= $_POST['password'];
 	else $pass='';

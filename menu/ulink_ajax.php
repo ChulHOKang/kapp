@@ -45,10 +45,11 @@
 		$kapp_theme1 = '';
 		$kapp_theme = $config['kapp_theme'];
 		$kapp_theme = explode('^', $kapp_theme );
-		$kapp_theme0 = "https://fation.net/kapp";//$kapp_theme[0];
+		$kapp_theme0 = $kapp_theme[0]; //$kapp_mainnet; //"https://fation.net/kapp";//$kapp_theme[0];
 		$kapp_theme1 = $kapp_theme[1];
 		if( $ret ) {
 			if( $kapp_theme0 ) {
+				$kapp_theme0 = $kapp_mainnet; //"https://fation.net/kapp";//$kapp_theme[0];
 				if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day ) ) {
 					if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day );
 				}
@@ -106,7 +107,7 @@
 		} else {
 			$jong ='U';
 			$ret=Link_Table_curl_send( $tit, $url, $jong, $from_session_url, $ip, $memo, $up_day );
-			if( $ret ) echo "save OK!";
+			if( $ret ) echo "curl save OK!";
 			else  echo "Curl error --- save OK!";			//exit;
 		}
 	}
