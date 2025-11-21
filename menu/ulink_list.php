@@ -200,7 +200,7 @@ $(function () {
 		$kapp_theme0 = $kapp_theme[0];
 		$kapp_theme1 = $kapp_theme[1];
 		if( $ret ) {
-			if( $kapp_theme0 ) {
+			if( $kapp_theme0 !='' ) {
 				$kapp_theme0 = $kapp_mainnet; //"https://fation.net/kapp"; // Share start server
 				if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day ) ) {
 					if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day );
