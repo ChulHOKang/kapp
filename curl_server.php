@@ -428,6 +428,7 @@ jQuery(document).ready(function ($) {
 <?php
 	function Server_get(){
 		global $H_ID, $H_EMAIL, $tkher;
+		global $kapp_mainnet;
 		$tabData['data'][][] = array();
 		$cnt = 0;
 		$tabData['data'][$cnt]['server']      = KAPP_URL_T_;
