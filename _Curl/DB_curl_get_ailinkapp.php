@@ -20,7 +20,7 @@
 	$K='';
     try {
 		//$i = 0;
-		global $K; 
+		global $K, $kapp_mainnet; //$kapp_mainnet : my_func
 		$server_name = $tabData['data'][0]['server_name'];
 		$query = "SELECT kapp_memo from kapp_DB_curl where server_name='" .$server_name. "' ";
 		$row = sql_fetch( $query );
@@ -35,7 +35,7 @@
 				admin_pw      = '".$tabData['data'][0]['pw_md5']."'  , 
 				kapp_ip       = '".$tabData['data'][0]['kapp_ip']."'  , 
 				server_name   = '".$tabData['data'][0]['server_name']."'  , 
-				curl_server   = 'https://fation.net/kapp'  , 
+				curl_server   = '".$kapp_mainnet."'  , 
 				kapp_memo     = '".$memo."'  
 				where server_name='" .$server_name. "' 
 			"; 
@@ -53,7 +53,7 @@
 				admin_pw      = '".$tabData['data'][0]['pw_md5']."'  , 
 				kapp_ip       = '".$tabData['data'][0]['kapp_ip']."'  , 
 				server_name   = '".$tabData['data'][0]['server_name']."'  , 
-				curl_server   = 'https://fation.net/kapp'  , 
+				curl_server   = '".$kapp_mainnet."'  , 
 				kapp_memo          = '".$tabData['data'][0]['memo']."'  , 
 				upday         = '".$tabData['data'][0]['upday']."' 
 			"; 
