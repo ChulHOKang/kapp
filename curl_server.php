@@ -438,7 +438,7 @@ jQuery(document).ready(function ($) {
 		$key = 'appgenerator';
 		$iv = "~`!@#$%^&*()-_=+";
 		$sendData = encryptA( $tabData , $key, $iv);
-		$url_ = 'https://fation.net/kapp/_Curl/DB_Server_get.php'; //$url_=$config['kapp_theme'] . '/_Curl/Link_Table_curl_get_ailinkapp.php'; 
+		$url_ = $kapp_mainnet . '/_Curl/DB_Server_get.php'; //$url_=$config['kapp_theme'] . '/_Curl/Link_Table_curl_get_ailinkapp.php'; 
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);

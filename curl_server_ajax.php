@@ -60,7 +60,7 @@
 
 		$sendData = encryptA( $tabData , $key, $iv);
 
-		$url_ = 'https://fation.net/kapp/_Curl/Server_curl_get_ailinkapp.php'; 
+		$url_ = $kapp_mainnet . '/_Curl/Server_curl_get_ailinkapp.php'; //'https://fation.net/kapp/_Curl/Server_curl_get_ailinkapp.php'; 
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);

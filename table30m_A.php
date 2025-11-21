@@ -1059,7 +1059,7 @@ jQuery(document).ready(function ($) {
 		$key = 'appgenerator';
 		$iv = "~`!@#$%^&*()-_=+";
 		$tabData = encryptA( $tabData , $key, $iv);
-		$url_ = 'https://fation.net/kapp/_Curl/table_curl_get_ailinkapp.php'; 
+		$url_ = $kapp_mainnet . '/_Curl/table_curl_get_ailinkapp.php'; 
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -1079,7 +1079,7 @@ jQuery(document).ready(function ($) {
 			echo 'curl 전송 실패 : ' . curl_error($curl);
 		} else {
 			//$_ms = 'table30m curl 응답 : ' . $response;
-			echo 'curl 응답 : ' . $response;
+			//echo 'curl 응답 : ' . $response;
 		}
 		// ============ :table30m curl 응답 : --- count:10Error: Update failed{"message":"_api table data 전달 완료"}
 		curl_close($curl);		//m_("curl end--------------- ms:"); //exit();
@@ -1113,7 +1113,7 @@ jQuery(document).ready(function ($) {
 		$tabData['data'][$cnt]['item_array'] = $item_array;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 
-		$url_ = 'https://fation.net/kapp/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
+		$url_ = $kapp_mainnet . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
