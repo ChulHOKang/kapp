@@ -492,7 +492,7 @@ jQuery(document).ready(function ($) {
                     </div>
                     <div class='menu1A'><input type='password' id='admin_password' name='admin_password' value=''
                             style='width:100%;height:100%;'
-                            placeholder='비밀번호는 8~25자의 영문자+숫자+특수문자 조합으로 입력해야 합니다.'>
+                            placeholder='Use your password safely'>
                     </div>
                     <input type='hidden' name='mb_password_enc' value=''>
                     <div class='blankA'> </div> 
@@ -501,14 +501,13 @@ jQuery(document).ready(function ($) {
                     <div class='menu1A'>
 						<SELECT  id="server_sel" name="server_sel" style='border-style:;height:100%; text-align: center;'>
                             <option value='' >Select Server</option>
-							<!-- <option value='https://fation.net/kapp' selected>https://fation.net/kapp</option> -->
+							<option value='' selected>I don't share.</option>
 <?php
 $kapp_theme = explode(  '^', $config['kapp_theme']);
-
 							for($i=0; isset($server_[$i]) && $server_[$i]!==''; $i++){
-									if( isset($kapp_theme[0]) && $kapp_theme[0] == $server_[$i] ) $selected = 'selected';
-									else $selected = '';
-									echo "<option value= '".$server_[$i]."' " . $selected ." >".$server_[$i]."</option>";
+								$selected = '';
+								if( isset($kapp_theme[0]) && $kapp_theme[0] == $server_[$i] ) $selected = 'selected';
+								echo "<option value= '".$server_[$i]."' " . $selected ." >".$server_[$i]."</option>";
 							}
 ?>
                         </SELECT>
