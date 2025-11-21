@@ -241,6 +241,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		global $H_ID, $H_EMAIL, $tkher;
 		global $kapp_theme0;
 		global $kapp_theme1;
+		global $kapp_mainnet;
 
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$from_session_url = KAPP_URL_T_; //$_SERVER['HTTP_HOST'];
@@ -316,7 +317,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		return $response;
 	}
 	function sys_menu_bom_curl_send( $sys_pg ){
-		global $tabData, $H_ID, $H_EMAIL;
+		global $tabData, $H_ID, $H_EMAIL, $kapp_mainnet;
 		global $sys_subtit, $sys_memo, $config, $kapp_key;
 		global $imgtype1, $imgtype2, $imgtype3, $bgcolor, $fontcolor, $fontface, $fontsize;
 
