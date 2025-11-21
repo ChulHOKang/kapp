@@ -4,6 +4,7 @@
    kapp_config.php 
    call : kapp_start.php 에서 사용.
 ------------------------------------------------------- */
+define('KAPP_MAINNET', 'https://fation.net/kapp');
 define('KAPP_VERSION_', 'K-APP V1.0');
 define('KAPP_PROGRAM_VER_', '1.0');
 define('KAPP_TREE_VER_', '1.0');
