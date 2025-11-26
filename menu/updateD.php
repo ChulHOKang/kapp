@@ -405,8 +405,10 @@
 		var p1 = formA.password.value;
 		var p2 = formA.passwordG.value;
 		if( id == formA.email.value ){
-			if( !p1 ) {
-				alert('Enter Password! ' ); formA.password.focus();  return false;
+			if( p1 =='' ) {
+				alert('Enter Password! ' );
+				formA.password.focus();
+				return false;
 			} else if( p1 == p2 ) {
 				if( formA.auto_check.value==''){
 					alert('Please enter an auto-prevention character! ');//Please enter an auto-prevention character! 

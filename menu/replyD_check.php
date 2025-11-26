@@ -18,13 +18,9 @@
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit;
 	}
+	include_once('./infor.php');
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID	= get_session("ss_mb_id");
-	//$url = array();
-	//$url['root'] = KAPP_URL_T_ . '/';
-	//$home = $url['root'];
-	include_once('./infor.php');
-
 	if( $H_ID == '' && $mf_infor[47] == 1) {
 		$H_EMAIL		= $_POST['email'];
 		$password		= $_POST['password'];
@@ -33,7 +29,8 @@
 		$H_NICK			= 'Guest';//$member['mb_nick'];  
 		$H_ID			= 'Guest';
 	} else if( !$H_ID || $H_ID == ''){ 
-		echo "<script>history.back(-1);</script>"; exit; 
+		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+		exit; 
 	} else if( $H_ID && $H_ID != ''){ 
 		$H_EMAIL		= $member['mb_email'];  
 		$H_LEV			= $member['mb_level'];  

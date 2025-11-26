@@ -3,39 +3,32 @@
 	/*
 	  insertD_check.php - insertD.php
 	*/
-		m_(" --- insertD check ");
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$H_ID = get_session("ss_mb_id"); 
-	if( isset($H_ID) && $H_ID !=='' ) {
-		$H_LEV	= $member['mb_level'];  
-		$H_NAME	= $member['mb_name'];  
-		$H_NICK	= $member['mb_nick'];  
-		$H_EMAIL = $member['mb_email'];  
-	} else {
-		if( $_POST['email'] == '' ){
-			m_("guest email please!");
-			//return false;
-		}
-		if( $_POST['password'] == '' ){
-			m_("guest password please!");
-			//return false;
-		}
-		$H_LEV	= 0;  
-		$H_NICK	= 'Guest';  
-		$H_NAME	= $_POST['email']; //'Guest';  
-		$H_EMAIL = $_POST['email']; //get_session("ss_mb_email"); 
-		//if( $H_EMAIL == '' ) $H_EMAIL='Guest';
-	}
 	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else {
-		echo "<script>history.back(-1);</script>"; exit;
+		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+		exit; 
 	}
 	include_once('./infor.php');
-		m_("H_ID: $H_ID, mf_infor 47:" . $mf_infor[47]);
-	if( $mf_infor[47] == 1 && $H_ID == ''){
-		if( isset($_POST['email']) ) $H_ID  = $_POST['email'];
-		//m_("H_ID: $H_ID, 47:" . $mf_infor[47]);
+
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( $H_ID == '' && $mf_infor[47] == 1) {
+		$H_EMAIL		= $_POST['email'];
+		$password		= $_POST['password'];
+		$H_LEV			= 1;//$member['mb_level'];  
+		$H_NAME			= 'Guest';//$member['mb_name'];  
+		$H_NICK			= 'Guest';//$member['mb_nick'];  
+		$H_ID			= $_POST['email'];
+	} else if( !$H_ID || $H_ID == ''){ 
+		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+		exit; 
+	} else if( $H_ID && $H_ID != ''){ 
+		$H_EMAIL		= $member['mb_email'];  
+		$H_LEV			= $member['mb_level'];  
+		$H_NAME			= $member['mb_name'];  
+		$H_NICK			= $member['mb_nick'];  
 	}
+
 	function special_chk ($input) { // 특수문자 제거. "'"만 제거한다.
 		if( is_array($input)) { //m_("---1");
 			return array_map('special_chk', $input); 
@@ -107,8 +100,8 @@
 		$file_ext		= $_POST['file_ext'];
 		$upload_file_size_limit	= $fileup_yn * 1000000; // fileup_yn = $mf_infor[3] upload limit size
 		if( $upfile_size >  $upload_file_size_limit ) {
-			echo "<script>history.go(-1);</script>";
-			exit;
+			echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+			exit; 
 		}
 		//if( $mf_infor[2] == 'kapp_Notice' || $mf_infor[2] == 'kapp_news' || $mf_infor[2] == 'kapp_qna' || $mf_infor[2] == 'kapp_free') $f_path1	= KAPP_PATH_T_ . "/file/";
 		//else $f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
@@ -117,21 +110,23 @@
 		if( !is_dir($f_path1) ) {
 			if( !@mkdir( $f_path1, 0755 ) ) {
 				echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
-				echo "<script>history.go(-1); </script>";exit;
+				echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+				exit; 
 			}
 		}
 		if( !is_dir($f_path2) ) {
 			if( !@mkdir( $f_path2, 0755 ) ) {
 				echo " Error: f_path2 : " . $f_path2 . " Failed to create directory. ";
-				echo "<script>history.go(-1); </script>";exit;
+				echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
+				exit; 
 			}
 		}
 		$upfile_name = str_replace(" ", "", $upfile_name);
 		$upfile2 = $H_ID . "_" . time() ."_" . $upfile_name; // . $file_ext;
 		move_uploaded_file( $_FILES["fileA"]["tmp_name"], $f_path2 . "/" . $upfile2 );
 	}
-	if( isset($_POST['security']) ) $security = $_POST['security'];
-	else $security = '';
+	//if( isset($_POST['security']) ) $security = $_POST['security'];
+	//else $security = '';
 	//조회수,step값,re값 초기화
 	$cnt=0;		$step=0;		$re=0;
 	// 다음글 번호 구하기
@@ -163,7 +158,7 @@
 	target = $target,
 	step = 0,
 	re = 0,
-	security = '$security' ";
+	security = '' ";
 	$result = sql_query( $query );
 	if( $result==false) {
 		$_SESSION['writing_status'] = 'NO';

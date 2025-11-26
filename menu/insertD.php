@@ -437,6 +437,9 @@ if( $H_ID && $H_ID == 'Guest' ){
 			}
 		}
 		Editor.save(); // 이 함수를 호출하여 글을 등록하면 된다. -> insertD_check.php - 2024-01-23 kan
+		formA.submit();
+		return true;
+
 	}
 
 	/**
