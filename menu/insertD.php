@@ -17,18 +17,33 @@
 <script type="text/javascript" src="../include/js/common.js"></script>
 <SCRIPT src="../include/js/contents_resize.js" type='text/javascript'></SCRIPT>
 <?php
+	if( $infor ) $_SESSION['infor'] = $infor;
+	include "./infor.php";
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
+
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID = get_session("ss_mb_id");
 	if( $H_ID && $H_ID !=='') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
+		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		$H_LEV	= 0;  
-		$H_NAME	= 'Guest';  
-		$H_NICK	= 'Guest';  
+		if( $mf_infor[47] == 1 ){
+			$H_ID	= 'Guest';  
+			$H_NICK	= 'Guest';
+			$H_NAME = 'Guest';
+			$H_EMAIL= ''; 
+			$H_LEV	= 1;
+		} else {
+			$H_NICK	= '';
+			$H_NAME = '';
+			$H_LEV	= 0;
+			$H_ID	= '';  
+			$H_EMAIL= ''; 
+		}
 	}
-	$H_EMAIL = get_session("ss_mb_email"); 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
@@ -38,9 +53,6 @@
 	$in_day = date("Y-m-d H:i");
 	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else $infor = '';
-	if( $infor ) $_SESSION['infor'] = $infor;
-
-	include "./infor.php";
 	$grant_write=$mf_array['grant_write'];
 	//m_(" session infor: ". $_SESSION['infor'] . ", 47: " . $mf_infor[47]. ", grant_write: " . $mf_array['grant_write'] );
 	//session infor: 2, 47: 2, grant_write: 2
@@ -69,7 +81,8 @@
 		} */
 		if( $grant_write > 1 && $H_LEV < $grant_write ) { 
 			m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV . ", write: " . $grant_write); 
-			echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+			//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+			echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		}
 	$amember_name	= $H_NICK;
 	$amember_id		= $H_ID;
@@ -218,7 +231,7 @@
 
 				<ul class="viewForm">
 <?php
-if( !$H_ID ){
+if( $H_ID && $H_ID == 'Guest' ){
 ?>
 					<li class="autom_tit">
 						<span class="t01">Name</span>
@@ -352,10 +365,15 @@ if( !$H_ID ){
 			x.nameA.focus();
 			return false;
 		}
-		if( !id ) {
+		if( id == 'Guest' ) {
 			if(x.password.value==''){
 				alert('Please enter a password! ');
 				x.password.focus();
+				return false;
+			}
+			if(x.email.value==''){
+				alert('Please enter a email! ');
+				x.email.focus();
 				return false;
 			}
 		}
@@ -377,6 +395,7 @@ if( !$H_ID ){
 		}
 		var nm = x.nameA.value;
 		//var contents = document.getElementById("EditCtrl").value;
+		/*
 		security = x.security_yn.value;
 		if( security > 0) {	// 비밀글 작성 가능시에.
 			var se_ = x.security1.value;
@@ -389,7 +408,7 @@ if( !$H_ID ){
 				}
 			}
 		} else {
-		}
+		}*/
 		fileup = x.fileup_yn.value;	//	alert('insertTT board_write security:' + security);
 		ff= x.fileA.value;
 		if( fileup > 0 && ff !== "" ){	// 첨부화일 가능시에. fileup=fileup_yn : 업로드 화일 사이즈크기 이다. 0이면 업로드 불가 다.

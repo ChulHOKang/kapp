@@ -1,6 +1,7 @@
 <?php	
 	include_once('../tkher_start_necessary.php');
 
+	$ip = $_SERVER['REMOTE_ADDR'];
 	$infor   = $_POST['infor'];
 	$page    = $_POST['page'];
 	$list_no = $_POST['list_no'];
@@ -9,16 +10,25 @@
 	$search_text   = $_POST['search_text'];
 	$menu_mode =$_POST['menu_mode'];
 
+
 	if( $_POST['mode'] !== "detail_deleteTT") {
 		m_("unusual approach");   //비 정상적 접근		//header('Location: '.$url['root'].'bbs/modify_done.php');
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&menu_mode=$menu_mode&search_choice=$search_choice&search_text=$search_text'>";
 		exit;
 	}
 
-	$H_ID	= get_session("ss_mb_id");	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$H_NAME = $member['mb_name'];
-	$H_NICK = $member['mb_nick'];
-	$H_EMAIL = $member['mb_email'];
+	$H_ID	= get_session("ss_mb_id");
+	if( $H_ID && $H_ID !=''){
+		$H_LEV	= $member['mb_level'];  
+		$H_NAME = $member['mb_name'];
+		$H_NICK = $member['mb_nick'];
+		$H_EMAIL = $member['mb_email'];
+	} else {
+		$H_LEV	= 1;  
+		$H_NAME = 'Guest';
+		$H_NICK = 'Guest Nick';
+		$H_EMAIL = '';
+	}
 
 	include_once('./infor.php');
 

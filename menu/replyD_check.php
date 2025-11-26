@@ -18,14 +18,29 @@
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit;
 	}
-	$H_ID	= get_session("ss_mb_id");	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$H_NAME = $member['mb_name'];
-	$H_NICK = $member['mb_nick'];
-	$H_EMAIL = $member['mb_email'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
 	//$url = array();
 	//$url['root'] = KAPP_URL_T_ . '/';
 	//$home = $url['root'];
 	include_once('./infor.php');
+
+	if( $H_ID == '' && $mf_infor[47] == 1) {
+		$H_EMAIL		= $_POST['email'];
+		$password		= $_POST['password'];
+		$H_LEV			= 1;//$member['mb_level'];  
+		$H_NAME			= 'Guest';//$member['mb_name'];  
+		$H_NICK			= 'Guest';//$member['mb_nick'];  
+		$H_ID			= 'Guest';
+	} else if( !$H_ID || $H_ID == ''){ 
+		echo "<script>history.back(-1);</script>"; exit; 
+	} else if( $H_ID && $H_ID != ''){ 
+		$H_EMAIL		= $member['mb_email'];  
+		$H_LEV			= $member['mb_level'];  
+		$H_NAME			= $member['mb_name'];  
+		$H_NICK			= $member['mb_nick'];  
+	}
+
 
 	function special_chk( $input) { // 특수문자 제거. "'"만 제거한다.
 		if ( is_array($input) ) {
@@ -37,8 +52,7 @@
 		} 
 	}
 	$subject = $_POST['subject'];
-	$content = $_POST['content'];
-	$content = special_chk( $content );
+	$content = $_POST['content'];	//$content = special_chk( $content );
 		$upfile_name= $_FILES["fileA"]["name"];
 		$upfile_size= $_FILES["fileA"]["size"];
 		$upfile2	= "";
@@ -67,7 +81,9 @@
 					echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 				}
 			}
-			$upfile2 = $upfile_name;	
+			$upfile_name = str_replace(" ", "", $upfile_name);
+			//$upfile2 = $upfile_name;	
+			$upfile2 = $H_ID . "_" . time() ."_" . $upfile_name; // . $file_ext;
 			move_uploaded_file( $_FILES["file"]["tmp_name"], $f_path2 . "/" . $upfile2 );
 			//exec ("chmod 777 bbs_image/$upfile2");
 		} else {
@@ -79,18 +95,18 @@
 		$target = $_POST['target'];
 		$re 	= $_POST['re'] + 1;
 		$step 	= $_POST['step'] + 1;	//$step+1;	    //step 셋팅(원본글의 step에서 +1을 하고 같은 값이 있을시 모두 +1증가) 
-		$query ="select no from aboard_".$mf_infor[2]." where target=".$target." and step=".$step;
-		$mq	=sql_query($query);
-		if($mq){
+		$query  = "select no from aboard_".$mf_infor[2]." where target=".$target." and step=".$step;
+		$mq	= sql_fetch( $query ); //$mq	=sql_query($query);
+		if( isset($mq['no']) ){ //if($mq){
 			$query = "update aboard_".$mf_infor[2]." set step=step+1 where target=".$target." and step >= ".$step;
 			$mq = sql_query($query);
 		}
 		$in_date = time();
-		if( isset($_POST['security']) ) $security=$_POST['security'];
-		else $security='';
-		$query="insert into aboard_".$mf_infor[2]." set
-		infor = '$infor',
-		id = '$H_ID',
+		//if( isset($_POST['security']) ) $security=$_POST['security'];
+		//else $security='';
+		$query = "insert into aboard_".$mf_infor[2]." set
+		infor = $infor,
+		id = '$H_EMAIL',
 		name = '$H_NICK',
 		email = '$H_EMAIL',
 		home = '".KAPP_URL_T_."',
@@ -108,7 +124,7 @@
 		target = $target,
 		step = $step,
 		re = $re,
-		security = '".$security."' ";
+		security = '' ";
 		$mq = sql_query($query);
 		if( $mq ) {
 			m_("reply answer ok!");

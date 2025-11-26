@@ -1,9 +1,12 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 
-	$ss_mb_id	= get_session("ss_mb_id");
-	$H_ID	= $ss_mb_id;	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$H_NAME = $member['mb_name'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( $H_ID != '') {
+		$H_ID	= $ss_mb_id;	$H_LEV	= $member['mb_level'];  
+		$H_NAME = $member['mb_name'];
+	}
 	$mode    = $_POST['mode'];
 
 if( $mode=='memo_insertTT' ){	// memoD.php, board_data_listTT.php - detailD.php - memoTT.php 메모등록시에 처리한다. 2019-01-26
@@ -11,7 +14,7 @@ if( $mode=='memo_insertTT' ){	// memoD.php, board_data_listTT.php - detailD.php 
 		$board_name = $_POST['board_name'];
 		$list_no    = $_POST['list_no'];
 		$password = $_POST['password'];
-		if( !$H_NAME ) $H_NAME = 'Guest';
+		if( !isset($H_NAME) ) $H_NAME = 'Guest';
 		if( !$H_ID ) $H_ID='Guest';
 		$in_date = time(); // $in_day= date("Y-m-d H:i");
 

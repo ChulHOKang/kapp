@@ -15,16 +15,35 @@
 <meta name="robots" content="ALL">
 
 <?php
-	$H_ID= get_session("ss_mb_id");
-	if( !$H_ID || $H_ID == "" ){ 
-		echo "<script>history.back(-1);</script>"; exit; 
+	include "./infor.php";
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id");
+	if( $H_ID && $H_ID !=='') {
+		$H_LEV	= $member['mb_level'];  
+		$H_NAME	= $member['mb_name'];  
+		$H_NICK	= $member['mb_nick'];  
+		$H_EMAIL = get_session("ss_mb_email"); 
+		$email	= $member['mb_email'];  
 	} else {
-		$H_EMAIL		= $member['mb_email'];  
-		$H_LEV			= $member['mb_level'];  
-		$H_NAME			= $member['mb_name'];  
-		$H_NICK			= $member['mb_nick'];  
+		if( $mf_infor[47] == 1 ){
+			$H_ID	= 'Guest';  
+			$H_NICK	= 'Guest';
+			$H_NAME = 'Guest';
+			$H_EMAIL= ''; 
+			$H_LEV	= 1;
+			$email	= '';  
+		} else {
+			$H_NICK	= '';
+			$H_NAME = '';
+			$H_LEV	= 0;
+			$H_ID	= '';  
+			$H_EMAIL= ''; 
+			$email	= '';  
+		}
 	}
-	$ip= $_SERVER['REMOTE_ADDR'];
+
 	if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
 	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else $mode  = "";
@@ -36,21 +55,30 @@
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	if( $mode != 'updateTT' || !$infor ) {
 		m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); 
-		echo "<script>history.back(-1);</script>"; exit;
+		//echo "<script>history.back(-1);</script>"; exit;
+		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 	}
-	$email	= $member['mb_email'];  
 	$in_day = date("Y-m-d H:i");
-	include "./infor.php";
-	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password, id from aboard_" . $mf_infor[2] . " where no=".$list_no;
-	$mq = sql_query($query);
-	$mf = sql_fetch_row($mq);
-	$mf[6] = htmlspecialchars($mf[6]);
-	$content = $mf[2];
-	if( $mf_infor[47]=='0' and !$H_ID ) $H_NAME = $mf[1];
+//	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password, id from aboard_" . $mf_infor[2] . " where no=".$list_no;
+	$query="select * from aboard_" . $mf_infor[2] . " where no=".$list_no;
+	//$mq = sql_query($query);
+	//$mf = sql_fetch_row($mq);
+	$mf = sql_fetch( $query );
+	//$mf[6] = htmlspecialchars($mf[6]);
+	$content = $mf['context'];
+	$email = $mf['id'];
+	if( $mf_infor[47]== 1 && $H_ID == 'Guest' ){
+		$H_NAME = $mf['name'];
+		$H_EMAIL = $mf['email'];
+		$H_ID = $mf['id'];
+	}
 
-	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf[10]!==$H_ID){
+//	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf[10]!==$H_ID){
+	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf['id']!==$H_EMAIL){
 		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
-		echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
+		//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
+		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
+
 		exit;
 	}
 	/*switch( $mf_infor[47] ){
@@ -221,12 +249,12 @@
 			<input type="hidden" name='previous'		value='<?=$_REQUEST["previous"]?>' />
 
 			<input type='hidden' name='mode'			value=''>
-			<input type='hidden' name='target'			value='<?=$mf[3]?>'>
-			<input type='hidden' name='step'			value='<?=$mf[4]?>'>
-			<input type='hidden' name='re'				value='<?=$mf[5]?>'>
+			<input type='hidden' name='target'			value='<?=$mf['target']?>'>
+			<input type='hidden' name='step'			value='<?=$mf['step']?>'>
+			<input type='hidden' name='re'				value='<?=$mf['re']?>'>
 			<input type='hidden' name='search_choice'	value='<?=$search_choice?>'>
 			<input type='hidden' name='search_text'		value='<?=$search_text?>'>
-			<input type="hidden" name="passwordG" value="<?=$mf[9]?>" >
+			<input type="hidden" name="passwordG" value="<?=$mf['password']?>" >
 
 			<div class="boardView">
 				<div class="viewHeader">
@@ -240,16 +268,25 @@
 				<div class="viewSubj"><span><?=$mf_infor[1]?> - [ Update ]</span> </div>
 				<ul class="viewForm">
 
-<?php 
-	if( $H_ID != "" && $H_LEV > 1 ){
-?>
+<?php if( $H_ID != "" && $H_LEV > 1 ){ ?>
 					<li class="autom_tit">
 						<span class="t01">Writer</span>
 						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name." readonly></span>
 					</li>
-<?php
-	} else {
-?>
+<?php } else if( $grant_write == 1 ){ ?>
+					<li class="autom_tit">
+						<span class="t01">Name</span>
+						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name." readonly></span>
+					</li>
+					<li>
+						<span class="t01">E-Mail</span>
+						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" id='email' value='<?=$H_EMAIL?>'></span>
+					</li>
+					<li class="pw_char">
+						<span class="t01">password</span>
+						<span class="t02"><input type="password" name="password" placeholder="Please enter your password, you will need it." value=''></span>
+					</li>
+<?php } else { ?>
 					<!-- <li class="autom_tit">
 						<span class="t01">Writer</span>
 						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name."></span>
@@ -266,21 +303,10 @@
 					<li class="autom_tit">
 						<span class="t01">Title</span>
 						<span class="t02">
-							<input type="text" name="subject" value='<?=$mf[6]?>' placeholder="Please enter a title! " class="autom_subj" >
+							<input type="text" name="subject" value='<?=$mf['subject']?>' placeholder="Please enter a title! " class="autom_subj" >
 						</span>
 					</li>
 
-<?php if($mf_infor[51]){ ?><!-- 비밀글. -->
-
-					<li class="autom_tit">
-						<span class="t01">Secret article</span>
-						<span >
-							<input type="radio" value="use" name="security1" id="security1"> use
-							<input type="radio" value="nouse" checked name="security1" id="security1"> no use
-							<input type="text"  value="" name="security" size="10" style='border:1 black solid;' title='This is required when writing secrets.'> (password) 
-						</span>
-					</li>
-<?php } ?>
 				</ul>
 <?php 
 	$_SESSION['infor'] = $infor;
@@ -292,8 +318,8 @@
 						<li>
 							<span class="t01">Attachments</span>
 							<span class="t02 select_file">
-								<input type="text" name="fileAW" style="padding-top:12.5px;" value='<?=$mf[7]?>' readonly>
-								<input type="hidden" name="fileW" value='<?=$mf[8]?>' >
+								<input type="text" name="fileAW" style="padding-top:12.5px;" value='<?=$mf['file_wonbon']?>' readonly>
+								<input type="hidden" name="fileW" value='<?=$mf['file_name']?>' >
 							</span>
 						</li>
 						<li>
@@ -311,7 +337,6 @@
 						</li>
 					</ul>
 					<div class="cradata_check">
-						<!-- <a href="javascript:update_func('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a> -->
 						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a>
 					</div>
 				</div>
@@ -376,44 +401,50 @@
 <script type="text/javascript">
   function saveContent(xauto, no, id) {
 		var formA = document.tx_editor_form;
-		if( formA.auto_check.value==''){
-			alert('Please enter an auto-prevention character! ');
+		xx = formA.auto_check.value;
+		var p1 = formA.password.value;
+		var p2 = formA.passwordG.value;
+		if( id == formA.email.value ){
+			if( !p1 ) {
+				alert('Enter Password! ' ); formA.password.focus();  return false;
+			} else if( p1 == p2 ) {
+				if( formA.auto_check.value==''){
+					alert('Please enter an auto-prevention character! ');//Please enter an auto-prevention character! 
+					formA.auto_check.focus();
+					return false;
+				}
+				//formA.submit();
+			} else {
+				alert('Password is incorrect! p:' + p1 );
+				formA.password.focus();
+				return false;
+			}
+		} else {
+				alert('email is incorrect! email:' + formA.email.value );
+		}
+
+		if(formA.nameA.value==''){
+			alert('Please enter your name.');
+			formA.nameA.focus();
+			return false;
+		}
+		if(formA.subject.value==''){
+			alert('Please enter a title. ');
+			formA.subject.focus();
+			return false;
+		}
+
+		if(xx == xauto){
+			formA.mode.value='update_funcTT'
+			Editor.save(); // 이 함수를 호출하여 글을 등록하면 된다.
+			formA.submit();
+			return true;
+		} else {
+			alert('Auto-typing prevention characters are incorrect ' + xauto + ' : ' + xx );
 			formA.auto_check.focus();
 			return false;
 		}
-		xx = formA.auto_check.value;
-		if(xx != xauto){
-			alert('Auto-typing prevention characters are incorrect : ' + xx );//Auto-typing prevention characters are incorrect 0u1nvd : 0
-			formA.auto_check.focus();
-			return;
-		}
-
-		/*if( !id ){
-			var p1 = document.tx_editor_formA.password.value;
-			if( !p1 ) { alert('Enter Password! ' ); document.tx_editor_form.password.focus();  return false; }
-			var p2 = document.tx_editor_form.passwordG.value;
-			if( p1 == p2 )	document.tx_editor_form.submit();
-			else {
-				alert('Password is incorrect! p:' + p1 );
-				document.tx_editor_form.password.focus();
-				return false;
-			}
-		} */
-
-			if(formA.nameA.value==''){
-				alert('Please enter your name.');
-				formA.nameA.focus();
-				return false;
-			}
-			if(formA.subject.value==''){
-				alert('Please enter a title. ');
-				formA.subject.focus();
-				return false;
-			}
-			formA.mode.value='update_funcTT'
-
-
-    Editor.save(); // 이 함수를 호출하여 글을 등록하면 된다.
+		return false;
   }
  
   /**

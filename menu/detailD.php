@@ -9,17 +9,33 @@
 				   : <FORM name='view_form' action='index.php' method='post' enctype="multipart/form-data">
 				   : include "./inc_listTT.php";
 	*/
+	include "./infor.php";
+	include "./file_size.php";
+	include "./string.php";
 	$call_pg = 'detailD.php'; // use - memoD.php
-	$H_ID= get_session("ss_mb_id"); $ip = $_SERVER['REMOTE_ADDR'];
-	if( $H_ID ) {
-		$H_LEV= $member['mb_level']; 
-		$H_NAME = $member['mb_name']; 
-		$H_NICK = $member['mb_nick'];
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id");
+	if( $H_ID && $H_ID !=='') {
+		$H_LEV	= $member['mb_level'];  
+		$H_NAME	= $member['mb_name'];  
+		$H_NICK	= $member['mb_nick'];  
+		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		$H_LEV= 1; 
-		$H_NAME = ''; 
-		$H_NICK = '';
+		if( $mf_infor[47] == 1 ){
+			$H_ID	= 'Guest';  
+			$H_NICK	= 'Guest';
+			$H_NAME = 'Guest';
+			$H_EMAIL= ''; 
+			$H_LEV	= 1;
+		} else {
+			$H_NICK	= '';
+			$H_NAME = '';
+			$H_LEV	= 0;
+			$H_ID	= '';  
+			$H_EMAIL= ''; 
+		}
 	}
+
 	if( isset($_REQUEST['search_choice']) ) $search_choice = $_REQUEST['search_choice'];
 	else if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
 	else $search_choice = '';
@@ -41,11 +57,9 @@
 	if( isset($_REQUEST['menu_mode']) ) $menu_mode	= $_REQUEST['menu_mode'];
 	else if( isset($_POST['menu_mode']) ) $menu_mode	= $_POST['menu_mode'];
 	else $menu_mode	= '';
-	include "./infor.php";
-	include "./file_size.php";
-	include "./string.php";
+
 	if( $H_LEV < $mf_infor[46] && $H_ID !== $mf_infor[53]){
-		m_("member permission to read. $mf_infor[46] - $mf_infor[53]"); //47:grant read, 47:grant write
+		m_("member permission to read. $H_ID, $mf_infor[47], $mf_infor[46] - $mf_infor[53]"); //47:grant read, 47:grant write
 		echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
 		exit;
 	}
@@ -103,13 +117,26 @@
 		document.view_form.action='replyD.php?infor='+infor+'&list_no='+list_no+'&page='+page+'&menu_mode='+menu_mode;
 		document.view_form.submit();
 	}
-	function update_func( infor, list_no, menu_mode){
-		page=document.view_form.page.value;
-		document.view_form.mode.value='updateTT';
-		document.view_form.infor.value=infor;
-		document.view_form.list_no.value=list_no;
-		document.view_form.action='updateD.php?infor='+infor+'&list_no='+list_no+'&page='+page+'&menu_mode='+menu_mode;
-		document.view_form.submit();
+	function update_func( infor, list_no, menu_mode, h_lev){
+		call_pg = 'detailD.php';
+		grant_write =document.view_form.grant_write.value;
+		if( grant_write > h_lev ){
+			alert('no permission lev: ' + h_lev); return false;
+		}
+		/*else if( grant_write == h_lev ){
+			document.view_form.mode.value='detail_deleteTT';
+			url = "detail_update_password.php?infor=" + infor + "&mode=detail_deleteTT" + "&list_no=" + list_no + "&page=" +page+ "&call_pg=" + call_pg+ "&menu_mode=" + menu_mode;
+			window.open(url,"newB","width=600,height=300,scrollbars=no");
+			return true;
+		} else {
+			document.view_form.mode.value='updateTT';
+			document.view_form.action='updateD.php?menu_mode='+menu_mode;
+			document.view_form.submit();
+		}*/
+			document.view_form.mode.value='updateTT';
+			document.view_form.action='updateD.php?menu_mode='+menu_mode;
+			document.view_form.submit();
+
 	}
 	function detail_func(infor, list_no, page, menu_mode){
 		document.view_form.mode.value='detailTT';
@@ -118,12 +145,23 @@
 	}
 
 	function del_func( infor, list_no, page, menu_mode  ) {
-		if( confirm("Are you sure you want to delete? ")==true){
+
+			document.view_form.mode.value='detail_deleteTT';
+			document.view_form.list_no.value=list_no;
+			document.view_form.page.value = page;
+			//search_choice= document.view_form.search_choice.value;
+			//search_text	= document.view_form.search_text.value;
+			call_pg = 'detailD.php';
+			url = "detail_delete_password.php?infor=" + infor + "&mode=detail_deleteTT" + "&list_no=" + list_no + "&page=" +page+ "&call_pg=" + call_pg+ "&menu_mode=" + menu_mode;
+			window.open(url,"newB","width=600,height=300,scrollbars=no");
+			return true;
+
+		/*if( confirm("Are you sure you want to delete? ")==true){
 			document.view_form.mode.value='detail_deleteTT';
 			document.view_form.list_no.value=list_no;
 			document.view_form.action='detailD_delete.php';	// 'query_ok_new.php';
 			document.view_form.submit();	//window.location.href=url;
-		}
+		}*/
 	}
 	 function back_go( infor,list_no, page, menu_mode) {
 		x = document.view_form;
@@ -174,15 +212,17 @@
 		$last = $line_cnt;										// 뽑아올 게시물 [끝]
 		if( $total_count < $last) $last = $total_count;
 	}
-	$query="SELECT * from aboard_" . $mf_infor[2] . " where no=".$list_no; //m_( $mf_infor[2] . ", list_no: ".$list_no . ", infor: " . $infor);
+	$query="SELECT * from aboard_" . $mf_infor[2] . " where no=".$list_no;
+	//m_( $mf_infor[2] . ", list_no: ".$list_no . ", infor: " . $infor);
 	$mq		= sql_query($query);
 	$mf		= sql_fetch_row($mq);
 	$mid	= $mf_infor[53]; // 53:make_id , $mf[2];
 	$fsize	= $mf[14];
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
 
 	if( $mf_infor[2] == 'kapp_Notice' || $mf_infor[2] == 'kapp_news' || $mf_infor[2] == 'kapp_qna' || $mf_infor[2] == 'kapp_free') $f_path1	= KAPP_PATH_T_ . "/file/";
 	else $f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
-	//$f_path1= KAPP_PATH_T_ . "/file/" . $mf_infor[53];	// 53:maker id.
 	$fpath	= $f_path1 . "/aboard_".$mf_infor[2]; // 2: board name
 	$mf[7]	= date("y/m/d H:i", $mf[7]);
 	$mf[8]	= iconv_substr($mf[8], 0, 50, 'utf-8');// . "...";
@@ -243,6 +283,8 @@
 		<input type='hidden' name='target'				value='<?=$mf[18]?>'>
 		<input type='hidden' name='step'					value='<?=$mf[19]?>'>
 		<input type='hidden' name='re'					value='<?=$mf[20]?>'>
+		<input type='hidden' name='grant_read' value='<?=$mf_infor[46]?>'>
+		<input type='hidden' name='grant_write' value='<?=$mf_infor[47]?>'>
 		<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
 	</form>
 <?php
@@ -348,17 +390,18 @@ if( $mf[12]){	// file_name,
 	<?php } ?>
         
 <?php
-	if ( $mf_infor[53]==$H_ID || $H_LEV > 7 || $mf[2]==$H_ID ){
+	if ( $mf_infor[47]== 1 || $mf_infor[53]==$H_ID || $H_LEV > 7 || $mf[2]==$H_ID ){
 ?>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' Answer ' onclick="reply_func('<?=$infor?>','<?=$list_no?>','<?=$page?>','<?=$menu_mode?>')" title='Write your answer.'>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' Write ' onclick="javascript:window.open('insertD.php?list_no=<?=$mf[0]?>&infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>&previous=detailD.php','_self','')" >        
-        &nbsp;&nbsp;&nbsp;<input type='button' value=' Update ' onclick="javascript:update_func('<?=$infor?>', '<?=$list_no?>', '<?=$page?>','<?=$menu_mode?>')" title='Guest, <?=$mf_infor[47]?>, <?=$mf[2]?>, id:<?=$H_ID?>'>
+        &nbsp;&nbsp;&nbsp;<input type='button' value=' Update ' onclick="javascript:update_func('<?=$infor?>', '<?=$list_no?>','<?=$menu_mode?>', '<?=$H_LEV?>')" title='Guest, <?=$mf_infor[47]?>, <?=$mf[2]?>, id:<?=$H_ID?>'>
 		&nbsp;&nbsp;&nbsp;<input type='button' value=' Delete ' onclick="del_func('<?=$infor?>', '<?=$list_no?>', '<?=$page?>','<?=$menu_mode?>')" title='Delete the post.'>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' List ' onclick="javascript:window.open('listD.php?infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>','_self','')" >
-<?php 
-	} else if ( $H_ID && $H_LEV > 1 ){
-?>
+<?php } else if ( $H_ID && $H_LEV > 1 ){ ?>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' Answer ' onclick="reply_func( '<?=$infor?>','<?=$list_no?>','<?=$page?>','<?=$menu_mode?>')" title='Write your answer.'>
+        &nbsp;&nbsp;&nbsp;<input type='button' value=' List ' onclick="javascript:window.open('listD.php?infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>','_self','')" >
+<?php } else if ( $mf_infor[47] == 1 ){ ?>
+		&nbsp;&nbsp;&nbsp;<input type='button' value=' Delete ' onclick="del_func('<?=$infor?>', '<?=$list_no?>', '<?=$page?>','<?=$menu_mode?>')" title='Delete the post.'>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' List ' onclick="javascript:window.open('listD.php?infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>','_self','')" >
 <?php } else { ?>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' List ' onclick="javascript:window.open('listD.php?infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>','_self','')" >

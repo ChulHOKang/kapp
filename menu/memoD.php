@@ -12,9 +12,8 @@
 		}
 		else{return true;}
 	}
-	function memo_insert(id, call_pg){
-		//alert("call: " + call_pg);
-		if( !id ) {
+	function memo_insert(id, call_pg, grant_write){
+		if( grant_write > 1 && !id ) {
 			alert("Login please"); return false;
 		}
 		x = document.memo_form;
@@ -96,7 +95,7 @@
 		<tr><td colspan='3' align='center'><font size='1' color=<?=$mf_infor[23]?>>
 			name&nbsp;<input type=text name='name' value='<?=$H_NAME?>' size='15' style='border:1 black solid;'>
 			password <input type='password' name='password' size='10' style='border:1 black solid;'>
-					<a href="javascript:memo_insert('<?=$H_ID?>', '<?=$call_pg?>');" title='Register your comment.' style='background-color:black;color:yellow; width:60px; height:30px; '>Reply</a>
+					<a href="javascript:memo_insert('<?=$H_ID?>', '<?=$call_pg?>', <?=$grant_write?>);" title='Register your comment.' style='background-color:black;color:yellow; width:60px; height:30px; '>Reply</a>
 		</td></tr>
 		<tr><td colspan='3' align='center'>
 			<textarea wrap="hard" name="context" rows="3" cols="65" ></textarea>

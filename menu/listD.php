@@ -24,9 +24,15 @@
 		$H_NAME = $member['mb_name'];
 		$H_LEV	= $member['mb_level'];
 	} else {
-		$H_NICK	= '';
-		$H_NAME = '';
-		$H_LEV	= 0;
+		if( $mf_infor[47] == 1 ){
+			$H_NICK	= 'Guest';
+			$H_NAME = 'Guest';
+			$H_LEV	= 1;
+		} else {
+			$H_NICK	= '';
+			$H_NAME = '';
+			$H_LEV	= 0;
+		}
 	}
 
 		$grant_view = $mf_array['grant_view']; // grant_view, security $mf_array, $row
@@ -468,7 +474,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 		//alert("grant_write: " + grant_write);
 		//if( user_lev < 2 ) {
 		if( user_lev < grant_write ) {
-			alert(' You Login check lev:' +user_lev );
+			alert('Please! you login lev:' +user_lev );
 			return false;
 		}
 		lev = document.view_form.bbs_lev.value;

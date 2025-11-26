@@ -3,6 +3,7 @@
 	/*
 	  insertD_check.php - insertD.php
 	*/
+		m_(" --- insertD check ");
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID = get_session("ss_mb_id"); 
 	if( isset($H_ID) && $H_ID !=='' ) {
@@ -11,17 +12,30 @@
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = $member['mb_email'];  
 	} else {
+		if( $_POST['email'] == '' ){
+			m_("guest email please!");
+			//return false;
+		}
+		if( $_POST['password'] == '' ){
+			m_("guest password please!");
+			//return false;
+		}
 		$H_LEV	= 0;  
 		$H_NICK	= 'Guest';  
-		$H_EMAIL = get_session("ss_mb_email"); 
-		if( $H_EMAIL == '' ) $H_EMAIL='Guest';
+		$H_NAME	= $_POST['email']; //'Guest';  
+		$H_EMAIL = $_POST['email']; //get_session("ss_mb_email"); 
+		//if( $H_EMAIL == '' ) $H_EMAIL='Guest';
 	}
 	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else {
 		echo "<script>history.back(-1);</script>"; exit;
 	}
 	include_once('./infor.php');
-
+		m_("H_ID: $H_ID, mf_infor 47:" . $mf_infor[47]);
+	if( $mf_infor[47] == 1 && $H_ID == ''){
+		if( isset($_POST['email']) ) $H_ID  = $_POST['email'];
+		//m_("H_ID: $H_ID, 47:" . $mf_infor[47]);
+	}
 	function special_chk ($input) { // 특수문자 제거. "'"만 제거한다.
 		if( is_array($input)) { //m_("---1");
 			return array_map('special_chk', $input); 

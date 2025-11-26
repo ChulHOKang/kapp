@@ -15,15 +15,6 @@
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 <?php
-	$H_ID= get_session("ss_mb_id");
-	if( !$H_ID || $H_ID == "" ){ 
-		echo "<script>history.back(-1);</script>"; exit; 
-	} else {
-		$H_EMAIL		= $member['mb_email'];  
-		$H_LEV			= $member['mb_level'];  
-		$H_NAME			= $member['mb_name'];  
-		$H_NICK			= $member['mb_nick'];  
-	}
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
 	else $search_choice = "";
@@ -42,6 +33,7 @@
 		echo "<script>history.back(-1);</script>"; exit; 
 	}
 	$_SESSION['infor'] = $infor;
+	
 	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 	else echo "<script>history.back(-1);</script>";
@@ -51,9 +43,30 @@
 	$in_day = date("Y-m-d H:i");
 
 	include "./infor.php";
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
+
+
+	$H_ID= get_session("ss_mb_id");
+	if( $H_ID == '' && $mf_infor[47] == 1) {
+		$H_EMAIL		= '';//$member['mb_email'];  
+		$H_LEV			= 1;//$member['mb_level'];  
+		$H_NAME			= 'Guest';//$member['mb_name'];  
+		$H_NICK			= 'Guest';//$member['mb_nick'];  
+		$H_ID			= 'Guest';
+	} else if( !$H_ID || $H_ID == ''){ 
+		echo "<script>history.back(-1);</script>"; exit; 
+
+	} else if( $H_ID && $H_ID != ''){ 
+		$H_EMAIL		= $member['mb_email'];  
+		$H_LEV			= $member['mb_level'];  
+		$H_NAME			= $member['mb_name'];  
+		$H_NICK			= $member['mb_nick'];  
+	}
 	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53]){
 		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
-		echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
+		//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
+		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		exit;
 	}
 ?>
@@ -62,9 +75,11 @@
 <script type="text/javascript" src="../include/js/ui.js"></script>
 <script type="text/javascript" src="../include/js/common.js"></script>
 <script type='text/javascript' src="../include/js/contents_resize.js" ></script>
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/main.css" type="text/css" >
-<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/menu/css/editor.css" type="text/css" charset="utf-8"/> -->
-<script type='text/javascript' src="<?=KAPP_URL_T_?>/menu/js/editor_loader.js?environment=development" charset="utf-8"></script>
+<link rel="stylesheet" href="./css/main.css" type="text/css" >
+<link rel="stylesheet" href="./css/editor.css" type="text/css" charset="utf-8"/>
+<script type='text/javascript' src="./js/editor_loader.js?environment=development" charset="utf-8"></script>
+
+
 <script type="text/javascript">
 	function board_listTT() {
 		x = document.tx_editor_form;
@@ -223,6 +238,9 @@
 	$mf = sql_fetch($query);
 	$mf['context'] = "[ ".$H_ID." Sir ]\n" . $mf['context']; 
 	$mf['subject'] = "Re: ".$mf['subject']; 
+	$mf_id = $mf['id'];
+	$mf_name = $mf['name'];
+	$mf_email = $mf['email'];
 	$mf_subject = $mf['subject'];
 	$mf_context = $mf['context'];
 	$content = $mf['context'];
@@ -255,16 +273,32 @@
 				</div>
 				<div class="viewSubj"><span><?=$mf_infor[1]?></span> </div>
 				<ul class="viewForm">
-<?php 
-	if( $H_ID !== "" && $H_LEV > 1 ){
-?>
+<?php if( $H_ID !== "" && $H_LEV > 1 ){ ?>
 					<li class="autom_tit">
-						<span class="t01">Writer</span>
-						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NICK?>' placeholder="Please enter a name." readonly></span>
+						<span class="t01">Name</span>
+						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name." readonly></span>
 					</li>
-<?php
-	} else {
-?>
+					<li>
+						<span class="t01">E-Mail</span>
+						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" id='email' value='<?=$H_EMAIL?>'></span>
+					</li>
+					<li class="pw_char">
+						<span class="t01">password</span>
+						<span class="t02"><input type="password" name="password" placeholder="Please enter your password, you will need it." value=''></span>
+					</li>
+<?php } else { ?>
+					<li class="autom_tit">
+						<span class="t01">Name</span>
+						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name." readonly></span>
+					</li>
+					<li>
+						<span class="t01">E-Mail</span>
+						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" id='email' value='<?=$H_EMAIL?>'></span>
+					</li>
+					<li class="pw_char">
+						<span class="t01">password</span>
+						<span class="t02"><input type="password" name="password" placeholder="Please enter your password, you will need it." value=''></span>
+					</li>
 <?php } ?>
 					<li class="autom_tit">
 						<span class="t01">Title</span>
@@ -273,17 +307,6 @@
 						</span>
 					</li>
 
-<?php
-	if( $mf_infor[51]){?><!-- 비밀글. -->
-					<li class="autom_tit">
-						<span class="t01">Secret article</span>
-						<span >
-							<input type="radio" value="use" name="security1" id="security1"> use
-							<input type="radio" value="nouse" checked name="security1" id="security1"> no use
-							<input type="text"  value="" name="security" size="10" style='border:1 black solid;' title='This is required when writing secrets.'> (password) 
-						</span>
-					</li>
-<?php } ?>
 				</ul>
 <?php 
 	$_SESSION['infor'] = $infor;
@@ -329,10 +352,6 @@
 </form>
 
 </div><!-- end : wrapper-->
-
-
-
-
 
 <script type="text/javascript">
 	/* 여기에는 리마크르르 // 로 막으면 에러난다.... 중요! */
@@ -393,6 +412,30 @@
   function saveContent( xauto, no, id) {
 
 		var form = document.tx_editor_form;
+		if( id == 'Guest' ) {
+			if(form.password.value==''){
+				alert('Please enter a password! ');
+				form.password.focus();
+				return false;
+			}
+			if(form.email.value==''){
+				alert('Please enter a email! ');
+				form.email.focus();
+				return false;
+			}
+		}
+		if( form.nameA.value==''){
+			alert('Please enter your name.');
+			form.nameA.focus();
+			return false;
+		}
+
+		/*if( form.tx_canvas_text.value==''){
+			alert('Please enter your content');
+			form.tx_canvas_text.focus();
+			return false;
+		}*/
+
 		if(form.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
 			form.auto_check.focus();
@@ -404,24 +447,15 @@
 
 		} else {
 			alert('Auto-typing prevention characters are incorrect ' + xauto + ' : ' + xx );
+			form.auto_check.focus();
 			return false;
 		}
 		
-		if( form.nameA.value==''){
-			alert('Please enter your name.');
-			form.nameA.focus();
-			return false;
-		}
 		if( form.subject.value==''){
 			alert('Please enter a title. ');
 			form.subject.focus();
 			return false;
 		}
-		/*if(tx_editor_form.context.value==''){
-			alert('Please enter your content \n 내용을 입력하세요');
-			tx_editor_form.context.focus();
-			return false;
-		}*/
 
 		ff= form.fileA.value;		//alert('ff:'+ff);	//ff:C:\fakepath\aboard_tkher58.sql
 		if (form.fileA.value != ""){
