@@ -238,7 +238,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		return $response;
 	}
 	function job_link_table_add( $sys_pg_root, $sys_subtit, $sys_link, $aboard_no, $job_group, $job_name, $jong){
-		global $H_ID, $H_EMAIL, $tkher;
+		global $H_ID, $H_EMAIL, $tkher, $config;
 		global $kapp_theme0;
 		global $kapp_theme1;
 		global $kapp_mainnet;
@@ -249,7 +249,10 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$result = sql_fetch("SELECT * from {$tkher['job_link_table']} where user_id='$H_ID' and user_name='$sys_subtit' and job_addr='$sys_link' ");
 		if( !isset($result['user_id']) && !isset($result['user_name']) && !isset($result['job_arrd'])  ) {
 			$up_day = date("Y-m-d H:i:s");
-			$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID',  email='$H_EMAIL', job_name='$job_name', user_name='$sys_subtit', num='$sys_pg_root', aboard_no='$aboard_no', job_addr='$sys_link', jong='$jong', job_group='$job_group', club_url='$from_session_url', job_level='0', ip='$ip', up_day='$up_day' ";
+			if( $job_group=='menu' || $job_group=='link' || $job_group=='board' || $job_group=='note'  || $job_group=='photo' )
+				$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID',  email='$H_EMAIL', job_name='$job_name', user_name='$sys_subtit', num='$sys_pg_root', aboard_no='$aboard_no', job_addr='$sys_link', jong='$jong', job_group='$job_group', job_group_code='$sys_pg_root', club_url='$from_session_url', job_level='0', ip='$ip', up_day='$up_day' ";
+			else
+				$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID',  email='$H_EMAIL', job_name='$job_name', user_name='$sys_subtit', num='$sys_pg_root', aboard_no='$aboard_no', job_addr='$sys_link', jong='$jong', job_group='$job_group', job_group_code='$job_group', club_url='$from_session_url', job_level='0', ip='$ip', up_day='$up_day' ";
 			$ret = sql_query( $sqlA );
 			$memo = 'tit:' . $sys_subtit . ', sys_pg:' .$sys_pg_root. ', aboard_no:' . $aboard_no;
 			if( $ret ) {
@@ -728,10 +731,10 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		}
 	}
 	function create_aboard_table_make_menu( $board_title, $mroot, $board_type, $max_num ){
-		global $H_ID, $up_day, $sys_pg_root, $code_name, $board_num;
+		global $H_ID, $up_day, $sys_pg_root, $code_name, $board_num, $tkher;
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$in_date=time();
-		$result = sql_query("select max(no) as no from aboard_infor ");
+		$result = sql_query("select max(no) as no from {$tkher['aboard_infor_table']} ");
 		$rs = sql_fetch_array( $result );
 		$board_ = $rs['no'];
 		if( !$board_ ) $board_num = 1;
@@ -772,16 +775,17 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		}
 		$link_name = "";
 		if( $mq1 ){
-			$link_name		= KAPP_URL_T_ . '/bbs/index5.php?infor='.$board_num;
+			$day = date("Y-m-d H:i:s");
+			$link_name		= KAPP_URL_T_ . '/menu/index_bbs.php?infor='.$board_num;
 			$movie			= $board_type;
 			$home_url 		= "GCOM05!";
 			$fileup 		= 1;
 			$grant_view	    = 0;	//0:all, 1:member, 2:user 3:system manager
 			$grant_write	= 1;	//0:all, 1:member, 2:user 3:system manager
 			$xlev			= "2";	// no use.
-			$memo			= "";
+			$memo			= " tree menu - create: create_aboard_table_make_menu - $day";
 			$job_link_type = 'A';
-			$table_width	= "500";
+			$table_width	= "800";
 			$list_size		= 20;
 			$memo_gubun	    = 1;
 			$ip_gubun		= 0;
