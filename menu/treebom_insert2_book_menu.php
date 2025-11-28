@@ -74,11 +74,11 @@
 <html> 
 <head> 
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
+<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
+<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
+<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
+<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
 </head>
 <body bgcolor='black'> <font color='yellow'>

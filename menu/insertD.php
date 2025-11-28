@@ -30,20 +30,18 @@
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		if( $mf_infor[47] == 1 ){
-			$H_ID	= 'Guest';  
+		if( $grant_write > 1 ){
+			echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
+			exit;
+		} else {
 			$H_NICK	= 'Guest';
 			$H_NAME = 'Guest';
-			$H_EMAIL= ''; 
 			$H_LEV	= 1;
-		} else {
-			$H_NICK	= '';
-			$H_NAME = '';
-			$H_LEV	= 0;
-			$H_ID	= '';  
+			$H_ID	= 'Guest';  
 			$H_EMAIL= ''; 
 		}
 	}
+
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];

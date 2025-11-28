@@ -19,28 +19,24 @@
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
 	$ip = $_SERVER['REMOTE_ADDR'];
+
 	$H_ID = get_session("ss_mb_id");
 	if( $H_ID && $H_ID !=='') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = get_session("ss_mb_email"); 
-		$email	= $member['mb_email'];  
 	} else {
-		if( $mf_infor[47] == 1 ){
+		$email	= '';  
+		if( $grant_write > 1 ){
+			echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
+			exit;
+		} else {
 			$H_ID	= 'Guest';  
 			$H_NICK	= 'Guest';
 			$H_NAME = 'Guest';
-			$H_EMAIL= ''; 
 			$H_LEV	= 1;
-			$email	= '';  
-		} else {
-			$H_NICK	= '';
-			$H_NAME = '';
-			$H_LEV	= 0;
-			$H_ID	= '';  
 			$H_EMAIL= ''; 
-			$email	= '';  
 		}
 	}
 
@@ -66,7 +62,8 @@
 	$mf = sql_fetch( $query );
 	//$mf[6] = htmlspecialchars($mf[6]);
 	$content = $mf['context'];
-	$email = $mf['id'];
+	//$content = htmlspecialchars( $mf['context'] );
+	$email = $mf['email'];
 	if( $mf_infor[47]== 1 && $H_ID == 'Guest' ){
 		$H_NAME = $mf['name'];
 		$H_EMAIL = $mf['email'];
@@ -74,7 +71,7 @@
 	}
 
 //	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf[10]!==$H_ID){
-	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf['id']!==$H_EMAIL){
+	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf['email']!==$H_EMAIL){
 		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
 		//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
 		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
@@ -346,57 +343,6 @@
 </form>
 </div><!-- end : wrapper-->
 
-<script type="text/javascript">
-	var content = '<?php echo $content; ?>';
-	var config = {
-    txHost: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) http://xxx.xxx.com */
-    txPath: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) /xxx/xxx/ */
-    txService: 'sample', /* 수정필요없음. */
-    txProject: 'sample', /* 수정필요없음. 프로젝트가 여러개일 경우만 수정한다. */
-    initializedId: "", /* 대부분의 경우에 빈문자열 */
-    wrapper: "tx_trex_container", /* 에디터를 둘러싸고 있는 레이어 이름(에디터 컨테이너) */
-    form: 'tx_editor_form'+"", /* 등록하기 위한 Form 이름 */
-    txIconPath: "./images/icon/editor/", /*에디터에 사용되는 이미지 디렉터리, 필요에 따라 수정한다. */
-    txDecoPath: "./images/deco/contents/", /*본문에 사용되는 이미지 디렉터리, 서비스에서 사용할 때는 완성된 컨텐츠로 배포되기 위해 절대경로로 수정한다. */
-    canvas: {
-            exitEditor:{
-                /*
-                desc:'빠져 나오시려면 shift+b를 누르세요.',
-                hotKey: {
-                    shiftKey:true,
-                    keyCode:66
-                },
-                nextElement: document.getElementsByTagName('button')[0]
-                */
-            },
-      styles: {
-        color: "#123456",		/* 기본 글자색 */
-        fontFamily: "굴림",		/* 기본 글자체 */
-        fontSize: "10pt",		/* 기본 글자크기 */
-        backgroundColor: "#fff", /*기본 배경색 */
-        lineHeight: "1.5",		/*기본 줄간격 */
-        padding: "8px"			/* 위지윅 영역의 여백 */
-      },
-      showGuideArea: false
-    },
-    events: {
-      preventUnload: false
-    },
-    sidebar: {
-      attachbox: {
-        show: true,
-        confirmForDeleteAll: true
-      }
-    },
-    size: {
-      contentWidth: 1500 /* 지정된 본문영역의 넓이가 있을 경우에 설정 */
-    }
-  };
- 
-  EditorJSLoader.ready(function(Editor) {
-    var editor = new Editor(config);
-  });
-</script>
  
 <script type="text/javascript">
   function saveContent(xauto, no, id) {
@@ -520,7 +466,6 @@ function youTubeImplant() {
 }
 
 </script>
- 
 <script type="text/javascript">
   function loadContent() {
 	var content = '<?php echo $content; ?>';
@@ -541,6 +486,59 @@ function youTubeImplant() {
     });
   }
 </script>
+ 
+<script type="text/javascript">
+	//var content = '<?php echo $content; ?>';
+	var config = {
+    txHost: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) http://xxx.xxx.com */
+    txPath: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) /xxx/xxx/ */
+    txService: 'sample', /* 수정필요없음. */
+    txProject: 'sample', /* 수정필요없음. 프로젝트가 여러개일 경우만 수정한다. */
+    initializedId: "", /* 대부분의 경우에 빈문자열 */
+    wrapper: "tx_trex_container", /* 에디터를 둘러싸고 있는 레이어 이름(에디터 컨테이너) */
+    form: 'tx_editor_form'+"", /* 등록하기 위한 Form 이름 */
+    txIconPath: "./images/icon/editor/", /*에디터에 사용되는 이미지 디렉터리, 필요에 따라 수정한다. */
+    txDecoPath: "./images/deco/contents/", /*본문에 사용되는 이미지 디렉터리, 서비스에서 사용할 때는 완성된 컨텐츠로 배포되기 위해 절대경로로 수정한다. */
+    canvas: {
+            exitEditor:{
+                /*
+                desc:'빠져 나오시려면 shift+b를 누르세요.',
+                hotKey: {
+                    shiftKey:true,
+                    keyCode:66
+                },
+                nextElement: document.getElementsByTagName('button')[0]
+                */
+            },
+      styles: {
+        color: "#123456",		/* 기본 글자색 */
+        fontFamily: "굴림",		/* 기본 글자체 */
+        fontSize: "10pt",		/* 기본 글자크기 */
+        backgroundColor: "#fff", /*기본 배경색 */
+        lineHeight: "1.5",		/*기본 줄간격 */
+        padding: "8px"			/* 위지윅 영역의 여백 */
+      },
+      showGuideArea: false
+    },
+    events: {
+      preventUnload: false
+    },
+    sidebar: {
+      attachbox: {
+        show: true,
+        confirmForDeleteAll: true
+      }
+    },
+    size: {
+      contentWidth: 1500 /* 지정된 본문영역의 넓이가 있을 경우에 설정 */
+    }
+  };
+ 
+  EditorJSLoader.ready(function(Editor) {
+    var editor = new Editor(config);
+  });
+</script>
+
 <!-- End: Loading Contents -->
 <script>
 	window.onload = function()

@@ -97,7 +97,7 @@ th, td { border: 1px solid silver; padding:5px; }
 ?>
 <script language='javascript'>
 <!--
-	function init() {		// board create type:
+	/*function init() {		// board create type:
 		for (var k=0 ; k < makeform.fnclist.options.length ; k++) {
 			v=makeform.fnclist.options[k].value;
 		}
@@ -118,7 +118,7 @@ th, td { border: 1px solid silver; padding:5px; }
 				}
 			}
 		}
-	}
+	}*/
 	function fnclist_onclick(v) {
 		var seli = makeform.fnclist.selectedIndex;
 		var t = makeform.fnclist.options[seli].text;
@@ -141,6 +141,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		var v = document.makeform.sellist.options[seli].value;
 		var sel_v  = v.split("|");
 		document.makeform.board_no.value = sel_v[0];
+		document.makeform.board_gubun_value.value = sel_v[1];
 		document.makeform.board_nm.value = sel_v[2];
 
 		var t = document.makeform.sellist.options[seli].text;
@@ -162,7 +163,8 @@ th, td { border: 1px solid silver; padding:5px; }
 		var chgStr = makeform.chgname.value
 		if (makeform.sellist.selectedIndex < 0) return
 		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0)	{
-			alert('허용이 안 되는 특수문자를 사용하셨습니다.\n다시 입력하시기 바랍니다.')
+			alert('You used a special character.\nPlease re-enter it.');
+			//허용이 안 되는 특수문자를 사용하셨습니다.\n다시 입력하시기 바랍니다.
 			return false;
 		}
 		for ( j=0; j < makeform.sellist.options.length; j++ )	{
@@ -170,6 +172,7 @@ th, td { border: 1px solid silver; padding:5px; }
 				/* group의 시작(start) & 끝(end) 그룹이름 변경하기 */
 				var chkname = makeform.sellist.options[j].value
 				var chkObjid = getObjid(chkname)
+				/*
 				if ((chkname == "group") || (chkname == "groupend") ||  (chkObjid == "GSTR") || (chkObjid == "GEND")) {
 					if (document.makeform.mnhide.checked) {
 						alert("그룹메뉴에는 숨기기를 설정할 수 없습니다.")
@@ -189,18 +192,17 @@ th, td { border: 1px solid silver; padding:5px; }
 						makeform.sellist.options[start].text = "-----" + frealname + " 시작-----"
 						makeform.sellist.options[end].text = "-----" + frealname + " 끝-------"
 					}
-				}
-				else {
-					makeform.sellist.options[j].text = frealname + " " + chgStr
+				} else { */
+					//makeform.sellist.options[j].text = frealname + " " + chgStr
+					makeform.sellist.options[j].text = chgStr
 					if (document.makeform.mnhide.checked){
 					  makeform.sellist.options[j].text = makeform.sellist.options[j].text + "<숨기기>"
 						makeform.funchelp.value += getObjid(makeform.sellist.options[j].value) + "!:" + getObjseq(makeform.sellist.options[j].value) + "!:" + getfname(makeform.sellist.options[j].text) + "!:" + document.makeform.mncontents.value + "!#";
-					}
-					else{
+					} else{
 						document.makeform.mnhide.checked = false
 						makeform.funchelp.value += getObjid(makeform.sellist.options[j].value) + "!:" + getObjseq(makeform.sellist.options[j].value) + "!:" + getfname(makeform.sellist.options[j].text) + "!:" + document.makeform.mncontents.value + "!#";
 					}
-				}
+				//}
 				isEdited = true
 				return true
 			}
@@ -265,7 +267,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			case "GCOM02" : return "[Standard]"
 			case "GCOM03" : return "[Memo]"
 			case "GCOM04" : return "[Image]"
-			case "GCOM05" : return "[Daum]"
+			case "GCOM05!" : return "[Daum]"
 			case "GCOM06" : return "[New2]"
 			case "GCOM08" : return "[New3]"
 			case "TCOM02" : return "[Line]"
@@ -293,13 +295,14 @@ th, td { border: 1px solid silver; padding:5px; }
 	function sellist_onclick() {
 		var selind = makeform.sellist.selectedIndex
 		var strAx = makeform.sellist.options[selind].value
-		var strA  = strAx.split("|")
-		makeform.board_no.value = strA[0]
-		var funcind = "funchelp" + selind
+		var strA  = strAx.split("|");//$rsno|$home_url|$table_name
+		makeform.board_no.value = strA[0]; // $rsno
+		makeform.board_gubun_value.value = strA[1]; // $home_url
+		var funcind = "funchelp" + selind;
 		var category = "D02"
 		if (selind >= 0 && makeform.sellist.options[selind].text != "")
 		{
-			var grpname = strA[1]
+			var grpname = strA[1]; //1:home_url
 			if (( grpname == "group") || (grpname == "groupend") ||  (getObjid(grpname) == "GSTR") || (getObjid(grpname) == "GEND")) {
 				makeform.chgname.value = chkGroup(makeform.sellist.options[selind].text)
 				document.makeform.mncontents.value = ""
@@ -307,7 +310,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			}
 			else {
 				makeform.chgname.value = getfname( makeform.sellist.options[selind].text )
-				var valname = strA[1]
+				var valname = strA[1]; //1:home_url
 				if (valname.length>0) {
 					var valnameA = valname.split("!:")
 					var strA = ""
@@ -403,7 +406,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			<input type="hidden" name="funchelp" 	value="">
 			<input type="hidden" name="mode" 		value="">
 			<input type='hidden' name='board_type_name'    value=''>
-			<input type='hidden' name='board_gubun_value'  value='<?=$home_url?>'>
+			<input type='hidden' name='board_gubun_value'  value=''>
 			<input type='hidden' name='sellist_index' >    <!-- selectedIndex -->
 			<input type='hidden' name='board_no' value=''>
 			<input type='hidden' name='board_nm' value=''>
@@ -476,14 +479,13 @@ th, td { border: 1px solid silver; padding:5px; }
 	<?php
 		} // while
 	?>
-										   </select>
+								   </select>
 
-										   <input type='hidden' size='70' name='board_gubun_text' value='<?=$home_url?>'>
 
 										</td>
 									  </tr>
 	 <script>
-		init();
+		//init();
 	</script>
 									  <tr>
 										<td height="24">Change Board Title<br>
@@ -539,7 +541,7 @@ th, td { border: 1px solid silver; padding:5px; }
 ?>
 		<tr>
 		<td width='130' height='24' background='../logo/admin_submenu.gif'>&nbsp;<img src='../logo/left_icon.gif'>
-		<a href="board_list3.php?g_type=S" target='iframe_url'>Standard type</a><!-- 1:general,2:standard, 5:daum, 1=2=5:stdandard, 3:memo, 4:image -->
+		<a href="board_list3.php?g_type=S" target='iframe_url'>Standard type</a><!-- 5:stdandard, 3:memo, 4:image -->
 		</td>
 		</tr>
 
@@ -593,7 +595,8 @@ th, td { border: 1px solid silver; padding:5px; }
 	} else if( isset($g_type) ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		if( $g_type =='S'){
-			$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' ";
+			//$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' ";
+			$ls = $ls . " WHERE movie='5' ";
 		} else if( $g_type =='M') {
 			$ls = $ls . " WHERE movie='3' ";
 		} else if( $g_type =='I') {
@@ -684,7 +687,8 @@ th, td { border: 1px solid silver; padding:5px; }
 			} else if ( isset($g_type) ) {
 				$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 				if( $g_type=='S'){
-					$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' "; // 1:gen, 2:std, 5:daum
+					//$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' "; // 1:gen, 2:std, 5:daum
+					$ls = $ls . " WHERE movie='5' "; // 1:gen, 2:std, 5:daum
 				} else if( $g_type=='M') {
 					$ls = $ls . " WHERE movie='3' ";
 				} else if( $g_type=='I') {
@@ -719,7 +723,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		else if ( $rs['grant_view'] == "2" ) $levR='Member';
 		else if ( $rs['grant_view'] == "3" ) $levR='Only Me';
 		else if ( $rs['grant_view'] == "8" ) $levR='System';
-		else $levR = '1';
+		else $levR = 'Guest';
 
 		if ( $rs['grant_write'] == "1" ) $lev='Guest';
 		else if ( $rs['grant_write'] == "2" ) $lev='Member';
@@ -734,6 +738,8 @@ th, td { border: 1px solid silver; padding:5px; }
 			$skin_ = '5.Standard Type'; // default
 			$rs['movie'] = "5";
 		}
+		if( $rs['home_url']=='GCOM05!' ) $mk_gubun = 'Tree';
+		else  $mk_gubun = 'Board';
 
 		$query	= "SELECT * from aboard_" . $rs['table_name'] . " ";
 		$mq1	= sql_query($query);
@@ -746,7 +752,7 @@ th, td { border: 1px solid silver; padding:5px; }
 				<td style='background-color:#FFFFFF' align='center'><?=$rs['make_id']?></td>
 			<td style='background-color:#FFFFFF' align='center'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['no']?></a></td>
-			<td width='10%' bgcolor="#FFFFFF" title='board no=<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
+			<td width='10%' bgcolor="#FFFFFF" title='make:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['name']?></a></td>
 			<td style='background-color:#FFFFFF' align='center'><?=$board_cnt?></td><!-- data record count -->
 			<td style='background-color:#FFFFFF' align='center' title="upload file use and size:<?=$rs['fileup']?>">
@@ -839,10 +845,10 @@ function paging($link, $total, $page, $size){
 	if( $page > $page_num ) {
 		echo("<a href='javascript:page_move(1)'>[First]</a><span>&nbsp;</span>");
 	} else {
-		echo("<span>[Start]&nbsp;</span>");	//echo("<img src=./include/img/btn/b_first_silver.gif border=0 height=30 title='First'>");
+		echo("<span>[Start]&nbsp;</span>");
 	}
 	if( $page > $page_num ) {
-		$back_page = $first_page - 1;	//echo("<a href='javascript:page_move($back_page)' ><img src=./include/img/btn/btn_prev.png width=30 title='previous'></a>");
+		$back_page = $first_page - 1;
 		echo("<a href='javascript:page_move($back_page)' >[Prev]</a><span>&nbsp;</span>");
 	} else {
 		//echo("<img src=./include/img/btn/btn_prev.png width=30 title='Previous'>");

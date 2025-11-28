@@ -148,7 +148,7 @@
 			$grant_view	    = 1;	//0:all, 1:member, 2:운영자 3:system manager
 			$grant_write	= 2;	//0:all, 1:member, 2:운영자 3:system manager
 			$xlev			= $H_LEV; // "2";	// no use.
-			$memo			= "insert1 - query_ok_new $day ";
+			$memo			= "board_list3 - create - query_ok_new $day ";
 			$job_link_type = 'A';	// A=aboard index_bbs.php 에서 구분하여 처리한다.
 			$table_width	= "800";
 			$list_size		= 20;
@@ -217,22 +217,22 @@
 
 			$mq2 = sql_query( $query );  
 			if( $mq2 ){
-					$f_path1	= KAPP_PATH_T_ . "/file/" . $H_ID;    //$mf_infor[53];
-					$f_path2	= $f_path1 . "/aboard_". $table_name; //$mf_infor[2];
-					if ( !is_dir($f_path1) ) {
-						if ( !@mkdir( $f_path1, 0755 ) ) {
-							echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
-							m_("query_ok_new.php Error: f_path1 : " . $f_path1 );
-							echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
-						}
+				$f_path1	= KAPP_PATH_T_ . "/file/" . $H_ID;    //$mf_infor[53];
+				$f_path2	= $f_path1 . "/aboard_". $table_name; //$mf_infor[2];
+				if ( !is_dir($f_path1) ) {
+					if ( !@mkdir( $f_path1, 0755 ) ) {
+						echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
+						m_("query_ok_new.php Error: f_path1 : " . $f_path1 );
+						echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
 					}
-					if ( !is_dir($f_path2) ) {
-						if ( !@mkdir( $f_path2, 0755 ) ) {
-							echo " Error: f_path2 : " . $f_path2;
-							m_("query_ok_new.php Error: f_path2 : " . $f_path2);
-							echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
-						}
+				}
+				if ( !is_dir($f_path2) ) {
+					if ( !@mkdir( $f_path2, 0755 ) ) {
+						echo " Error: f_path2 : " . $f_path2;
+						m_("query_ok_new.php Error: f_path2 : " . $f_path2);
+						echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
 					}
+				}
 			} else {
 				//echo "A sql: " . $query;
 				exit;
@@ -397,16 +397,22 @@
 		$chgname  = $_POST['chgname'];
 		$board_no = $_POST['board_no']; // table no - infor
 		$board_nm = $_POST['board_nm']; // table_name
+		$home_url = $_POST['board_gubun_value']; // board_gubun_value create tree - GCOM05!
 
 		if( isset($_POST['page'])) $page=$_POST['page']; 
 		else $page ='';
-		$link_ = "index_bbs.php?infor=" . $board_no;
-				$query = "update {$tkher['aboard_infor_table']} set name = '$chgname' where make_id='$H_ID' and no=".$board_no;
-				$mq=sql_query($query);
-				$sql = "update {$tkher['job_link_table']} set user_name='$chgname', job_name='$chgname' , job_addr='$link_', jong='A' where user_id='$H_ID' and aboard_no='$board_nm' ";
-				sql_query( $sql );
-				echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";
-				exit;
+		$link_ = KAPP_URL_T_ . "/menu/index_bbs.php?infor=" . $board_no;
+		$query = "update {$tkher['aboard_infor_table']} set name = '$chgname' where make_id='$H_ID' and no=".$board_no;
+		$mq=sql_query($query);
+		$sqlA = "update {$tkher['job_link_table']} set user_name='$chgname', job_name='$chgname' , job_addr='$link_', jong='A' where user_id='$H_ID' and aboard_no='$board_nm' ";
+		sql_query( $sqlA );
+
+		if( $home_url == 'GCOM05!' ){ // tree create board - GCOM05!
+			$sql = "update {$tkher['sys_menu_bom_table']} set sys_subtit='$chgname' where sys_userid='$H_ID' and book_num='$board_nm' "; //dao1764303785
+			sql_query( $sql );
+		}
+		echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";
+		exit;
 
 	} else if( $mode == "Update_func_run" ){ // board_list3.php
 		$grant_read  = $_POST['xread'];

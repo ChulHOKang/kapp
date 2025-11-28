@@ -13,6 +13,9 @@
 	include "./file_size.php";
 	include "./string.php";
 	$call_pg = 'detailD.php'; // use - memoD.php
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
+
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID = get_session("ss_mb_id");
 	if( $H_ID && $H_ID !=='') {
@@ -21,20 +24,19 @@
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		if( $mf_infor[47] == 1 ){
-			$H_ID	= 'Guest';  
+		if( $grant_read > 1 ){
+			echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
+			exit;
+		} else {
 			$H_NICK	= 'Guest';
 			$H_NAME = 'Guest';
-			$H_EMAIL= ''; 
 			$H_LEV	= 1;
-		} else {
-			$H_NICK	= '';
-			$H_NAME = '';
-			$H_LEV	= 0;
-			$H_ID	= '';  
+			$H_ID	= 'Guest';  
 			$H_EMAIL= ''; 
 		}
 	}
+	//m_("member lev:$H_LEV permission to write:$grant_write, read: $grant_read - $mf_infor[53]"); 
+	//member permission to write:8, read: 1 - solpakan_naver
 
 	if( isset($_REQUEST['search_choice']) ) $search_choice = $_REQUEST['search_choice'];
 	else if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
@@ -58,8 +60,10 @@
 	else if( isset($_POST['menu_mode']) ) $menu_mode	= $_POST['menu_mode'];
 	else $menu_mode	= '';
 
-	if( $H_LEV < $mf_infor[46] && $H_ID !== $mf_infor[53]){
-		m_("member permission to read. $H_ID, $mf_infor[47], $mf_infor[46] - $mf_infor[53]"); //47:grant read, 47:grant write
+	if( $H_LEV < $grant_read && $H_ID !== $mf_infor[53]){
+		m_("member permission to read. $H_ID, $grant_write, $grant_read - $mf_infor[53]"); 
+		//member permission to read. , 8, 1 - solpakan_naver
+		//47:grant read, 47:grant write
 		echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
 		exit;
 	}
@@ -218,8 +222,6 @@
 	$mf		= sql_fetch_row($mq);
 	$mid	= $mf_infor[53]; // 53:make_id , $mf[2];
 	$fsize	= $mf[14];
-	$grant_read	= $mf_infor[46];
-	$grant_write= $mf_infor[47];
 
 	if( $mf_infor[2] == 'kapp_Notice' || $mf_infor[2] == 'kapp_news' || $mf_infor[2] == 'kapp_qna' || $mf_infor[2] == 'kapp_free') $f_path1	= KAPP_PATH_T_ . "/file/";
 	else $f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];

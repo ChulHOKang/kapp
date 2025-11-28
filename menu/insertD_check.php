@@ -11,22 +11,25 @@
 	include_once('./infor.php');
 
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$H_ID	= get_session("ss_mb_id");
-	if( $H_ID == '' && $mf_infor[47] == 1) {
-		$H_EMAIL		= $_POST['email'];
-		$password		= $_POST['password'];
-		$H_LEV			= 1;//$member['mb_level'];  
-		$H_NAME			= 'Guest';//$member['mb_name'];  
-		$H_NICK			= 'Guest';//$member['mb_nick'];  
-		$H_ID			= $_POST['email'];
-	} else if( !$H_ID || $H_ID == ''){ 
-		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
-		exit; 
-	} else if( $H_ID && $H_ID != ''){ 
-		$H_EMAIL		= $member['mb_email'];  
-		$H_LEV			= $member['mb_level'];  
-		$H_NAME			= $member['mb_name'];  
-		$H_NICK			= $member['mb_nick'];  
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
+	if( $H_ID && $H_ID !=='') {
+		$H_LEV	= $member['mb_level'];  
+		$H_NAME	= $member['mb_name'];  
+		$H_NICK	= $member['mb_nick'];  
+		$H_EMAIL= $member['mb_email'];  
+	} else {
+		if( $grant_write > 1 ){
+			echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
+			exit;
+		} else {
+			$H_NICK	= 'Guest';
+			$H_NAME = 'Guest';
+			$H_LEV	= 1;
+			$H_ID	= 'Guest';  
+			$H_EMAIL= $_POST['email'];
+			$password= $_POST['password'];
+		}
 	}
 
 	function special_chk ($input) { // 특수문자 제거. "'"만 제거한다.
@@ -53,7 +56,7 @@
 	if( isset($_POST['tab_hnm']) ) $tab_hnm	= $_POST['tab_hnm']; //$tab_hnm = "aboard_".$mf_infor[1];
 	else $tab_hnm	= '';
 
-	$content = special_chk( $content );
+	//$content = special_chk( $content );
 	$in_dateA	= date("Y-m-d H:i:s", time());
 	$in_date	= time();
 

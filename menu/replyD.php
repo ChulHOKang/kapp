@@ -46,23 +46,25 @@
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
 
-
-	$H_ID= get_session("ss_mb_id");
-	if( $H_ID == '' && $mf_infor[47] == 1) {
-		$H_EMAIL		= '';//$member['mb_email'];  
-		$H_LEV			= 1;//$member['mb_level'];  
-		$H_NAME			= 'Guest';//$member['mb_name'];  
-		$H_NICK			= 'Guest';//$member['mb_nick'];  
-		$H_ID			= 'Guest';
-	} else if( !$H_ID || $H_ID == ''){ 
-		echo "<script>history.back(-1);</script>"; exit; 
-
-	} else if( $H_ID && $H_ID != ''){ 
-		$H_EMAIL		= $member['mb_email'];  
-		$H_LEV			= $member['mb_level'];  
-		$H_NAME			= $member['mb_name'];  
-		$H_NICK			= $member['mb_nick'];  
+	$H_ID = get_session("ss_mb_id");
+	if( $H_ID && $H_ID !=='') {
+		$H_LEV	= $member['mb_level'];  
+		$H_NAME	= $member['mb_name'];  
+		$H_NICK	= $member['mb_nick'];  
+		$H_EMAIL = get_session("ss_mb_email"); 
+	} else {
+		if( $grant_write > 1 ){
+			echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
+			exit;
+		} else {
+			$H_NICK	= 'Guest';
+			$H_NAME = 'Guest';
+			$H_LEV	= 1;
+			$H_ID	= 'Guest';  
+			$H_EMAIL= ''; 
+		}
 	}
+
 	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53]){
 		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
 		//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";

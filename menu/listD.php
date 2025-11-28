@@ -5,39 +5,41 @@
 	include "./string.php";   // function Shorten_String($String, $MaxLen, $ShortenStr)
 	include "./infor.php";  
 	include "./memo_cnt.php"; // function memo_count($board,$no)
-/*
-	listD.php :
-   call : insertD.php, detailD.php, board_list_admin.php
-		: index.php?infor=<?=$rs['no']
-		:/contents/memo_password.php?infor=159&mode=memo_deleteTT&board_name=aboard_tkherdao159&memo_no=3779&list_no=51&page=1&call_pg=detailD.php
+	/*
+		listD.php :
+	   call : insertD.php, detailD.php, board_list_admin.php
+			: index.php?infor=<?=$rs['no']
+			:/contents/memo_password.php?infor=159&mode=memo_deleteTT&board_name=aboard_tkherdao159&memo_no=3779&list_no=51&page=1&call_pg=detailD.php
 
-	- Standard board skin -> movie:2:Standard , 1:General, 3:Memo, 4:Image
-	- board_data_list.php : General board skin -> movie:1:General, 3:Memo, 4:Image
-	- listD.php : Standard board skin -> movie:2:Standard
-	- board_list_memo.php : Memo board skin -> movie:3:Memo
-	- list1.php : Image board skin -> movie:4:Image
-	- /contents/index.php and infor.php, listD.php 에 $_SESSION['infor'] add : 21-07-05
-*/
-	$H_ID   = get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
-	if( $H_ID ){
-		$H_NICK	= $member['mb_nick'];
-		$H_NAME = $member['mb_name'];
-		$H_LEV	= $member['mb_level'];
+		- Standard board skin -> movie:2:Standard , 1:General, 3:Memo, 4:Image
+		- board_data_list.php : General board skin -> movie:1:General, 3:Memo, 4:Image
+		- listD.php : Standard board skin -> movie:2:Standard
+		- board_list_memo.php : Memo board skin -> movie:3:Memo
+		- list1.php : Image board skin -> movie:4:Image
+		- /contents/index.php and infor.php, listD.php 에 $_SESSION['infor'] add : 21-07-05
+	*/
+	$grant_read	= $mf_infor[46];
+	$grant_write= $mf_infor[47];
+
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id");
+	if( $H_ID && $H_ID !=='') {
+		$H_LEV	= $member['mb_level'];  
+		$H_NAME	= $member['mb_name'];  
+		$H_NICK	= $member['mb_nick'];  
+		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		if( $mf_infor[47] == 1 ){
+		if( $grant_read > 1 ){
+			//echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
+			//exit;
+		} else {
 			$H_NICK	= 'Guest';
 			$H_NAME = 'Guest';
 			$H_LEV	= 1;
-		} else {
-			$H_NICK	= '';
-			$H_NAME = '';
-			$H_LEV	= 0;
+			$H_ID	= 'Guest';  
+			$H_EMAIL= ''; 
 		}
 	}
-
-		$grant_view = $mf_array['grant_view']; // grant_view, security $mf_array, $row
-		$grant_write = $mf_array['grant_write']; // grant_view, security $mf_array, $row
-		//m_("wr: " . $grant_write . ", vi: " . $grant_view); // $bbs_lev, wr: 1, vi: 1
 
 	if( isset($_REQUEST['mode'])) $mode = $_REQUEST['mode'];
 	else if( isset($_POST['mode'])) $mode = $_POST['mode'];
@@ -377,7 +379,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 				$rno = $row['no'];
 				if($dep){ echo $dep; }
 ?>
-					<a href="javascript:board_view('<?=$infor?>','<?=$grant_view?>','<?=$rno?>', '<?=$page?>', '<?=$security_my?>', '<?=$H_ID?>', '<?=$menu_mode?>' );" >
+					<a href="javascript:board_view('<?=$infor?>','<?=$grant_read?>','<?=$rno?>', '<?=$page?>', '<?=$security_my?>', '<?=$H_ID?>', '<?=$menu_mode?>' );" >
 
 					<span><?=$msg_?><?=$memo_cnt?><?php echo $new; ?></span></a>
 					</td>

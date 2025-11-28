@@ -1,6 +1,7 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 	/*
+	  no use -
 	  board_list3_update.php : board attribute set : Old ver 
 	*/
 ?>
@@ -116,11 +117,15 @@ function showColorPicker(x,y, target)
   return;
 }
 function set_type(v){
-	if(v=='1') update_form.home_url.value='TCOM01!';
+	if(v=='2') update_form.home_url.value='GCOM02!';
+	else if(v=='3') update_form.home_url.value='GCOM03!';
+	else if(v=='4') update_form.home_url.value='GCOM04!';
+	else update_form.home_url.value='GCOM02!';
+	/*if(v=='1') update_form.home_url.value='TCOM01!';
 	else if(v=='2') update_form.home_url.value='GCOM02!';
 	else if(v=='3') update_form.home_url.value='GCOM03!';
 	else if(v=='4') update_form.home_url.value='GCOM04!';
-	else if(v=='5') update_form.home_url.value='GCOM05!';
+	else if(v=='5') update_form.home_url.value='GCOM05!';*/
 }
 
 function back_func(infor, list_no){
@@ -234,33 +239,6 @@ include "../menu_run.php";
 				  <!-- <option value='5' <?php if($mf[48] == "5") echo "selected"; ?>>Daum type</option> -->
 				  </select></td>
             </tr>
-
-			<!-- <tr>
-              <td width="29%" bgcolor="#F6F6F6" align="center">Table Size</td>
-              <td width="81%" bgcolor="#FFFBEF">
-              <input type="text" name="table_width" size="6" value='<?=$mf[10]?>'>Pixel / Percent</td>
-            </tr> -->
-          <!-- <tr>
-            <td width="29%" bgcolor="#F6F6F6" align="center">Page Lines</td>
-            <td width="81%" bgcolor="#FFFBEF">
-            <input type="text" name="list_size" size="6" value="<?=$mf[16]?>">&nbsp;Number of page lines</td>
-          </tr> -->
-<?php
-	if($mf[51]){ 
-		$check_security_yes="checked";
-		$check_security_no = "";
-	} else {
-		$check_security_yes="";
-		$check_security_no = "checked";
-	}
-?>
-			<!--[비밀글사용여부]-->
-			<!-- <tr>
-              <td width="29%" bgcolor="#F6F6F6" align="center">Whether to use secrets</td>
-              <td width="81%" bgcolor="#FFFBEF"><input type="radio" value="1" name="security" <?=$check_security_yes?>> use&nbsp;
-              <input type="radio" name="security" value="0" <?=$check_security_no?>>no use</td>
-            </tr> -->
-
 
 <?php
 	if( $mf[3] > 0 ){
