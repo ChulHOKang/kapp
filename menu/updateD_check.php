@@ -1,13 +1,12 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 
-	$infor = $_POST['infor'];
+	include_once('./infor.php');
 	$page  = $_POST['page'];
 	$list_no = $_POST['list_no'];
 	$search_choice = $_POST['search_choice'];
 	$search_text   = $_POST['search_text'];
-	include_once('./infor.php');
-
+	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID	= get_session("ss_mb_id");
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];

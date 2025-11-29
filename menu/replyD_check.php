@@ -4,7 +4,9 @@
 		replyD_check.php
 	*/
 	//$infor   = $_SESSION['infor'];
-	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	//if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	include_once('./infor.php');
+
 	if( isset($_POST['page']) ) $page  = $_POST['page'];
 	if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 	if( isset($_POST['search_choice']) ) $search_choice = $_POST['search_choice'];
@@ -18,7 +20,6 @@
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit;
 	}
-	include_once('./infor.php');
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID	= get_session("ss_mb_id");
 	$grant_read	= $mf_infor[46];

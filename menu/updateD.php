@@ -2,6 +2,8 @@
 	include_once('../tkher_start_necessary.php');
 	/*
 	updateD.php : general board
+
+	email is incorrect! email:solpakan59@gmail.com
 	*/
 ?>
 <html>
@@ -45,24 +47,17 @@
 	else $mode  = "";
 	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
-	if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
-	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+
 	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	if( $mode != 'updateTT' || !$infor ) {
 		m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); 
-		//echo "<script>history.back(-1);</script>"; exit;
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 	}
 	$in_day = date("Y-m-d H:i");
-//	$query="select no, name, context, target, step, re, subject, file_name, file_wonbon, password, id from aboard_" . $mf_infor[2] . " where no=".$list_no;
 	$query="select * from aboard_" . $mf_infor[2] . " where no=".$list_no;
-	//$mq = sql_query($query);
-	//$mf = sql_fetch_row($mq);
 	$mf = sql_fetch( $query );
-	//$mf[6] = htmlspecialchars($mf[6]);
-	$content = $mf['context'];
-	//$content = htmlspecialchars( $mf['context'] );
+	$content = $mf['context'];	//$content = htmlspecialchars( $mf['context'] );
 	$email = $mf['email'];
 	if( $mf_infor[47]== 1 && $H_ID == 'Guest' ){
 		$H_NAME = $mf['name'];
@@ -70,36 +65,11 @@
 		$H_ID = $mf['id'];
 	}
 
-//	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf[10]!==$H_ID){
 	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf['email']!==$H_EMAIL){
 		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
-		//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
 		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
-
 		exit;
 	}
-	/*switch( $mf_infor[47] ){
-		case '0': break;
-		case '1': 	
-			if( !$H_ID || $H_LEV < 2 ) { 
-				m_("1 You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-		case '2': 
-			if( $H_ID != $mf_infor[53] ) { 
-				m_("2 You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-		case '3': 
-			if( $H_LEV < 8 ) { 
-				m_("3 You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-	}*/
-
 ?>
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <link rel="stylesheet" href="../include/css/default.css" type="text/css" />
@@ -152,7 +122,7 @@
 		}
 		xx = formA.auto_check.value;
 		if(xx != xauto){
-			alert('Auto-typing prevention characters are incorrect : ' + xx );//Auto-typing prevention characters are incorrect 0u1nvd : 0
+			alert('Auto-typing prevention characters are incorrect : ' + xx );
 			formA.auto_check.focus();
 			return;
 		}
@@ -208,18 +178,14 @@
 		else {$return = false;}
 	  return $return;
 	}
-
-	 function back_go(infor,list_no, page) {
+	function back_go(infor,list_no, page) {
 		x = document.tx_editor_form;
-
 		x.infor.value=infor;
 		x.list_no.value=list_no;
 		x.page.value=page;
-		
 		x.action=x.previous.value;
 		x.submit();
 	}
-
 </script>
 
 </head>
@@ -231,20 +197,16 @@
 <div class="wrapper">
 		<div id="write_page" class="mainProject">
 <form name="tx_editor_form" id="tx_editor_form" action="updateD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
-		<!-- <input type ="hidden" name = "doc_idx2" value="<?=$doc_idx?>"> -->
 
-		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' /><!-- my_func -->
-
+		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' />
 			<input type='hidden' name='infor' 			value='<?=$infor?>' > 
 			<input type='hidden' name='list_no'			value='<?=$list_no?>'>
 			<input type='hidden' name='page' 			value='<?=$page?>'>
-			<!-- <input type='hidden' name='security_' 		value='1'> -->
 			<input type='hidden' name='security_yn' 	value='<?=$mf_infor[51]?>'>
-			<input type='hidden' name='fileup_yn' 		value='<?=$mf_infor[3]?>'><!-- upload file size -->
+			<input type='hidden' name='fileup_yn' 		value='<?=$mf_infor[3]?>'>
 			<input type='hidden' name='html_yn' 		value='<?=$mf_infor[7]?>'>
 			<input type='hidden' name='file_ext' 		value=''>
 			<input type="hidden" name='previous'		value='<?=$_REQUEST["previous"]?>' />
-
 			<input type='hidden' name='mode'			value=''>
 			<input type='hidden' name='target'			value='<?=$mf['target']?>'>
 			<input type='hidden' name='step'			value='<?=$mf['step']?>'>
@@ -256,15 +218,11 @@
 			<div class="boardView">
 				<div class="viewHeader">
 					<span><?=$in_day?></span>
-
 					<a href="javascript:back_go('<?=$infor?>','<?=$list_no?>','<?=$page?>')" class="btn_bo02">Previous</a>
 					<a href="javascript:board_listTT();" class="btn_bo02">List</a>
-					<!-- 위 목록 버튼은 절대경로로 사이트 주소를 풀로 적고 뒤에 #customer 를 적어서 ID값으로 이동하게끔 하면 됨 -->
 				</div>
-
 				<div class="viewSubj"><span><?=$mf_infor[1]?> - [ Update ]</span> </div>
 				<ul class="viewForm">
-
 <?php if( $H_ID != "" && $H_LEV > 1 ){ ?>
 					<li class="autom_tit">
 						<span class="t01">Writer</span>
@@ -283,19 +241,6 @@
 						<span class="t01">password</span>
 						<span class="t02"><input type="password" name="password" placeholder="Please enter your password, you will need it." value=''></span>
 					</li>
-<?php } else { ?>
-					<!-- <li class="autom_tit">
-						<span class="t01">Writer</span>
-						<span class="t02"><input type="text" name="nameA" id='nameA' value='<?=$H_NAME?>' placeholder="Please enter a name."></span>
-					</li>
-					<li>
-						<span class="t01">E-Mail</span>
-						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" value=''></span>
-					</li>
-					<li class="pw_char">
-						<span class="t01">password</span>
-						<span class="t02"><input type="text" name="password"  placeholder="Please enter your password, you will need it."></span>
-					</li> -->
 <?php } ?>
 					<li class="autom_tit">
 						<span class="t01">Title</span>
@@ -303,7 +248,6 @@
 							<input type="text" name="subject" value='<?=$mf['subject']?>' placeholder="Please enter a title! " class="autom_subj" >
 						</span>
 					</li>
-
 				</ul>
 <?php 
 	$_SESSION['infor'] = $infor;
@@ -328,13 +272,13 @@
 <?php } ?>
 						<li>
 							<span class="t01">Auto-Protect : <?=$auto_char?></span>
-							<span class="t02"><!-- 대소문자 구분! -->
+							<span class="t02">
 							<input type="text" name="auto_check"  placeholder="Please enter the Auto-Protect text on the left! Case sensitivity! " required="required"></span>
 							</span>
 						</li>
 					</ul>
 					<div class="cradata_check">
-						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$H_ID?>');" class="btn_bo03">Save</a>
+						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$mf['email']?>');" class="btn_bo03">Save</a>
 					</div>
 				</div>
 			</div>
@@ -345,32 +289,32 @@
 
  
 <script type="text/javascript">
-  function saveContent(xauto, no, id) {
+  function saveContent(xauto, no, email_id) {
 		var formA = document.tx_editor_form;
 		xx = formA.auto_check.value;
 		var p1 = formA.password.value;
 		var p2 = formA.passwordG.value;
-		if( id == formA.email.value ){
+		if( email_id == formA.email.value ){
 			if( p1 =='' ) {
 				alert('Enter Password! ' );
 				formA.password.focus();
 				return false;
 			} else if( p1 == p2 ) {
 				if( formA.auto_check.value==''){
-					alert('Please enter an auto-prevention character! ');//Please enter an auto-prevention character! 
+					alert('Please enter an auto-prevention character! ');
 					formA.auto_check.focus();
 					return false;
 				}
-				//formA.submit();
 			} else {
 				alert('Password is incorrect! p:' + p1 );
 				formA.password.focus();
 				return false;
 			}
 		} else {
-				alert('email is incorrect! email:' + formA.email.value );
+				alert('email is incorrect! email:' + formA.email.value + ', email_id: ' +email_id  );
+				//email is incorrect! email:solpakan59@gmail.com, id: Guest
+				//email is incorrect! email:solpakan59@gmail.com
 		}
-
 		if(formA.nameA.value==''){
 			alert('Please enter your name.');
 			formA.nameA.focus();
@@ -381,10 +325,9 @@
 			formA.subject.focus();
 			return false;
 		}
-
 		if(xx == xauto){
 			formA.mode.value='update_funcTT'
-			Editor.save(); // 이 함수를 호출하여 글을 등록하면 된다.
+			Editor.save();
 			formA.submit();
 			return true;
 		} else {
@@ -408,40 +351,38 @@
     var validator = new Trex.Validator();
     var content = editor.getContent();
     if (!validator.exists(content)) {
-      alert('내용을 입력하세요');
+      alert('Please enter the content');
       return false;
     }
     return true;
   }
  
   /**
-   * Editor.save()를 호출한 경우 validForm callback 이 수행된 이후
-   * 실제 form submit을 위해 form 필드를 생성, 변경하기 위해 부르는 콜백함수로
-   * 각자 상황에 맞게 적절히 응용하여 사용한다.
+   * After calling Editor.save(), the validForm callback is executed.
+   * A callback function that is called to create and change form fields for actual form submission.
+   * Use it appropriately according to each situation.
    * @function
    * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
    * @returns {Boolean} 정상적인 경우에 true
    */
-  function setForm(editor) { // 저장할때 여기를 탄다.
+  function setForm(editor) { // save here
         var i, input;
         var form = editor.getForm();
         var content = editor.getContent();
 
-        // 본문 내용을 필드를 생성하여 값을 할당하는 부분
+        /* The part where the body content creates a field and assigns a value */
         var textarea = document.createElement('textarea');
         textarea.name = 'content';
         textarea.value = content;
         form.createField(textarea);
  
-        /* 아래의 코드는 첨부된 데이터를 필드를 생성하여 값을 할당하는 부분으로 상황에 맞게 수정하여 사용한다.
-         첨부된 데이터 중에 주어진 종류(image,file..)에 해당하는 것만 배열로 넘겨준다. */
+        /* The code below creates fields and assigns values ​​to attached data. Modify it to suit your situation. Only the attached data of a given type (image, file, etc.) is passed as an array. */
         var images = editor.getAttachments('image');
         for (i = 0; i < images.length; i++) {
-            // existStage는 현재 본문에 존재하는지 여부
+            /* existStage is whether the current text exists or not */
             if (images[i].existStage) {
-                // data는 팝업에서 execAttach 등을 통해 넘긴 데이터
-                //alert('attachment information - image[' + i + '] \r\n' + JSON.stringify(images[i].data));
-				// 수정 저장할때 여기를 탄다.
+                /* data is data passed through execAttach, etc. in the pop-up */
+				/* Click here when saving edits. */
                 input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'attach_image';
@@ -472,37 +413,36 @@ function youTubeImplant() {
     var attachments = {};
     attachments['image'] = [];
     attachments['file'] = [];
-    /* 저장된 컨텐츠를 불러오기 위한 함수 호출 */
+    /* Call a function to retrieve saved content */
     Editor.modify({
-      "attachments": function () { // 저장된 첨부가 있을 경우 배열로 넘김, 위의 부분을 수정하고 아래 부분은 수정없이 사용 
+      "attachments": function () { /* If there are saved attachments, pass them as an array, modify the upper part, and use the lower part without modification. */
         var allattachments = [];
         for (var i in attachments) {
           allattachments = allattachments.concat(attachments[i]);
         }
         return allattachments;
       }(),
-      "content": content /* document.getElementById("sample_contents_source") 내용 문자열, 주어진 필드(textarea) 엘리먼트  sample_contents_source */
-       /* "content": content 내용 문자열, 주어진 필드(textarea) 엘리먼트  sample_contents_source */
+      "content": content /* document.getElementById("sample_contents_source") Content string, textarea  sample_contents_source */
+       /* "content": content Content string, textarea  sample_contents_source */
     });
   }
 </script>
  
 <script type="text/javascript">
-	//var content = '<?php echo $content; ?>';
 	var config = {
-    txHost: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) http://xxx.xxx.com */
-    txPath: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) /xxx/xxx/ */
-    txService: 'sample', /* 수정필요없음. */
-    txProject: 'sample', /* 수정필요없음. 프로젝트가 여러개일 경우만 수정한다. */
-    initializedId: "", /* 대부분의 경우에 빈문자열 */
-    wrapper: "tx_trex_container", /* 에디터를 둘러싸고 있는 레이어 이름(에디터 컨테이너) */
-    form: 'tx_editor_form'+"", /* 등록하기 위한 Form 이름 */
-    txIconPath: "./images/icon/editor/", /*에디터에 사용되는 이미지 디렉터리, 필요에 따라 수정한다. */
-    txDecoPath: "./images/deco/contents/", /*본문에 사용되는 이미지 디렉터리, 서비스에서 사용할 때는 완성된 컨텐츠로 배포되기 위해 절대경로로 수정한다. */
+    txHost: '<?=KAPP_URL_T_?>', /* The part needed to load resources at runtime */
+    txPath: '<?=KAPP_URL_T_?>', /* The part needed to load resources at runtime */
+    txService: 'kapp', /* sample . */
+    txProject: 'kapp', /* sample . Modify only if there are multiple projects. */
+    initializedId: "", /* In most cases, an empty string*/
+    wrapper: "tx_trex_container", /* The name of the layer surrounding the editor (editor container) */
+    form: 'tx_editor_form'+"", /* Form name for registration */
+    txIconPath: "./images/icon/editor/", /* Image directory used by the editor */
+    txDecoPath: "./images/deco/contents/", /* The image directory used in the body of the text is modified to an absolute path when used in a service so that it can be distributed as completed content. */
     canvas: {
             exitEditor:{
                 /*
-                desc:'빠져 나오시려면 shift+b를 누르세요.',
+                desc:'Press shift+b to exit.',
                 hotKey: {
                     shiftKey:true,
                     keyCode:66
@@ -511,12 +451,12 @@ function youTubeImplant() {
                 */
             },
       styles: {
-        color: "#123456",		/* 기본 글자색 */
-        fontFamily: "굴림",		/* 기본 글자체 */
-        fontSize: "10pt",		/* 기본 글자크기 */
-        backgroundColor: "#fff", /*기본 배경색 */
-        lineHeight: "1.5",		/*기본 줄간격 */
-        padding: "8px"			/* 위지윅 영역의 여백 */
+        color: "#123456",		/* basic font color */
+        fontFamily: "Arial",		/* basic font */
+        fontSize: "10pt",		/* basic font size */
+        backgroundColor: "#fff", /* basic background color */
+        lineHeight: "1.5",		/* Default line spacing */
+        padding: "8px"			/* WYSIWYG area margins */
       },
       showGuideArea: false
     },
@@ -530,7 +470,7 @@ function youTubeImplant() {
       }
     },
     size: {
-      contentWidth: 1500 /* 지정된 본문영역의 넓이가 있을 경우에 설정 */
+      contentWidth: 1500 /* Set if there is a width of the specified text area */
     }
   };
  

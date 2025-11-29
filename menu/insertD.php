@@ -17,7 +17,7 @@
 <script type="text/javascript" src="../include/js/common.js"></script>
 <SCRIPT src="../include/js/contents_resize.js" type='text/javascript'></SCRIPT>
 <?php
-	if( $infor ) $_SESSION['infor'] = $infor;
+	//if( $infor ) $_SESSION['infor'] = $infor;
 	include "./infor.php";
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
@@ -49,37 +49,16 @@
 	if( isset($_POST['menu_mode']) ) $menu_mode=$_REQUEST['menu_mode'];
 	else $menu_mode = '';
 	$in_day = date("Y-m-d H:i");
-	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
-	else $infor = '';
 	$grant_write=$mf_array['grant_write'];
-	//m_(" session infor: ". $_SESSION['infor'] . ", 47: " . $mf_infor[47]. ", grant_write: " . $mf_array['grant_write'] );
-	//session infor: 2, 47: 2, grant_write: 2
-	/*
+		/*
 		switch( $mf_infor[47] ){ // 47=grant_write
-			case '0': break;			// guest
-			case '1': 					// member
-				if( !$H_ID || $H_LEV < $grant_write ) { 
-					m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV); 
-					echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-				}
-				else break;
-			case '2': 
-				//if( $H_ID != $mf_infor[53] && $H_LEV < 2) { 
-				if( $H_ID != $mf_infor[53] && $H_LEV < $grant_write) { 
-					m_("You do not have permission to write."); 
-					echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-				}
-				else break;
-			case '3': 
-				if( $H_ID != $mf_infor[53] && $H_LEV < 8 ) { 
-					m_("You do not have permission to write."); //echo "<script>history.back(-1);</script>"; exit;
-					echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
-				}
-				else break;
+			case '0': break;			// error
+			case '1': 					// guest
+			case '2': //member
+			case '3': // only my
 		} */
 		if( $grant_write > 1 && $H_LEV < $grant_write ) { 
 			m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV . ", write: " . $grant_write); 
-			//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
 			echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		}
 	$amember_name	= $H_NICK;
@@ -89,25 +68,22 @@
 
 <script type="text/javascript">
 
-	function board_listD(menu_mode) {
+	function board_listD(menu_mode, infor) {
 		x = document.tx_editor_form;
-		infor = x.infor.value;
 		x.action='listD.php?infor='+infor+'&menu_mode=' +menu_mode;
 		x.submit();
-
 	}
 	function data_check(x,y){
-			alert('Please enter your name');// \n 이름을 입력하세요
+			alert('Please enter your name');
 			x.title.focus();
 			return false;
-
 		if(x.title.value==''){
-			alert('Please enter a title'); //  \n 제목을 입력하세요
+			alert('Please enter a title');
 			x.title.focus();
 			return false;
 		}
 		if(x.contents.value==''){
-			alert('Please enter your content'); // \n 내용을 입력하세요
+			alert('Please enter your content');
 			x.contents.focus();
 			return false;
 		}
@@ -129,7 +105,7 @@
 		else {$return = false;}
 	  return $return;
 	}
-/*
+	/*
 	 function back_go(infor,list_no, page) {
  		x = document.tx_editor_form;
 		x.infor.value=infor;
@@ -140,68 +116,19 @@
 	}*/
 </script>
 
-<script>
-	$(function() {
-		$('.cradata_check').on('click', function() {
-			x = document.tx_editor_form;
-			var nm = x.name.value;
-			alert('nm:'+nm);
-			if( x.name.value == "") {
-				alert(' Please check your name!! ');// \n 성함 확인바랍니다.
-				insert_form.name.focus();
-				return false;
-			}
-			if( x.user_phone.value == "") {
-				alert(' Please contact us'); // \n 연락처 확인바랍니다. 
-				return false;
-			}
-			
-			if( x.title.value == "") {
-				alert(' Please check the title'); // \n 제목 확인바랍니다. 
-				return false;
-			}
-			
-			if( x.homep.value == "") {
-				alert(' Please check the homepage address. '); // \n 홈페이지 주소 확인바랍니다.
-				return false;
-			}
-			if( x.pass_check.value == "") {
-				alert(' Please check your password'); // \n 비밀번호 확인바랍니다. 
-				return false;
-			}
-			
-			if( x.auto_check.value == "") {
-				alert(' Automatic character verification. '); // \n 자동문자 확인바랍니다.
-				return false;
-			}
-			var auto_char = x.auto_char.value;
-			var auto_check = x.auto_check.value;
-			if( auto_check == auto_char ) {
-				x.submit();
-			} else {
-				alert(' The automatic characters do not match.');
-				return false;
-			}
-		});	
-	});
-</script>
-
 </head>
 <body width='100%'>
-		<?php 
-		$cur='A';
-		if( $menu_mode != 'off') include_once "../menu_run.php";
-		?>
-
-<?php
-	include "./headerD.php"; // OK ./header.php는 Tboard write.php 용. 주의.
+<?php 
+	$cur='A';
+	if( $menu_mode != 'off') include_once "../menu_run.php";
+	include "./headerD.php";
 ?>
 
 <div class="wrapper">
 	<div id="write_page" class="mainProject">
 <form name="tx_editor_form" id="tx_editor_form" action="insertD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
 		<input type="hidden" name='mode'		value='' />
-		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' /><!-- my_func -->
+		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' />
 		<input type="hidden" name='c_sel'		value='<?=$c_sel?>' />
 		<input type="hidden" name='id'			value='<?=$id?>' />
 		<input type="hidden" name='board'		value='<?=$board?>' />
@@ -209,7 +136,7 @@
 		<input type="hidden" name='name'		value='<?=$H_NICK?>' />
 		<input type='hidden' name='security_'   value='1'>
 		<input type='hidden' name='security_yn' value='<?=$mf_infor[51]?>'>
-		<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'><!-- 업로드 가능한 화일 크기 -->
+		<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'><!-- upload file size -->
 		<input type='hidden' name='html_yn'     value='<?=$mf_infor[7]?>'>
 		<input type='hidden' name='tab_enm'     value='aboard_<?=$mf_infor[2]?>'>
 		<input type='hidden' name='tab_hnm'     value='<?=$mf_infor[1]?>'>
@@ -218,15 +145,12 @@
 		<input type='hidden' name='list_no'     value=''>
 		<input type='hidden' name='page'        value=''>
 		<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
-			
 			<div class="boardView">
 				<div class="viewHeader">
 					<span><?=$in_day?></span>
-					<a href="javascript:board_listD('<?=$menu_mode?>');" class="btn_bo02">List</a>
+					<a href="javascript:board_listD('<?=$menu_mode?>', '<?=$infor?>');" class="btn_bo02">List</a>
 				</div>
-
 				<div class="viewSubj"><span><?=$mf_infor[1]?></span> </div>
-
 				<ul class="viewForm">
 <?php
 if( $H_ID && $H_ID == 'Guest' ){
@@ -265,26 +189,15 @@ if( $H_ID && $H_ID == 'Guest' ){
 						</span>
 					</li>
 <?php } ?>
-<?php if($mf_infor[51]){ ?><!-- 비밀글. -->
-					<li class="autom_tit">
-						<span class="t01">Secret article</span>
-						<span >
-							<input type="radio" value="use" name="security1" id="security1"> use
-							<input type="radio" value="nouse" checked name="security1" id="security1"> no use
-							<input type="text"  value="" name="security" size="10" style='border:1 black solid;' title='This is required when writing secrets.'> (password) 
-						</span>
-					</li>
-<?php } ?>
 
 			</ul>
 <?php 
-	$_SESSION['infor'] = $infor;	//m_("infor: " . $infor);
+	$_SESSION['infor'] = $infor;
 	require_once ('write_head.php');
 ?>
-
 				<div class="viewFooter">
 					<ul class="viewForm_2">
-<?php if($mf_infor[3]){ ?><!-- 첨부화일. -->
+<?php if($mf_infor[3]){ ?>
 						<li>
 							<span class="t01">Attachments</span>
 							<span class="t02 select_file">
@@ -294,13 +207,13 @@ if( $H_ID && $H_ID == 'Guest' ){
 <?php } ?>
 						<li>
 							<span class="t01">Auto-Protect : <b><?=$auto_char?></b></span>
-							<span class="t02"><!-- 대소문자 구분! -->
+							<span class="t02">
 							<input type="text" name="auto_check"  placeholder="Please enter the Auto-Protect text on the left! Case sensitivity! " required="required"></span>
 							</span>
 						</li>
 					</ul>
 						<a href="javascript:saveContent(this, '<?=$auto_char?>', '<?=$H_ID?>');" class="btn_bo02">Save</a>
-					<a href="javascript:board_listD('<?=$menu_mode?>');" class="btn_bo02">List</a>
+					<a href="javascript:board_listD('<?=$menu_mode?>', '<?=$infor?>');" class="btn_bo02">List</a>
 
 
 				</div>
@@ -310,26 +223,25 @@ if( $H_ID && $H_ID == 'Guest' ){
 </form>
 </div><!-- end : wrapper-->
 
-
 <script type="text/javascript">
 	var config = {
-		txHost: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) http://xxx.xxx.com */
-		txPath: '', /* 런타임 시 리소스들을 로딩할 때 필요한 부분으로, 경로가 변경되면 이 부분 수정이 필요. ex) /xxx/xxx/ */
-		txService: 'sample', /* 수정필요없음. */
-		txProject: 'sample', /* 수정필요없음. 프로젝트가 여러개일 경우만 수정한다. */
-		initializedId: "", /* 대부분의 경우에 빈문자열 */
-		wrapper: "tx_trex_container", /* 에디터를 둘러싸고 있는 레이어 이름(에디터 컨테이너) */
-		form: 'tx_editor_form'+"", /* 등록하기 위한 Form 이름 */
-		txIconPath: "images/icon/editor/", /*에디터에 사용되는 이미지 디렉터리, 필요에 따라 수정한다. */
-		txDecoPath: "images/deco/contents/", /*본문에 사용되는 이미지 디렉터리, 서비스에서 사용할 때는 완성된 컨텐츠로 배포되기 위해 절대경로로 수정한다. */
+		txHost: '<?=KAPP_URL_T_?>', /* */
+		txPath: '<?=KAPP_URL_T_?>', /* */
+		txService: 'kapp', /* sample */
+		txProject: 'kapp', /* sample */
+		initializedId: "", /* In most cases, an empty string */
+		wrapper: "tx_trex_container", /* layer name (edit container) */
+		form: 'tx_editor_form'+"", /* Form name */
+		txIconPath: "images/icon/editor/", /* image dir */
+		txDecoPath: "images/deco/contents/", /*The image directory used in the body of the text is modified to an absolute path when used in a service so that it can be distributed as completed content.*/
 		canvas: {
 			styles: {
-				color: "#123456", /* 기본 글자색 */
-				fontFamily: "굴림", /* 기본 글자체 */
-				fontSize: "10pt", /* 기본 글자크기 */
-				backgroundColor: "#fff", /*기본 배경색 */
-				lineHeight: "1.5", /*기본 줄간격 */
-				padding: "8px" /* 위지윅 영역의 여백 */
+				color: "#123456", /* basic font color */
+				fontFamily: "Arial", /* basic font */
+				fontSize: "10pt", /* basic font size */
+				backgroundColor: "#fff", /* basic background color */
+				lineHeight: "1.5", /* Default line spacing */
+				padding: "8px" /* Margins of WYSIWYG area */
 			},
 			showGuideArea: false
 		},
@@ -343,7 +255,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 			}
 		},
 		size: {
-			contentWidth: 1500 /* 지정된 본문영역의 넓이가 있을 경우에 설정 700 1500 */
+			contentWidth: 1500 /* If there is a width of the specified body area, set it to 700 1500 */
 		}
 	};
 
@@ -392,31 +304,17 @@ if( $H_ID && $H_ID == 'Guest' ){
 			return false;
 		}
 		var nm = x.nameA.value;
-		//var contents = document.getElementById("EditCtrl").value;
-		/*
-		security = x.security_yn.value;
-		if( security > 0) {	// 비밀글 작성 가능시에.
-			var se_ = x.security1.value;
-			if(se_=="use"){
-				p = x.security.value;
-				if( !p ){
-					alert('Please enter a password.');
-					x.security.focus();
-					return false;
-				}
-			}
-		} else {
-		}*/
-		fileup = x.fileup_yn.value;	//	alert('insertTT board_write security:' + security);
+		/* var contents = document.getElementById("EditCtrl").value; */
+		fileup = x.fileup_yn.value;
 		ff= x.fileA.value;
-		if( fileup > 0 && ff !== "" ){	// 첨부화일 가능시에. fileup=fileup_yn : 업로드 화일 사이즈크기 이다. 0이면 업로드 불가 다.
+		if( fileup > 0 && ff !== "" ){
 			ff= x.fileA.value;
 			if (x.fileA.value != ""){
-				input = document.getElementById('fileA'); //filein
+				input = document.getElementById('fileA');
 				file_sz = input.files[0].size;
 				file_sz = file_sz / 1024 / 1024;
 				if( file_sz > fileup ) {
-					alert( fileup +"Mb Only uploaded below. file size:" + file_sz );//Mb Only uploaded below. file size:22.114242553710938
+					alert( fileup +"Mb Only uploaded below. file size:" + file_sz );
 					return false;
 				}
 				idx_path = x.fileA.value.lastIndexOf("."); 
@@ -424,7 +322,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 					idx_colon = x.fileA.value.lastIndexOf(".");
 					if ( idx_colon >= 0 ) temp = x.fileA.value.substring(idx_colon);
 				} else {
-					temp = x.fileA.value.substring(idx_path);	//toLowerCase()
+					temp = x.fileA.value.substring(idx_path);
 				}
 				temp = temp.toLowerCase();
 				if( temp != ".jpg" && temp != ".gif" &&temp != ".png" &&temp != ".zip" && temp != ".csv" && temp != ".xlsx" && temp != ".xls" && temp != ".hwp" && temp != ".pdf" && temp != ".txt" && temp != ".pem" && temp != ".ppk" && temp != ".alz" && temp != ".rar" &&temp != "pptx" && temp != "xlsx"  && temp != ".mp3" && temp != ".mp4" && temp != ".avi" ){
@@ -434,65 +332,57 @@ if( $H_ID && $H_ID == 'Guest' ){
 				x.file_ext.value=temp;
 			}
 		}
-		Editor.save(); // 이 함수를 호출하여 글을 등록하면 된다. -> insertD_check.php - 2024-01-23 kan
+		Editor.save();
 		formA.submit();
 		return true;
 
 	}
 
 	/**
-	 * Editor.save()를 호출한 경우 데이터가 유효한지 검사하기 위해 부르는 콜백함수로
-	 * 상황에 맞게 수정하여 사용한다.
-	 * 모든 데이터가 유효할 경우에 true를 리턴한다.
+	 * A callback function called to check if the data is valid when Editor.save() is called.
+	 * Modify and use according to the situation.
+	 * Returns true if all data is valid.
 	 * @function
-	 * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
-	 * @returns {Boolean} 모든 데이터가 유효할 경우에 true
+	 * @param {Object} editor -editor object passed from the editor
+	 * @returns {Boolean} true if all data is valid
 	 */
 	function validForm(editor) {
-		// Place your validation logic here
-
-		// sample : validate that content exists
+		/* Place your validation logic here sample : validate that content exists */
 		var validator = new Trex.Validator();
 		var content = editor.getContent();
 		if (!validator.exists(content)) {
-			alert('내용을 입력하세요');
+			alert('Please enter the content');
 			return false;
 		}
-
 		return true;
 	}
 
 	/**
-	 * Editor.save()를 호출한 경우 validForm callback 이 수행된 이후
-	 * 실제 form submit을 위해 form 필드를 생성, 변경하기 위해 부르는 콜백함수로
-	 * 각자 상황에 맞게 적절히 응용하여 사용한다.
+	 * After calling Editor.save(), the validForm callback is executed.
+	 * A callback function that is called to create and change form fields for actual form submission.
+	 * Use it appropriately according to each situation.
 	 * @function
-	 * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
-	 * @returns {Boolean} 정상적인 경우에 true
+	 * @param {Object} editor - editor object passed from the editor
+	 * @returns {Boolean} true in normal cases
 	 */
 	function setForm(editor) {
         var i, input;
         var form = editor.getForm();
         var content = editor.getContent();
 
-        // 본문 내용을 필드를 생성하여 값을 할당하는 부분
+        /* The part where the body content creates a field and assigns a value */
         var textarea = document.createElement('textarea');
         textarea.name = 'content';
         textarea.value = content;
         form.createField(textarea);
 
-        /* 아래의 코드는 첨부된 데이터를 필드를 생성하여 값을 할당하는 부분으로 상황에 맞게 수정하여 사용한다.
-         첨부된 데이터 중에 주어진 종류(image,file..)에 해당하는 것만 배열로 넘겨준다. */
         var images = editor.getAttachments('image');
         for (i = 0; i < images.length; i++) {
-            // existStage는 현재 본문에 존재하는지 여부
             if (images[i].existStage) {
-                // data는 팝업에서 execAttach 등을 통해 넘긴 데이터
-                //OK alert('attachment information - image[' + i + '] \r\n' + JSON.stringify(images[i].data));
                 input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'attach_image';
-                input.value = images[i].data.imageurl;  // 예에서는 이미지경로만 받아서 사용
+                input.value = images[i].data.imageurl;
                 form.createField(input);
             }
         }

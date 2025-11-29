@@ -3,12 +3,12 @@
 	/*
 	  insertD_check.php - insertD.php
 	*/
-	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
-	else {
+	include_once('./infor.php');
+
+	if( !isset($infor) || $infor =='' ) {
 		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit; 
 	}
-	include_once('./infor.php');
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$grant_read	= $mf_infor[46];

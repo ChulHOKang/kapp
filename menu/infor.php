@@ -1,10 +1,10 @@
 <?php
 // 사용한다.
-if( !$infor ) {
+//if( !$infor ) {
 	if( isset($_REQUEST['infor']) )      $infor = $_REQUEST['infor'];
 	else if( isset($_POST['infor']) )    $infor = $_POST['infor'];
 	else if( isset($_SESSION['infor']) ) $infor = $_SESSION['infor'];
-} 
+//} 
 if( empty($infor) ) {
 	m_("infor.php error infor: " . $infor); //infor.php error infor: 
 	return;

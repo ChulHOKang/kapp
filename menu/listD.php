@@ -1,9 +1,9 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 
+	include "./infor.php";  
 	include "./paging.php";	  // 
 	include "./string.php";   // function Shorten_String($String, $MaxLen, $ShortenStr)
-	include "./infor.php";  
 	include "./memo_cnt.php"; // function memo_count($board,$no)
 	/*
 		listD.php :

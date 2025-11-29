@@ -47,9 +47,9 @@
 	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 	else $list_no = '';
-	if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
-	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
-	else $infor = '';
+	//if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
+	//else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
+	//else $infor = '';
 	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page =1;
@@ -395,7 +395,7 @@ if( $mf[12]){	// file_name,
 	if ( $mf_infor[47]== 1 || $mf_infor[53]==$H_ID || $H_LEV > 7 || $mf[2]==$H_ID ){
 ?>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' Answer ' onclick="reply_func('<?=$infor?>','<?=$list_no?>','<?=$page?>','<?=$menu_mode?>')" title='Write your answer.'>
-        &nbsp;&nbsp;&nbsp;<input type='button' value=' Write ' onclick="javascript:window.open('insertD.php?list_no=<?=$mf[0]?>&infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>&previous=detailD.php','_self','')" >        
+        &nbsp;&nbsp;&nbsp;<input type='button' value=' Write ' onclick="javascript:window.open('insertD.php?list_no=<?=$mf[0]?>&infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>&previous=detailD.php','_self','')" title='infor:<?=$infor?>'>        
         &nbsp;&nbsp;&nbsp;<input type='button' value=' Update ' onclick="javascript:update_func('<?=$infor?>', '<?=$list_no?>','<?=$menu_mode?>', '<?=$H_LEV?>')" title='Guest, <?=$mf_infor[47]?>, <?=$mf[2]?>, id:<?=$H_ID?>'>
 		&nbsp;&nbsp;&nbsp;<input type='button' value=' Delete ' onclick="del_func('<?=$infor?>', '<?=$list_no?>', '<?=$page?>','<?=$menu_mode?>')" title='Delete the post.'>
         &nbsp;&nbsp;&nbsp;<input type='button' value=' List ' onclick="javascript:window.open('listD.php?infor=<?=$infor?>&page=<?=$page?>&menu_mode=<?=$menu_mode?>','_self','')" >
