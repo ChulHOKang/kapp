@@ -1120,7 +1120,8 @@ function login_count( $call_pg ,$id){
 	}
 }
 function connect_count($call_pg ,$id, $ipcheck, $_REFERER){
-	global $tkher, $member;
+	if( $ipcheck ){
+		global $tkher, $member;
 		$ip = escape_trim($_SERVER['REMOTE_ADDR']); 
 		$host	 = getenv("HTTP_HOST");
 		$agent	 = getenv("HTTP_USER_AGENT");
@@ -1140,6 +1141,7 @@ function connect_count($call_pg ,$id, $ipcheck, $_REFERER){
 		$day = date("Y-m-d H:i:s");
 		$ret = sql_query("INSERT into {$tkher['log_info_table']} SET url='$call_pg', name='$id', id='$id',ip='$ip', msg='$msg', type='$type' , country_cd='$ipcode', country_name='$ipname', uptime='$day', start_pg='$_REFERER', email='$id' " );
 		return $ret;
+	}
 }
 function connect_count_search($call_pg ,$id, $ipcheck, $sdata){
 	global $ipcode, $host;
