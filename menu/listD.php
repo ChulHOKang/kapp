@@ -146,12 +146,14 @@
 				<a href="./listD.php?infor=<?=$infor?>&menu_mode=<?=$menu_mode?>" class="on" title="infor:<?=$infor?>, table:aboard_<?=$mf_infor[2]?>"><?=$tit?></a>
 			</div>
 <?php
-		$tt			= time();
-		$today		= $tt - 60*60*24*7;  // 최근게시물 : 7일전  // $reg_date	= date("Y-m-d H:i:s");  //
-		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where step=0 and re=0 order by target desc ";
+		//$tt			= time();
+		$today		= time() - 60*60*24*7;  // 최근게시물 : 7일전  // $reg_date	= date("Y-m-d H:i:s");  //
+//		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where step=0 and re=0 order by target desc ";
+		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " order by target desc ";
 		$result		= sql_query( $SQL );
 		$total_count= sql_num_rows($result);	// new data select
-		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where in_date>$today and step=0 and re=0 order by target desc ";
+//		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where in_date>$today and step=0 and re=0 order by target desc ";
+		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where in_date>$today order by target desc ";
 		$result		= sql_query( $SQL );
 		$total_new = sql_num_rows($result);	// new data select
 ?>
@@ -255,8 +257,9 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 <?php
 
 		$SQL1		= "SELECT * from aboard_" . $mf_infor[2];
-		$SQL_w		= " where step=0 and re=0 ";
-		$where_		= " and subject like '%$search_text%' "; // or context like '%$search_text%' 
+		$SQL_w		= ' '; //" where step=0 and re=0 ";
+		//$where_= " and subject like '%$search_text%' ";
+		$where_= " where subject like '%$search_text%' ";
 		$orderby		= " order by target desc , step ";
 		if( $mode=='SR' )	$SQL1 = $SQL1 . $SQL_w . $where_ . $orderby;
 		else				$SQL1 = $SQL1 . $SQL_w . $orderby;
@@ -268,7 +271,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 			if( $total_count) $total_page  = ceil($total_count / $line_cnt);			// 전체 페이지 계산
 			else $total_page  =1;
 
-			if( $page < 2) {
+			if( $page < 1) {
 				$page  = 1;										// 페이지가 없으면 첫 페이지 (1 페이지)
 				$start = 0;
 			} else {
@@ -308,10 +311,10 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 
 <?php
 		$SQL			= "SELECT * from aboard_" . $mf_infor[2];
-		$SQL_w			= " where step=0 and re=0 ";					// reply no print : 댓글을 제외한다. List에서는 제외 detail에만 Print.
+		$SQL_w			= ' '; //" where step=0 and re=0 ";// reply no print : 댓글을 제외한다. List에서는 제외 detail에만 Print.
+		$where_= " where subject like '%$search_text%' ";
 		$SQL_orderby	= " order by target desc, step limit " . $start. ", " . $last;
-//		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . " and subject like '%$search_text%' or context like '%$search_text%' ";
-		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . " and subject like '%$search_text%' ";
+		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . $where. " and subject like '%$search_text%' ";
 		else $SQL = $SQL . $SQL_w;
 		$SQL = $SQL . $SQL_orderby;
 		if( ($result = sql_query( $SQL ) )==false ) {
@@ -323,9 +326,9 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 				$no_A++;
 				$dt  = date("Y-m-d H:i", $row['in_date']);
 				$now = time();
-				$today = $now - $row['in_date'];		//m_("day :".$today); // 60 x 24 x 60 = 1200 x 24 = 28800 x 7 = 201600 = 7일.
+				$today = $now - $row['in_date'];//m_("day :".$today); // 60 x 24 x 60 = 1200 x 24 = 28800 x 7 = 201600 = 7일.
 				$new="";
-				if( $today > 201600){  // //if($today > 86400){  //60*60*24*7;  // 최근게시물 : 7일전
+				if( $today > 201600){  //if($today > 86400){  //60*60*24*7;  // 최근게시물 : 7일전
 					$ck = 'big';
 				} else {
 					//$new="<img src='".$mf_infor[38]."' border='0'>"; // 38:./icon/new.gif
@@ -344,7 +347,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 						for( $i=0; $i<$row['re']; $i++){
 							$dep = $dep . "&nbsp;&nbsp;&nbsp;&nbsp;";
 						}
-						if($dep){ $dep = $dep. "<img src='".$mf_infor[39]."' border='0'>"; }
+						if($dep){ $dep = $dep. "<img src='../icon/".$mf_infor[39]."' border='0'>"; }
 						if( $mf_infor[5] ){
 							$memo_cnt= memo_count( $mf_infor[2], $row['no']);
 
@@ -360,11 +363,11 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 						$ret  = sql_query( $SQLB );
 						$step_= sql_num_rows( $ret);
 						if( $step_==1 ) $step_=0;
-						else if( $step_>1) $step_=$step_-1;
+						else if( $step_>1) $step_ = $step_ - 1; //https://ailinkapi.com/kapp/menu/list_reply.gif
 ?>
 					</td>
 <?php
-						if($dep){
+						if( $dep ){
 							$msg_ = iconv_substr($row['subject'], 0, 50, 'utf-8') . "..."  . "[" . $step_ . "] - ";
 							$con = strip_tags($row['context']);
 							$msg_t = iconv_substr($con, 0, 200, 'utf-8') . "...";

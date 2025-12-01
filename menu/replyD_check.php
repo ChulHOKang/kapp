@@ -108,7 +108,7 @@
 		//else $security='';
 		$query = "insert into aboard_".$mf_infor[2]." set
 		infor = $infor,
-		id = '$H_EMAIL',
+		id = '$H_ID',
 		name = '$H_NICK',
 		email = '$H_EMAIL',
 		home = '".KAPP_URL_T_."',

@@ -192,7 +192,8 @@
 	$mf_46 = $mf_infor[46];
 	$line_cnt	= $mf_infor[16];
 	$orderby		= " order by target desc , step ";
-	$where_		= " where subject like '%$search_text%' or context like '%$search_text%' ";
+//	$where_		= " where subject like '%$search_text%' or context like '%$search_text%' ";
+	$where_		= " where subject like '%$search_text%' ";
 	$whereA		= " where no >= $list_no ";
 	$SQL1		= " SELECT * from aboard_" . $mf_infor[2];
 	if( $list_no > 0 ) 	$SQL1 = $SQL1 . $whereA . $orderby;
@@ -220,6 +221,7 @@
 	//m_( $mf_infor[2] . ", list_no: ".$list_no . ", infor: " . $infor);
 	$mq		= sql_query($query);
 	$mf		= sql_fetch_row($mq);
+	
 	$mid	= $mf_infor[53]; // 53:make_id , $mf[2];
 	$fsize	= $mf[14];
 
@@ -229,16 +231,7 @@
 	$mf[7]	= date("y/m/d H:i", $mf[7]);
 	$mf[8]	= iconv_substr($mf[8], 0, 50, 'utf-8');// . "...";
 	if( $search_text){ $mf[9] = preg_replace("($search_text)","<font color=blue>\\1</font>",$mf[9]);}
-	$p = $mf[21];
-	if( isset($_SESSION['security'])) {
-		$security = $_SESSION['security'];
-		if( $mf[21] !== "" and $mf[21] !== $security) {
-			echo "<script>board_view($infor, $list_no, $page, $menu_mode );</script>";
-			exit;
-		}
-	} else {
-		$security = '';
-	}
+	$re_mark = $mf[19];
 ?>
 <body bgProperties="" leftmargin="0" topmargin="0" height='100%'>
 <center>
@@ -418,7 +411,7 @@ if( $mf[12]){	// file_name,
     <table width="100%" bgcolor='<?=$mf_infor[20]?>' border="0" cellpadding="0" cellspacing="0">
 <?php 
 	// re
-	if($mf_infor[43]){
+	if( !$re_mark ){ // remark가 아니면 $re_mark //if( $mf_infor[43]){ //$re_mark
 		$query = "select no, name, subject, context, id, target,step,re, in_date from aboard_".$mf_infor[2]." where target=".$mf[18]." order by step";
 		$mq = sql_query($query);
 		$mn = sql_num_rows($mq);
