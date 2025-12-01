@@ -281,7 +281,7 @@ else
 		$referer = "";
 		if( isset($_SERVER['HTTP_REFERER'])) $referer = escape_trim(clean_xss_tags($_SERVER['HTTP_REFERER']));
 		if( !strpos( $_SERVER['SCRIPT_NAME'], "indexTT.php")  ) {
-			connect_count( $host_script, "Guest", 1, $referer);	// count -  1: log_info 생성, 관리자ip log 생성, 0:미생성.
+			connect_count( $host_script, "Guest", 0, $referer);	// count -  1: log_info 생성, 관리자ip log 생성, 0:미생성.
 		}
 		if( $tmp_mb_id = get_cookie('kapp_mb_id')) { // auto login 
 			$tmp_mb_id = substr( preg_replace("/[^a-zA-Z0-9_]* /", "", $tmp_mb_id), 0, 20);			// 최고관리자는 자동로그인 금지
