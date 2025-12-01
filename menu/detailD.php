@@ -411,8 +411,9 @@ if( $mf[12]){	// file_name,
     <table width="100%" bgcolor='<?=$mf_infor[20]?>' border="0" cellpadding="0" cellspacing="0">
 <?php 
 	// re
-	if( !$re_mark ){ // remark가 아니면 $re_mark //if( $mf_infor[43]){ //$re_mark
+	if( $mf_infor[43] ){ // remark가 아니면 $re_mark //if( $mf_infor[43]){ //$re_mark
 		$query = "select no, name, subject, context, id, target,step,re, in_date from aboard_".$mf_infor[2]." where target=".$mf[18]." order by step";
+//		$query = "select no, name, subject, context, id, target,step,re, in_date from aboard_".$mf_infor[2]." where target=".$mf[18]." and re=".$mf[19]." order by target";
 		$mq = sql_query($query);
 		$mn = sql_num_rows($mq);
 		if( $mn > 1 ){
@@ -440,7 +441,7 @@ if( $mf[12]){	// file_name,
 							</td>
 							<td width="73%" height="15" align='left'>
 									<a href="javascript:detail_func('<?=$infor?>', '<?=$no?>', '<?=$page?>', '<?=$menu_mode?>')" >
-									<font color='<?=$mf_infor[21]?>'>[<?=$data[6]?>]&nbsp;&nbsp;<?=$temp1?><?=$data[2]?><?=$temp2?></a>
+									<font color='<?=$mf_infor[21]?>'>[<?=$data[0]?>]&nbsp;&nbsp;[<?=$data[6]?>]&nbsp;&nbsp;<?=$data[2]?></a>
 							</td>
 							<td width="25%" align='right'>
 								<font size='2' color='<?=$mf_infor[19]?>'> [<?=$data[1]?>]-[<?=$day?>]</font>

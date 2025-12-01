@@ -314,7 +314,8 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 		$SQL_w			= ' '; //" where step=0 and re=0 ";// reply no print : 댓글을 제외한다. List에서는 제외 detail에만 Print.
 		$where_= " where subject like '%$search_text%' ";
 		$SQL_orderby	= " order by target desc, step limit " . $start. ", " . $last;
-		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . $where. " and subject like '%$search_text%' ";
+//		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . $where. " and subject like '%$search_text%' ";
+		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . $where;
 		else $SQL = $SQL . $SQL_w;
 		$SQL = $SQL . $SQL_orderby;
 		if( ($result = sql_query( $SQL ) )==false ) {
@@ -358,8 +359,8 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 						if( $H_ID == $row['id']) $security_my = '1';	//본인의 글일때
 						else $security_my = '';
 						$msg_ = iconv_substr( $row['context'], 0, 80, 'utf-8') . "...";
-						$t_   = $row['target'];
-						$SQLB = " SELECT * from aboard_" . $mf_infor[2]. " where target='".$t_."' ";
+
+						$SQLB = " SELECT * from aboard_" . $mf_infor[2]. " where target='" .$row['target']. "' ";
 						$ret  = sql_query( $SQLB );
 						$step_= sql_num_rows( $ret);
 						if( $step_==1 ) $step_=0;
@@ -377,7 +378,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 							$msg_t = iconv_substr($con, 0, 200, 'utf-8') . "...";
 						}
 ?>
-					<td class="cell03" title='<?=$msg_t?>' style="text-align:left;">
+					<td class="cell03" title='no:<?=$row['no']?>:<?=$msg_t?>' style="text-align:left;">
 <?php
 				$rno = $row['no'];
 				if($dep){ echo $dep; }
