@@ -24,7 +24,7 @@
 	$tabData = json_decode($tabData, true);
 
     if( isset($tabData) ){
-        $message = '_api pg_curl_get_ailinkapp data 전달 완료';
+        $message = '';
     } else {
         $message = '_api pg_curl_get_ailinkapp data 전달 실패';
     }

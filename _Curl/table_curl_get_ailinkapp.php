@@ -8,8 +8,8 @@
     $responseData = $_POST['tabData'];             // new data
 
 	$ret = sql_query( "update {$tkher['config_table']} set hash_block_table = '$responseData' " ); //where kapp_title ='K-App' 
-	if( !$ret) 	echo "<br> config_table hash_block_table update Error. --- Api table_curl_get";	
-	else echo "<br> config_table hash_block_table update OK --- Api table_curl_get";
+	if( !$ret) 	echo "<br>ERROR config_table hash_block_table update. - Api table_curl_get_ailinkapp.php";	
+	//else echo "<br> ";
 
     $kapp_iv = $_POST['iv'];
     $tabData =  decryptA($responseData, $kapp_key, $kapp_iv);
@@ -17,12 +17,12 @@
 	$tabData = json_decode($tabData, true);
 
     if( isset( $tabData) ){
-        $message = '_api table data ok';
+        $message = ''; //'_api config_table hash_block_table update OK!';
     } else {
         $message = '_api table data fail';
     }
-	echo "<br>message: " . $message;
-	echo "table_curl_get_ailinkapp tab_enm: " . $tabData['data'][0]['tab_enm'];
+	//echo "<br>message: " . $message;
+	//echo "table_curl_get_ailinkapp tab_enm: " . $tabData['data'][0]['tab_enm'];
 			$kapp_theme0 = '';
 			$kapp_theme1 = '';
 			$kapp_theme = $config['kapp_theme'];

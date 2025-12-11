@@ -18,7 +18,7 @@
 	$tabData = json_decode($tabData, true);
 
     if( isset($tabData) ){
-        $message = KAPP_URL_T_ . ', api OK, ';
+        $message = '';
     } else {
         $message = KAPP_URL_T_ . ' api Fail, ';
     }
