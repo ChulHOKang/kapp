@@ -178,7 +178,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		if( $response == false) {
 			echo 'TAB_curl_send_tabData curl Error : ' . curl_error($curl);
 		} else {
-			echo 'TAB_curl_send_tabData curl 응답 : ' . $response;
+			//echo 'TAB_curl_send_tabData curl 응답 : ' . $response;
 		}
 		curl_close($curl);
 		return $response;
@@ -205,7 +205,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			echo 'PG_curl_send_tabData curl error : ' . curl_error($curl);
 		} else {
 			$_ms = 'new PG_curl_send_tabData curl response : ' . $response;
-			echo 'PG_curl_send_tabData curl response: ' . $response;
+			//echo 'PG_curl_send_tabData curl response: ' . $response;
 		}
 		curl_close($curl);
 		return $response;
@@ -232,7 +232,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			echo 'curl : ' . $_ms;
 		} else {
 			$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
-			echo 'curl : ' . $_ms;
+			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
 		return $response;
@@ -411,8 +411,8 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$_ms = "Sys_Menu_bom_curl_send_tabData api Fail : " . curl_error($curl);
 			echo 'curl : ' . $_ms;
 		} else {
-			$_ms = 'Sys_Menu_bom_curl_send_tabData api OK : ' . $response;
-			echo 'curl : ' . $_ms;
+			//$_ms = 'Sys_Menu_bom_curl_send_tabData api OK : ' . $response;
+			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
 		return $response;
@@ -451,7 +451,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$_ms = KAPP_URL_T_ .  ", Ap_bbs_curl_send fail : " . curl_error($curl);
 			echo 'curl : ' . $_ms;
 		} else {
-			$_ms =KAPP_URL_T_ .  ', Ap_bbs_curl_send OK : ' . $response;
+			//$_ms =KAPP_URL_T_ .  ', Ap_bbs_curl_send OK : ' . $response;
 			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
@@ -479,7 +479,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		if( $response == false) {
 			echo 'Ap_bbs_curl_send_tabData curl Error : ' . curl_error($curl);
 		} else {
-			echo 'Ap_bbs_curl_send_tabData curl 응답 : ' . $response;
+			//echo 'Ap_bbs_curl_send_tabData curl 응답 : ' . $response;
 		}
 		curl_close($curl);
 		return $response;
