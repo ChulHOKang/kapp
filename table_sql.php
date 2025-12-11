@@ -969,7 +969,7 @@ function table_nm_dup_check(){
 			} else {
 				$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
 				sql_query($query);
-				$link_ = KAPP_URL_T_ . "table_sql.php";
+				$link_ = KAPP_URL_T_ . "/table_sql.php";
 				//insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10_pg@table30m' ); //PG create point
 			}
 			$pg_mode="";
@@ -1790,7 +1790,7 @@ function table_nm_dup_check(){
 		} else {
 			m_("  Successful creation of the ".$tab_hnm." table.");
 			$link_ = KAPP_URL_T_ . "table_sql.php";
-			insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10@table30m' );//re make copy
+			insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10@table_sql' );//re make copy
 			TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
 		}
 		$enm		= $_POST['tab_enm'];
