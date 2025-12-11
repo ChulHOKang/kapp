@@ -220,9 +220,9 @@
             ',height=' + f_popup_h);
         </script>";
     }
-	$H_ID = $member['mb_id'];
-	$H_LEV= $member['mb_level'];
-	$ip   = $_SERVER['REMOTE_ADDR'];
+	//$H_ID = $member['mb_id'];
+	//$H_LEV= $member['mb_level'];
+	//$ip   = $_SERVER['REMOTE_ADDR'];
 	$cur="";
     if( $H_ID && $H_LEV > 7 && get_cookie('add_admin_info') != 'next') Admin_info_check();
     if( $H_ID && $H_LEV > 1 && get_cookie('add_info') != 'next') Member_info_check();
