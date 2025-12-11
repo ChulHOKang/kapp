@@ -297,10 +297,11 @@ $(function () {
 		document.table_list.target='_blank';
 		document.table_list.submit();
 	}
-	function program_run_funcListT( pg_name, pg_code ) {
+	function program_run_funcListT( pg_name, pg_code, group_code ) {
 		document.table_list.mode.value		="tab_list_pg70";
 		document.table_list.pg_name.value	=pg_name;
 		document.table_list.pg_code.value	=pg_code;
+		document.table_list.group_code.value=group_code;
 		document.table_list.page.value	=1;
 		document.table_list.action ="tkher_program_data_list.php";
 		document.table_list.target='_blank';
@@ -524,7 +525,7 @@ if( $mode != 'Search') {
 	if( $mode =='Search' ) {
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data Insert' onclick=\"program_run_funcList('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data Write of $tab_hnm' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data List of $tab_hnm' >&nbsp;&nbsp; ";
+		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."', '".$group_code."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data List of $tab_hnm' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $tab_hnm.' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
 	} else {

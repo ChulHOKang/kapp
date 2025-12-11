@@ -24,6 +24,9 @@
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
+	if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
+	else $group_code = '';
+
 	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
 	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
 	else $pg_code = '';
@@ -35,12 +38,8 @@
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
 		$item_array = $rsPG['item_array'];
-
-		$iftypeX	= $rsPG['if_type'];
-		$ifdataX	= $rsPG['if_data'];
-		$if_type		= explode("|", $iftypeX);
-		$if_data		= explode("|", $ifdataX);
-
+		$if_data = $rsPG['if_data'];
+		$iftype = $rsPG['if_type'];
 		$tab_enm = $rsPG['tab_enm'];
 		$tab_hnm = $rsPG['tab_hnm'];
 		$item_cnt = $rsPG['item_cnt'];
@@ -290,10 +289,10 @@ $(function () {
 	}	
 	function group_code_change_func(cd,pg_code){
 		index = document.view_form.group_code.selectedIndex;
-		nm = document.view_form.group_code.options[index].text;
-		document.view_form.group_name.value = nm;
-		vv = document.view_form.group_code.options[index].value;
-		document.view_form.group_codeX.value = vv;
+		//nm = document.view_form.group_code.options[index].text;
+		//document.view_form.group_name.value = nm;
+		//vv = document.view_form.group_code.options[index].value;
+		//document.view_form.group_code.value = vv;
 		document.view_form.mode.value = "project_search";
 		document.view_form.action ="tkher_program_data_list.php?pg_code="+pg_code;
 		document.view_form.submit();
@@ -384,8 +383,9 @@ $(function () {
 			if ( ($result = sql_query( $SQL1 ) )==false )
 			{
 				printf("Invalid query: %s\n", $SQL1);
+				echo "SQL:" . $SQL1;
 				m_(" 4 Select Error ");
-				$total_count = 0;
+				$total_count = 0; exit;
 			} else {
 				$total_count = sql_num_rows($result);
 				if( $total_count ) $total_page  = ceil($total_count / $line_cnt);			// 전체 페이지 계산
@@ -436,14 +436,15 @@ $(function () {
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
-	if( isset($_POST['group_codeX']) ) $group_codeX = $_POST['group_codeX'];
-	else $group_codeX = "";
+	if( isset($_POST['group_code']) ) $group_code = $_POST['group_code'];
+	else $group_code = "";
 	if( isset($H_ID) && $H_ID !=='' ) {
-		if( isset( $group_codeX) ){
-			$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_codeX . "' order by upday desc ";
+		/*if( isset( $group_code) ){
+			$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_code . "' order by upday desc ";
 		} else {
 			 $sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
-		}
+		}*/
+		$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_code . "' order by upday desc ";
 		$result = sql_query( $sql );
 		if( $result == false ){
 			m_(" 2 Select Error ");
@@ -531,7 +532,6 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='data_mid'		value='' />
 						<input type="hidden" name='pg_code'		value='<?=$pg_code?>' />
 						<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
-						<input type="hidden" name='group_codeX'		value="<?=$group_codeX?>" />
 						<input type="hidden" name='group_name'		value="<?=$group_name?>" />
 						<input type="hidden" name='fld_enm'		value='<?=$fld_enm?>' />
 						<input type="hidden" name='fld_hnm'		value='<?=$fld_hnm?>' />
@@ -540,13 +540,11 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='search_fld'	value='<?=$search_fld?>' />
 						<input type="hidden" name='search_choice'		value='<?=$search_choice?>' />
 						<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
-						<!-- <input type='hidden' name="if_type" value='<?=$if_type?>' >
-						<input type='hidden' name="if_data" value='<?=$if_data?>' >  -->
 <?php
 				for( $i=0;$i<$item_cnt;$i++){
 ?>
- 						<input type='hidden' name="if_type[<?=$i?>]" value='<?=$if_type[$i]?>' >
-						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' >
+						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$iftype[$i]?>' >
+						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
 <?php
 				}
 ?>
