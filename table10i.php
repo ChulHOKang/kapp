@@ -120,13 +120,15 @@ $(function () {
 				m_(" $tab_hnm table delete failed.");	// \\n (  기존의 프로그램:$tab_hnm 정보 삭제 실패)
 				exit;
 			}
-			$query	="drop table $tab_enm";
-			$mq2	=sql_query($query);
-			if( !$mq2 ) {
-				m_(" DB $tab_hnm Failed to delete table. ");	// \\n ( DB $tab_hnm 테이블 삭제 실패)
-				exit;
+			if( kapp_table_check( $tab_enm ) ){
+				$query	="drop table $tab_enm";
+				$mq2	=sql_query($query);
+				if( !$mq2 ) {
+					m_(" DB $tab_hnm Failed to delete table. ");	// \\n ( DB $tab_hnm 테이블 삭제 실패)
+					exit;
+				}
+				m_(" Table information and program deletion succeeded! ");// \\n ( $tab_enm, $tab_hnm 테이블 정보와 프로그램 삭제 성공!)
 			}
-			m_(" Table information and program deletion succeeded! ");// \\n ( $tab_enm, $tab_hnm 테이블 정보와 프로그램 삭제 성공!)
 		}
 		$url = "table10i.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
@@ -178,9 +180,7 @@ $(function () {
 		$ls = $ls . " where fld_enm='seqno' ";
 		$ls = $ls . " ORDER BY upday desc"; //" ORDER BY upday desc, tab_hnm asc, seqno asc ";
    }
-   //echo $param . ". " . $ls; exit;//tab_hnm. SELECT * from kapp_table10 where fld_enm='seqno' ORDER BY tab_hnm
-   //m_(" - $mode");
-   //echo "sql: "  . $ls; exit; //sql: SELECT * from kapp_table10 where fld_enm='seqno' and tab_hnm '' ORDER BY tab_hnm
+
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
 		if(!$page) $page=1;
@@ -194,6 +194,24 @@ $(function () {
 		else {
 			$no = $total - ($page - 1) * $limite;
 		}
+
+
+	function kapp_table_check( $tab ){
+		global $table_prefix;
+		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables
+		WHERE table_schema = '".KAPP_MYSQL_DB."'
+		AND table_name = '".$tab."' ";
+		$ret = sql_fetch($sql);
+		if( $ret['cnt'] > 0 ) { 
+			m_("Rec count:".$ret['cnt'] .", " . $tab . ", already exists. ");
+			echo "<br>rec count:".$ret['cnt'] .", " . $tab . ", already exists. ";
+			return true;
+		} else { 
+			echo "<br>" . $tab . ", --- ";
+			return false;
+		}
+	}
+
 ?>
 <script type="text/javascript" >
 <!--

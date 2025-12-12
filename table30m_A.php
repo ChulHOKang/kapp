@@ -55,7 +55,6 @@
 			else {
 				$query="update {$tkher['table10_pg_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."', pg_name='".$tab_hnm."' where (pg_code='".$tab_nmS0."' and tab_enm='".$tab_nmS0."') "; //OK
 				$g1 = sql_query( $query );
-				$g1 = sql_query( $query );
 				if( $g1 ) m_("Changed name of the Table table code: " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
 				else m_("Error! Changed name of Table : " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
 			}
@@ -318,9 +317,10 @@
 		else if( document.insert["fld_type["+i+"]"].value == "CHAR")      document.insert["fld_len["+i+"]"].value = '5';
 		else if( document.insert["fld_type["+i+"]"].value == "VARCHAR")   document.insert["fld_len["+i+"]"].value = '15';
 		else if( document.insert["fld_type["+i+"]"].value == "TEXT")      document.insert["fld_len["+i+"]"].value = '255';
+		else if( document.insert["fld_type["+i+"]"].value == "LONGBLOB")  document.insert["fld_len["+i+"]"].value = '255';
 		else if( document.insert["fld_type["+i+"]"].value == "DATE")      document.insert["fld_len["+i+"]"].value = '15';
 		else if( document.insert["fld_type["+i+"]"].value == "DATETIME")  document.insert["fld_len["+i+"]"].value = '20';
-		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8'; // 2024-01-04 add
+		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8';
 	}
 	function line_set_func(cnt) {
 			document.insert.mode.value='line_set';
@@ -366,7 +366,11 @@
 			document.insert.submit();
 		  }
 	}
-
+	
+	function sql_func(){
+		window.open( 'table_sql.php' , '_self', '');
+		return;
+	}
 	function resetgo(){
 		window.open( 'table30m_A.php' , '_self', '');
 		return;
@@ -443,6 +447,7 @@
 	}
 
 	function create_after_run(tab_enm, tab_hnm, mode){
+		alert("여기를 타면 오류 확인 필요----- kapp_pg_curl_ajax");
 		var selectIndex = document.insert.tab_hnmS.selectedIndex;
 		tab_hnmS=tab_enm + ":" + tab_hnm;
 		document.insert.tab_hnmS[selectIndex].value = tab_hnmS;
@@ -781,126 +786,130 @@ jQuery(document).ready(function ($) {
 </ul>
 </div>
 
+<div>
+<input type='button' value='SQL to Table' onclick="sql_func()"			style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white' title='You can SQL to Table.'>
+
+</div>
 
 <div>
-				  New Table Code:<?=$tab_enm?>, Column Count : <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>><!--  \n등록할 라인수를 설정합니다. -->
-					<option value="<?php echo $line_set ?>" selected ><?php if($mode=='Search') echo $record_cnt; else echo $line_set; ?> </option>
-					  <option value="10" >10</option>
-					  <option value="15" >15 </option>
-					  <option value="20" >20 </option>
-					  <option value="25" >25 </option>
-					  <option value="30" >30 </option>
-					  <option value="40" >40 </option>
-					  <option value="50" >50 </option>
-					  <option value="60" >60 </option>
-					  <option value="70" >70 </option>
-					  <option value="100" >100 </option>
-					  <option value="150" >150 </option>
-				  </select>
+	  New Table Code:<?=$tab_enm?>, Column Count : <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>><!--  \n등록할 라인수를 설정합니다. -->
+		<option value="<?php echo $line_set ?>" selected ><?php if($mode=='Search') echo $record_cnt; else echo $line_set; ?> </option>
+		  <option value="10" >10</option>
+		  <option value="15" >15 </option>
+		  <option value="20" >20 </option>
+		  <option value="25" >25 </option>
+		  <option value="30" >30 </option>
+		  <option value="40" >40 </option>
+		  <option value="50" >50 </option>
+		  <option value="60" >60 </option>
+		  <option value="70" >70 </option>
+		  <option value="100" >100 </option>
+		  <option value="150" >150 </option>
+	  </select>
 </div>
 	<TABLE class='floating-thead' border=0 cellpadding="1" cellspacing="3">
 	<THEAD >
-			<TR align='center' style='background-color:eeeeee;'>
-			 <TH><b>NO</b></TH>
-			 <TH><b>Ref</b></TH>
-			 <TH><b>column</b></TH>
-			 <TH><b>column title</b></TH>
-			 <TH><b>data type</b></TH>
-			 <TH><b>size</b></TH>
-			 <TH><b>memo</b></TH>
-			 <?php if( $mode=='Search' ) echo "<TH><b>CTL</b></TH>"; ?>
-			</TR>
+		<TR align='center' style='background-color:eeeeee;'>
+		 <TH><b>NO</b></TH>
+		 <TH><b>Ref</b></TH>
+		 <TH><b>column</b></TH>
+		 <TH><b>column title</b></TH>
+		 <TH><b>data type</b></TH>
+		 <TH><b>size</b></TH>
+		 <TH><b>memo</b></TH>
+		 <?php if( $mode=='Search' ) echo "<TH><b>CTL</b></TH>"; ?>
+		</TR>
 	</THEAD>
 <?php
-			if( $mode=='Search' ) { $dis_cnt=$record_cnt +1;  }
-			else if( $mode=='line_set' ) { $line_cnt=$_POST['line_set']; $dis_cnt=$_POST['line_set']; }
-			else  $dis_cnt=$line_set;
-			$if_lineA       = $i;
-			$if_typeA       = '';
-			$if_dataA       = '';
-			$relation_dataA = '';
-			For ($i = 0; $i < $dis_cnt  ; $i++) {
-				if( $i < $record_cnt ) $m_line = 0;
-				else $m_line = 1;
-				if( $mode == 'Search' and $i < $dis_cnt) {
-					if( isset($Aseqno[$i]) ) $seqno		=	$Aseqno[$i];
-					if( isset($Afld_enm[$i]) ) $fld_enm	=	$Afld_enm[$i];
-					else $fld_enm	=	"";
-					if( isset($Afld_hnm[$i]) ) $fld_hnm	=	$Afld_hnm[$i];
-					else $fld_hnm	=	"";
-					if( isset($Afld_type[$i]) ) $fld_type	=	$Afld_type[$i];
-					else $fld_type	=	"";
-					if( isset($Afld_len[$i]) ) $fld_len	=	$Afld_len[$i];
-					else $fld_len	=	"";
-					if( isset($Amemo[$i]) ) $memo		=	$Amemo[$i];
-					else $memo	=	"";
-					if( isset($Aif_line[$i]) ) $if_lineA       = $Aif_line[$i]; 
-					if( isset($Aif_type[$i]) ) $if_typeA       = $Aif_type[$i];
-					if( isset($Aif_data[$i]) ) $if_dataA       = $Aif_data[$i];
-					if( isset($Arelation_data[$i]) ) $relation_dataA = $Arelation_data[$i];
-					$bcolor		= '#FFDF6E';
-					$fcolor		= '#666666';
-				} else if( $mode == 'Search' and $i == $line_set) {
-					$fld_enm	=	'fld_' . $dis_cnt;
-					$fld_hnm	=	"";
-					$fld_type	=	"";
-					$fld_len	=	"";
-					$memo		=	"";
-					$bcolor		= 'black';
-					$fcolor		= 'yellow';
-				} else if( $mode == 'Search' ) {
-					$seqno		=	$Aseqno[$i];
-					$fld_enm	=	$Afld_enm[$i];
-					$fld_hnm	=	$Afld_hnm[$i];
-					$fld_type	=	$Afld_type[$i];
-					$fld_len	=	$Afld_len[$i];
-					$memo		=	$Amemo[$i];
-					$if_lineA       = $Aif_line[$i]; 
-					$if_typeA       = $Aif_type[$i]; 
-					$if_dataA       = $Aif_data[$i]; 
-					$relation_dataA = $Arelation_data[$i]; 
-					$bcolor		= '#FFDF6E';
-					$fcolor		= '#666666';
-				} else if( $mode == 'line_set' and $i < $record_cnt) {
-					$seqno		=	$Aseqno[$i];
-					$fld_enm	=	$Afld_enm[$i];
-					$fld_hnm	=	$Afld_hnm[$i];
-					$fld_type	=	$Afld_type[$i];
-					$fld_len	=	$Afld_len[$i];
-					$memo		=	$Amemo[$i];
-					$if_lineA       = $Aif_line[$i]; 
-					$if_typeA       = $Aif_type[$i]; 
-					$if_dataA       = $Aif_data[$i]; 
-					$relation_dataA = $Arelation_data[$i]; 
-					$bcolor		= '#FFDF6E';
-					$fcolor		= '#666666';
-				} else if( $mode == 'line_set' and $i >= $record_cnt) {
-					$fld_enm	=	'fld_' . $i;
-					$fld_hnm	=	"";
-					$fld_type	=	"";
-					$fld_len	=	"";
-					$memo		=	"";
-					$bcolor		= 'black';
-					$fcolor		= 'white';
-				} else if( !isset($mode) ) {
-					if( $i==0)	$fld_enm	=	'seqno';
-					else		$fld_enm	=	'fld_' . $i;
-					$fld_hnm	=	"";
-					$fld_type	=	"";
-					$fld_len	=	"";
-					$memo		=	"";
-					$bcolor		= '#FFDF6E';
-					$fcolor		= '#666666';
-				} else {
-					if( $i==0)	$fld_enm	=	'seqno';
-					else		$fld_enm	=	'fld_' . $i;
-					$fld_hnm	=	"";
-					$fld_type	=	"";
-					$fld_len	=	"";
-					$memo		=	"";
-					$bcolor		= '#FFDF6E';
-					$fcolor		= '#666666';
-				}
+	if( $mode=='Search' ) { $dis_cnt=$record_cnt +1;  }
+	else if( $mode=='line_set' ) { $line_cnt=$_POST['line_set']; $dis_cnt=$_POST['line_set']; }
+	else  $dis_cnt=$line_set;
+	$if_lineA       = $i;
+	$if_typeA       = '';
+	$if_dataA       = '';
+	$relation_dataA = '';
+	For ($i = 0; $i < $dis_cnt  ; $i++) {
+		if( $i < $record_cnt ) $m_line = 0;
+		else $m_line = 1;
+		if( $mode == 'Search' and $i < $dis_cnt) {
+			if( isset($Aseqno[$i]) ) $seqno		=	$Aseqno[$i];
+			if( isset($Afld_enm[$i]) ) $fld_enm	=	$Afld_enm[$i];
+			else $fld_enm	=	"";
+			if( isset($Afld_hnm[$i]) ) $fld_hnm	=	$Afld_hnm[$i];
+			else $fld_hnm	=	"";
+			if( isset($Afld_type[$i]) ) $fld_type	=	$Afld_type[$i];
+			else $fld_type	=	"";
+			if( isset($Afld_len[$i]) ) $fld_len	=	$Afld_len[$i];
+			else $fld_len	=	"";
+			if( isset($Amemo[$i]) ) $memo		=	$Amemo[$i];
+			else $memo	=	"";
+			if( isset($Aif_line[$i]) ) $if_lineA       = $Aif_line[$i]; 
+			if( isset($Aif_type[$i]) ) $if_typeA       = $Aif_type[$i];
+			if( isset($Aif_data[$i]) ) $if_dataA       = $Aif_data[$i];
+			if( isset($Arelation_data[$i]) ) $relation_dataA = $Arelation_data[$i];
+			$bcolor		= '#FFDF6E';
+			$fcolor		= '#666666';
+		} else if( $mode == 'Search' and $i == $line_set) {
+			$fld_enm	=	'fld_' . $dis_cnt;
+			$fld_hnm	=	"";
+			$fld_type	=	"";
+			$fld_len	=	"";
+			$memo		=	"";
+			$bcolor		= 'black';
+			$fcolor		= 'yellow';
+		} else if( $mode == 'Search' ) {
+			$seqno		=	$Aseqno[$i];
+			$fld_enm	=	$Afld_enm[$i];
+			$fld_hnm	=	$Afld_hnm[$i];
+			$fld_type	=	$Afld_type[$i];
+			$fld_len	=	$Afld_len[$i];
+			$memo		=	$Amemo[$i];
+			$if_lineA       = $Aif_line[$i]; 
+			$if_typeA       = $Aif_type[$i]; 
+			$if_dataA       = $Aif_data[$i]; 
+			$relation_dataA = $Arelation_data[$i]; 
+			$bcolor		= '#FFDF6E';
+			$fcolor		= '#666666';
+		} else if( $mode == 'line_set' and $i < $record_cnt) {
+			$seqno		=	$Aseqno[$i];
+			$fld_enm	=	$Afld_enm[$i];
+			$fld_hnm	=	$Afld_hnm[$i];
+			$fld_type	=	$Afld_type[$i];
+			$fld_len	=	$Afld_len[$i];
+			$memo		=	$Amemo[$i];
+			$if_lineA       = $Aif_line[$i]; 
+			$if_typeA       = $Aif_type[$i]; 
+			$if_dataA       = $Aif_data[$i]; 
+			$relation_dataA = $Arelation_data[$i]; 
+			$bcolor		= '#FFDF6E';
+			$fcolor		= '#666666';
+		} else if( $mode == 'line_set' and $i >= $record_cnt) {
+			$fld_enm	=	'fld_' . $i;
+			$fld_hnm	=	"";
+			$fld_type	=	"";
+			$fld_len	=	"";
+			$memo		=	"";
+			$bcolor		= 'black';
+			$fcolor		= 'white';
+		} else if( !isset($mode) ) {
+			if( $i==0)	$fld_enm	=	'seqno';
+			else		$fld_enm	=	'fld_' . $i;
+			$fld_hnm	=	"";
+			$fld_type	=	"";
+			$fld_len	=	"";
+			$memo		=	"";
+			$bcolor		= '#FFDF6E';
+			$fcolor		= '#666666';
+		} else {
+			if( $i==0)	$fld_enm	=	'seqno';
+			else		$fld_enm	=	'fld_' . $i;
+			$fld_hnm	=	"";
+			$fld_type	=	"";
+			$fld_len	=	"";
+			$memo		=	"";
+			$bcolor		= '#FFDF6E';
+			$fcolor		= '#666666';
+		}
 ?>
 <TBODY width='100%'>
 	<TR valign='middle' bgcolor='#FFFFFF' bordercolor='#999999'>
@@ -948,8 +957,9 @@ jQuery(document).ready(function ($) {
 				  <option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
 				  <option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
 				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if($fld_type == 'TIME') echo " selected ";  ?>>TIME</option><!-- 2024-01-04 kan -->
-				  <!-- <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";  ?>>TIMESTAMP</option>
-				  <option <?php echo "title='Number auto increment type.' "; ?> value="INT" <?php if ( $i==0 ) { echo "selected"; } ?> >INT</option>-->
+				  <!-- <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";  ?>>TIMESTAMP</option>  -->
+				  <option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option>
+				  <!-- 데이터 최대크기 4GiB -->
 			  </select>
 		</td>
 		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
@@ -1144,10 +1154,10 @@ jQuery(document).ready(function ($) {
 		global $group_code, $group_name, $tab_hnm, $tab_enm; 
 
 		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$tab_hnm	= $_POST["tab_hnm"];
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 		$group_code	= $_POST["group_code"];
 		$group_name= $_POST["group_name"];
 		$cnt = 1;
@@ -1179,6 +1189,7 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='CHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
@@ -1327,9 +1338,9 @@ jQuery(document).ready(function ($) {
 		$mq2	= sql_query($query);
 		$cnt=0;
 		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
 		$item_array = "";
@@ -1358,6 +1369,7 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='CHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
@@ -1402,9 +1414,9 @@ jQuery(document).ready(function ($) {
 		else  $group_name	= "";
 
 		$item_list  = " create table ". $tab_enm . " ( ";
-		$item_list  = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list  = $item_list . " `seqno` int(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 		$cnt = 1;
 		$item_array = "";
 			$if_type = "";
@@ -1433,6 +1445,7 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
@@ -1480,9 +1493,9 @@ jQuery(document).ready(function ($) {
 		$tab_hnm	= $_POST["tab_hnm"];	
 		$cnt = 1;
 		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
@@ -1525,6 +1538,7 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';	// no use

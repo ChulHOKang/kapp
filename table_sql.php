@@ -33,6 +33,7 @@
 	if( isset($_POST['line_set']) ) $line_set = $_POST['line_set'];
 	else $line_set = 50;
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
 	else $mode = '';
 	if( isset($_POST['del_mode']) ) $del_mode = $_POST['del_mode'];
 	else $del_mode = '';
@@ -41,33 +42,6 @@
 	if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
 	else  $group_name	= "";
 
-	if( $mode == "table_name_change" && isset($tab_enm) ) {
-			$aa = explode(':', $tab_hnmS);
-			$tab_nmS0 = $aa[0];
-			$tab_nmS1 = $aa[1];
-			$mode ="Search";
-			$query="update {$tkher['table10_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."' where tab_enm='$tab_nmS0' "; 
-			$g = sql_query( $query );
-			if( !$g ) m_("update error");
-			else {
-				$query="update {$tkher['table10_pg_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."', pg_name='".$tab_hnm."' where (pg_code='".$tab_nmS0."' and tab_enm='".$tab_nmS0."') "; //OK
-				$g1 = sql_query( $query );
-				if( $g1 ) m_("Changed name of the Table table code: " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
-				else m_("Error! Changed name of Table : " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
-			}
-	}
-	if( $mode=='group_name_add'){
-		$uid = explode('@', $H_ID); // id is email
-		$group_code	= $uid[0] . "_" . time();
-		$group_name	= $_POST["group_name"];
-		$query="insert into {$tkher['table10_group_table']} set group_code='$group_code', group_name='$group_name', userid='$H_ID' , memo='table30m' ";
-		$g = sql_query( $query );
-		if( !$g ){ m_("Project Add error");
-			echo "group sql: " . $query;
-		} else  m_("Project added! ");
-		$resultT = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID'  and tab_enm='$tab_enm' " );
-		$total		= sql_num_rows( $resultT );
-	}
 ?>
 
 <html>
@@ -289,8 +263,9 @@ jQuery(document).ready(function ($) {
 	}
 }
 function send_memo_chk() {
+	//alert(" --------- The format of the first line of SQL should be \n 'CREATE TABLE IF NOT EXISTS `table_name` ( `colunm_name` data_type' ");
 	document.insert.dup_confirm.checked =false;
-	document.insert.sql_table.value = '';
+	document.insert.sql_table.value = ''; // display: none
 	if(!document.insert.sql_memo.value) {
 		alert('sql 입력하세요');
 		document.insert.sql_memo.focus();
@@ -308,65 +283,86 @@ function send_memo_chk() {
 			alert("Please set the Column count higher! column count: "+ sqlm.length + ", " +document.insert.line_set.value);
 			return false;
 		}
-/*
-		sqlm_length_old = document.insert.sqlm_length_old.value; 
-		if( sqlm_length_old !='' && sqlm_length_old > sqlm.length ) {
-			document.insert.sqlm_length_old.value = sqlm.length; 
-			for(k=1; k < sqlm_length_old; k++){
-				document.insert["fld_enm[" + k + "]"].value  = '';
-				document.insert["fld_hnm[" + k + "]"].value  = '';
-				document.insert["fld_type[" + k + "]"].value  = '';
-				document.insert["fld_len[" + k + "]"].value  = '';
-				document.insert["memo[" + k + "]"].value  = '';
-			}
-		}
-		*/
-		//if( sqlm[0].indexOf("AUTO_INCREMENT") != -1 || sqlm[0].indexOf("auto_increment") != -1) { //auto_increment
-		//	auto = 'AUTO_INCREMENT';
-		//}
+
 		//alert("sqlm0: " +sqlm[0]);//CREATE TABLE IF NOT EXISTS `aboard_` (  `no` int(11) NOT NULL auto_increment
-		tab_enm = sql_tab( sqlm[0]);
+		/*
 		fld0_enm = fld0_enmF( sqlm[0]);
 		fld0_type = fld0_typeF( sqlm[0]);//
 		fld0_type = fld0_type.toUpperCase();//		alert("fld0_type: "+fld0_type);
 		fld_len = fld0_lenF( sqlm[0]);
 		fld_len_default = fld0_deF( sqlm[0]);
+		*/
 
-		msg = tab_enm + '\n' + '@' + '|' +fld0_enm + '|' +fld0_type+ '|' + fld_len + '|'+ fld_len_default + '\n'  +'@';
-			if( fld0_enm == 'seqno') {
-				jj =1;
-			} else {
-				jj = 2;
-				document.insert["fld_enm[1]"].value  = fld0_enm;
-				document.insert["fld_hnm[1]"].value  = fld0_enm;
-				document.insert["fld_type[1]"].value  = fld0_type;
-				document.insert["fld_len[1]"].value  = fld_len;
-				document.insert["memo[1]"].value  = fld_len_default;
+		tab_enm = sql_tab( sqlm[0]);
+				//alert("sqlm0: " +sqlm[0]);//CREATE TABLE IF NOT EXISTS `table_name` (  `no` int(11)
+					
+		sqlm0 = sqlm[0].split('`');
+		if( sqlm0[3] =='' && sqlm0[4] =='' ) {
+			alert("The format of the first line of SQL should be \n 'CREATE TABLE IF NOT EXISTS `table_name` ( `colunm_name` data_type' ");
+			return;
+		}
+		tab_enm = sqlm0[1];
+		fld0_enm = sqlm0[3]; //alert( tab_enm + ", " +fld0_enm);
+
+		if( sqlm0[4].indexOf("(") != -1 ) {
+			fnm = sqlm0[4].split('('); //  sqlm0[4] =" `no` int(11)"
+			fld0_type = fnm[0].replace( ' ', ''); // " int"
+			f_len = fnm[1].split(')');
+			fld_len = f_len[0];
+			fld_len_default = sqlm0[4];
+
+		} else { //`book_num` double default NULL,
+			fnm = sqlm0[4].split(' ');
+			fld0_type = fnm[1];
+			fld_len = '';
+			fld_len_default = sqlm0[4].replace( fnm[1], '');
+		}
+		fld0_type = fld0_type.toUpperCase();
+		msg = tab_enm + '\n' + '@' + '|' +fld0_enm + '|' + fld0_type +'|'+ fld_len + '|' + fld_len_default + '\n' +'@';
+		if( fld0_enm == 'seqno') { //if( fld0_enm == 'seqno') {
+			jj =1;
+		} else {
+			jj = 2;
+			document.insert["fld_enm[1]"].value  = fld0_enm;
+			document.insert["fld_hnm[1]"].value  = fld0_enm;
+			document.insert["fld_type[1]"].value  = fld0_type;
+			document.insert["fld_len[1]"].value  = fld_len;
+			document.insert["memo[1]"].value  = fld_len_default;
+		}
+
+		last_check = ''; 
+		
+		/*alert("sqlm.length: "+ sqlm.length + ", line_set: " + document.insert.line_set.value);//sqlm.length: 53
+		if( document.insert.sql_table.value !== ''){
+			for( i=1; i < document.insert.line_set.value; i++){
+				document.insert["fld_enm[" + i + "]"].value  = '';
+				document.insert["fld_hnm[" + i + "]"].value  = '';
+				document.insert["fld_type[" + i + "]"].value  = 'CHAR';
+				document.insert["fld_len[" + i + "]"].value  = '';
+				document.insert["memo[" + i + "]"].value  = '';
 			}
+		}*/
 
-		last_check = '';
-		//alert("sqlm.length: "+ sqlm.length);//sqlm.length: 53
 		for( i=1; i < sqlm.length; i++, jj++){
 			fld_enm = '';
 			fld_t = '';
 			fld_len = '';
 			auto = '';
+			
 			//alert( "sqlm-" + i + " : " + sqlm[i]);
 			mf = sqlm[i].split('`');
 			if( last_check == 'on' ){
 				key_msg = key_msg +sqlm[i];
+				if( i == sqlm.length-1 ) alert( i+ ", -1, sqlm: " + sqlm[i]); //KEY `jh_key` (`jh_key`,`jh_id`))  AUTO_INCREMENT=7 ;
 				continue;
 			}
 			if( mf[2] == '' ){	//alert(" error : mf2: " + mf[2]);
 				if( last_check == 'on' && i == sqlm.length-1 ) {
 					alert( i+ " - msg: " +msg);
-					//document.insert.sql_table.value = msg + key_msg;
 					break;
 				} else if( last_check == 'on' && i < sqlm.length-1 ) continue;
-				alert(" 111 - msg: " +msg);
-				document.insert.sql_table.value = msg + key_msg;
 				break;
-			}//`user_ip` varchar(255) DEFAULT NULL) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+			}//`user_ip` varchar(255)
 			if( i == sqlm.length-1 ){
 				mf_last = sqlm[i].split(')');
 				if( mf_last[0] !='' ) {
@@ -378,84 +374,41 @@ function send_memo_chk() {
 			if( sqlm[i].indexOf("PRIMARY KEY") != -1 || sqlm[i].indexOf("primary key") != -1 ) {
 				fld_enm = '';
 				fld_t = '';
-				key_msg = key_msg +sqlm[i];
+				key_msg = key_msg +sqlm[i] + ',';
 				continue;
 			} else if( sqlm[i].indexOf("UNIQUE KEY") != -1 ) {
 				fld_enm = '';
 				fld_t = '';
-				key_msg = key_msg +sqlm[i];
+				key_msg = key_msg +sqlm[i] + ',';
 				continue;
 			} else if( sqlm[i].indexOf("KEY index") != -1 ) {
 				fld_enm = '';
 				fld_t = '';
-				key_msg = key_msg +sqlm[i];
+				key_msg = key_msg +sqlm[i] + ',';
 				continue;
 			} else if( sqlm[i].indexOf("KEY ") != -1 || sqlm[i].indexOf("key ") != -1 ) {
-				key_msg = key_msg +sqlm[i];
+				key_msg = key_msg +sqlm[i] + ',';
 				last_check = 'on';
 				continue;
-			} else if( mf[2].indexOf("AUTO_INCREMENT") != -1 || mf[2].indexOf("auto_incrment") != -1 ) {
-				auto = '        AUTO_INCREMENT';
-			} else if( mf[2].indexOf("text") != -1 ) { //`up_day` datetime DEFAULT current_timestamp(),
-				fld_t = 'text';//				fld_t = fld_t.toUpperCase();
-				fld_len = '255';// length 관계없음 임시 설정.
-				fld_len_default = mf[2];
-				fld_len_default = fld_len_default.replace('text', '');
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len_default + '\n' +'@';
-			} else if( mf[2].indexOf("float") != -1 ) { //`up_day` datetime DEFAULT current_timestamp(),
-				fld_t = 'float';//				fld_t = fld_t.toUpperCase();
-				fld_len = '255';// length 관계없음 임시 설정.
-				fld_len_default = mf[2];
-				fld_len_default = fld_len_default.replace('float', '');
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len_default + '\n' +'@';
-			} else if( mf[2].indexOf("double") != -1 ) { //`up_day` datetime DEFAULT current_timestamp(),
-				fld_t = 'double';//				fld_t = fld_t.toUpperCase();
-				fld_len = '255';// length 관계없음 임시 설정.
-				fld_len_default = mf[2];
-				fld_len_default = fld_len_default.replace('double', '');
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len_default + '\n' +'@';
-			} else if( mf[2].indexOf("datetime") != -1 ) {
-				fld_t = 'datetime';// length 관계없음 임시 설정.				fld_t = fld_t.toUpperCase();
-				fld_len = '20';
-				fld_len_default = mf[2];
-				fld_len_default = fld_len_default.replace('datetime', '');
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len_default + '\n' +'@';
-			} else if( mf[2].indexOf("blob") != -1 ) {
-				fld_t = 'longblob';//				fld_t = fld_t.toUpperCase();
-				fld_len = '255'; // size 4GiB,  length 관계없음 임시 설정.
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len + '\n' +'@';
-			} else if( mf[2].indexOf("timestamp") != -1 ) {
-				fld_t = 'timestamp';//				fld_t = fld_t.toUpperCase();
-				fld_len = '20'; // length 관계없음 임시 설정.
-				fld_len_default = mf[2];
-				fld_len_default = fld_len_default.replace('timestamp', '');
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len_default + '\n' +'@';
-			} else if( mf[2].indexOf("date") != -1 ) {
-				fld_t = 'date';//				fld_t = fld_t.toUpperCase();
-				fld_len = '15';// length 관계없음 임시 설정.
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len + '\n' +'@';
-			} else if( mf[2].indexOf("time") != -1 ) {
-				fld_t = 'time';//				fld_t = fld_t.toUpperCase();
-				fld_len = '8';
-				fld_len_default = mf[2];
-				fld_len_default = fld_len_default.replace('time', '');
-				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+'|'+ fld_len_default + '\n' +'@';
-			} else { //alert( i+ ",  mf2: " + mf[2]);
+//			} else if( mf[2].indexOf("AUTO_INCREMENT") != -1 || mf[2].indexOf("auto_incrment") != -1 ) {
+//				auto = '        AUTO_INCREMENT';
+			} else { // `book_num` varchar(15) default NULL
+				//alert("mf2: " + mf[2]); //mf2: ' varchar(15) default NULL'
 				if( mf[2].indexOf("(") != -1 ) {
-					fld_t = fld_typeF( mf[2] );
-					//alert("mf: "+ mf[2] + ", t:" +fld_t);
-					fld_len_default = mf[2]; 
-					field_len = fld_lenF( mf[2] );
-					fld_len = field_len;
-				} else {
-					fld_t = mf[2];
-					fld_t = mf[2].replace(' ', '');
-					fld_len_default = mf[2]; //fld_lenF( mf[2] );
-					field_len = fld_lenF( mf[2] );
-					fld_len = field_len;
+					fnm = mf[2].split('(');
+					fld_t = fnm[0].replace( ' ', ''); // fnm[0]: ' varchar'
+					f_len = fnm[1].split(')');
+					fld_len = f_len[0];
+					fld_len_default = mf[2]; //f_len[1];
+
+				} else { //`book_num` text default NULL,
+					fnm = mf[2].split(' ');
+					fld_t = fnm[1];
+					fld_len_default = mf[2]; //mf[2].replace( fnm[1], '');
+					fld_len ='';
 				}
 				fld_t = fld_t.toUpperCase();
-				msg = msg + '|' + fld_enm + '|' + fld_t.toUpperCase() +'|'+ fld_len_default + '\n' +'@';
+				msg = msg + '|' + fld_enm + '|' + fld_t +'|'+ fld_len + '|' + fld_len_default + '\n' +'@';
 				//alert( i+ ",  msg: " + msg);
 			}
 			fld_t = fld_t.toUpperCase();			//alert( i+ ",  fld_t: " + fld_t );
@@ -463,6 +416,8 @@ function send_memo_chk() {
 			document.insert["fld_hnm[" + jj + "]"].value  = fld_enm;
 			document.insert["fld_type[" + jj + "]"].value  = fld_t;
 			document.insert["fld_len[" + jj + "]"].value  = fld_len;
+
+			fld_len_default = fld_len_default.replace('auto_increment', '');
 			document.insert["memo[" + jj + "]"].value  = fld_len_default;
 
 		} //for
@@ -643,12 +598,12 @@ function send_memo_chk() {
 		for(var i=0;i<line; i++){
 			len = document.insert["fld_len[" + i + "]"].value;
 			fnm = document.insert["fld_hnm[" + i + "]"].value;
-			if( !len) {
+			/*if( !len) {
 				if( fnm ) {
 					alert('Check the column length input! ');// 컬럼 길이 입력을 확인 하세요!
 					return false;
 				}
-			}
+			}*/
 		}
 		var ins = window.confirm("Register and create the table. ");//테이블을 등록및 생성합니다.
 		if( ins ) {
@@ -915,8 +870,8 @@ function table_nm_dup_check(){
 		$Amemo		= array();
 	
 	if( $mode == 'Search' ){
-		$aa = explode(':', $tab_hnmS);
-		$tab_enm = $aa[0];
+		//$aa = explode(':', $tab_hnmS);
+		$tab_enm = $_REQUEST['tab_enm'];//aa[0];
 		$tab_hnm = $aa[1];
 		$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enm' order by disno" );
 		$record_cnt = sql_num_rows($result);
@@ -1043,7 +998,7 @@ function table_nm_dup_check(){
 		<input type="hidden" name="old_group_name" >
 		<input type="hidden" name="table_yn" value='<?=$table_yn?>'>
 		<input type="hidden" name="sqlm_length_old" value=''>
-		
+		<input type="hidden" name="key_msg" value=''>
 		
 		<h2><font fce="Arial">Table Design( SQL to Table ) <?php if( $mode=='Search' ) echo "( Change )"; ?></font></h2>
 
@@ -1091,7 +1046,7 @@ function table_nm_dup_check(){
 
 <div>
 		<span bgcolor='#f4f4f4' title='Enter SQL here'><textarea title='Enter SQL here' id="sql_memo" name="sql_memo" rows="4" cols="100%"></textarea></span>
-		<span bgcolor='#f4f4f4'><textarea id="sql_table" name="sql_table" rows="4" cols="100%" style='color:yellow;display:none;'></textarea></span>
+		<span bgcolor='#f4f4f4'><textarea id="sql_table" name="sql_table" rows="4" cols="100%" style='color:yellow;display:;'></textarea></span>
 		<p bgcolor='#f4f4f4'><input type='button' onclick="javascript:send_memo_chk();" value=' Sql to Table ' style='height:30px;width:150;background-color:black;color:white;border-radius:20px;border:1 solid black;' title='sql to table' ></p>
 
 </div>
@@ -1248,28 +1203,42 @@ function table_nm_dup_check(){
 			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title="column:<?=$fld_enm?>"> </td>
 		<td align='left'>
 			  <select type='text' name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
-				  <option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> value="CHAR" <?php if($fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
-				  <option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> value="VARCHAR" <?php if($fld_type == 'VARCHAR') echo " selected ";  ?> >VARCHAR</option>
-				  <option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> value="TEXT" <?php if($fld_type == 'TEXT') echo " selected ";  ?>>TEXT</option>
-				  <option <?php echo "title='INT The range of 4-byte integer types is 2147483647 with -2,147,483,647 when there is a sign, and 4,294,967,295 when there is no sign.' "; ?> value="INT" <?php if($fld_type == 'INT') echo " selected ";  ?> >INT</option>
-				  <option <?php echo "title='TINYINT The range of a 1-byte integer type is from -128 to 127 when it is signed, and from 0 to 255 when it is not signed.' "; ?> value="TINYINT" <?php if($fld_type == 'TINYINT') echo " selected ";  ?> >TINYINT</option>
-				  <option <?php echo "title='SMALLINT The range of a 2-byte integer is -32,768 to 32,767 if signed and 0 to 65,355 if unsigned.' "; ?> value="SMALLINT" <?php if($fld_type == 'SMALLINT') echo " selected ";  ?> >SMALLINT</option>
-				  <option <?php echo "title='MEDIUMINT The range of 3-byte integers is -8388608 to 8388607 if signed, and 0 to 16,777,215 if not signed.' "; ?> value="MEDIUMINT" <?php if($fld_type == 'MEDIUMINT') echo " selected ";  ?> >MEDIUMINT</option>
-				  <option <?php echo "title='BIGINT An 8-byte integer type range is from -9,223,372,036,854,775,808 to +9,223,372,036,854,775,808 when there is a sign, and 18,446,744,073,709,551,615 when there is no sign.' "; ?> value="BIGINT" <?php if($fld_type == 'BIGINT') echo " selected ";  ?>>BIGINT</option>
-				  <option <?php echo "title='DECIMAL Fixed-point number (M, D): The maximum number of digits (M) is 65 (default is 10) and the maximum number of decimal places (D is 30)' "; ?> value="DECIMAL" <?php if($fld_type == 'DECIMAL') echo " selected ";  ?>>DECIMAL</option>
-				  <option <?php echo "title='FLOAT A small floating-point number, acceptable values are -3.402823466E + 38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E + 38.' "; ?> value="FLOAT" <?php if($fld_type == 'FLOAT') echo " selected ";  ?>>FLOAT</option>
-				  <option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> value="DOUBLE" <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
-				  <option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
-				  <option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
-				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if($fld_type == 'TIME') echo " selected ";  ?>>TIME</option>
-				  <!-- <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";  ?>>TIMESTAMP</option> -->
-				  <option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option>
-				  <!-- 데이터 최대크기 4GiB -->
+							<option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> value="CHAR" 
+				  <?php if( $fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
+							<option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> value="VARCHAR" 
+				  <?php if($fld_type == 'VARCHAR') echo " selected ";  ?> >VARCHAR</option>
+							<option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> value="TEXT" 
+				  <?php if($fld_type == 'TEXT') echo " selected ";  ?>>TEXT</option>
+							<option <?php echo "title='INT The range of 4-byte integer types is 2147483647 with -2,147,483,647 when there is a sign, and 4,294,967,295 when there is no sign.' "; ?> value="INT" <?php if( $i==0 || $fld_type == 'INT') echo " selected ";  ?> >INT</option>
+							<option <?php echo "title='TINYINT The range of a 1-byte integer type is from -128 to 127 when it is signed, and from 0 to 255 when it is not signed.' "; ?> value="TINYINT" 
+				  <?php if( $fld_type == 'TINYINT') echo " selected ";  ?> >TINYINT</option>
+							<option <?php echo "title='SMALLINT The range of a 2-byte integer is -32,768 to 32,767 if signed and 0 to 65,355 if unsigned.' "; ?> value="SMALLINT" 
+				  <?php if($fld_type == 'SMALLINT') echo " selected ";  ?> >SMALLINT</option>
+							<option <?php echo "title='MEDIUMINT The range of 3-byte integers is -8388608 to 8388607 if signed, and 0 to 16,777,215 if not signed.' "; ?> value="MEDIUMINT" 
+				  <?php if($fld_type == 'MEDIUMINT') echo " selected ";  ?> >MEDIUMINT</option>
+							<option <?php echo "title='BIGINT An 8-byte integer type range is from -9,223,372,036,854,775,808 to +9,223,372,036,854,775,808 when there is a sign, and 18,446,744,073,709,551,615 when there is no sign.' "; ?> value="BIGINT" 
+				  <?php if($fld_type == 'BIGINT') echo " selected ";  ?>>BIGINT</option>
+							<option <?php echo "title='DECIMAL Fixed-point number (M, D): The maximum number of digits (M) is 65 (default is 10) and the maximum number of decimal places (D is 30)' "; ?> value="DECIMAL" 
+				  <?php if($fld_type == 'DECIMAL') echo " selected ";  ?>>DECIMAL</option>
+							<option <?php echo "title='FLOAT A small floating-point number, acceptable values are -3.402823466E + 38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E + 38.' "; ?> value="FLOAT" 
+				  <?php if($fld_type == 'FLOAT') echo " selected ";  ?>>FLOAT</option>
+							<option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> value="DOUBLE" 
+				  <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
+							<option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" 
+				  <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
+							<option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" 
+				  <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
+							<option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" 
+				  <?php if($fld_type == 'TIME') echo " selected ";  ?>>TIME</option>
+							<option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" 
+				  <?php if($fld_type == 'TIMESTAMP') echo " selected ";  ?>>TIMESTAMP</option>
+							<option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" 
+				  <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option> <!-- LONGBLOB data size 4GiB -->
 			  </select>
 		</td>
 		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 <?php
-				if ( $fld_enm=='seqno' or $i==0) { echo "value='13' readonly"; } else { echo " value='$fld_len' ";}
+				if ( $fld_enm=='seqno' or $i==0) { echo "value='11' readonly"; } else { echo " value='$fld_len' ";}
 ?>  >
 		</td>
 		<td align='left'>
@@ -1452,20 +1421,23 @@ function table_nm_dup_check(){
 		return $response;
 	} // function
 	//==========================================
-	function Table_Create_(){
+	function Table_Create_Submit(){
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
 		global $tkher;
 		global $group_code, $group_name, $tab_hnm, $tab_enm; 
 
-		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),';
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = " create table `". $tab_enm . "` ( ";
+		$item_list = $item_list . " `seqno` INT(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 
 		//$tab_hnm	= $_POST["tab_hnm"];
 		//$group_code	= $_POST["group_code"];
 		//$group_name= $_POST["group_name"];
+
+		$key_msg= $_POST["key_msg"];
+
 		$cnt = 1;
 		$item_array = "";
 		$if_type = "";
@@ -1484,6 +1456,11 @@ function table_nm_dup_check(){
 				$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$if_type = $if_type . "|" . "0";
 				$if_data = $if_data . "|" . "";
+
+				$memo = str_replace('auto_increment', '', $memo);
+				$item_list = $item_list . '`'.$fld_enm . '` ' . $memo . ', ';
+				//$item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type. .'('.$fld_len.') ' . $memo . ', ';
+				/*
 				if( $fld_type =='INT' )				$item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='BIGINT' )		$item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='TINYINT' )	$item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type . ' default 0, ';
@@ -1499,6 +1476,7 @@ function table_nm_dup_check(){
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type . ' , ';
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . '`'.$fld_enm . '` ' .  $fld_type . ' , ';
+				*/
 				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$memo' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
@@ -1511,33 +1489,39 @@ function table_nm_dup_check(){
 			}
 		}
 		$item_list = $item_list . " primary key(`seqno`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
 		$line_set  = $cnt - 1;
-		$ret = sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$item_array', sqltable='$item_list' " );
+		$ret = sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='11', disno=0, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$item_array', sqltable='$item_list' " );
 
 		if( $ret ){
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID', memo='$item_list' ";
 			
-			$rets = sql_query($query);
+			$rets = sql_query( $query);
 			if( $rets ){ //m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
-				$Tret = TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
-				if( $Tret ) { //m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
-					$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $tab_enm; 
-					$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
-				} else  m_("TAB_curl_sendA -- Error");
-
 				if( !kapp_table_check( $tab_enm ) ){
-					$mq1 = sql_query( $item_list ); // Table Create SQL
+					$mq1 = sql_query( $item_list ); // Table Create SQL ------------------------------------
 					if( !$mq1 ) {
 						echo "sql: " . $item_list; //컬럼명에 예약어를 사용했는지 확인하세요
-						m_("Make sure you use reserved words in column names. Error - Create table - $tab_enm");
+						m_("ERROR - Make sure you use reserved words in column names. - Create table - $tab_enm");
 						exit;
 					} else {
 						$table_yn = 'y';
-						$link_ = KAPP_URL_T_ . "table_sql.php";
-						insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10@table_sql.php' );
-						m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
+						$link_ = KAPP_URL_T_ . "/table_sql.php?mode=Search&tab_enm=". $tab_enm;
+						$p_msg = 'table10@table_sql.php : ' . $tab_enm;
+						insert_point_app( $H_ID, $config['kapp_write_point'], $link_, $p_msg );
+
+						$Tret = TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
+						sleep(3);
+						if( $Tret ) { //m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
+							$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $tab_enm; 
+							$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
+							sleep(3);
+
+						} else  m_("TAB_curl_sendA -- Error");
+						if( $Pret ) m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
 					}
 				}
+
 			} else {
 				m_("Error INSERT table10_pg_table , $tab_enm , $tab_hnm ");
 			}
@@ -1627,7 +1611,7 @@ function table_nm_dup_check(){
 		update_remake_func();
 	}
 	if( $mode == "table_create" ) {
-		if( !Table_check_() ) Table_Create_();
+		if( !Table_check_() ) Table_Create_Submit();
 		else m_("table exists : " . $tab_enm);
 	} else if( $mode == "table_new_copy" ){	// copy and new.
 		copy_func();
@@ -1665,9 +1649,9 @@ function table_nm_dup_check(){
 		$mq2	= sql_query($query);
 		$cnt=0;
 		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = $item_list . " `seqno` INT(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];
 		$item_array = "";
@@ -1741,9 +1725,9 @@ function table_nm_dup_check(){
 		else  $group_name	= "";
 
 		$item_list  = " create table ". $tab_enm . " ( ";
-		$item_list  = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = $item_list . " `seqno` INT(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 		$cnt = 1;
 		$item_array = "";
 			$if_type = "";
@@ -1820,9 +1804,9 @@ function table_nm_dup_check(){
 		$tab_hnm	= $_POST["tab_hnm"];	
 		$cnt = 1;
 		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
-		$item_list = $item_list . ' kapp_userid  VARCHAR(50),'; // add 20251118
-		$item_list = $item_list . ' kapp_pg_code VARCHAR(50),';
+		$item_list = $item_list . " `seqno` INT(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 
 		$group_code = $_POST['group_code'];
 		$group_name = $_POST['group_name'];

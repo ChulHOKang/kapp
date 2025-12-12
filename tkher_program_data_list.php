@@ -24,16 +24,33 @@
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
-	if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
-	else $group_code = '';
 
 	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
 	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
+	else if( isset( $_SESSION['pg_code']) ) $pg_code= $_SESSION['pg_code'];
 	else $pg_code = '';
+
+
+	if( isset( $_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+	else if( isset( $_POST['mode']) ) $mode= $_POST['mode'];
+	else $mode = '';
+	
 	if( !$pg_code ) {
+		$pg_code = $_SESSION['pg_code'];
 		m_("pg code - ERROR : pg_code: $pg_code "); exit;//
-	}
+	} else $_SESSION['pg_code']= $pg_code;
+
 	$pg_mid= ''; $tab_mid= ''; 
+
+	if( $mode == "project_search" ) {
+		$group_code = $_POST['group_code'];	//	m_("$mode, $group_code");
+		$_SESSION['group_code']=$group_code;
+	} else {
+		if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
+		else if( isset( $_SESSION['group_code']) ) $group_code= $_SESSION['group_code'];
+		else $group_code = '';
+	}
+
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
@@ -49,7 +66,7 @@
 		$tab_mid= $rsPG['tab_mid']; 
 		$grant_view= $rsPG['grant_view']; 
 		$grant_write= $rsPG['grant_write']; 
-		$group_code= $rsPG['group_code'];
+		//$group_code= $rsPG['group_code'];
 		$group_name= $rsPG['group_name'];
 	} else {
 			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
@@ -137,7 +154,8 @@ $(function () {
 	{
 		document.view_form.pg_code.value=enm;
 		document.view_form.pg_name.value=hnm;
-		document.view_form.action='tkher_program_data_list.php?pg_code='+enm; 
+		document.view_form.action='tkher_program_data_list.php'; 
+		//document.view_form.action='tkher_program_data_list.php?pg_code='+enm; 
 		document.view_form.submit();
 	}
 	function table_record_write(pg_code, grant_write, h_lev){ 
@@ -192,14 +210,12 @@ $(function () {
 			var c_sel3 = document.getElementById("c_sel3");
 			i = c_sel3.selectedIndex;
 			c_sel3 = c_sel3.options[i].value;
-			var searchT = document.getElementById("searchT");
-			searchT = searchT.value;
-			pg_code = document.view_form.pg_code.value;
+			var searchT = document.getElementById("searchT").value;//			searchT = searchT.value;
 			document.view_form.mode.value = 'search';
-			document.view_form.search_fld.value = c_sel;
-			document.view_form.search_choice.value = c_sel3;
-			document.view_form.page.value = 1;
-			document.view_form.action = 'tkher_program_data_list.php?pg_code='+pg_code;
+			document.view_form.search_fld.value = c_sel; // column
+			document.view_form.search_choice.value = c_sel3; // search type
+			document.view_form.searchT.value = searchT; // search data
+			document.view_form.action = 'tkher_program_data_list.php';
 			document.view_form.submit();
 		});
 	});
@@ -294,7 +310,8 @@ $(function () {
 		//vv = document.view_form.group_code.options[index].value;
 		//document.view_form.group_code.value = vv;
 		document.view_form.mode.value = "project_search";
-		document.view_form.action ="tkher_program_data_list.php?pg_code="+pg_code;
+		document.view_form.action ="tkher_program_data_list.php";
+		//document.view_form.action ="tkher_program_data_list.php?pg_code="+pg_code;
 		document.view_form.submit();
 		return;
 	}
@@ -311,17 +328,22 @@ $(function () {
 	$cur='B';
 	include "./menu_run.php";
 
-	if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
-	else  $mode = "";
+/*	
 	if( isset($_REQUEST['c_sel']) ) $c_sel= $_REQUEST['c_sel'];
 	else  $c_sel = "";
 	if( isset($_REQUEST['c_sel3']) ) $c_sel3= $_REQUEST['c_sel3'];
 	else  $c_sel3 = "";
+*/
 	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
+	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
 	else  $searchT = "";
-	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld'];
+
+	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld']; // c_sel
+	else if( isset($_POST['search_fld']) ) $search_fld= $_POST['search_fld'];
 	else  $search_fld = "";
-	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice'];
+
+	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice']; // c_sel3
+	else if( isset($_POST['search_choice']) ) $search_choice= $_POST['search_choice'];
 	else  $search_choice = "";
 
 	$fld_enm= array();
@@ -372,36 +394,31 @@ $(function () {
 	$total_count = 0;
 	$view_msg ='';
 	if( $H_LEV >= $grant_view || $pg_mid == $H_ID ) {
-			$SQL1 = "SELECT * from $tab_enm ";
+			$SQL1 = "SELECT * from `$tab_enm` ";
 			if( $mode=='search' ){
-				if( $c_sel3 == "like")		$SQL1 = $SQL1 . " where $search_fld $c_sel3 '%$searchT%' ";
-				else if( $c_sel3 == "=")	$SQL1 = $SQL1 . " where $search_fld $c_sel3 '$searchT' ";
-				else if( $c_sel3 == ">")	$SQL1 = $SQL1 . " where $search_fld $c_sel3 '$searchT' ";
-				else if( $c_sel3 == "<")	$SQL1 = $SQL1 . " where $search_fld $c_sel3 '$searchT' ";
-				else $SQL1 = $SQL1 . " where $search_fld like '%$searchT%' ";
+				if( $search_choice == "like")		$SQL1 = $SQL1 . " where `$search_fld` $search_choice '%$searchT%' ";
+				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
 			}
-			if ( ($result = sql_query( $SQL1 ) )==false )
-			{
+			if( ($result = sql_query( $SQL1 ) )==false ){
 				printf("Invalid query: %s\n", $SQL1);
-				echo "SQL:" . $SQL1;
-				m_(" 4 Select Error ");
+				echo "SQL:" . $SQL1; m_(" 4 Select Error ");
 				$total_count = 0; exit;
 			} else {
-				$total_count = sql_num_rows($result);
-				if( $total_count ) $total_page  = ceil($total_count / $line_cnt);			// 전체 페이지 계산
+				$total_count = $result->num_rows;
+				if( $total_count ) $total_page  = ceil($total_count / $line_cnt);
 				else $total_page = 1;
-
-				if( $page < 2) {
-					$page = 1;										// 페이지가 없으면 첫 페이지 (1 페이지)
+				if( $page < 2 ) {
+					$page = 1;
 					$start = 0;
 				} else {
-					$start = ($page - 1) * $line_cnt;					// 시작 열을 구함
+					$start = ($page - 1) * $line_cnt;
 				}
-				$last = $line_cnt;										// 뽑아올 게시물 [끝]
+				$last = $line_cnt;
 				if( $total_count < $last) $last = $total_count;
 			}
 	} else {
-		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;//자료를 볼수 있는 권한이 없습니다. 볼수있는 권한은 생성자 이상의 레벨입니다.
+		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
+		//자료를 볼수 있는 권한이 없습니다. 볼수있는 권한은 생성자 이상의 레벨입니다.
 	}
 
 ?>
@@ -421,10 +438,11 @@ $(function () {
 							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
 <?php
 			}
-					$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
+					if( $H_LEV > 7) $result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
+					else			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
 					while( $rs = sql_fetch_array( $result)) {
 ?>
-							<option value='<?=$rs['group_code']?>'><?=$rs['group_name']?></option>
+							<option value='<?=$rs['group_code']?>' <?php if( $group_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
 <?php
 					}
 ?>
@@ -436,15 +454,15 @@ $(function () {
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
-	if( isset($_POST['group_code']) ) $group_code = $_POST['group_code'];
-	else $group_code = "";
+
 	if( isset($H_ID) && $H_ID !=='' ) {
 		/*if( isset( $group_code) ){
 			$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_code . "' order by upday desc ";
 		} else {
 			 $sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
 		}*/
-		$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_code . "' order by upday desc ";
+		if( $H_LEV > 7) $sql = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
+		else			$sql = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
 		$result = sql_query( $sql );
 		if( $result == false ){
 			m_(" 2 Select Error ");
@@ -567,11 +585,8 @@ if( $H_ID==$pg_mid ) {
 			$SQL_limit	= "  limit " . $start . ", " . $last;
 			$OrderBy	= " order by seqno desc ";
 			if( $mode == "search" ){
-				if( $c_sel3 == "like")		$SQL = $SQL . " where $search_fld $c_sel3 '%$searchT%' ";
-				else if( $c_sel3 == "=")	$SQL = $SQL . " where $search_fld $c_sel3 '$searchT' ";
-				else if( $c_sel3 == ">")	$SQL = $SQL . " where $search_fld $c_sel3 '$searchT' ";
-				else if( $c_sel3 == "<")	$SQL = $SQL . " where $search_fld $c_sel3 '$searchT' ";
-				else	 $SQL = $SQL . " where $search_fld like '%$searchT%' ";
+				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
+				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
 			} 
 			$SQL = $SQL . $OrderBy . $SQL_limit;
 			if( ($result = sql_query( $SQL ) )==false )	{
@@ -640,7 +655,7 @@ if( $H_ID==$pg_mid ) {
 					</form>
 			</div> 
 <?php
-	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID&c_sel=$c_sel",$total_count,$page,$line_cnt); 
+	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
 ?> 
 
 </body>

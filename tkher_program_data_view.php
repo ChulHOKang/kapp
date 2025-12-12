@@ -62,8 +62,8 @@
 	$tab_hnm	= $_POST['tab_hnm'];
  	$if_data		= array();
 	$if_type		= array();
-	$if_data		= $_POST['if_data'];
-	$if_type		= $_POST['if_type'];
+	if( isset($_POST['if_data']) ) $if_data	= $_POST['if_data'];
+	if( isset($_POST['if_type']) ) $if_type	= $_POST['if_type'];
 	$item_cnt	= $_POST['item_cnt'];
 	$pg_name	= $_POST['pg_name'];
 	$line_cnt	= $_POST['line_cnt'];
