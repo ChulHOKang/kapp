@@ -11,7 +11,7 @@
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
 
-	if( $H_ID && $H_ID !=='') {
+	if( $H_ID && $H_ID !=='' && $H_ID !=='Guest') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  

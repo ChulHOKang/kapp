@@ -51,7 +51,7 @@
 	$grant_write= $mf_infor[47];
 
 	$H_ID = get_session("ss_mb_id");
-	if( $H_ID && $H_ID !=='') {
+	if( $H_ID && $H_ID !=='' && $H_ID !=='Guest') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  

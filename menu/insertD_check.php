@@ -9,11 +9,12 @@
 		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit; 
 	}
-
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID = get_session("ss_mb_id");
+
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
-	if( $H_ID && $H_ID !=='') {
+	if( $H_ID && $H_ID !=='' && $H_ID !=='Guest' ) {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  

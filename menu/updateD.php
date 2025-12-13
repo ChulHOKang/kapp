@@ -23,11 +23,11 @@
 	$ip = $_SERVER['REMOTE_ADDR'];
 
 	$H_ID = get_session("ss_mb_id");
-	if( $H_ID && $H_ID !=='') {
+	if( $H_ID && $H_ID !=='' && $H_ID !=='Guest' ) {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
-		$H_EMAIL = get_session("ss_mb_email"); 
+		$H_EMAIL = $member['mb_email'] ;//get_session("ss_mb_email"); 
 	} else {
 		$email	= '';  
 		if( $grant_write > 1 ){
@@ -41,7 +41,6 @@
 			$H_EMAIL= ''; 
 		}
 	}
-
 	if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
 	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else $mode  = "";
@@ -55,7 +54,7 @@
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 	}
 	$in_day = date("Y-m-d H:i");
-	$query="select * from aboard_" . $mf_infor[2] . " where no=".$list_no;
+	$query="select * from `aboard_" . $mf_infor[2] . "` where no=".$list_no;
 	$mf = sql_fetch( $query );
 	$content = $mf['context'];	//$content = htmlspecialchars( $mf['context'] );
 	$email = $mf['email'];
@@ -114,7 +113,6 @@
 	}
 	function update_func(xauto, listno, id){
 		var formA = document.tx_editor_form;
-		alert('listno: ' + listno); 
 		if( formA.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
 			formA.auto_check.focus();
@@ -214,6 +212,7 @@
 			<input type='hidden' name='search_choice'	value='<?=$search_choice?>'>
 			<input type='hidden' name='search_text'		value='<?=$search_text?>'>
 			<input type="hidden" name="passwordG" value="<?=$mf['password']?>" >
+			<input type="hidden" name="H_EMAIL" value="<?=$H_EMAIL?>" >
 
 			<div class="boardView">
 				<div class="viewHeader">
@@ -278,7 +277,7 @@
 						</li>
 					</ul>
 					<div class="cradata_check">
-						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>', '<?=$mf['email']?>');" class="btn_bo03">Save</a>
+						<a href="javascript:saveContent('<?=$auto_char?>', '<?=$list_no?>','<?=$mf['email']?>','<?=$H_LEV?>');" class="btn_bo03">Save</a>
 					</div>
 				</div>
 			</div>
@@ -289,12 +288,16 @@
 
  
 <script type="text/javascript">
-  function saveContent(xauto, no, email_id) {
+  function saveContent( xauto, no, email_id,h_lev) {
 		var formA = document.tx_editor_form;
+		var H_EMAIL = formA.H_EMAIL.value; //alert( h_lev+ ", H_EMAIL: " + H_EMAIL + ", e_id:" +email_id );
+		if( h_lev > 1 && H_EMAIL !==email_id ) {
+			alert("no use update "); return false;
+		}
 		xx = formA.auto_check.value;
-		var p1 = formA.password.value;
-		var p2 = formA.passwordG.value;
-		if( email_id == formA.email.value ){
+		if( h_lev < 2 ){
+			var p1 = formA.password.value;
+			var p2 = formA.passwordG.value;
 			if( p1 =='' ) {
 				alert('Enter Password! ' );
 				formA.password.focus();
@@ -310,10 +313,6 @@
 				formA.password.focus();
 				return false;
 			}
-		} else {
-				alert('email is incorrect! email:' + formA.email.value + ', email_id: ' +email_id  );
-				//email is incorrect! email:solpakan59@gmail.com, id: Guest
-				//email is incorrect! email:solpakan59@gmail.com
 		}
 		if(formA.nameA.value==''){
 			alert('Please enter your name.');
