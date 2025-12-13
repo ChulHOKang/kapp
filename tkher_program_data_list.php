@@ -66,7 +66,7 @@
 		$tab_mid= $rsPG['tab_mid']; 
 		$grant_view= $rsPG['grant_view']; 
 		$grant_write= $rsPG['grant_write']; 
-		//$group_code= $rsPG['group_code'];
+		if( $group_code=='') $group_code= $rsPG['group_code'];
 		$group_name= $rsPG['group_name'];
 	} else {
 			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! "); exit;
