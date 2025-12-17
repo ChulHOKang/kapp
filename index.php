@@ -375,9 +375,13 @@ body {
 			<li style='font-size:18;color:cyan;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
 
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_sql.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>SQL to Table</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/tableK_sql.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>SQL to Table</a></li>
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
+
+			<!-- <li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li> -->
+
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Create.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
+			
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
 
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>App Permissions setting</a></li>
