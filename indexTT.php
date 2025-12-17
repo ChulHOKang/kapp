@@ -1,16 +1,8 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		indexTT.php - tkher_start_necessary.php
-		index.php - kapp_start_necessary_TT.php
-
-		//Old $http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-		//New $http = $_SERVER['REQUEST_SCHEME'] . "://";		//m_("http : " . $http ); // https
-		if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') $http = "https://";
-		else if( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ) $http = "https://";
-		else if( isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') $http = "https://";
-		else  $http = "http://";
-
+	indexTT.php - tkher_start_necessary.php
+	index.php - kapp_start_necessary_TT.php
 	  --- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
 	  1. 이것은 나의 미래를 결정한다.
 	  2. 이것은 나의 경쟁력이다.
