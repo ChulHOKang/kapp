@@ -382,7 +382,7 @@ body {
 
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Create.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
 			
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RU.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Upgrade.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
 
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>App Permissions setting</a></li>
 
