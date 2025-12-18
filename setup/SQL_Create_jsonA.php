@@ -413,8 +413,9 @@ function Table10($t_head, $tab) {
         grant_write int(3) DEFAULT 0,
         grant_view int(3) DEFAULT 0,
         table_yn varchar(3) DEFAULT NULL,
+        sqltable text DEFAULT NULL,
         key_msg text DEFAULT NULL,
-        sqltable text DEFAULT NULL
+        sql_copy text DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
