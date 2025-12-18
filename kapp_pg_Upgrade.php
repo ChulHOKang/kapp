@@ -687,7 +687,7 @@ function ifcheck_onclickA( r, seq) {
 				document.makeform.target          = '_self';
 				document.makeform.action          = 'table_formulaM.php';
 				document.makeform.mode.value      = 'run13';
-				document.makeform.mode_call.value = 'app_pg50RU'; //document.makeform.mode_call.value = 'table_item_run50R';
+				document.makeform.mode_call.value = 'kapp_pg_Upgrade.php'; //document.makeform.mode_call.value = 'table_item_run50R';
 				document.makeform.submit();
 			} else {
 				alert( st[3] + ", You cannot set the text type" );
@@ -699,7 +699,7 @@ function ifcheck_onclickA( r, seq) {
 			document.makeform["if_type[" + selind + "]"].value = r;
 			document.makeform.action          = 'table_popupRM.php';
 			document.makeform.mode.value      = '';
-			document.makeform.mode_call.value = 'app_pg50RU';
+			document.makeform.mode_call.value = 'kapp_pg_Upgrade.php';
 			document.makeform.target          = '_self';
 			document.makeform.submit();
 			break;
@@ -881,7 +881,7 @@ function Save_and_Run( pg)
 			document.makeform.mode.value = 'Pg_Upgrade';
 		}
 	} else document.makeform.mode.value = 'Pg_Upgrade';
-	document.makeform.mode_call.value = 'app_pg50RU';
+	document.makeform.mode_call.value = 'kapp_pg_Upgrade.php';
 	document.makeform.action='app_pg50RU_update.php';
 	document.makeform.target='_blank';
 	document.makeform.submit();
@@ -1029,7 +1029,7 @@ function Save_and_Run( pg)
 			<input type="hidden" name="col_attr_old"	value=""> 
  <table cellspacing='0' cellpadding='4' width='390' border='1' class="c1"> 
  <tr>
-    <td height="30" style="font-size:21px;background-color:#666666;color:cyan;text-align:center;" title='app_pg50RU'>Program Upgrade<br>
+    <td height="30" style="font-size:21px;background-color:#666666;color:cyan;text-align:center;" title='kapp_pg_Upgrade.php'>Program Upgrade<br>
 	<input type='hidden' name='project_name' value="<?=$project_name?>" readonly >
 	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" ><br>
 	<p align='left'>Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:180px; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
