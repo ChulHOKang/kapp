@@ -29,22 +29,27 @@
 	if( isset($_POST['tab_hnmS']) ) $tab_hnmS	= $_POST["tab_hnmS"];
 	else $tab_hnmS = '';
 	if( isset($_POST['line_set']) ) $line_set = $_POST['line_set'];
-	else $line_set = 50;
+	else $line_set = 30;
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
 	else $mode = '';
 	if( isset($_POST['del_mode']) ) $del_mode = $_POST['del_mode'];
 	else $del_mode = '';
-	if( isset($_POST["project_code"])  && $_POST["project_code"] !== '') $project_code	= $_POST["project_code"];
+	if( isset($_POST["project_code"]) ) $project_code	= $_POST["project_code"];
 	else  $project_code	= "";
-	if( isset($_POST["project_name"])  && $_POST["project_name"] !== '') $project_name	= $_POST["project_name"];
+	if( isset($_POST["project_name"]) ) $project_name	= $_POST["project_name"];
 	else  $project_name	= "";
 
-	if( isset($_POST["sql_memo"]) && $_POST["sql_memo"] !== '') $sql_memo= $_POST["sql_memo"];
+	if( isset($_POST["sql_memo"]) ) $sql_memo= $_POST["sql_memo"];
 	else  $sql_memo	= "";
 
-	if( isset($_POST["sql_table"]) && $_POST["sql_table"] !== '') $sql_table= $_POST["sql_table"];
+	if( isset($_POST["sql_table"]) ) $sql_table= $_POST["sql_table"];
 	else  $sql_table = "";
+	
+	if( isset($_POST["key_msg"]) ) $key_msg= $_POST["key_msg"];
+	else  $key_msg = "";
+	if( isset($_POST["key_array"]) ) $key_array= $_POST["key_array"];
+	else  $key_array = "";
 ?>
 
 <html>
@@ -206,7 +211,7 @@ function fld_lenF( mf2) { // varchar(15) DEFAULT NULL
 	default_data = fld_len[0] + '|' +fld_len[1];
 	return field_len; //default_data;
 }
-function send_memo_chk() {
+function SQL_check() {
 	document.insert.dup_confirm.checked =false;
 	document.insert.sql_table.value = ''; // display: none
 	if(!document.insert.sql_memo.value) {
@@ -223,10 +228,11 @@ function send_memo_chk() {
 
 		sqlA= document.insert.sql_memo.value;
 		sqlm = sqlA.split(',');
+		/*
 		if( sqlm.length > document.insert.line_set.value ){
 			alert("Please set the Column count higher! column count: "+ sqlm.length + ", " +document.insert.line_set.value);
 			return false;
-		}
+		}*/
 
 		tab_enm = sql_tab( sqlm[0]);
 		sqlm0 = sqlm[0].split('`');
@@ -253,7 +259,7 @@ function send_memo_chk() {
 		fld0_type = fld0_type.toUpperCase();
 		msg = tab_enm + '\n' + '@' + '|' +fld0_enm + '|' + fld0_type +'|'+ fld_len + '|' + fld_len_default + '\n' +'@';
 		item_array = '|' +fld0_enm + '|' +fld0_enm + '|' + fld0_type +'|'+ fld_len + '|' + fld_len_default +'@';
-		if( fld0_enm == 'seqno') { //if( fld0_enm == 'seqno') {
+		if( fld0_enm == 'seqno') { // seqno is kapp system column
 			jj =1;
 		} else {
 			jj = 2;
@@ -274,9 +280,36 @@ function send_memo_chk() {
 			mf = sqlm[i].split('`');
 			fld_enm = mf[1];
 
-			if( last_check == 'on' ){
-				if( i == sqlm.length-1 ) {	//alert("on ---  " + i+ ", sqlm_i: " + sqlm_i );
+			if( last_check == 'on' ){ //KEY `em_tran_1` (`tran_date`),
+				//alert( i+ ", mf len: " + mf.length + ", sqlm_i: " + sqlm_i);	//mf len: 5				//mf len: 3
+				if( i == sqlm.length-1 ) {	//alert( i+ ", sqlm_i: " + sqlm_i );
 					key_msg = key_msg + sqlm_i; //KEY `jh_key` (`jh_key`,`jh_id`))  AUTO_INCREMENT=7 ;
+					/*
+						KEY `em_tran_1` (`tran_date`), 
+						KEY `em_tran_2` (`tran_id`, `tran_rslt`), 
+						KEY `em_tran_4` (`tran_refkey`), 
+						KEY `em_tran_5` (`tran_status`, `tran_date`), 
+						KEY `em_tran_6` (`tran_status`, `tran_rslt`), 
+						KEY `em_tran_7` (`tran_net`)
+						)  AUTO_INCREMENT=1 ;
+					*/
+					kmsg = key_msg.split(')');
+					//alert("kmsg len: " +kmsg.length);//kmsg len: 8
+					key_array = '';
+					for( ii=0; ii < kmsg.length; ii++){
+						//alert(ii + ", kmsg: " + kmsg[ii]); //
+						keyf = kmsg[ii].split('`');
+						//alert("kf len: " +keyf.length ); //kf len: 5
+						for( jj=0; jj < keyf.length; jj++){
+							//alert(jj + ", keyf: " + keyf[jj]); //
+							if( jj == 1 || jj == 3 || jj == 5 || jj == 7) key_array = key_array + '|' + keyf[jj];
+						}
+						key_array = key_array + '@';
+					}
+					//alert("key_array: " + key_array);
+					document.insert.key_array.value = key_array;
+					//key_array: |em_tran_1|tran_date
+					//@|em_tran_2|tran_id|tran_rslt@|em_tran_4|tran_refkey@|em_tran_5|tran_status|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@@@
 				} else key_msg = key_msg + sqlm_i + ', ';
 				continue;
 			}
@@ -293,18 +326,20 @@ function send_memo_chk() {
 			if( sqlm[i].indexOf("PRIMARY KEY") != -1 || sqlm[i].indexOf("primary key") != -1 ) {
 				fld_enm = '';
 				fld_t = '';
-				//key_msg = key_msg +sqlm[i] + ', '; // primary key 바이패스...
+				//key_msg = key_msg +sqlm[i] + ', '; // primary key bypass...
 				last_check = 'on';
 				continue;
 			} else if( sqlm[i].indexOf("UNIQUE KEY") != -1 ) {
 				fld_enm = '';
 				fld_t = '';
 				key_msg = key_msg +sqlm[i] + ',';
+				last_check = 'on';
 				continue;
 			} else if( sqlm[i].indexOf("KEY index") != -1 ) {
 				fld_enm = '';
 				fld_t = '';
 				key_msg = key_msg +sqlm[i] + ',';
+				last_check = 'on';
 				continue;
 			} else if( sqlm[i].indexOf("KEY ") != -1 || sqlm[i].indexOf("key ") != -1 ) {
 				key_msg = key_msg +sqlm[i] + ',';
@@ -345,8 +380,11 @@ function send_memo_chk() {
 			fld_len_default = fld_len_default.replace('auto_increment', '');
 			document.insert["memo[" + jj + "]"].value  = fld_len_default;
 		} //for
+		
 		document.insert.key_msg.value = key_msg;
+		//alert( "key_msg: " +key_msg);
 		msg = msg + key_msg;
+		
 		document.insert.sql_table.value = msg;
 		document.insert.item_array.value = item_array;
 		document.insert.item_cnt.value = i;
@@ -429,99 +467,14 @@ jQuery(document).ready(function ($) {
 	}
 
 	function column_modify_mode_func( no,  table_yn, colunm_cnt ) {
-		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
-		if( fld_hnm == "seqno"){
-			alert(' Can not use column name seqno.');// \n 컬럼명 seqno를 사용할수 없습니다.
-			return false;
-		}
-		for( var k=1; k < colunm_cnt; k++ ){
-				knm = document.insert["fld_hnm[" + k + "]"].value;
-				if( fld_hnm == knm) {
-					if( k != no ) {
-						alert(' Column name '+ fld_hnm +' can not be used as a duplicate.');//중복으로 사용할수 없습니다.
-						return false;
-					}
-				}
-		}
-		msg = " Modify " + fld_hnm + " entry? "; //컬럼을 변경할까요?
-		if ( window.confirm( msg ) )
-		{
-			document.insert.del_mode.value		="column_modify_mode";
-			document.insert.mode.value			="Search";
-			document.insert.table_yn.value = table_yn;
-			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
-			document.insert.add_column_enm.value = document.insert["fld_enm[" + no + "]"].value;
-			document.insert.add_column_type.value = document.insert["fld_type[" + no + "]"].value;
-			document.insert.add_column_len.value = document.insert["fld_len[" + no + "]"].value;
-			document.insert.add_column_memo.value = document.insert["memo[" + no + "]"].value;
-			document.insert.del_seqno.value = document.insert["seqno[" + no + "]"].value;
-			document.insert.action					="tableK_sql.php";
-			document.insert.submit();
-		}
 	}
 
 	function column_add_mode_func( no,  table_yn, column_cnt) {
-		if( document.insert["fld_enm[" + no + "]"].value == '' ) {
-			alert(" Define columns! "); //column을 정의 하세요!
-			document.insert["fld_enm[" + no + "]"].focus();
-			return false;
-		} else if ( document.insert["fld_hnm[" + no + "]"].value == ''){
-			alert(" Define column name!"); //column name을 정의 하세요!
-			document.insert["fld_hnm[" + no + "]"].focus();
-			return false;
-		} else if ( document.insert["fld_len[" + no + "]"].value == ''){
-			alert(" Define the column length!"); //column 길이를 정의 하세요!
-			document.insert["fld_len[" + no + "]"].focus();
-			return false;
-		}
-		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
-		if( fld_hnm == 'seqno'){
-			alert(' Can not use column name seqno.');//컬럼명 seqno를 사용할수 없습니다.
-			return false;
-		}
-		msg = " Add " + fld_hnm + " entry? ";//컬럼을 추가할까요?
-		if( window.confirm( msg ) ) {
-			document.insert.del_mode.value		="column_add_mode";
-			document.insert.mode.value			="Search";
-			document.insert.table_yn.value = table_yn;
-			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
-			document.insert.add_column_enm.value = document.insert["fld_enm[" + no + "]"].value;
-			document.insert.add_column_type.value = document.insert["fld_type[" + no + "]"].value;
-			document.insert.add_column_len.value = document.insert["fld_len[" + no + "]"].value;
-			document.insert.add_column_memo.value = document.insert["memo[" + no + "]"].value;
-			document.insert.action					="tableK_sql.php";
-			document.insert.submit();
-		}
 	}
 
 	function delete_column_func(seqnoA, fld_hnmA, fld_enmA, i) {
-		msg = " Delete " + fld_hnmA + " entry? ";//컬럼을 삭제할까요?
-		if ( window.confirm( msg ) )
-		{
-			document.insert.del_mode.value		="Delete_column_mode";
-			document.insert.mode.value			="Search";
-			//document.insert.pg_mode.value		="on"; // sql to table - no use 
-			document.insert.del_seqno.value		=seqnoA;
-			document.insert.del_fld_enm.value	=fld_enmA;
-			document.insert.del_fld_hnm.value	=fld_hnmA;
-			document.insert.action				="tableK_sql.php";
-			document.insert.submit();
-		}
 	}
 	function Save_Update( cnt){ // Modification Registration - 수정등록
-		tab_hnm = document.insert.tab_hnm.value;
-		msg = " The data in the table is deleted. Want to regenerate? table is " + tab_hnm + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
-		if ( window.confirm( msg ) )
-		{
-			tab = document.insert.tab_hnmS.value;
-			document.insert.mode.value='table_update_remake';
-			document.insert.del_mode.value		="";
-			document.insert.action="tableK_sql.php";
-			document.insert.submit();
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	function type_set_func( i, v) {
@@ -547,21 +500,13 @@ jQuery(document).ready(function ($) {
 		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8'; // 2024-01-04 add
 	}
 	function line_set_func(cnt) {
-		//alert("line set: " +cnt);
-			document.insert.mode.value='line_set';
-			document.insert.line_set.value=cnt;
-			document.insert.action="tableK_sql.php";
-			document.insert.submit();
+		document.insert.mode.value='line_set';
+		document.insert.line_set.value=cnt;
+		document.insert.action="tableK_sql.php";
+		document.insert.submit();
 	}
 
 	function sendCon(form){
-		f_nm = document.insert["fld_enm[0]"].value;
-		if ( f_nm == "" ) {
-			window.alert("An unentered field remains.");//입력 되지 않은 필드가 남아 있습니다.\n모두 입력하신 후에 계속등록하십시요.
-		} else {
-			document.insert.action="tableK_sql.php";
-			document.insert.submit();
-		}
 	}
 
 	function table_create_func(line){
@@ -582,21 +527,24 @@ jQuery(document).ready(function ($) {
 			alert(' Please enter a table name! ');
 			return false;
 		}
+		/*
 		for(var i=0;i<line; i++){
 			len = document.insert["fld_len[" + i + "]"].value;
 			fnm = document.insert["fld_hnm[" + i + "]"].value;
-			/*if( !len) {
+			if( !len) {
 				if( fnm ) {
 					alert('Check the column length input! ');// 컬럼 길이 입력을 확인 하세요!
 					return false;
 				}
-			}*/
-		}
+			}
+		}*/
 		var ins = window.confirm("Register and create the table. ");//테이블을 등록및 생성합니다.
 		if( ins ) {
+
 			document.insert.mode.value='sql_table_create';
 			document.insert.action="tableK_sql.php";
 			document.insert.submit();
+			window.open('./progressbar.php','','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');//pg_list_select_menu.php
 		  }
 	}
 
@@ -611,31 +559,6 @@ jQuery(document).ready(function ($) {
 	}
 
 	function Save_Update_Insert(line){
-		if( !document.insert.userid.value) {
-			alert(' Please login! ');
-			return false;
-		}
-		else if( !document.insert.tab_hnm.value) {
-			alert(' Please enter a table name! ');
-			return false;
-		}
-		for(var i=0;i<line; i++){
-			len = document.insert["fld_len[" + i + "]"].value;
-			fnm = document.insert["fld_hnm[" + i + "]"].value;
-			if( !len) {
-				if( fnm ) {
-					alert('Check the column length input!'); //컬럼 길이 입력을 확인 하세요!
-					return false;
-				}
-			}
-		}
-		var ins = window.confirm("Register the table. ");
-		if (ins)
-		{
-			document.insert.mode.value='table_create_reaction';
-			document.insert.action="tableK_sql.php";
-			document.insert.submit();
-		}
 	}
 
 	function ref_func( no ) {
@@ -719,16 +642,7 @@ jQuery(document).ready(function ($) {
     function line_getA(no){
 		document.insert.line_index.value = no;
 	}
-
-	function change_table_func() { // no use
-		tab = document.insert.tab_hnmS.value;
-		da = tab.split(":");
-		document.insert.group_code_table.value=da[2];
-		document.insert.group_code.value=da[2];
-		document.insert.group_name.value=da[3];
-		document.insert.mode.value='Search';
-		document.insert.action="tableK_sql.php";
-		document.insert.submit();
+	function change_table_func() {
 	}
 
 function table_nm_dup_check(){
@@ -833,7 +747,8 @@ function table_nm_dup_check(){
 		<input type="hidden" name="item_cnt" ><!-- add -->
 		<input type="hidden" name="table_yn" value='<?=$table_yn?>'>
 		<input type="hidden" name="sqlm_length_old" value=''>
-		<input type="hidden" name="key_msg" value=''>
+		<input type="hidden" name="key_msg" value='<?=$key_msg?>'>
+		<input type="hidden" name="key_array" value='<?=$key_array?>'>
 		
 		<h2><font fce="Arial">Table Design( SQL to Table )</font></h2>
 
@@ -879,13 +794,13 @@ function table_nm_dup_check(){
 </ul>
 </div>
 <?php
-$sql_memo = str_replace('\\', '', $sql_memo);
+$sql_memoA = str_replace('\\', '', $sql_memo);
 $sql_table = str_replace('\\', '', $sql_table);
 ?>
 <div>
-	<span bgcolor='#f4f4f4' title='Enter SQL here'><textarea title='Enter SQL here' id="sql_memo" name="sql_memo" cols="100%" ><?=$sql_memo?></textarea></span>
+	<span bgcolor='#f4f4f4' title='Enter SQL here'><textarea title='Enter SQL here' id="sql_memo" name="sql_memo" cols="100%" ><?=$sql_memoA?></textarea></span>
 	<span bgcolor='#f4f4f4'><textarea id="sql_table" name="sql_table" cols="100%" style='color:yellow;display:none;' ><?=$sql_table?></textarea></span>
-	<p bgcolor='#f4f4f4'><input type='button' onclick="javascript:send_memo_chk();" value=' Sql to Table ' style='height:30px;width:150;background-color:black;color:white;border-radius:20px;border:1 solid black;' title='sql to table' ></p>
+	<p bgcolor='#f4f4f4'><input type='button' onclick="javascript:SQL_check();" value=' Sql to Table ' style='height:30px;width:150;background-color:black;color:white;border-radius:20px;border:1 solid black;' title='sql to table' ></p>
 
 </div>
 <?php if( $mode=='SQL_Search') $line_set = $record_cnt; else $line_set=$line_set; ?>
@@ -1097,8 +1012,12 @@ $sql_table = str_replace('\\', '', $sql_table);
 		// sql to table - no use
 	}
 	if( $mode == "sql_table_create" ) {
-		if( !Table_check_() ) Table_Create_Submit();
-		else m_("table exists : " . $tab_enm);
+
+		if( !Table_check_() ){
+			//$sql_table= $_POST["sql_table"];
+			//m_("----- key_msg: " . $key_msg);
+			Table_Create_Submit();
+		} else m_("table exists : " . $tab_enm);
 	} else if( $mode == "table_new_copy" ){	// copy and new.
 		// sql to table - no use
 		//copy_func();
@@ -1108,7 +1027,7 @@ $sql_table = str_replace('\\', '', $sql_table);
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
 		global $tkher;
-		global $project_code, $project_name, $tab_hnm, $tab_enm; 
+		global $project_code, $project_name, $tab_hnm, $tab_enm, $key_msg, $sql_memo, $key_array; 
 
 		$item_list = " create table `". $tab_enm . "` ( ";
 		$item_list = $item_list . " `seqno` INT(11) auto_increment not null, ";
@@ -1147,21 +1066,26 @@ $sql_table = str_replace('\\', '', $sql_table);
 				$cnt++;
 			}
 		}
-
-		$key_msg= $_POST["key_msg"];
-		if( $key_msg == '' ) $item_list = $item_list . " PRIMARY KEY (`seqno`) ); ";
-		else $item_list = $item_list . " PRIMARY KEY (`seqno`), ";
+		// m_("key_msg: " . $key_msg);
+		$item_listA = str_replace('\\', '', $item_list);//Rec count:1, SQLKapp_em_tran, already exists. 
+		if( $key_msg == '' ){
+			$SQLA = $item_listA . " PRIMARY KEY (`seqno`) ); ";
+			$item_list = $item_list . " PRIMARY KEY (`seqno`) ); ";
+		} else {
+			$SQLA = $item_listA . " PRIMARY KEY (`seqno`), ". $key_msg;
+			$item_list = $item_list . " PRIMARY KEY (`seqno`), ". $key_msg;
+		}
+			echo "sql:" . $SQLA; echo "<br>key_msg: " . $key_msg;
 		
-		$SQLA = str_replace('\\', '', $item_list);//Rec count:1, SQLKapp_em_tran, already exists. 
-		$SQLA = $SQLA . $key_msg;	//echo "sql:" . $SQLA; 
 
 		$item_cnt  = $cnt - 1;
-		$ret = sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='11', disno=0, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$item_array', sqltable='$item_list' " );
+		$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='11', disno=0, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$item_array', sqltable='$item_list', key_msg='$key_msg', sql_copy='$sql_memo', relation_data='$key_array' ";
+		$ret = sql_query( $sql ) or die ("`table10_table` Error sql:" . $sql);
 
 		if( $ret ){
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$item_cnt, userid='$H_ID', tab_mid='$H_ID', memo='$item_list' ";
 			
-			$rets = sql_query( $query);
+			$rets = sql_query( $query ) or die ("tableK_sql.php `table10_pg_table` Error sql:" . $query);//sql_query( $query);
 			if( $rets ){ //m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
 				if( !kapp_table_check( $tab_enm ) ){
 
@@ -1169,7 +1093,7 @@ $sql_table = str_replace('\\', '', $sql_table);
 					sleep(1);
 					
 					if( !$mq1 ) {
-						echo "sql: " . $item_list; //컬럼명에 예약어를 사용했는지 확인하세요
+						echo "<br>SQLA: " . $SQLA; //컬럼명에 예약어를 사용했는지 확인하세요
 						m_("ERROR - Make sure you use reserved words in column names. - Create table - $tab_enm");
 						exit;
 					} else {

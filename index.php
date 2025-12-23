@@ -3,31 +3,13 @@
    /* ----------------------------------------------------------------------
 		index.php - kapp_start_necessary_TT.php
 		indexTT.php - tkher_start_necessary.php
-
-		//Old $http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';
-		//New $http = $_SERVER['REQUEST_SCHEME'] . "://";		//m_("http : " . $http ); // https
-		if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') $http = "https://";
-		else if( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ) $http = "https://";
-		else if( isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') $http = "https://";
-		else  $http = "http://";
-
 		--- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
 		1. 이것은 나의 미래를 결정한다.
 		2. 이것은 나의 경쟁력이다.
 		3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
 		4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
 		5. 이것을 아는것은 힘이요, 원동력이다.
-		--------------------------------------------------
-		tkher_my_control, tkher_main_img
-		$sql = " SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
-		$sql = " SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher' and group_name='main' order by view_no ";
-		/t/menu/tree_run.php <- /t/tree_menu_guest.php : Guest View Mobile <- /t/menu/tree_menu_updateM2.php 을 copy
-							  : /t/menu/tree_menu_updateM2.php 사용 하지 않음.
-							  /t/my_list_menu.php에서도 call.중요.
-		http://urllinkcoin.com/t/tree_run_menuM_guest.php?num=dao_1612581000&mid=dao 사용자 통합실행용. 중요.
-			tree_run_menu.php -> runf_my_create.php -> tree_run_generator.php -> r1_my.php
-						 최초 r1_my.php : my page에서 실행한다.
-		http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
+		------------------------------------------
    -------------------------------------------------------- */
 	
 	$H_ID = get_session("ss_mb_id");
@@ -373,7 +355,10 @@ body {
 <?php } ?>
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 			<li style='font-size:18;color:cyan;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
+			
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
+
+			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_index_Create.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Create index of Table</a></li>
 
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/tableK_sql.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>SQL to Table</a></li>
 			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
