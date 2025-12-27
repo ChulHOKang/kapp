@@ -5,7 +5,7 @@
 
 <head>
     <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-    <TITLE>KAPP is App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
+    <TITLE>KAPP System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
     <link rel="shortcut icon" href="./logo/logo25a.jpg">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <meta name="keywords"
@@ -126,13 +126,6 @@ $readonly = ($w=='u') ? 'readonly' : '';
 $agree  = preg_replace('#[^0-9]#', '', $agree);
 $agree2 = preg_replace('#[^0-9]#', '', $agree2);
 
-//----------------------------------------------------------------------------------------
-/*
-mb_id:laserga0, ss_check_mb_id: ,  mb_nick:laser, ss_check_mb_nick: , mb_email:laserga0@naver.com, ss_check_mb_email: 
-*/
-// add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-//-----------------------------------------------------------------------------------------
-// add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 $register_action_url="./tkher_register_form_update_.php";
 
 ?>
@@ -156,16 +149,8 @@ $register_action_url="./tkher_register_form_update_.php";
     <?php } ?>
     </script>
 
-    <!-- <script src="./include/js/jquery-1.8.3.min.js"></script>
-    <script src="./include/js/jquery.menu.js"></script>
-    <script src="./include/js/common.js"></script>
-    <script src="./include/js/wrest.js"></script> -->
-
     <?php
-//	m_(" URL : "); // https://modumodu.net/kapp/include/js
 	echo '<script src="./include/js/modernizr.custom.70111.js"></script>'.PHP_EOL; // overflow scroll 감지
-//	m_("JS_URL : "); // https://modumodu.net/kapp/include/js
-
 	if( isset($member['mb_certify']) ) $mb_certify = $member['mb_certify'];
 	else $mb_certify ='';
 ?>
@@ -272,7 +257,7 @@ $register_action_url="./tkher_register_form_update_.php";
                                     value="<?php echo isset($member['mb_nick'])?get_text($member['mb_nick']):''; ?>"
                                     id="reg_mb_nick" required class="frm_input required nospace" maxlength="20" onchange="duplicate_input_change()">
                                 <span id="msg_mb_nick"></span>
-                                <button type="button" onclick="duplicate()">중복확인</button>
+                                <button type="button" onclick="duplicate()">Duplicate check</button>
                             </td>
                         </tr>
                         <?php } ?>
@@ -420,13 +405,9 @@ $register_action_url="./tkher_register_form_update_.php";
             }
             //------------------------------------------ 
             var auto_char = f.auto_char.value;
-            var captcha_keyB = f.captcha_keyB
-                .value; //alert(' 자동문자 OK auto_char:' + auto_char + ' captcha_keyB: ' + captcha_keyB);
+            var captcha_keyB = f.captcha_keyB.value; //alert(' 자동문자 OK auto_char:' + auto_char + ' captcha_keyB: ' + captcha_keyB);
             if (captcha_keyB == auto_char) {
-                //alert(' 자동문자 OK auto_char:' + auto_char);//자동문자 OK auto_char:xFAQLr
-                //return false;
             } else {
-                //alert(' 자동문자 error act:'+act);// 자동문자 OK act:./tkher_register_form_update_.php
                 alert(' The automatic characters do not match.  '); //\n 자동문자가 일치하지않습니다. 확인바랍니다.
                 return false;
             }
@@ -453,9 +434,7 @@ $register_action_url="./tkher_register_form_update_.php";
                     return false;
                 }
                 //--------------------------------------------------- add 
-                if (f.mb_id.value == 'allatpay' || f.mb_id.value == 'accountbook' || f.mb_id.value == 'calendar' || f
-                    .mb_id.value == 'contents' || f.mb_id.value == 'makesajin' || f.mb_id.value == 'schedule' || f.mb_id
-                    .value == 'slidemenu') {
+                if( f.mb_id.value == 'allatpay' || f.mb_id.value == 'accountbook' || f.mb_id.value == 'calendar' || f.mb_id.value == 'contents' || f.mb_id.value == 'makesajin' || f.mb_id.value == 'schedule' || f.mb_id.value == 'slidemenu'){
                     alert(' You used a ID that is not allowed. Please re-enter.');
                     f.mb_id.focus(); // \n 허용이 안 되는 ID를 사용하셨습니다. 다시 입력하시기 바랍니다.
                     return false;
@@ -577,19 +556,19 @@ $register_action_url="./tkher_register_form_update_.php";
         function duplicate() {
             let suc_data = '';
             if (!document.fregisterform.mb_id.value) {
-                alert("아이디를 입력해 주세요.");
+                alert("Please enter your ID.");
                 document.fregisterform.mb_id.select();
                 return;
             }
 
             if (!document.fregisterform.mb_email.value) {
-                alert("이메일을 입력해 주세요.");
+                alert("Please enter your email address.");
                 document.fregisterform.mb_email.select();
                 return;
             }
 
             if (!document.fregisterform.mb_nick.value) {
-                alert("닉네임을 입력해 주세요.");
+                alert("Please enter your nickname.");
                 document.fregisterform.mb_nick.select();
                 return;
             }
@@ -610,13 +589,12 @@ $register_action_url="./tkher_register_form_update_.php";
                         alert(data);
                         return false;
                     } else {
-                        alert("중복이 아닙니다. 계속 등록 바랍니다.");
+                        alert("This is not a duplicate. Please continue registering.");
                         document.fregisterform.du_check.value = '1';
                         return true;
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    //alert("The data type or URL is incorrect.-- SQL_Delete_r.phpe");
                     console.log(jqXHR);
                     console.log(textStatus);
                     console.log(errorThrown);
@@ -624,64 +602,6 @@ $register_action_url="./tkher_register_form_update_.php";
                 }
             });
 
-            /* $.ajax({
-                type: "post",
-                dataType: "json",
-                data: {
-                    "mode": 'email',
-                    "mb_email": JSON.stringify(document.fregisterform.mb_email.value),
-                    "mb_id": JSON.stringify(document.fregisterform.mb_id.value)
-                },
-                url: "duplicate_ajax.php",
-                success: function(data) {
-                    if (data) {
-                        alert(data);
-                        return false;
-                    }
-                    suc_data = 'ok';
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    //alert("The data type or URL is incorrect.-- SQL_Delete_r.phpe");
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                    return;
-                }
-            });
-
-            $.ajax({
-                type: "post",
-                dataType: "json",
-                data: {
-                    "mode": 'nick',
-                    "mb_nick": JSON.stringify(document.fregisterform.mb_nick.value),
-                    "mb_id": JSON.stringify(document.fregisterform.mb_id.value)
-                },
-                url: "duplicate_ajax.php",
-                success: function(data) {
-                    if (data) {
-                        alert(data);
-                        return false;
-                    }
-                    suc_data = 'ok';
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    //alert("The data type or URL is incorrect.-- SQL_Delete_r.phpe");
-                    console.log(jqXHR);
-                    console.log(textStatus);
-                    console.log(errorThrown);
-                    return;
-                }
-            }); */
-
-            /* if (suc_data == 'ok') {
-                alert("중복이 아닙니다. 계속 등록 바랍니다.");
-                document.fregisterform.du_check.value = '1';
-                return true;
-            } else {
-                alert("ERROR");
-                return false;
-            } */
         }
 
         function duplicate_input_change(){
@@ -690,4 +610,4 @@ $register_action_url="./tkher_register_form_update_.php";
         </script>
     </div>
 
-    <?php echo html_end(); // HTML 마지막 처리 함수 : 반드시 넣어주시기 바랍니다. ?>
+    <?php echo html_end(); ?>

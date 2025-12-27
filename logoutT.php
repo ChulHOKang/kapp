@@ -9,7 +9,7 @@
 		set_cookie('ck_mb_id', '', 0);
 		set_cookie('ck_auto', '', 0);
 
-		echo "<script>top.location.href=' https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=".KAPP_URL_."'</script>";
+		echo "<script>top.location.href='https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=".KAPP_URL_."'</script>";
 		//echo "<script>location.href='/t/chatS/'</script>";
 	} else {
 

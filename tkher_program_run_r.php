@@ -1,10 +1,11 @@
-<?php
+<?php	
 	include_once('./tkher_start_necessary.php');
 	/*
 		tkher_program_run_r.php : tkher_program_run.php 에서 call - table_item_run50_app_pg50RU.php
 		$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm;;  $H_ID->tab_mid, $pg_code->tab_enm,  로 변경
-
+		Abnormal approach. pg_code:solpakan89_gmail_1750469450, tab_enm:solpakan89_gmail_1750469450, tab_mid:
 	*/
+	$H_ID = get_session("ss_mb_id"); //echo "h_id: ".$H_ID . "<br>";
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
@@ -17,14 +18,14 @@
 	if( isset($_POST['tab_mid']) ) $tab_mid = $_POST['tab_mid'];
 	else $tab_mid = "";
 
-	if( $mode !== 'table_pg70_write' || $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
+//	if( $mode !== 'table_pg70_write' || $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
+	if( $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
 		m_("Abnormal approach. pg_code:$pg_code, tab_enm:$tab_enm, tab_mid:$tab_mid");
 		//Abnormal approach. pg_code:solpakan_naver_1751974969, tab_enm:solpakan_naver_1751974713, tab_mid:
 		$rungo = "./";
 		//echo "<script>window.open( '$rungo' , '_self', ''); </script>";
 		exit;
 	}
-	$H_ID = get_session("ss_mb_id"); 
 	if( $H_ID !== '' ) {
 		$H_LEV = $member['mb_level'];  
 	} else {
@@ -144,12 +145,27 @@
 	} else {
 		m_(" insert ERROR --- mode:$mode, table: " . $tab_enm . ", pg_code: " . $pg_code);	
 	}
+	//dao_1766735120:ABCYY
+	//$fld_1:fld1|=|fld_5:product:VARCHAR
+	//$fld_7:날짜|=|fld_1:날짜:TIMESTAMP
+	//$fld_5:fld5|+|fld_6:total_count:INT
+	//$fld_6:fld6|+|fld_7:tottal_price:BIGINT@@
+	
+	//dao_1766735120:ABCYY
+	//$fld_1:fld1|=|fld_5:product:VARCHAR
+	//$fld_7:날짜|=|fld_1:날짜:TIMESTAMP
+	//$fld_1:fld1|=|fld_5:product:VARCHAR
+	//$fld_5:fld5|+|fld_6:total_count:INT
+	//$fld_6:fld6|+|fld_7:tottal_price:BIGINT@@
+	//sql: INSERT INTO dao_1766735120 SET kapp_userid= 'dao' , kapp_pg_code= 'dao_1757214499' , fld_5 = '배추' , fld_1 = '2025-12-26 18:21' , fld_5 = '배추' , fld_6=fld_6 + 3000 , fld_7=fld_7 + 6000000
+
 	function relation_func( $rdata, $pg_code, $rtype ){
+		global $H_ID, $pg_code;
 		$r_data = explode("$", $rdata);
 		$r_tab = $r_data[0];
 		$tab_r = explode(":", $r_tab);		//dao_1537844601:data
 		$r_table = $tab_r[0];
-		$r_t = explode(":", $rtype);	// '^' -> ':'  Update:fld_1:fld_2:
+		$r_t = explode(":", $rtype);//Insert:::@@	// '^' -> ':'  Update:fld_1:fld_2:
 		if( isset($r_t[0]) ) $r_type = $r_t[0];					// type = 'Update' or 'Insert'
 		else $r_type = "";	
 		if( isset($r_t[1]) ) $up_key = $r_t[1];					// program field ,    //Update Key field 
@@ -224,13 +240,17 @@
 					else			$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 				}
 			}
-			$SQLR = $SQLR . " ";	//		echo "sql: " . $SQLR; 
+			$SQLR = $SQLR . " "; //echo "sql: " . $SQLR; exit;
+			
+			//sql: INSERT INTO dao_1766735120 SET kapp_userid= 'dao' , kapp_pg_code= 'dao_1757214499' , fld_5 = '배추' , fld_1 = '2025-12-26 18:21' , fld_5 = '배추' , fld_6=fld_6 + 3000 , fld_7=fld_7 + 6000000
 			$ret =sql_query($SQLR);
 			if( $ret ) { 
 				$rungo = "./tkher_program_data_list.php?pg_code=" . $pg_code;
 			}else{
+				echo "sql: " . $SQLR; exit;
 				//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 			}
+			
 		}// if
 	}
 ?>

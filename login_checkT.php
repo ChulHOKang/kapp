@@ -1,23 +1,21 @@
 <?php
 	include_once('./tkher_start_necessary.php');
-
 	/*
 	  login_checkT.php - menu_run.php <div class="loginBox">
-	  - $member = get_urllink_memberA($mb_id); // my_func : 
+	  - $member = get_urllink_memberA($mb_id);
 	  - set_session('urllink_login_type', "appgeneratorsystem");
-
 	*/
 
-	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
-    else if (isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
-	else $mode = '';
+	if( isset($_POST['Login_Mode']) ) $Login_Mode = $_POST['Login_Mode'];
+    else if (isset($_REQUEST['Login_Mode']) ) $Login_Mode = $_REQUEST['Login_Mode'];
+	else $Login_Mode = '';
 
     if( isset($_POST['runpage']) ) $runpage = trim($_POST['runpage']);
 	else $runpage= '';
 
     if( isset($_POST['returnURL']) ) $returnURL = trim($_POST['returnURL']);
     else $returnURL = 'index.php';
-if( $mode == 'A_login') { 
+if( $Login_Mode == 'A_login') { 
     $mb_email    = trim($_POST['mb_id']);
     $mb_password = trim($_POST['mb_password']);
     if( !$mb_email || !$mb_password) {
@@ -41,7 +39,7 @@ if( $mode == 'A_login') {
     } 
     // 차단된 아이디인가?
     if( $member['mb_intercept_date'] && $member['mb_intercept_date'] <= date("Ymd", KAPP_SERVER_TIME)) {
-        $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $member['mb_intercept_date']);
+        $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1year \\2month \\3day", $member['mb_intercept_date']);
         m_('Your ID is prohibited from access. date: '.$date);
         echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
@@ -60,14 +58,14 @@ if( $mode == 'A_login') {
     } 
     Create_Session('appgeneratorsystem', $member, $remote_addr, $user_agent);
 
-} else if( $mode == 'Google_Login_K') { // 구글 로그인
+} else if( $Login_Mode == 'Google_Login_K') {
 
 	$g_email = trim($_POST['g_email']);
 	$g_fullname = trim($_POST['g_fullname']);
 	$g_image = trim($_POST['g_image']);
 	$level = '2'; // default
     $set_point = $config['kapp_register_point'];
-    $g_email_check = Record_check($g_email); // check GOOGLE first login
+    $g_email_check = Record_check($g_email);
     if( !$g_email_check) {
 		$emailA = explode(".", $g_email);
 		$email0 = $emailA[0];
@@ -78,8 +76,8 @@ if( $mode == 'A_login') {
         connect_count('K-App login : Create Google_account', $g_email, 1, $referer);
         Create_Session('Google_Login_K', $member, $remote_addr, $user_agent);
 
-	} else { // 구글 로그인
-        if($g_email_check == 'Kakao' || $g_email_check == 'Naver') { // duplicate email 
+	} else {
+        if($g_email_check == 'Kakao' || $g_email_check == 'Naver') {
             m_(" dup ---Google");
         } else {
             Record_update_google( $g_email, $g_fullname, $g_image);
@@ -89,7 +87,7 @@ if( $mode == 'A_login') {
         Create_Session('Google_Login_K', $member, $remote_addr, $user_agent);
 	}
 
-} else if ( $mode == 'Kakao_Login_K') {
+} else if( $Login_Mode == 'Kakao_Login_K') {
 
     $userObj_json = getJsonText($_POST['userObject']);
     $userObj = json_decode($userObj_json, true);
@@ -98,7 +96,7 @@ if( $mode == 'A_login') {
     $k_image = trim($userObj['properties']['thumbnail_image']);
 	$level = '2'; // default
     $set_point = $config['kapp_register_point'];
-    $kakao_email_check = Record_check($k_email); // check KAKAO first login
+    $kakao_email_check = Record_check($k_email);
 
     if( !$kakao_email_check) {
 		$emailA = explode(".", $k_email);
@@ -110,27 +108,25 @@ if( $mode == 'A_login') {
         connect_count('K-App login : Create Kakao_account', $k_email, 1, $referer);
         Create_Session('Kakao_Login_K', $member, $remote_addr, $user_agent);
 
-	} else { // 카카오 로그인
-        if($kakao_email_check == 'Google' || $kakao_email_check == 'Naver') { // email duplicate
+	} else {
+        if( $kakao_email_check == 'Google' || $kakao_email_check == 'Naver') {
             m_(" email dup.---Kakao");
         } else {
             Record_update_kakao($k_email, $k_nickname, $k_image);
 			$member = get_urllink_memberE($k_email);
             connect_count('K-App login : Login Kakao', $k_email, 1, $referer);
         }
-        Create_Session('Kakao_Login_K', $member, $remote_addr, $user_agent); // SESSION login create
+        Create_Session('Kakao_Login_K', $member, $remote_addr, $user_agent);
 	}
 
-} else if( $mode == 'N_login'){
+} else if( $Login_Mode == 'N_login'){
 
-    // 네이버 로그인 콜백 PHP
 	$client_id = $config['kapp_naver_client_id'];
 	$client_secret = $config['kapp_naver_client_secret'];
 	$code = $_GET["code"];
 	$state = $_GET["state"];
     $returnURL = $state;
 	$redirectURI = urlencode( KAPP_URL_T_ . "/login_checkT.php");
-//	$n_url = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=".$client_id."&client_secret=".$client_secret."&redirect_uri=".$redirectURI."&code=".$code."&state=".$state."&returnURLX=".$_REQUEST["returnURLX"];
 	$n_url = "https://nid.naver.com/oauth2.0/token?grant_type=authorization_code&client_id=".$client_id."&client_secret=".$client_secret."&redirect_uri=".$redirectURI."&code=".$code."&state=".$state;
 	$is_post = false;
 	$ch = curl_init();

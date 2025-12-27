@@ -2,7 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 	 *  table_popupRM.php : PopUp Window setup 프로그램. <- table_popupR.php
-        call : app_pg50RU.php 에서 콜.
+        call : kapp_pg_Upgrade.php, app_pg50RU.php 에서 콜.
         call : app_pg50RC.php 에서 콜.
         X call : table_pg50R.php 에서 콜.
 	    C call : kan_table_pg70.php,   - table_pg70.php에서 콜.
@@ -86,8 +86,8 @@
 	else if( $mode_call == 'table_item_run50R' ) $table_item_run50R = 'on';
 	else if( $mode_call == 'table_item_run70' ) $table_item_run70 = 'on';
 	else */
-	if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
-	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
+	if( $mode_call == 'kapp_pg_Upgrade' ) $app_pg50RU = 'on';
+	else if( $mode_call == 'kapp_pg_Create' ) $app_pg50RC = 'on';
 	$pop_move_data = '';
 	$Column_movable ='';
 	
@@ -106,7 +106,7 @@
 		$pd1_cnt = count( $pd1 ); 
 		$item_cnt = $_POST['item_cnt'];
 		$ppd1 = "";
-		for( $i=0; $i< $item_cnt; $i++){
+		for( $i=0; $i< $item_cnt+1; $i++){ // $i< $item_cnt;  change 2025-12-26
 			if( $i == $ln ) $ppd1 = $ppd1 . $move_pop_data . "^";
 			else {
 				if( isset($pd1[$i]) && $pd1[$i] !=='' ) $ppd1 = $ppd1 . $pd1[$i] . "^";
@@ -282,7 +282,7 @@
 			//m_("11111---------------- mode: $mode, --- if_typeD:". $if_typeD);	//--- if_typeD:|13|1|3||
 			//11111---------------- mode: table_popup_save, --- if_typeD:|13|13|||||||
 	} else { // 팝업이 설정되지않은 상테에서 처음 실행할때 탄다.
-		if( $mode_call=="app_pg50RC" || $mode_call=="app_pg50RU" ){ // add 2023-09-12 : if 추가 else 이전 까지  - 테스트 미완성 중요.
+		if( $mode_call=="kapp_pg_Create" || $mode_call=="kapp_pg_Upgrade" ){ // add 2023-09-12 : if 추가 else 이전 까지  - 테스트 미완성 중요.
 			$ln	= $if_line + 1;
 			$if_type[$ln] = '13'; // 13:popup column으로 설정.
 			$item_cnt = $_POST['item_cnt'];	
@@ -370,8 +370,10 @@
 			if( $rsP['fld_enm'] =='seqno' ) continue;
 			else if( $rsP['fld_type'] =='TEXT' ) continue;// 숫자 와 문자 컬럼만 팝업창에 사용할 수 있게 한다.
 			else if( $rsP['fld_type'] =='DATE' ) continue;
+			else if( $rsP['fld_type'] =='TIME' ) continue;
 			else if( $rsP['fld_type'] =='DATATIME' ) continue;
 			else if( $rsP['fld_type'] =='TIMESTAMP' ) continue;
+			else if( $rsP['fld_type'] =='LONGBLOB' ) continue;
 			$sellist_tab1 = $sellist_tab1 . "<label id='columnRX".$i."' style='background-color:white;' title='".$rsP['fld_enm'].":".$rsP['fld_hnm']."' onclick='sellist_pop_onclickTT(" .$i. " )'><input type='radio'  id='sellist_tab1".$i."' name='sellist_tab1' value='".$rsP['fld_enm'].":".$rsP['fld_hnm']."' onclick='sellist_pop_onclickT(this.value, ".$i.");' title='".$rsP['fld_enm'].":".$rsP['fld_hnm']."'><label id='columnR" .$i. "'>".$rsP['fld_hnm']." </label></label><br>";
 			$pdata1 = $pdata1 . $rsP['fld_enm']. ":" . $rsP['fld_hnm'] . "@"; 
 			$i++;
@@ -935,7 +937,7 @@ if( $mode == 'table_popup_save' ){
 	} else */
 	if( $app_pg50RU == 'on' ) {
 		set_session('pg_codeS',  $pg_codeS);
-		$url = "app_pg50RU.php";
+		$url = "kapp_pg_Upgrade.php";
 	} else if( $app_pg50RC == 'on' ) {
 		set_session('pg_codeS',  $pg_codeS);
 		$url = "app_pg50RC.php";

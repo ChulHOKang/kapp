@@ -1,76 +1,65 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-	 * table30m_A.php : table30m_Create.php copy 2023-08-25 - kan
+	 * kapp_table30m_A.php : table30m_Create.php copy 2023-08-25 - kan
 	   2024-01-04   : TIME fld type add. $view_set=1 add
 	   2024-01-03   : $item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; 보완.
 	   2023-10-12   : 컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요.
 	                : 컬럼 위치 이동 과 이동후 컬럼 삭제 버턴 숨김 처리 추가 중요.
 	 * TAB_curl_sendA( $tab_enm, $tab_hnm,0 , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ); // table_update_remake 2023-07-25 add
 	 */
-	$H_ID		= get_session("ss_mb_id");  $ip = $_SERVER['REMOTE_ADDR'];
-	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
-	else $H_LEV = 0;
-	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
-	else $H_EMAIL = '';
+	$H_ID= get_session("ss_mb_id");
+	$ip = $_SERVER['REMOTE_ADDR'];
 
-	if( !isset($H_ID) || $H_LEV < 2 ){
+	if( !isset($H_ID) ){
 		m_("You need to login.");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	if( isset($_POST["tab_enm"]) ) $tab_enm	= $_POST["tab_enm"];
-	else {
-		$uid = explode('@', $H_ID);
-		$tab_enm = $uid[0] . "_" . time();
+	if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
+	else $H_LEV = 0;
+	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
+	else $H_EMAIL = '';
+
+	if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+	else $mode='';
+	if( isset($_SESSION['project_nmS']) ) $project_nmS = $_SESSION['project_nmS'];
+	if( isset($project_nmS) && $project_nmS !=='' ){
+		$pcd_nm = explode(":", $project_nmS );
+		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $project_code	= $pcd_nm[0];
+		else $project_code = '';	
+		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $project_name	= $pcd_nm[1]; 
+		else $project_name= "";
+	} else {
+		$project_nmS = '';
+		$project_name= "";
+		$project_code= "";
 	}
 
-	if( isset($_POST['tab_hnm']) ) $tab_hnm	= $_POST["tab_hnm"];
-	else $tab_hnm = '';
-	if( isset($_POST['tab_hnmS']) ) $tab_hnmS	= $_POST["tab_hnmS"];
-	else $tab_hnmS = '';
+	if( $mode == 'SearchTAB' && isset($_SESSION['tab_hnmS']) ) {
+		$tab_hnmS =$_SESSION['tab_hnmS'];
+		$tab_R = explode(":", $tab_hnmS);
+		$tab_enm = $tab_R[0];
+		$tab_hnm = $tab_R[1];
+		$new_tab_hnm = $tab_R[1];
+		$project_code = $tab_R[2];
+		$project_name = $tab_R[3];
+	} else {
+		$tab_hnmS = '';
+		$tab_enm = '';
+		$tab_hnm = '';
+		$new_tab_hnm = '';
+	}
+		$uid = explode('@', $H_ID);
+		$new_tab_enm = $uid[0] . "_" . time();
+
 	if( isset($_POST['line_set']) ) $line_set = $_POST['line_set'];
 	else $line_set = 10;
-
-	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
-	else $mode = '';
-
 	if( isset($_POST['del_mode']) ) $del_mode = $_POST['del_mode'];
 	else $del_mode = '';
-
-	if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
-	else  $group_code	= "";
-	if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
-	else  $group_name	= "";
-
-	if( $mode == "table_name_change" && isset($tab_enm) ) {
-			$aa = explode(':', $tab_hnmS);
-			$tab_nmS0 = $aa[0];
-			$tab_nmS1 = $aa[1];
-			$mode ="Search";
-			$query="update {$tkher['table10_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."' where tab_enm='$tab_nmS0' "; 
-			$g = sql_query( $query );
-			if( !$g ) m_("update error");
-			else {
-				$query="update {$tkher['table10_pg_table']} set group_code='".$group_code."', group_name='".$group_name."', tab_hnm='".$tab_hnm."', pg_name='".$tab_hnm."' where (pg_code='".$tab_nmS0."' and tab_enm='".$tab_nmS0."') "; //OK
-				$g1 = sql_query( $query );
-				if( $g1 ) m_("Changed name of the Table table code: " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
-				else m_("Error! Changed name of Table : " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
-			}
-	}
-	if( $mode=='group_name_add'){
-		$uid = explode('@', $H_ID); // id is email
-		$group_code	= $uid[0] . "_" . time();
-		$group_name	= $_POST["group_name"];
-		$query="insert into {$tkher['table10_group_table']} set group_code='$group_code', group_name='$group_name', userid='$H_ID' , memo='table30m' ";
-		$g = sql_query( $query );
-		if( !$g ){ m_("Project Add error");
-			echo "group sql: " . $query;
-		} else  m_("Project added! ");
-		$resultT = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID'  and tab_enm='$tab_enm' " );
-		$total		= sql_num_rows( $resultT );
-	}
+	if( isset($_POST['pg_mode']) ) $pg_mode = $_POST['pg_mode'];
+	else $pg_mode = '';
 ?>
 
 <html>
@@ -120,7 +109,7 @@
 </script>
 
 <script language=javascript>
-	function table_name_change(){ // add 2023-09-08 kan
+	/*function table_name_change(){ // add 2023-09-08 kan
 		tab_hnmS = document.insert.tab_hnmS.value;
 		da = tab_hnmS.split(":");
 		hnm=da[1];
@@ -134,74 +123,11 @@
 			if (ins)
 			{
 				document.insert.mode.value = 'table_name_change';
-				document.insert.action="table30m_A.php";
+				document.insert.action="kapp_table30m_A.php";
 				document.insert.submit();
 			}
 		}
-	}
-
-	function change_table_func() {
-		tab = document.insert.tab_hnmS.value;
-		da = tab.split(":");
-		document.insert.group_code_table.value=da[2];
-		document.insert.group_code.value=da[2];
-		document.insert.group_name.value=da[3];
-		document.insert.mode.value='Search';
-		document.insert.action="table30m_A.php";
-		document.insert.submit();
-	}
-
-	function Project_change_func(cd){
-		index=document.insert.group_code.selectedIndex;
-		nm = document.insert.group_code.options[index].text;
-		document.insert.group_name.value=nm;
-		document.insert.old_group_code.value=document.insert.group_code.options[index].value;
-		return;
-	}
-
-	function group_name_add_func(){
-		nm = document.insert.group_name.value;
-		//if(nm=='ETC') {
-		//	alert(' Group name ETC can not be registered as duplicate.');// \n 그룹명 ETC를 중복으로 등록할 수없습니다.
-		//	return false;
-		//}
-		var item_cnt = insert.group_code.options.length;
-		for (i = 0; i < item_cnt; i++) {
-				var gr_txt = insert.group_code.options[i].text;
-				if( nm == gr_txt ) {
-					alert('There are duplicate groups. Use another group name!' );//중복된 그룹이 있습니다. 다른그룹명을 사용하세요!
-					return false;
-				}
-		}
-		msg = " Do you want to register the group name of "+nm+"?";
-		if ( window.confirm( msg ) )
-		{
-			document.insert.mode.value			="group_name_add";
-			document.insert.action					="table30m_A.php";
-			document.insert.submit();
-		} else return false;
-	}
-
-	function group_name_change_func(nm){
-		index=document.insert.group_code.selectedIndex;
-		gnm = document.insert.group_code.options[index].text;
-		document.insert.old_group_code.value = document.insert.group_code.options[index].value;
-		document.insert.old_group_name.value = gnm;
-		//if(gnm=='ETC') {
-		//	alert(' Project name ETC can not be changed. ');//\n 그룹이름 ETC는 변경할수 없습니다.
-		//	return false;
-		//}
-		nm = document.insert.group_name.value;
-		cd = document.insert.group_code_table.value;
-		if( nm !== gnm ) msg = " Would you like to change the Project name of "+nm+" to "+gnm+"? "; // 프로젝트의 명칭을 변경합니다.
-		else msg = " Change the project of the table? project name is " + gnm; //테이블의 프로젝트를 변경 하시겠습니까?
-		if ( window.confirm( msg ) )
-		{
-			document.insert.mode.value			="group_name_change";
-			document.insert.action					="table30m_A.php";
-			document.insert.submit();
-		} else return false;
-	}
+	}*/
 
 	function column_modify_mode_func( no,  table_yn, colunm_cnt ) {
 		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
@@ -222,7 +148,7 @@
 		if ( window.confirm( msg ) )
 		{
 			document.insert.del_mode.value		="column_modify_mode";
-			document.insert.mode.value			="Search";
+			document.insert.mode.value			="SearchTAB";
 			document.insert.table_yn.value = table_yn;
 			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
 			document.insert.add_column_enm.value = document.insert["fld_enm[" + no + "]"].value;
@@ -230,7 +156,7 @@
 			document.insert.add_column_len.value = document.insert["fld_len[" + no + "]"].value;
 			document.insert.add_column_memo.value = document.insert["memo[" + no + "]"].value;
 			document.insert.del_seqno.value = document.insert["seqno[" + no + "]"].value;
-			document.insert.action					="table30m_A.php";
+			document.insert.action					="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
@@ -258,14 +184,14 @@
 		if ( window.confirm( msg ) )
 		{
 			document.insert.del_mode.value		="column_add_mode";
-			document.insert.mode.value			="Search";
+			document.insert.mode.value			="SearchTAB";
 			document.insert.table_yn.value = table_yn;
 			document.insert.add_column_hnm.value = document.insert["fld_hnm[" + no + "]"].value;
 			document.insert.add_column_enm.value = document.insert["fld_enm[" + no + "]"].value;
 			document.insert.add_column_type.value = document.insert["fld_type[" + no + "]"].value;
 			document.insert.add_column_len.value = document.insert["fld_len[" + no + "]"].value;
 			document.insert.add_column_memo.value = document.insert["memo[" + no + "]"].value;
-			document.insert.action					="table30m_A.php";
+			document.insert.action					="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
@@ -275,12 +201,12 @@
 		if ( window.confirm( msg ) )
 		{
 			document.insert.del_mode.value		="Delete_column_mode";
-			document.insert.mode.value			="Search";
+			document.insert.mode.value			="SearchTAB";
 			document.insert.pg_mode.value		="on";
 			document.insert.del_seqno.value		=seqnoA;
 			document.insert.del_fld_enm.value	=fld_enmA;
 			document.insert.del_fld_hnm.value	=fld_hnmA;
-			document.insert.action				="table30m_A.php";
+			document.insert.action				="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
@@ -292,7 +218,7 @@
 			tab = document.insert.tab_hnmS.value;
 			document.insert.mode.value='table_update_remake';
 			document.insert.del_mode.value		="";
-			document.insert.action="table30m_A.php";
+			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 			return true;
 		} else {
@@ -320,12 +246,13 @@
 		else if( document.insert["fld_type["+i+"]"].value == "LONGBLOB")  document.insert["fld_len["+i+"]"].value = '255';
 		else if( document.insert["fld_type["+i+"]"].value == "DATE")      document.insert["fld_len["+i+"]"].value = '15';
 		else if( document.insert["fld_type["+i+"]"].value == "DATETIME")  document.insert["fld_len["+i+"]"].value = '20';
+		else if( document.insert["fld_type["+i+"]"].value == "TIMESTAMP")  document.insert["fld_len["+i+"]"].value = '20';
 		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8';
 	}
 	function line_set_func(cnt) {
 			document.insert.mode.value='line_set';
 			document.insert.line_set.value=cnt;
-			document.insert.action="table30m_A.php";
+			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 	}
 
@@ -334,7 +261,7 @@
 		if ( f_nm == "" ) {
 			window.alert("An unentered field remains.");//입력 되지 않은 필드가 남아 있습니다.\n모두 입력하신 후에 계속등록하십시요.
 		} else {
-			document.insert.action="table30m_A.php";
+			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
@@ -344,7 +271,7 @@
 			alert(' Please login! ');
 			return false;
 		}
-		else if( !document.insert.tab_hnm.value) {
+		else if( !document.insert.new_tab_hnm.value) {
 			alert(' Please enter a table name! ');
 			return false;
 		}
@@ -362,7 +289,7 @@
 		if (ins)
 		  {
 			document.insert.mode.value='table_create';
-			document.insert.action="table30m_A.php";
+			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 		  }
 	}
@@ -372,18 +299,18 @@
 		return;
 	}
 	function resetgo(){
-		window.open( 'table30m_A.php' , '_self', '');
+		window.open( 'kapp_table30m_A.php?mode=Reset' , '_self', '');
 		return;
 	}
 
 	function Newtable_save(cnt){
-		new_table_name = document.insert.tab_hnm.value;
+		new_table_name = document.insert.new_tab_hnm.value;
 		tab = document.insert.tab_hnmS.value;
 		da = tab.split(":");
 		hnm=da[1];
 		enm=da[0];
-		document.insert.group_code.value=da[2];
-		document.insert.group_name.value=da[3];
+		document.insert.project_code.value=da[2];
+		document.insert.project_name.value=da[3];
 		if( new_table_name == hnm ) {
 			alert('Change the table name! ');//테이블명을 변경하세요!
 			document.insert.tab_hnm.focus();
@@ -403,8 +330,9 @@
 			msg = " Do you want to save the new table name as " + new_table_name + "? ";//새로운 테이블명 " +new_table_name + "으로 생성할까요?
 			if ( window.confirm( msg ) )
 			{
+					document.insert.old_tab_enm.value=enm;
 					document.insert.mode.value='table_new_copy';
-					document.insert.action="table30m_A.php";
+					document.insert.action="kapp_table30m_A.php";
 					document.insert.submit();
 					return;
 			} else return false;
@@ -434,24 +362,16 @@
 		if (ins)
 		{
 			document.insert.mode.value='table_create_reaction';
-			document.insert.action="table30m_A.php";
+			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
 
-	function sendser(){
-		s = document.insert.tab_hnmS.value;
-		document.insert.mode.value = 'Search';
-		document.insert.action="table30m_A.php";
-		document.insert.submit();
-	}
-
-	function create_after_run(tab_enm, tab_hnm, mode){
-		alert("여기를 타면 오류 확인 필요----- kapp_pg_curl_ajax");
+	function create_after_run(tab_enm, tab_hnm, mode){ // Add column alert(" ----- kapp_pg_curl_ajax");
 		var selectIndex = document.insert.tab_hnmS.selectedIndex;
 		tab_hnmS=tab_enm + ":" + tab_hnm;
 		document.insert.tab_hnmS[selectIndex].value = tab_hnmS;
-		document.insert.mode.value		= "Search";
+		document.insert.mode.value		= "SearchTAB";
 		document.insert.pg_mode.value		="on";
 		document.insert.tab_enm.value	=tab_enm;
 		document.insert.tab_hnm.value	=tab_hnm;
@@ -481,7 +401,7 @@ jQuery(document).ready(function ($) {
 		});
 });
 
-		document.insert.action					="table30m_A.php";
+		document.insert.action="kapp_table30m_A.php";
 		document.insert.submit();
 	}
 	function ref_func( no ) {
@@ -577,6 +497,53 @@ jQuery(document).ready(function ($) {
     function line_getA(no){
 		document.insert.line_index.value = no;
 	}
+
+	function Project_change_funcX(cd){
+		index=document.insert.project_code.selectedIndex;
+		nm = document.insert.project_code.options[index].text;
+		document.insert.project_name.value=nm;
+		return;
+	}
+	function sendDataToPHP( projectnmS, pnmS) {
+		fetch('kapp_save_session.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+			//location.href="kapp_table30m_A.php?mode=Project_Search";
+			//location.replace(location.href);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	}
+	function change_project_func(pnmS){
+		sendDataToPHP('project_nmS', pnmS);
+		location.href="kapp_table30m_A.php?mode=Project_Search";
+	}
+	function change_table_func(pnmS){ // Relation_Table_func
+		/*
+		alert("t: " + pnmS);//t: dao_1757214499:ABC:dao_1755421034:Project59
+		da = pnmS.split(":");
+		document.insert.project_nmS.value=pnmS;
+		document.insert.project_code.value=da[2];
+		document.insert.project_name.value=da[3];
+		if( pnmS == '') {
+			alert('Select Relation Table!');
+			return false;
+		}
+		document.getElementById('mode').value = 'SearchTAB';
+		document.getElementById('new_tab_hnm').value = da[1];
+		alert("mode: " + document.getElementById('mode').value + ", " + document.getElementById('new_tab_hnm').value);
+		*/
+		sendDataToPHP('tab_hnmS', pnmS);
+		location.href="kapp_table30m_A.php?mode=SearchTAB";
+	}
 </script>
 
 <body>
@@ -593,7 +560,7 @@ jQuery(document).ready(function ($) {
 		$Afld_len	= array();
 		$Amemo		= array();
 	
-	if( $mode == 'Search' ){
+	if( $mode == 'SearchTAB' || $tab_hnmS !==''){
 		$aa = explode(':', $tab_hnmS);
 		$tab_enm = $aa[0];
 		$tab_hnm = $aa[1];
@@ -608,8 +575,8 @@ jQuery(document).ready(function ($) {
 				$fld_hnm		= $rs['fld_hnm'];
 			if($rs['fld_enm'] == 'seqno' )	{
 				$userid				= $rs['userid']; // 한번만 처리하기.
-				$group_code		= $rs['group_code'];
-				$group_name		= $rs['group_name'];
+				$project_code		= $rs['group_code'];
+				$project_name		= $rs['group_name'];
 				$tab_enm			= $rs['tab_enm'];
 				$tab_hnm			= $rs['tab_hnm'];
 				$table_yn			= $rs['table_yn'];
@@ -643,12 +610,12 @@ jQuery(document).ready(function ($) {
 			$resultPG = sql_query($sqlPG);
 			$table10_pg = sql_num_rows($resultPG);
 			if( $table10_pg ) {
-				$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', item_cnt=$ARR, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+				$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', item_cnt=$ARR, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 				sql_query($query);
 			} else {
-				$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
+				$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
 				sql_query($query);
-				$link_ = KAPP_URL_T_ . "table30m_A.php";
+				$link_ = KAPP_URL_T_ . "kapp_table30m_A.php";
 				//insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10_pg@table30m' ); //PG create point
 			}
 			$pg_mode="";
@@ -695,21 +662,21 @@ jQuery(document).ready(function ($) {
 			}
 		}//while
 	}
-	if( isset($_POST['group_code_table']) ) $group_code_table = $_POST['group_code_table'];
-	$group_code_table ='';
 ?>
 	<Form METHOD='POST' name='insert' enctype="multipart/form-data">
+		<input type="hidden" name="mode" id="mode" >
+		<input type="hidden" name="old_tab_enm" id="old_tab_enm" value=''>
+		<input type="hidden" name="new_tab_enm" id="new_tab_enm" value='<?=$new_tab_enm?>'>
+		<input type="hidden" name="project_code" id="project_code" value='<?=$project_code?>'>
+		<input type="hidden" name="project_name" id="project_name" value='<?=$project_name?>'>
 		<input type="hidden" name="line_index" >
 		<input type="hidden" name="no" >
-		<input type="hidden" name="mode" >
 		<input type="hidden" name="pg_mode" >
 		<input type="hidden" name="del_mode" >
 		<input type="hidden" name="del_seqno" >
 		<input type="hidden" name="del_fld_hnm" >
 		<input type="hidden" name="del_fld_enm" >
-		<input type="hidden" name="tab_create_ok" value='<?=$tab_create_ok?>'>
 		<input type="hidden" name="userid" value='<?=$userid?>'> <!--  H_ID -->
-		<input type="hidden" name="tab_enm" value='<?=$tab_enm?>'>
 		<input type="hidden" name="disno" value='<?=$disno?>'>
 		<input type="hidden" name="add_column_no" value=''>
 		<input type="hidden" name="add_column_enm" >
@@ -717,83 +684,62 @@ jQuery(document).ready(function ($) {
 		<input type="hidden" name="add_column_type" >
 		<input type="hidden" name="add_column_len" >
 		<input type="hidden" name="add_column_memo" >
-		<input type="hidden" name="group_code_table" value="<?=$group_code_table?>">
-		<input type="hidden" name="old_group_code" >
-		<input type="hidden" name="old_group_name" >
 		<input type="hidden" name="table_yn" value='<?=$table_yn?>'>
-		<h2><font fce="Arial">Table Design High Level<?php if( $mode=='Search' ) echo "( Change )"; ?></font></h2>
+
+		<h2><font fce="Arial">Table Design High Level<?php if( $mode=='SearchTAB' ) echo "( Change )"; ?></font></h2>
 
 <div>
 	<ul>
 		<span bgcolor='#f4f4f4' <?php echo "title='You can change or add the group name of the table.' "; ?>><font color='black'>Project</span>
-		<span bgcolor='#ffffff'><SELECT id='group_code' name='group_code' onchange="Project_change_func(this.value);" style='width:250px;height:30px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered. ' "; ?> >
-				<option value=''>Select project</option>
-				<!-- <option value='ETC' selected>ETC</option> -->
-<?php
-			$SQLG = "SELECT * from {$tkher['table10_group_table']} where userid='".$H_ID."' order by group_name ";
-			$result = sql_query( $SQLG );
-			while($rs = sql_fetch_array($result)) {
-?>
-				<option value="<?=$rs['group_code']?>" <?php if($rs['group_code']==$group_code) echo "selected"; ?>><?=$rs['group_name']?></option>
-<?php
-			}
-?>
-			</select>
-<?php
-		if ( isset($H_ID) && $H_ID !== "" ) {
-?>
-		</span>
-		<input type='hidden' name='group_name' value='<?=$group_name?>' style='height:25px;background-color:#666666;color:yellow;border:1 solid black' <?php echo "title='You can change or add the group name of the table.' "; ?> >
-		<!-- <span bgcolor='#ffffff'><input type='text' name='tab_hnm'  value='<?=$tab_hnm?>' style='height:25px;background-color:#666666;color:yellow;border:1 solid black' <?php echo "title='Enter the name of the table to be created!' "; ?>></span> -->
+		<span bgcolor='#ffffff'>
+			<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="width:250px;height:30px;background-color:#FFDF6E;border:1 solid black" <?php echo "title='Select the classification of the table to be registered.' "; ?>>
+<?php 
+		if( isset( $_SESSION['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
+		else echo "<option value=''>1.Select Project</option>";
 
-		<!-- <span bgcolor='#ffffff'><input type='button' onclick="javascript:group_name_add_func();" value='Project Create' style='height:25px;background-color:cyan;border-radius:20px;border:1 solid black' <?php echo "title='Add a new Project!' "; ?> >
-		</span> -->
-<?php
-			if( $H_LEV > 7 or $H_ID == $userid) { //테이블의 프로젝트를 변경 하거나 또는 테이블의 프로젝트의 코드와 명칭을 모두 변경합니다.
+		$result= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " ); 
+		while( $rs = sql_fetch_array($result)) {
 ?>
-					<!-- 프로젝트명을 변경할 수없도록함. 2023-08-22
-					<input type='button' value='Project Change' onclick="javascript:group_name_change_func('<?=$group_name?>');" style='height:25px;background-color:red;color:yellow;border:1 solid black' <?php echo "title='Change the project of the table or change both the code and the name of the project of the table.' "; ?> > -->
-<?php
-			}
-		} else {
-?>
-				You can register after login.
-<?php
-		}
-?>
+			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php if( $project_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
+<?php	} ?>
+		</SELECT>
+		</span>
+
+
+
+
 </ul>
 <ul>
 	<span bgcolor='#f4f4f4' <?php echo "title='Select a table from the list of registered tables.' "; ?>>Table Name</span>
-		<span bgcolor='#ffffff'><input type='text' name='tab_hnm'  value='<?=$tab_hnm?>' style='width:250px;height:30px;background-color:#666666;color:yellow;border:1 solid black' <?php echo "title='Enter the name of the table to be created!' "; ?>></span>
-		<span bgcolor='#ffffff'><SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='width:250px;height:30px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select a table from the list of registered tables.' "; ?> >
-				<option value=''>Select Table</option>
+	<span bgcolor='#ffffff'><input type='text' id='new_tab_hnm' name='new_tab_hnm'  value='<?=$new_tab_hnm?>' style='width:250px;height:30px;background-color:#666666;color:yellow;border:1 solid black' <?php echo "title='Enter the name of the table to be created!' "; ?>></span>
+		<span bgcolor='#ffffff'>
+		
+		<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='width:250px;height:30px;background-color:#FFDF6E;border:1 solid black' >
 <?php
-		if( $mode =='Search') {
-?>
-				<option value="<?php echo $tab_hnmS ?>"  selected ><?php echo $tab_hnm ?> </option>
-<?php
-		}
-		$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
+		if( $mode =='SearchTAB') echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
+		else echo "<option value=''>2.Select Table</option>";
+		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
 		while( $rs = sql_fetch_array($result)) {
 ?>
-				<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if($rs['tab_hnm']==$tab_hnm) echo " selected "; ?>><?=$rs['tab_hnm']?></option>
+				<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if($rs['tab_hnm']==$tab_hnm) echo " selected "; ?> title='table code:<?=$rs['tab_enm']?>'><?=$rs['tab_hnm']?></option>
 <?php
 		}
 ?>
-		</select></span>
+		</SELECT>
+		
+		</span>
 
 		<!-- <span bgcolor='#f4f4f4'><input type='button' onclick="javascript:table_name_change();" value='Name Change' style='height:25px;background-color:cyan;border-radius:20px;border:1 solid black' <?php echo "title='name change of table' "; ?> ></span> -->
 </ul>
 </div>
 
-<div>
-<input type='button' value='SQL to Table' onclick="sql_func()"			style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white' title='You can SQL to Table.'>
-
-</div>
+<!-- <div>
+<input type='button' value='SQL to Table' onclick="sql_func()" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white' title='You can SQL to Table.'>
+</div> -->
 
 <div>
 	  New Table Code:<?=$tab_enm?>, Column Count : <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>><!--  \n등록할 라인수를 설정합니다. -->
-		<option value="<?php echo $line_set ?>" selected ><?php if($mode=='Search') echo $record_cnt; else echo $line_set; ?> </option>
+		<option value="<?php echo $line_set ?>" selected ><?php if($mode=='SearchTAB') echo $record_cnt; else echo $line_set; ?> </option>
 		  <option value="10" >10</option>
 		  <option value="15" >15 </option>
 		  <option value="20" >20 </option>
@@ -817,11 +763,11 @@ jQuery(document).ready(function ($) {
 		 <TH><b>data type</b></TH>
 		 <TH><b>size</b></TH>
 		 <TH><b>memo</b></TH>
-		 <?php if( $mode=='Search' ) echo "<TH><b>CTL</b></TH>"; ?>
+		 <?php if( $mode=='SearchTAB' ) echo "<TH><b>CTL</b></TH>"; ?>
 		</TR>
 	</THEAD>
 <?php
-	if( $mode=='Search' ) { $dis_cnt=$record_cnt +1;  }
+	if( $mode=='SearchTAB' ) { $dis_cnt=$record_cnt +1;  }
 	else if( $mode=='line_set' ) { $line_cnt=$_POST['line_set']; $dis_cnt=$_POST['line_set']; }
 	else  $dis_cnt=$line_set;
 	$if_lineA       = $i;
@@ -831,7 +777,7 @@ jQuery(document).ready(function ($) {
 	For ($i = 0; $i < $dis_cnt  ; $i++) {
 		if( $i < $record_cnt ) $m_line = 0;
 		else $m_line = 1;
-		if( $mode == 'Search' and $i < $dis_cnt) {
+		if( $mode == 'SearchTAB' and $i < $dis_cnt) {
 			if( isset($Aseqno[$i]) ) $seqno		=	$Aseqno[$i];
 			if( isset($Afld_enm[$i]) ) $fld_enm	=	$Afld_enm[$i];
 			else $fld_enm	=	"";
@@ -849,7 +795,7 @@ jQuery(document).ready(function ($) {
 			if( isset($Arelation_data[$i]) ) $relation_dataA = $Arelation_data[$i];
 			$bcolor		= '#FFDF6E';
 			$fcolor		= '#666666';
-		} else if( $mode == 'Search' and $i == $line_set) {
+		} else if( $mode == 'SearchTAB' and $i == $line_set) {
 			$fld_enm	=	'fld_' . $dis_cnt;
 			$fld_hnm	=	"";
 			$fld_type	=	"";
@@ -857,7 +803,7 @@ jQuery(document).ready(function ($) {
 			$memo		=	"";
 			$bcolor		= 'black';
 			$fcolor		= 'yellow';
-		} else if( $mode == 'Search' ) {
+		} else if( $mode == 'SearchTAB' ) {
 			$seqno		=	$Aseqno[$i];
 			$fld_enm	=	$Afld_enm[$i];
 			$fld_hnm	=	$Afld_hnm[$i];
@@ -917,7 +863,7 @@ jQuery(document).ready(function ($) {
 			<input type="hidden" name="seq[<?=$i?>]" >
 			<input type="hidden" name="seqno[<?=$i?>]" value='<?=$seqno?>'>
 			<input type="hidden" name="fld_enm_old[<?=$i?>]" value='<?=$fld_enm?>'>
-<?php if($mode=="Search"){	?>
+<?php if($mode=="SearchTAB"){	?>
 			<input type="hidden" name="Afld_enm[<?=$i?>]" value='<?=$fld_enm?>'>
 			<input type="hidden" name="Afld_hnm[<?=$i?>]" value='<?=$fld_hnm?>'>
 			<input type="hidden" name="Afld_type[<?=$i?>]" value='<?=$fld_type?>'>
@@ -957,7 +903,9 @@ jQuery(document).ready(function ($) {
 				  <option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
 				  <option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
 				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if($fld_type == 'TIME') echo " selected ";  ?>>TIME</option><!-- 2024-01-04 kan -->
-				  <!-- <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";  ?>>TIMESTAMP</option>  -->
+				  
+				  <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";?> >TIMESTAMP</option>
+
 				  <option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option>
 				  <!-- 데이터 최대크기 4GiB -->
 			  </select>
@@ -978,7 +926,7 @@ jQuery(document).ready(function ($) {
 			?> >
 	   </td>
 	<?php
-		if($mode=='Search') {
+		if($mode=='SearchTAB') {
 	?>
 			<td align='left'>
 	<?php
@@ -1007,26 +955,26 @@ jQuery(document).ready(function ($) {
 	   <img src="./icon/bt_down_s02.gif" title="column down" border="0" onclick="down_func();" />&nbsp;&nbsp;
 	   <img src="./icon/bt_up_s02.gif" title="column up" border="0" onclick="up_func();" />&nbsp;&nbsp;
 <?php
-		if( $mode=="Search") {
+		if( $mode=="SearchTAB") {
 ?>
-			<input <?php echo "title='Delete the created table and register the changes.' "; ?> type='button' name='upd' onclick="javascript:Save_Update('<?=$line_set?>');"
-			value="Save Change" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
-			<input <?php echo "title='Save as a new table.' "; ?> type='button' name='Newset' onclick="javascript:Newtable_save('<?=$line_set?>');"
-			value="NewTable" style='height:25px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>
-			<input <?php echo "title='Change to the table registration screen.' "; ?> type='button' name='reset' onclick="javascript:resetgo();"
+			<input title='Delete the created table and register the changes.' type='button' id='upd' onclick="javascript:Save_Update('<?=$line_set?>');"
+			value="Save Change" style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'>&nbsp;&nbsp;&nbsp;
+			<input title='Save as a new table. table code:<?=$new_tab_enm?>' type='button' id='Newset' onclick="javascript:Newtable_save('<?=$line_set?>');"
+			value="Copy New Table" style='height:30px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>&nbsp;&nbsp;&nbsp;
+			<input title='Change to the table registration screen.' type='button' name='reset' onclick="javascript:resetgo();"
 			value="Reset" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 <?php
 		} else if( $mode=="line_set") {
 ?>
 			<input <?php echo "title='Re-create the table after deletion.'"; ?> type='button' name='upd' onclick="javascript:Save_Update_Insert('<?=$line_set?>');"
-			value="Change additional registration" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
+			value="Change additional registration" style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 <?php
 		} else {
 ?>
 			<input <?php echo "title='Register and create the created table.' "; ?> type='button' name='ins' onclick="javascript:table_create_func('<?=$line_set?>');"
-			value="Create Table" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
+			value="Create Table" style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 			<input <?php echo "title='Change to the table registration screen.' "; ?> type='button' name='reset' onclick="javascript:resetgo();"
-			value="Reset" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
+			value="Reset" style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'>
 <?php
 		}
 ?>
@@ -1041,11 +989,99 @@ jQuery(document).ready(function ($) {
 </body>
 </html>
 <?php
+	if( $del_mode == 'column_modify_mode' ){ // column update - no use
+		$table_yn	=$_POST['table_yn'];
+		//$tab_enm	=$_POST['tab_enm'];
+		$fld_enm	=$_POST['add_column_enm'];
+		$fld_hnm	=$_POST['add_column_hnm'];
+		$fld_type	=$_POST['add_column_type'];
+		$fld_len	=$_POST['add_column_len'];
+		$fld_memo	=$_POST['add_column_memo'];
+		$seqno		=$_POST['del_seqno'];
+		if( $table_yn =='y' ) {
+			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
+				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL";
+			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
+				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
+			} else {
+				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type ;
+			}
+			$mq1	=sql_query($query);
+			if( $mq1 ) {
+				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where seqno=$seqno " );
+				m_(" column update OK!! ");
+			}
+			else {
+				printf(" sql:%s ", $query);
+				m_(" column modify 실패------------!! ");
+			}
+		} else {
+			$sql = "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len=$fld_len, userid='$H_ID', memo='$fld_memo', disno=$dis ";
+			$ret = sql_query( $sql );
+			if( $ret ) m_(" table10 column add OK!! ");
+			else {
+					echo "sql: " . $sql; exit;
+			}
+		}
+		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
+
+	} else if( $del_mode == 'column_add_mode' ){
+		$table_yn	=$_POST['table_yn'];
+		//$tab_enm	=$_POST['tab_enm'];
+		$dis		=$_POST['disno'];
+		$fld_enm =$_POST['add_column_enm'];
+		$fld_hnm =$_POST['add_column_hnm'];
+		$fld_type=$_POST['add_column_type'];
+		$fld_len =$_POST['add_column_len'];
+		$fld_memo=$_POST['add_column_memo'];
+		if( $table_yn =='y' ) {
+			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
+				$query = "ALTER TABLE ". $tab_enm . " ADD COLUMN " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL ";
+			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
+				$query = "ALTER TABLE ". $tab_enm . " ADD COLUMN " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
+			} else {
+				$query = "ALTER TABLE $tab_enm ADD COLUMN $fld_enm $fld_type ";
+			}
+			$mq1 =sql_query($query);
+			if( $mq1 ) {
+				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len=$fld_len, userid='$H_ID', memo='$fld_memo', disno=$dis " );
+				m_(" column add OK!! ");
+			}
+			else {
+				echo " sql:" . $query; m_(" column add 실패------------!! ");	
+			}
+		} else {
+				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', userid='$H_ID', memo='$fld_memo', disno=$dis " );
+				m_(" table10 column add OK!! ");
+		}
+		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
+
+	} else if( $del_mode == 'Delete_column_mode' ){
+		$seqno	= $_POST["del_seqno"]; 
+		$fld_enm	= $_POST["del_fld_enm"];
+		$query = "ALTER TABLE $tab_enm drop $fld_enm ";
+		$mq1	=sql_query($query);
+		$query = "DELETE from {$tkher['table10_table']} where userid='" .$H_ID. "' and seqno = ". $_POST["del_seqno"];
+		$mq2	=sql_query($query);
+		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
+	}
+	if( $mode == "table_create_reaction" ){
+		create_reaction_func();
+	} else if( $mode == "table_update_remake" ){
+		$view_set=1; // update_pg_func()에서 참고 내용을 1번만 출력 하도록 한다.
+		update_remake_func();
+	}
+	if( $mode == "table_create" ) {
+		create_func();
+	} else if( $mode == "table_new_copy" ){	// copy and new.
+		copy_func();
+	}
+	//==========================================================================================
 
 	//$tabData['data'][][] = array();
 	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		//m_("start --- TAB_curl_sendA ");
-		global $H_ID, $H_EMAIL, $group_code, $group_name;
+		global $H_ID, $H_EMAIL, $project_code, $project_name;
 		global $kapp_mainnet;
 		$tabData['data'][][] = array();
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
@@ -1056,8 +1092,8 @@ jQuery(document).ready(function ($) {
 		$tabData['data'][$cnt]['fld_len']  = '10';
 		$tabData['data'][$cnt]['disno']    = $cnt;
 		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $group_code;
-		$tabData['data'][$cnt]['group_name'] = $group_name;
+		$tabData['data'][$cnt]['group_code'] = $project_code;
+		$tabData['data'][$cnt]['group_name'] = $project_name;
 		$tabData['data'][$cnt]['memo']       = $memo;
 		$hostname = KAPP_URL_T_; // getenv('HTTP_HOST');
 		$tabData['data'][$cnt]['host']       = $hostname;
@@ -1086,33 +1122,30 @@ jQuery(document).ready(function ($) {
 		echo "curl --- response: " . $response;
 
 		if( $response == false) {
-			//$_ms = "table30m curl 전송 실패 : " . curl_error($curl);
-			echo 'curl 전송 실패 : ' . curl_error($curl);
+			echo 'curl Error : ' . curl_error($curl);
 		} else {
-			//$_ms = 'table30m curl 응답 : ' . $response;
-			//echo 'curl 응답 : ' . $response;
+			//echo 'curl OK : ' . $response;
 		}
-		// ============ :table30m curl 응답 : --- count:10Error: Update failed{"message":"_api table data 전달 완료"}
-		curl_close($curl);		//m_("curl end--------------- ms:"); //exit();
+		curl_close($curl);
 		return $response;
 	}
 	function PG_curl_sendA( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-		//m_("start --- PG_curl_sendA ");
-		// use: kapp_tabel_create.php, app_pg50RC.php,  table30m_A.php
-		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
-		global $H_ID, $H_EMAIL, $group_code, $group_name, $tab_hnm, $tab_enm; 
+		global $pg_code, $pg_name, $new_tab_enm, $H_ID, $H_EMAIL, $project_code, $project_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
+		global $H_ID, $H_EMAIL; 
 		global $kapp_mainnet;
-		$pg_code = $tab_enm;
-		$pg_name = $tab_hnm;
+
+		$new_tab_hnm	= $_POST["new_tab_hnm"];
+		$pg_code = $new_tab_enm;
+		$pg_name = $new_tab_hnm;
 		$tabData['data'][][] = array();
 		$cnt = 0;
 		$tabData['data'][$cnt]['pg_code']  = $pg_code;
 		$tabData['data'][$cnt]['pg_name']  = $pg_name;
-		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
-		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
+		$tabData['data'][$cnt]['tab_enm']  = $new_tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $new_tab_hnm;
 		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $group_code;
-		$tabData['data'][$cnt]['group_name'] = $group_name;
+		$tabData['data'][$cnt]['group_code'] = $project_code;
+		$tabData['data'][$cnt]['group_name'] = $project_name;
 		$tabData['data'][$cnt]['host']       = KAPP_URL_T_;
 		$tabData['data'][$cnt]['email']      = $H_EMAIL;
 		$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
@@ -1151,15 +1184,13 @@ jQuery(document).ready(function ($) {
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
 		global $tkher;
-		global $group_code, $group_name, $tab_hnm, $tab_enm; 
+		global $project_code, $project_name, $new_tab_enm; 
 
-		$item_list = " create table ". $tab_enm . " ( ";
+		$new_tab_hnm	= $_POST["new_tab_hnm"];
+		$item_list = " create table ". $new_tab_enm . " ( ";
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
-		$tab_hnm	= $_POST["tab_hnm"];
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
-		$group_code	= $_POST["group_code"];
-		$group_name= $_POST["group_name"];
 		$cnt = 1;
 		$item_array = "";
 		$if_type = "";
@@ -1193,7 +1224,7 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$memo' ";
+				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
 					m_("error --- insert table10_table - $tab_enm");
@@ -1207,131 +1238,44 @@ jQuery(document).ready(function ($) {
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		$line_set  = $cnt - 1;
-		$ret = sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$item_array', sqltable='$item_list' " );
+		$ret = sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$item_array', sqltable='$item_list' " );
 
 		if( $ret ){
 			$mq1 = sql_query( $item_list );
 			if( !$mq1 ) {
-				m_("error --- insert table10_table - $tab_enm");
+				m_("error --- insert table10_table - $new_tab_enm");
 				exit;
 			} else {
-				m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
+				m_("c  Successful creation of the $new_tab_hnm table - $new_tab_enm.");
 				$table_yn = 'y';
-				$link_ = KAPP_URL_T_ . "table30m_A.php";
+				$link_ = KAPP_URL_T_ . "kapp_table30m_A.php";
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10@table30m' );
 			}
 		} else m_("INSERT table10_table ERROR create_func - tab seqno in ");
 
-		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
+		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$new_tab_enm',tab_hnm='$new_tab_hnm', pg_code='$new_tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 		
 		$rets = sql_query($query);
 		if( $rets ){
 			//m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
-			$Tret = TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
+			$Tret = TAB_curl_sendA( $new_tab_enm, $new_tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
 			if( $Tret ) {
 				//m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
 				$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $tab_enm; 
 				$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
 			} else  m_("TAB_curl_sendA -- Error");
 		} else {
-			m_("Error INSERT table10_pg_table , $tab_enm , $tab_hnm ");
+			m_("Error INSERT table10_pg_table , $new_tab_enm , $new_tab_hnm ");
 		}
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
+		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 		exit;
 	}
 
-	if( $del_mode == 'column_modify_mode' ){ //
-		$table_yn	=$_POST['table_yn'];
-		$tab_enm	=$_POST['tab_enm'];
-		$fld_enm	=$_POST['add_column_enm'];
-		$fld_hnm	=$_POST['add_column_hnm'];
-		$fld_type	=$_POST['add_column_type'];
-		$fld_len	=$_POST['add_column_len'];
-		$fld_memo	=$_POST['add_column_memo'];
-		$seqno		=$_POST['del_seqno'];
-		if( $table_yn =='y' ) {
-			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
-				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL";
-			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
-				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
-			} else {
-				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type ;
-			}
-			$mq1	=sql_query($query);
-			if( $mq1 ) {
-				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where seqno=$seqno " );
-				m_(" column update OK!! ");
-			}
-			else {
-				printf(" sql:%s ", $query);
-				m_(" column modify 실패------------!! ");
-			}
-		} else {
-			$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len=$fld_len, userid='$H_ID', memo='$fld_memo', disno=$dis ";
-			$ret = sql_query( $sql );
-			if( $ret ) m_(" table10 column add OK!! ");
-			else {
-					echo "sql: " . $sql; exit;
-			}
-		}
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
-
-	} else if( $del_mode == 'column_add_mode' ){
-		$table_yn	=$_POST['table_yn'];
-		$tab_enm	=$_POST['tab_enm'];
-		$dis		=$_POST['disno'];
-		$fld_enm =$_POST['add_column_enm'];
-		$fld_hnm =$_POST['add_column_hnm'];
-		$fld_type=$_POST['add_column_type'];
-		$fld_len =$_POST['add_column_len'];
-		$fld_memo=$_POST['add_column_memo'];
-		if( $table_yn =='y' ) {
-			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
-				$query = "ALTER TABLE ". $tab_enm . " ADD COLUMN " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL ";
-			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
-				$query = "ALTER TABLE ". $tab_enm . " ADD COLUMN " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
-			} else {
-				$query = "ALTER TABLE $tab_enm ADD COLUMN $fld_enm $fld_type ";
-			}
-			$mq1 =sql_query($query);
-			if( $mq1 ) {
-				sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len=$fld_len, userid='$H_ID', memo='$fld_memo', disno=$dis " );
-				m_(" column add OK!! ");
-			}
-			else {
-				echo " sql:" . $query; m_(" column add 실패------------!! ");	
-			}
-		} else {
-				sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', userid='$H_ID', memo='$fld_memo', disno=$dis " );
-				m_(" table10 column add OK!! ");
-		}
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
-
-	} else if( $del_mode == 'Delete_column_mode' ){
-		$seqno	= $_POST["del_seqno"]; 
-		$fld_enm	= $_POST["del_fld_enm"];
-		$query = "ALTER TABLE $tab_enm drop $fld_enm ";
-		$mq1	=sql_query($query);
-		$query = "DELETE from {$tkher['table10_table']} where userid='" .$H_ID. "' and seqno = ". $_POST["del_seqno"];
-		$mq2	=sql_query($query);
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
-	}
-	if( $mode == "table_create_reaction" ){
-		create_reaction_func();
-	} else if( $mode == "table_update_remake" ){
-		$view_set=1; // update_pg_func()에서 참고 내용을 1번만 출력 하도록 한다.
-		update_remake_func();
-	}
-	if( $mode == "table_create" ) {
-		create_func();
-	} else if( $mode == "table_new_copy" ){	// copy and new.
-		copy_func();
-	}
-	//==========================================================================================
 	function create_reaction_func(){
-		global $H_ID, $tab_enm, $mode, $tab_hnm;
+		global $H_ID, $tab_enm, $mode, $project_code, $project_name;
 		global $config;
 		global $tkher;
+		$new_tab_hnm		= $_POST["new_tab_hnm"];
 		$query	= " DELETE from {$tkher['table10_table']} where tab_enm='".$tab_enm."' and userid='".$H_ID."' ";
 		$mq1	= sql_query($query);
 		$query	= "drop table " . $tab_enm;
@@ -1341,8 +1285,6 @@ jQuery(document).ready(function ($) {
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
-		$group_code = $_POST['group_code'];
-		$group_name = $_POST['group_name'];
 		$item_array = "";
 		$if_type = "";
 		$if_data = "";
@@ -1373,47 +1315,43 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				//		else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
+				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 				$cnt++;
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', memo='key column', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', memo='key column', sqltable='$item_list' " );
 		$line_set = $cnt;
 		$mq3 = sql_query( $item_list );
 		if( !$mq3 ) {
 			m_("k1 $tab_enm table creation failed.");
 			printf("sql:%s", $item_list);
 			exit;
-		} else m_("  Successful creation of the $tab_hnm table.");
+		} else m_("  Successful creation of the $new_tab_hnm table.");
 		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$tab_enm' ";
 		$resultPG = sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
-			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$cnt, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+			$query="UPDATE {$tkher['table10_pg_table']} SET item_cnt=$cnt, item_array='$item_array' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$new_tab_hnm', pg_code='$tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
-			$link_ = KAPP_URL_T_ . "/table30m_A.php";
+			$link_ = KAPP_URL_T_ . "/kapp_table30m_A.php";
 			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point
 		}
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' ,  '$mode' );</script>";
+		echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' ,  '$mode' );</script>";
 	}
 	//=============================================================
 	function copy_func(){
-		global $H_ID, $mode;
+		global $H_ID, $mode, $project_code, $project_name, $tab_enm;
 		global $config;
 		global $tkher;
-		$tab_enm		= $H_ID . "_" . time();
-		$tab_hnm		= $_POST["tab_hnm"];
-		if( isset($_POST["group_code"])  && $_POST["group_code"] !== '') $group_code	= $_POST["group_code"];
-		else  $group_code	= "";
-		if( isset($_POST["group_name"])  && $_POST["group_name"] !== '') $group_name	= $_POST["group_name"];
-		else  $group_name	= "";
+		$new_tab_enm= $H_ID . "_" . time();
+		$new_tab_hnm= $_POST["new_tab_hnm"];
 
-		$item_list  = " create table ". $tab_enm . " ( ";
+		$item_list  = " create table ". $new_tab_enm . " ( ";
 		$item_list  = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
@@ -1449,56 +1387,58 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='$memo' " );
+				sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' " );
 				$cnt++;
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$group_code', group_name='$group_name', memo='key column', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='key column', sqltable='$item_list' " );
 		$line_set = $cnt;
 		$fld_enm  = "fld_" . $ARR;
 		$mq1 = sql_query( $item_list );
 		if( !$mq1 ) {
-			m_( $tab_hnm . "x1 table creation failed.");
+			m_( $new_tab_hnm . ", table creation failed.");
 		} else {
-			m_("  Successful creation of the ".$tab_hnm." table.");
-			$link_ = KAPP_URL_T_ . "table30m_A.php";
-			insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10@table30m' );//re make copy
-			TAB_curl_sendA( $tab_enm, $tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
+			m_("  Successful creation of the ".$new_tab_hnm." table.");
+			$link_ = KAPP_URL_T_ . "kapp_table30m_A.php";
+			insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10@kapp_table30m_A' );//re make copy
+			TAB_curl_sendA( $new_tab_enm, $new_tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
 		}
-		$enm		= $_POST['tab_enm'];
-		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$enm."' ";
+		$old_tab_enm= $_POST['old_tab_enm'];
+		//new_table_name: ABC_CCC_New, tab: dao_1757214499:ABC:dao_1755421034:Project59
+		//new_table_name: ABC_DDD_New, tab: dao_1757214499:ABC:dao_1755421034:Project59
+		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$old_tab_enm."' ";// old table copy pg
 		$resultPG	= sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
 			$rsPG = sql_fetch_array($resultPG);
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].", userid='$H_ID', tab_mid='$H_ID' ";
-			sql_query($query);	// 중요.		//coin_add_func( $H_ID, 200 ); //OK !!!
-			$link_ = KAPP_URL_T_ . "/table30m_A.php";
-			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'copy table10_pg@table30m' );// PG create point
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', pg_code='$new_tab_enm', pg_name='$new_tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].", userid='$H_ID', tab_mid='$H_ID' ";
+			sql_query($query);
 		} else {
-			m_(" Copy ERROR : mode:".$mode.", pg_code:".$enm );
+			m_(" Copy ERROR : mode:".$mode.", old pg tab_enm: $tab_enm pg_code:".$new_tab_enm );
+			//Copy ERROR : mode:table_new_copy, old pg tab_enm:  pg_code:dao_1766811819
+			//Copy ERROR : mode:table_new_copy, pg_code:dao_1766811625
+			//Copy ERROR : mode:table_new_copy, pg_code:dao_1766810942
+			//new_table_name: ABCYY_New, tab: dao_1766735120:ABCYY:dao_1755421034:Project59
 		}
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
+		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 	}
 
 	function update_remake_func(){
-		global $H_ID, $tab_enm, $mode;
+		global $H_ID, $tab_enm, $mode, $project_code, $project_name;
 		global $config;
 		global $tkher;
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
 		$query	="drop table $tab_enm";
 		$mq2	=sql_query($query);
-		$tab_hnm	= $_POST["tab_hnm"];	
+		$new_tab_hnm	= $_POST["new_tab_hnm"];	
 		$cnt = 1;
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 
-		$group_code = $_POST['group_code'];
-		$group_name = $_POST['group_name'];
 		$item_array = '';
 		$if_type = '';
 		$if_data = '';
@@ -1541,41 +1481,41 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';	// no use
+				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 
-				sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
+				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 
 				// table_update_remake --- curl array ----- no use
-				//TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
+				//TAB_curl_move( $tab_enm, $new_tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
 				$cnt++;
 			}
 		} // for
 
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', memo='$item_array', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=0, userid='$H_ID', table_yn='y', memo='$item_array', sqltable='$item_list' " );
 
 		$line_set = $cnt-1;
-		TAB_curl_sendA( $tab_enm, $tab_hnm,0 , $item_list, $_POST["Aif_line"][0], $_POST["Aif_type"][0], $_POST["Aif_data"][0], $_POST["Arelation_data"][0], $item_array );
+		TAB_curl_sendA( $tab_enm, $new_tab_hnm,0 , $item_list, $_POST["Aif_line"][0], $_POST["Aif_type"][0], $_POST["Aif_data"][0], $_POST["Arelation_data"][0], $item_array );
 
 		$mq1 = sql_query( $item_list );
 		if( !$mq1 ) {
 			echo "sql:" . $item_list; exit;
-		} else m_( $tab_enm . ", Successful creation of the " . $tab_hnm . " table.");
+		} else m_( $tab_enm . ", Successful creation of the " . $new_tab_hnm . " table.");
 
 		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$tab_enm."' ";
 		$resultPG = sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
-			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name',  item_cnt=$line_set, item_array='$item_array', tab_mid='$H_ID' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', item_cnt=$line_set, item_array='$item_array', tab_mid='$H_ID' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$group_code', group_name='$group_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$new_tab_hnm', pg_code='$tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
-				$link_ = KAPP_URL_T_ . "/table30m_A.php";
+				$link_ = KAPP_URL_T_ . "/kapp_table30m_A.php";
 				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point - update_remake_func()
 		}
-		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$mode' );</script>";
+		echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 	}
 	//----------------------------------------------------------------------
 	//컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요
@@ -1594,38 +1534,6 @@ jQuery(document).ready(function ($) {
 				$query = "UPDATE {$tkher['table10_pg_table']} SET item_array='$retA' WHERE seqno=" . $rs['seqno'];
 				sql_query($query);
 				$chg=1;
-			}
-		}
-		if( $chg == 1 && $view_set){
-			m_( $table10_pg . ": Program - " . $rs['pg_code'] . ":" . $rs['pg_name'] . ", If you have settings for calculation formulas, pop-up windows, and relational expressions, you may need to check them. " . $item_array);
-			$view_set = 0; //계산식, 팝업창, 관계식에 대한 설정 있다면 확인이 필요할 수 있습니다.
-		}
-	}
-	// 사용 하지않음 --- // 컬럼명이 변경 되었을 때, 사용된 테이블 관련된 프로그램의 컬럼명을 변경한다.
-	function update_pg_funcX($fld_enm, $fld_enmO, $fld_hnm, $fld_hnmO){
-		global $H_ID, $tab_enm, $mode;
-		global $config;
-		global $tkher;
-		$chg=0;
-		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where tab_enm='".$tab_enm."' ";
-		$retPG = sql_query($sqlPG);
-		$table10_pg = sql_num_rows($retPG);
-		if( $table10_pg ) {
-			while( $rs = sql_fetch_array( $retPG)) {
-				$item_array = $rs['item_array'];
-
-				$list		= explode("@", $item_array);
-				for ( $i=0; $list[$i] !== ""; $i++ ){
-					$ddd				= $list[$i];
-					$item				= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2 , $item[1]; //e, $item[2]; //h, $item[3]; //t	$item[4]; //l
-					if( $item[1] == $fld_enmO ) {	//$item[1] = $fld_enm;
-						$i_data = "|" . $fld_enm . "|" .$item[2] . "|" .$item[3] . "|" .$item[4];
-						$retA = str_replace($ddd , $i_data, $item_array); //$result = str_replace('바나나' , '수박', $str);
-						$query = "UPDATE {$tkher['table10_pg_table']} SET item_array='$retA' WHERE seqno=" . $rs['seqno'];
-						sql_query($query);
-						$chg=1;
-					}
-				}
 			}
 		}
 		if( $chg == 1 && $view_set){

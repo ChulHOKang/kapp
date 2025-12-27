@@ -1,16 +1,9 @@
 <?php
 	include_once('./kapp_start_necessary_TT.php');
-   /* ----------------------------------------------------------------------
+   /*
 		index.php - kapp_start_necessary_TT.php
 		indexTT.php - tkher_start_necessary.php
-		--- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
-		1. 이것은 나의 미래를 결정한다.
-		2. 이것은 나의 경쟁력이다.
-		3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
-		4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
-		5. 이것을 아는것은 힘이요, 원동력이다.
-		------------------------------------------
-   -------------------------------------------------------- */
+   */
 	
 	$H_ID = get_session("ss_mb_id");
 	if( isset($member['mb_level']) ) $H_LEV= $member['mb_level'];
@@ -48,7 +41,7 @@
 
 <style>
 body {
-  font-family: "Lato", sans-serif;
+  font-family: "Arial", sans-serif;
 }
 
 .sidenav {
@@ -68,8 +61,8 @@ body {
 	body, td, div, a {font-size:12pt;font-family:Arial;}
 	a:link {color:#CCCCFF; text-decoration:none}
 	a:visited {color:#CCCCFF; text-decoration:none}
-	a:active {color:#CCCCFF; text-decoration:none}
 	a:hover {color:#01ff01; text-decoration:none}
+	a:active {color:white; text-decoration:none}
 	body, td {
 		scrollbar-face-color: #3399ff;
 		scrollbar-shadow-color: #99ccff;
@@ -81,7 +74,7 @@ body {
 	}
 }
 
-.sidenav a:hover {
+.sidenav a:active {
   color: #f1f1f1;
 }
 
@@ -97,16 +90,15 @@ body {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
 }
-
 </style>
 <link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'>
 
 <style type="text/css">
 	body, td, div, a {font-size:15pt;font-family:Arial;}
-	a:link {color:#33FF33; text-decoration:none}
-	a:visited {color:#33FF33; text-decoration:none}
-	a:active {color:#33FF33; text-decoration:none}
-	a:hover {color:#01ff01; text-decoration:none}
+	a:link {color:#33FF33; text-decoration:none;}
+	a:visited {color:#33FF33; text-decoration:none;}
+	a:hover {color:#01ff01; text-decoration:solid underline purple 4px;}
+	a:active {color:white; text-decoration:none;}
 	body, td {
 		scrollbar-face-color: #3399ff;
 		scrollbar-shadow-color: #99ccff;
@@ -116,11 +108,6 @@ body {
 		scrollbar-track-color: #99ccff;
 		scrollbar-arrow-color: #99ccff;
 	}
-</style>
-
-<style>
-.HeadTitle01AX{display:inline-block;margin:0 1px;height:30px;line-height:0px;padding:0 20px;font-size:21px;background:#d01c27;color:#fff;border-radius:5px;}
-.HeadTitle01AX a.on{background:#d01c27;color:#000;}
 </style>
 
 <script>
@@ -133,144 +120,6 @@ body {
 	function About(no) {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
-	/*
-	function submit_run( mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_){
-		runtype = document.click_run.runtype.value;
-		document.click_run.sys_menu.value    =sys_menu;
-		document.click_run.sys_submenu.value =sys_submenu;
-		document.click_run.num.value         =num;
-		document.click_run.pg.value          =pg;
-		document.click_run.jong.value        =jong;
-		document.click_run.title_.value      =title_;
-		document.click_run.link_.value       =link_;
-		document.click_run.mid.value         =mid;
-		document.click_run.sys_pg.value      =sys_pg;
-		document.click_run.sys_pg_root.value =sys_pg;
-		document.click_run.mode.value        ='rowlevel'; /////////////////////////////////////////
-		document.click_run.make_type.value   ='booktreeupdateM2';
-		document.click_run.m_type.value   ='booktreeupdateM2';
-		document.click_run.data.value   =sys_menu;
-		document.click_run.data1.value  =sys_submenu;
-		document.click_run.target = 'run_menu';
-		if( runtype=='update'){
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; // root 하단 목록.
-			document.click_run.submit();
-		} else if( runtype=='insert'){
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php'; // root 하단 목록.
-			document.click_run.submit();
-		} else if( runtype=='' || runtype=='run'){
-			if( pg.indexOf( 'contents_view_menu.php')>=0 ) {
-				document.click_run.target='run_menu';
-				document.click_run.target_.value='run_menu';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}else if( pg.indexOf( 'contents/index.php?infor')>=0 )  {
-				document.click_run.target='run_menu';
-				document.click_run.target_.value='run_menu';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}else if( pg.indexOf( 'https://')>=0 )  {
-
-				document.click_run.target='_blank';
-				document.click_run.target_.value='_top'; //'_blank';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}else if( pg.indexOf( 'http://')>=0 )  {
-
-				document.click_run.target='_blank';
-				document.click_run.target_.value= '_top';//target_;//'_top';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			} else {
-				document.click_run.target='run_menu';
-				document.click_run.target_.value='_self';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}
-			document.getElementById("mySidenav").style.width = "250px";
-		} else {
-			if (link_.indexOf( 'contents_view_menu.php')>=0 ) {
-				document.click_run.target='run_menu';
-				document.click_run.target_.value='run_menu';
-				document.click_run.action= './menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}else if (link_.indexOf( 'contents/index.php?infor')>=0 )  {
-				document.click_run.target='run_menu';
-				document.click_run.target_.value='run_menu';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}else if (pg.indexOf( 'https://')>=0 )  {
-				document.click_run.target='_blank';
-				document.click_run.target_.value='_top'; //'_blank';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			} else {
-				document.click_run.target='_blank';
-				document.click_run.target_.value='run_menu';
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php';
-				document.click_run.submit();
-			}
-			document.getElementById("mySidenav").style.width = "250px";
-		}
-	}
-	function arunG( r, sys_pg, tit ){
-		f = document.click_run;
-		f.sys_pgS.value = sys_pg;
-		f.sys_subtitS.value = tit;
-		f.target = '_blank';
-		f.action = r;
-		f.submit();
-	}
-	function arunC(){
-		f = document.click_run;
-		f.target = 'run_menu';
-		f.action = './chatS/';
-		f.submit();
-		document.getElementById("mySidenav").style.width = "0";
-	}
-
-	function arunA( runtype ){
-		document.click_run.make_type.value   ='booktreeupdateM2';
-		document.click_run.m_type.value   ='booktreeupdateM2';
-		if( runtype=='insert' ){
-			document.click_run.mode.value    ='mroot';
-			document.click_run.runtype.value = 'insert';
-			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
-			document.click_run.submit();
-		} else if( runtype=='update' ){
-			document.click_run.mode.value    ='mroot';
-			document.click_run.runtype.value = 'update';
-			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php';
-			document.click_run.submit();
-		} else if( runtype=='run' ){
-			document.click_run.runtype.value = 'run';
-		} else if( runtype=='list' ){
-			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/index.php';
-			document.click_run.submit();
-			click_run.menu_change[0].value   = 'list';
-			click_run.menu_change[0].text    = 'Tree list';
-			document.getElementById('click_run'+0).value = 'list';
-			document.getElementById('click_run'+0).innerHTML = 'Tree list';
-			document.getElementById("mySidenav").style.width = "0";
-		} else if( runtype=='design' ){
-			document.click_run.runtype.value = 'design';
-			document.click_run.make_type.value = 'booktreeupdateM2';
-			document.click_run.target='run_menu';
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_remake_book_menu.php';
-			document.click_run.submit();
-			click_run.menu_change[0].value   = 'design';
-			click_run.menu_change[0].text    = 'Tree design';
-			document.getElementById('click_run'+0).value = 'design';
-			document.getElementById('click_run'+0).innerHTML = 'Tree design';
-			document.getElementById("mySidenav").style.width = "0";
-		} else {
-			document.click_run.runtype.value = 'run';
-		}
-	}
-	*/
 	function run_on(){
 		document.getElementById("mySidenav").style.width = "0";
 	}
@@ -335,18 +184,10 @@ body {
 <form name='click_run' action='' method='post' enctype='multipart/form-data' target='run_menu'>
 
 	<div class="header"><!-- start : header -->
-		<?php //include "./menu_run.php"; ?>
-		<div class="visualSlide">
-			<?php //echo $slide_msg; ?>
-		</div>
 		<div id="mySidenav" class="sidenav">
 			  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 				<center>
 				<a href='<?=KAPP_URL_T_?>' target='_top'><img src="<?=KAPP_URL_T_?>/logo/logo.png" title='K-APP Home'></a>
-		<?php
-				$run_target='run_menu';
-				$img_v="<img src='".KAPP_URL_T_ . "/logo/pizza.png' width='22' height='22'>";
-			?>
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 <?php if( $H_ID ) { ?>
 			<li align="center" style="color:cyan; background-color:black; height:21px; border:none"><?=$H_ID?></li>
@@ -354,32 +195,55 @@ body {
 			<li align="center" style="color:cyan; background-color:black; height:21px; border:none;list-style-type:none">K-APP</li>
 <?php } ?>
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-			<li style='font-size:18;color:cyan;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' width='22' height='22'>Project Management</a></li>
 			
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table30m_A.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Table Design</a></li>
-
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_index_Create.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>Create index of Table</a></li>
-
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;' title='table design for high level' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/tableK_sql.php' target='run_menu' title='table design for High Level'><img src='<?=KAPP_URL_T_?>/logo/pizza.png' width='22' height='22'>SQL to Table</a></li>
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/Uleaf.png' width='22' height='22'>Table List</a></li>
-
-			<!-- <li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li> -->
-
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Create.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' width='22' height='22'>Program Create</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_project.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/icon/project_.png' style='width:24px;height:22px;'>.Project Management</a></li>
 			
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Upgrade.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' width='22' height='22'>Program Upgrade</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table30m_A.php' target='run_menu' title='table design for High Level'>
+			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.Table Design</a></li>
 
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/land25.png' width='22' height='22'>App Permissions setting</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_index_Create.php' target='run_menu' title='table design for High Level'>
+			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.Create index of Table</a></li>
 
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/table_relationA.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seed.png' width='22' height='22'>Table Relationship</a></li>
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/seedX.png' width='22' height='22'>Program List A</a></li>
-			<li style='font-size:18;color:#666666;height:28px;line-height:1; text-align:left;list-style-type:none;'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/logo/berry.png' width='22' height='22'>Program List B</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;' title='table design for high level'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/tableK_sql.php' target='run_menu' >
+			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.SQL to Table</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;' title='table design for high level'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_relationA.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/seed.png' style='width:24px;height:22px;'>.Table Relationship</a></li>
+
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.Table List</a></li>
+
+			<!-- <li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' style='width:24px;height:22px;'>Program Create</a></li> -->
+
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Create.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' style='width:24px;height:22px;'>.Program Create</a></li>
+			
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Upgrade.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/_board_.jpg' style='width:24px;height:22px;'>.Program Upgrade</a></li>
+
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_permission.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/land25.png' style='width:24px;height:22px;'>.App Permissions</a></li>
+
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/seedX.png' style='width:24px;height:22px;'>.Program List A</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/berry.png' style='width:24px;height:22px;'>.Program List B</a></li>
 
 			<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-
-			<li style='font-size:9;color:#666666;height:9px;line-height:1'>
-			K-APP
-			</li>
+			<li style='font-size:9;color:#666666;height:9px;line-height:1'>K-APP</li>
 		</div>
 	</div><!-- head -->
 </form>

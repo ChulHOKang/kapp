@@ -30,7 +30,7 @@
 		$g_name =$_POST['project_nm']; 
 		$g_memo =$_POST['memo']; 	//$pw = $_POST['form_psw']; 
 
-		$ls = "select * from {$tkher['table10_group_table']} where group_name='$g_name' and userid='$H_ID' ";
+		$ls = "select * from {$tkher['table10_group_table']} where group_code='$g_code' or group_name='$g_name' and userid='$H_ID' ";
 		$result = sql_query( $ls);
 		$rs = sql_num_rows($result);
 		if( $rs ) {
@@ -110,31 +110,5 @@
 		sql_query($sql);
 		//echo " view cnt OK!"; return;
 	}
-
-
-	//echo  $mode_insert . " , memo:" . $memo . ", memoA:" . $memoA;
-	//echo "tit: " . $tit . ", url:" . $url. ", memo:" . $memo. ", pw:" . $pw;
-
-	function Record_save($tit, $url, $memo, $pw ) { // no use
-		global $tkher;
-		global $g_name, $g_name_code, $from_session_url, $H_ID, $H_EMAIL;
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$up_day = date("Y-m-d H:i:s");
-		$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID', club_url='$from_session_url', user_name='$tit', job_name='Note', job_group='$g_name', job_group_code='$g_name_code', job_addr='$url', job_level='0', jong='U', memo='$memo', ip='$ip', num='Note', aboard_no='Note', email='$H_EMAIL', up_day='$up_day' ";
-
-		$ret = 	sql_query(  $sqlA ); 
-		if(!$ret) {
-			echo json_encode("{$tkher['job_link_table']}   SQL:".$query);
-			//exit;
-		} else {
-			$jong ='U';
-			$ret=Link_Table_curl_send( $tit, $url, $jong, $from_session_url, $ip, $memo, $up_day );
-			if( $ret ) echo "save OK!";
-			else  echo "Curl error --- save OK!";
-			//exit;
-		}
-		
-	}
-
 
 ?>

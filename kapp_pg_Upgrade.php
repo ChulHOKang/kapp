@@ -22,23 +22,85 @@
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
 	if( !isset($_SESSION['mode_session_ok']) ) $_SESSION['mode_session_ok']= 'ok';
-	if( isset($_POST['project_nmS']) ) $project_nmS = $_POST['project_nmS'];
-	else $project_nmS = "";
-	if( isset($_POST['project_code']) ) $project_code = $_POST['project_code'];
-	else $project_code = "";
-	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
-	else $pg_codeS = '';
-	//RU pg_codeS: crakan59_gmail_1762739131:매출장테이블:crakan59_gmail_1762739131:매출장테이블:crakan59_gmail_1762739078:ProjectA
-	if( isset($_POST['tab_hnmS']) ) $tab_hnmS = $_POST['tab_hnmS'];
-	else $tab_hnmS = '';
+
+
+	if( isset($_SESSION['project_nmS']) ) {
+		$project_nmS = $_SESSION['project_nmS'];
+		$pcd_nm = explode(":", $project_nmS );
+		$project_code	= $pcd_nm[0];
+		$project_name	= $pcd_nm[1]; 
+	} else {
+		$project_nmS = '';
+		$project_name= "";
+		$project_code= "";
+	}
+
+	if( isset($_SESSION['tab_hnmS']) ) {
+		$tab_hnmS = $_SESSION['tab_hnmS'];
+		$tcd_nm = explode(":", $tab_hnmS );
+		$tab_enm	= $tcd_nm[0];
+		$tab_hnm	= $tcd_nm[1]; 
+	} else {
+		$tab_hnmS = '';
+		$tab_enm= "";
+		$tab_hnm= "";
+	}
+
+	if( $mode == 'pg_codeS_Search' && isset($_SESSION['pg_codeS']) ) {
+		$pg_codeS =$_SESSION['pg_codeS'];
+		$pg_ = explode(":", $pg_codeS);
+		$pg_code = $pg_[0];
+		$pg_name = $pg_[1];
+		$tab_enm = $pg_[2];
+		$tab_hnm = $pg_[3];
+		$tab_hnmS = $tab_enm .':'. $tab_hnm;
+	} else {
+		$pg_codeS = '';
+		$pg_code = '';
+		$pg_name = '';
+		$tab_hnmS ='';
+		$tab_enm='';
+		$tab_hnm = '';
+	}
+
+
+	//if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
+	//else $pg_codeS = '';//RU pg_codeS: crakan59_gmail_1762739131:매출장테이블:crakan59_gmail_1762739131:매출장테이블:crakan59_gmail_1762739078:ProjectA
+	//if( isset($_POST['pg_code']) && $_POST['pg_code'] !=='' )  $pg_code = $_POST['pg_code'];
+	//else $pg_code = '';
+	
+	//if( isset($_POST['tab_hnmS']) ) $tab_hnmS = $_POST['tab_hnmS'];
+	//else $tab_hnmS = '';
+	//if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
+	//else $tab_enm = '';
+	//if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
+	//else $tab_hnm = '';
+
 	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS'];
 	else $pop_tabS = '';
+
 	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
 	else $seqno = '';
-	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
-	else $tab_enm = '';
-	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
-	else $tab_hnm = '';
+
+
+
+	
+	if( isset($_POST['mode_session']) && $_POST['mode_session'] !=='' ) $mode_session   = $_POST['mode_session'];
+	else if( isset($_SESSION['mode_session']) && $_SESSION['mode_session'] !=='' ) $mode_session   = $_SESSION['mode_session'];
+	else $mode_session   = '';
+	if( isset($_POST['item_array']) && $_POST['item_array'] !=='') $post_item_array   = $_POST['item_array'];
+	else $post_item_array   = '';
+	if( isset($_POST['if_column']) && $_POST['if_column'] !=='' ) $if_column   = $_POST['if_column'];
+	else $if_column   = '';
+	if( isset($_POST['iftype_db']) && $_POST['iftype_db'] !=='') $iftype_db = $_POST['iftype_db'];
+	else $iftype_db = '';
+	$if_line_session= 0; $j=0;
+	$fld_sel_type	 = '';
+	$pg_name = '';
+	$column_attribute = ''; 
+
+	if( isset($_POST['if_line']) ) $if_line = $_POST['if_line'];
+	else $if_line = '';
 ?>
 <html>
 <head>
@@ -60,16 +122,6 @@
 	var smode		=false
 	var start, end, grpStr
 
-	function change_project_func(cd){
-		prj = cd.split(':');
-		document.makeform.project_code.value = prj[0];
-		document.makeform.project_name.value = prj[1];
-		document.makeform.project_nmSX.value = cd;
-		document.makeform.mode.value = "project_search";
-		document.makeform.action ="kapp_pg_Upgrade.php";
-		document.makeform.submit();
-		return;
-	}
 	function fnclist_onclick() {
 		for (var k=0 ; k < makeform.fnclist.options.length ; k++){
 		 if (makeform.fnclist.options[k].text != "" && makeform.fnclist.options[k].selected) {
@@ -204,15 +256,6 @@
 		document.makeform.submit();
 	}
 
-	function change_program_func(pg) {
-		pn = pg.split(":");
-		document.makeform.mode.value='SearchPG';
-		document.makeform.column_attribute.value='';
-		document.makeform.action="kapp_pg_Upgrade.php";
-		document.makeform.target='_self';
-		document.makeform.submit();
-		return;
-	}
 	function pg_dup_check()
 	{
 		pg_name = document.makeform.pg_name.value;
@@ -687,7 +730,7 @@ function ifcheck_onclickA( r, seq) {
 				document.makeform.target          = '_self';
 				document.makeform.action          = 'table_formulaM.php';
 				document.makeform.mode.value      = 'run13';
-				document.makeform.mode_call.value = 'kapp_pg_Upgrade.php'; //document.makeform.mode_call.value = 'table_item_run50R';
+				document.makeform.mode_call.value = 'kapp_pg_Upgrade'; //document.makeform.mode_call.value = 'table_item_run50R';
 				document.makeform.submit();
 			} else {
 				alert( st[3] + ", You cannot set the text type" );
@@ -699,7 +742,7 @@ function ifcheck_onclickA( r, seq) {
 			document.makeform["if_type[" + selind + "]"].value = r;
 			document.makeform.action          = 'table_popupRM.php';
 			document.makeform.mode.value      = '';
-			document.makeform.mode_call.value = 'kapp_pg_Upgrade.php';
+			document.makeform.mode_call.value = 'kapp_pg_Upgrade';
 			document.makeform.target          = '_self';
 			document.makeform.submit();
 			break;
@@ -881,36 +924,53 @@ function Save_and_Run( pg)
 			document.makeform.mode.value = 'Pg_Upgrade';
 		}
 	} else document.makeform.mode.value = 'Pg_Upgrade';
-	document.makeform.mode_call.value = 'kapp_pg_Upgrade.php';
-	document.makeform.action='app_pg50RU_update.php';
+	document.makeform.mode_call.value = 'kapp_pg_Upgrade'; //'kapp_pg_Upgrade.php'
+	document.makeform.action='app_pg50RU_update.php'; //'app_pg50RU_update.php'
 	document.makeform.target='_blank';
 	document.makeform.submit();
 }
+
+
+	function sendDataToPHP( projectnmS, pnmS) {
+		fetch('kapp_save_session.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+			//location.replace(location.href);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	}
+	function change_project_func(pnmS){
+		sendDataToPHP('project_nmS', pnmS);
+		document.makeform.mode.value='Project_Search';
+		document.makeform.action="kapp_pg_Upgrade.php";
+		document.makeform.submit();
+	}
+	function change_program_func(pnmS){
+		if( pnmS == '') {
+			alert('Select Program!');
+			return false;
+		}
+		sendDataToPHP('pg_codeS', pnmS);
+		document.makeform.mode.value='pg_codeS_Search';
+		document.makeform.action="kapp_pg_Upgrade.php";
+		document.makeform.submit();
+	}
 //-->
 </script>
 
 <body leftmargin="0" topmargin="0">
 
 <?php
-	if( isset($_POST['project_name']) && $_POST['project_name'] !=='' )  $project_name = $_POST['project_name'];
-	else $project_name = '';
-	if( isset($_POST['pg_code']) && $_POST['pg_code'] !=='' )  $pg_code = $_POST['pg_code'];
-	else $pg_code = '';
-	if( isset($_POST['mode_session']) && $_POST['mode_session'] !=='' ) $mode_session   = $_POST['mode_session'];
-	else if( isset($_SESSION['mode_session']) && $_SESSION['mode_session'] !=='' ) $mode_session   = $_SESSION['mode_session'];
-	else $mode_session   = '';
-	if( isset($_POST['item_array']) && $_POST['item_array'] !=='') $post_item_array   = $_POST['item_array'];
-	else $post_item_array   = '';
-	if( isset($_POST['if_column']) && $_POST['if_column'] !=='' ) $if_column   = $_POST['if_column'];
-	else $if_column   = '';
-	if( isset($_POST['iftype_db']) && $_POST['iftype_db'] !=='') $iftype_db = $_POST['iftype_db'];
-	else $iftype_db = '';
-	$if_line_session= 0; $j=0;
-	$fld_sel_type	 = '';
-	$pg_name = '';
-	$column_attribute = ''; 
-	if( isset($_POST['if_line']) ) $if_line = $_POST['if_line'];
-	else $if_line = '';
+
 	if( $mode_session == 'POPUP') {
 		if( isset($_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j= $if_line_session+1;
@@ -950,7 +1010,10 @@ function Save_and_Run( pg)
 		//$mode_session= '';
 		set_session('mode_session',  '');
 	}
-	if( $mode == 'SearchPG' ){
+//	if( $mode == 'SearchPG' ){
+	if( isset( $_SESSION['project_nmS']) ){
+		/*
+		$project_nmS = $_SESSION['project_nmS'];
 		$pj= explode(':', $project_nmS);
 		$group_code	= $pj[0];
 		$group_name	= $pj[1];
@@ -978,11 +1041,11 @@ function Save_and_Run( pg)
 		$tab_hnm		= $rsPG['tab_hnm'];
 		$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
 		$group_code		= $rsPG['group_code'];
-		$group_name		= $rsPG['group_name'];
+		$group_name		= $rsPG['group_name'];*/
 	
-	} else if( $mode == 'program_upgrade' ){
-		if( isset($_POST['pg_code']) ) {
-			$pg_code = $_POST['pg_code'];
+	}
+
+	if( $mode=='pg_codeS_Search' && isset( $_SESSION['pg_codeS']) ){
 			$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
 			$resultPG		= sql_query($sqlPG);
 			$table10_pg	= sql_num_rows($resultPG);
@@ -995,6 +1058,7 @@ function Save_and_Run( pg)
 			$pop_data		= $rsPG['pop_data'];
 			$rel_data		= $rsPG['relation_data'];
 			$rel_type		= $rsPG['relation_type'];
+			
 			$tab_enm		= $rsPG['tab_enm'];
 			$tab_hnm		= $rsPG['tab_hnm'];
 			$tab_hnmS		= $tab_enm . ":" . $tab_hnm;
@@ -1003,21 +1067,21 @@ function Save_and_Run( pg)
 			$project_nmS	= $group_code .":". $group_name;
 			$pg_name		= $rsPG['pg_name'];
 			$pg_codeS		= $pg_code.":".$pg_name.":".$tab_enm.":".$tab_hnm.":".$group_code.":".$group_name;
-		}
 	}
 	$mode_session_ok = get_session("mode_session_ok");
 	$sellist = get_session("sellist");
 	$sel_col= explode('|', $sellist);
 	if( isset($sel_col[1]) ) $formula_column = $sel_col[1];
-	else $formula_column = '';
+	else $formula_column = '';	
+	//m_("sellist: $sellist, mode_session_ok: $mode_session_ok");
 ?>
 <center>
 <div id='menu_normal'>
-		<form name="makeform" method="post" >
+	<Form METHOD='POST' name='makeform' enctype="multipart/form-data">
 			<input type="hidden" name="sellist"	        value="" >
-			<input type="hidden" name="mode"            value="<?=$mode?>" >
-			<input type="hidden" name="mode_call"		value="" >
-			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
+			<input type="hidden" name="mode"      id="mode" value="<?=$mode?>" >
+			<input type="hidden" name="mode_call" id="mode_call" value="" >
+			<input type="hidden" name="pg_code"   id="pg_code" value="<?=$pg_code?>">
 			<input type="hidden" name="calc"            value="<?=$calc?>"> 
 			<input type="hidden" name="pop_data"		value="<?=$pop_data?>"> 
 			<input type="hidden" name="rel_data"        value="<?=$rel_data?>"> 
@@ -1032,51 +1096,33 @@ function Save_and_Run( pg)
     <td height="30" style="font-size:21px;background-color:#666666;color:cyan;text-align:center;" title='kapp_pg_Upgrade.php'>Program Upgrade<br>
 	<input type='hidden' name='project_name' value="<?=$project_name?>" readonly >
 	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" ><br>
-	<p align='left'>Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:180px; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
 
-			<option value=''>1.Select Project</option>
-<?php
-				$pcd_nm = array();
-				if( isset($project_nmS) && $project_nmS !=="" ){
-					$pcd_nm = explode(":", $project_nmS );
-				} else {
-					$pcd_nm[0] ="";
-					$pcd_nm[1] ="";
-				}
-				$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); // table10_group
-				while( $rs = sql_fetch_array($result)) {
-					$j_code = $rs['group_code'];
-					$j_name = $rs['group_name'];
-?>
-					<option value='<?=$j_code?>:<?=$j_name?>' <?php if( $pcd_nm[0]=== $j_code ) echo " selected "; ?> title='Project code:<?=$j_code?>' ><?=$j_name?></option>
-<?php
-				}
-?>
-			</select>
-		<br>
-		Program:<SELECT name='pg_codeS' onchange="change_program_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" title='<?=$pg_code?>' >
+		Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="background-color:#666666;color:yellow;width:50%; height:30px;">
 <?php 
-				if( $mode=='SearchPG' || $mode=='program_upgrade') {
-?>
-					<option value="<?php echo $pg_codeS ?>" selected title='<?php echo $pg_codeS ?>' ><?php echo $pg_name ?> </option>
-<?php
-				} else {
-?>
-					<option value=''>Select Program</option>
-<?php
-				}
-				$sql = "SELECT * from {$tkher['table10_pg_table']} where group_code='". $pcd_nm[0] ."' order by upday desc , pg_name ";
-				$result = sql_query( $sql );
+		if( $mode=='Project_Search' && isset( $_SESSION['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
+		else echo "<option value=''>1.Select Project</option>";
 
-				while( $rs = sql_fetch_array($result)) {
-					$rspcode=$rs['pg_code'];
-					$rspname=$rs['pg_name'];
+		$result= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " ); 
+		while( $rs = sql_fetch_array($result)) {
 ?>
-					<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" title="<?=$rspcode?>:<?=$rspname?>" <?php if($pg_code == $rs['pg_code']) echo ' selected ' ?>><?=$rs['pg_name']?></option>
+			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php if( $project_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
+<?php	} ?>
+		</SELECT>
+
+		
+		<br>Program:<SELECT id='pg_codeS' name='pg_codeS' onchange="change_program_func(this.value);" style="background-color:#666666;color:yellow;width:45%; height:30px;" >
 <?php
-				}
+		if( $mode=='pg_codeS_Search' && isset( $_SESSION['pg_codeS']) ) echo "<option value='$pg_codeS' selected >$pg_name</option>";
+		else echo "<option value=''>2.Select program</option>";
+
+		$result= sql_query( "SELECT * from {$tkher['table10_pg_table']} where group_code='$project_code' and userid='$H_ID' " );
+		while( $rs = sql_fetch_array($result)) {
 ?>
-			</SELECT></p>
+			<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if( $pg_code==$rs['pg_code']) echo " selected ";?> title="pg_code:<?=$rs['pg_code']?>" ><?=$rs['pg_name']?></option>
+<?php   } ?>
+		</SELECT>
+
+
 </td>
 </tr>
 			  <tr>
@@ -1091,7 +1137,8 @@ function Save_and_Run( pg)
 <?php
 	$ss = "";
 	$ckv = "";	
-	if( isset( $table10_pg) && $table10_pg !=='' ){ 
+//	if( isset( $table10_pg) && $table10_pg > 0 ){
+	if( $mode=='pg_codeS_Search' ){
 			$itX = explode("@", $item_array);
 			for( $j=0; $j < $item_cnt; $j++){
 				if( $mode_session == 'POPUP' || $mode_session == 'Formula' ) {
@@ -1105,8 +1152,7 @@ function Save_and_Run( pg)
 				$tit_val = $j . " - " . $val . " : " . $ifd[$j+1]; 
 				$ss = $ss . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='radio' ".$ckv." id='column_list".$j."' name='column_list' onclick='column_list_onclickA( this.value, " .$j. " )' value='".$val."'><label title='".$tit_val."' id='columnR".$j."'>" .$it[2]. "</label></label><br>";
 			} //for
-	} else {
-	} //if( $table10_pg>0 or $table10_tab>0 ){ 
+	}
 	$qna = "sequence of the work|Select Project.|Select Program.|Select column.|Column attribute definition.|Click Save and RUN button.|4";
 	echo "<script> rr_func(\"".$ss."\", \"".$qna."\");</script> "; // job remark
 ?>

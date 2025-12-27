@@ -1,30 +1,24 @@
 <?php
 	include_once('./tkher_start_necessary.php');
-	 $H_ID	= get_session("ss_mb_id"); 
-	if( isset($H_ID) && $H_ID && $H_ID !=='' ){
-		$H_ID	= get_session("ss_mb_id");    //"ss_mb_id";	//connect_count('ulist', $H_ID, 0);	// log count
-		$_LEVEL	= get_session("ss_mb_level"); //m_($H_ID . ", _LEVEL: " . $_LEVEL);
-	} else {
+	/*  
+		kapp_project.php : table : kapp_url_group {$tkher['url_group_table']} 
+		kapp_project_ajax.php - insert, update,   {$tkher['table10_group_table']} 
+	*/
+	$H_ID= get_session("ss_mb_id"); 
+	if( !isset($H_ID) || $H_ID == '' ){
 		m_("login please! - $H_ID");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
+	} else {
+		$ss_mb_level	= $member['mb_level']; 
+		$H_EMAIL	    = $member['mb_email'];
+		$H_ID			= $ss_mb_id;
+		$H_LEV			= $member['mb_level']; 
 	}
-
-	/*  
-		2025-05-03
-		kapp_project.php : table : kapp_url_group {$tkher['url_group_table']} 
-		kapp_project_ajax.php - insert, update,   {$tkher['table10_group_table']} 
-
-	*/
 	$day = date("Y-m-d H:i:s");
 	$pg_		= 'kapp_project.php';
-	if( isset($_POST['target_']) ) $target_	= $_POST['target_'];
-	else $target_ = 'iframe_url';	//table_main
-	$type_ = 'U';
-	$title_='';
 	$secret_key = "";
-	$link_	= "";
 	$gg_user = "";
 	$url = "kapp_project.php";
 
@@ -107,18 +101,6 @@ $(function () {
 </head> 
 
 <?php
-	$ss_mb_id		= get_session("ss_mb_id");
-	if( isset($member['mb_id']) && $member['mb_id'] !== "") {
-		$ss_mb_level	= $member['mb_level']; 
-		$H_EMAIL	    = $member['mb_email'];
-		$H_ID				= $ss_mb_id;
-		$H_LEV			= $ss_mb_level; 
-	} else {
-		$ss_mb_level	= ""; 
-		$H_EMAIL	    = ""; 
-		$H_ID				= ""; 
-		$H_LEV			= ""; 
-	}
 	if( isset($_REQUEST["g_type"]) ) $g_type	= $_REQUEST["g_type"];
 	else $g_type	= "";
 	if( isset($_REQUEST["g_name_old"]) ) $g_name_old	= $_REQUEST["g_name_old"];
@@ -173,7 +155,7 @@ $(function () {
 
 	if( isset($_REQUEST["page"]) ) 	$page = $_REQUEST["page"];
 	else	$page = 1;
-
+/*
 	if( $mode == 'insert_project1') {
 		$g_num = $H_ID . time();
 		if ( !$H_ID ) {
@@ -221,8 +203,8 @@ $(function () {
 			echo "<script>location.href('kapp_project.php?g_name=$g_name');</script>";
 		}
 		exit;
-	}
-	else if($mode == 'delete_link') {
+	} else 
+	if($mode == 'delete_link') {
 		if ( !$H_ID ) {
 			echo "<script>alert('Member Login IN! Please!'); window.open('/', '_self', '');</script>";
 		} else {
@@ -242,7 +224,7 @@ $(function () {
 			}
 			echo "<script>location.href('kapp_project.php?g_name=$g_name');</script>";
 		}
-	}
+	}*/
 
 	$menu1TWPer=15;  
 	$menu1AWPer=100 - $menu1TWPer;  
@@ -289,7 +271,7 @@ $(function () {
 		document.insert_form.seq_no.value =no;
 		document.insert_form.memo.value =lev;
 		if( hid == mid ) {
-			document.getElementById('save_button').style.visibility = 'hidden';
+			//document.getElementById('save_button').style.visibility = 'hidden';
 			document.getElementById('Change_btn').style.visibility = 'visible';
 		} else {
 			document.getElementById('save_button').style.visibility = 'hidden';
@@ -300,6 +282,11 @@ $(function () {
 	function pg_dup_check(p_code)
 	{
 		p_name = document.insert_form.project_nm.value;
+		if( p_name == ''){
+			document.insert_form.project_nm.focus();
+			alert("Please enter a project name: "+ p_name);
+			return false;
+		}
 		var item_cnt = insert_form.sel_g_name.options.length; 
 		dup_ok = false;
 		for (i = 0; i < item_cnt; i++) { 
@@ -307,14 +294,14 @@ $(function () {
 				var pgnm = insert_form.sel_g_name.options[i].text;
 					pnm = pgnm.split(':');
 				if( p_name == pnm[0]){
-					alert("Program name is duplicate. Please use a different name!"); // \n 프로그램명이 중복입니다. 다른 명칭을 사용해주세요! pgnm:
+					alert("Project name is duplicate. Please use a different name!"); // \n project 이 중복입니다. 다른 명칭을 사용해주세요! pgnm:
 					document.insert_form.project_nm.focus();
 					dup_ok = true;
 					return false;
 				}
 		}
 		if( dup_ok === false ) {
-			alert("No Dup! OK!");
+			alert("It's not a duplicate! code: "+p_code);
 			document.insert_form.dup_confirm.checked =true;
 			document.insert_form.project_cd.value = p_code;
 		}
@@ -322,17 +309,12 @@ $(function () {
 		return true;
 	}
 
-	//------------------------
-	function contents_del( num, g_name, webnum ) {
-		if( confirm('Are you sure you want to delete? '+num) ) {
-			insert_form.mode.value='delete_link';
-			insert_form.num.value=num;
-			insert_form.webnum.value=webnum;
-			insert_form.g_name.value=g_name;
-			insert_form.submit();
-		}
-	}
-	function contents_upd(hid) { // title click run
+	function Project_Name_Change(hid) { // title click run
+		/*if( insert_form.dup_confirm.checked === false ) {
+			alert(" project name - duplicate confirm");
+			return false;
+		}*/
+		if( !confirm('Do you want to change! ') ) return;
 		form = document.insert_form;
 		var seq_no = form.seq_no.value;
 		var project_nm = form.project_nm.value;
@@ -349,37 +331,31 @@ $(function () {
 			document.getElementById('Save_encrypted').style.visibility = 'visible';
 			document.getElementById('Decryption').style.visibility = 'visible';
 		}
-		//-------------------------------------------
-		//var seq_no= $("#seq_no").val();alert( seq_no + ", project_nm: " + project_nm + ", memo: " + memo);
-jQuery(document).ready(function ($) {
-		$.ajax({
-			header:{"Content-Type":"application/json"},
-			method: "post",
-                url: 'kapp_project_ajax.php',
-				data: {
-					"mode_insert": 'project_change',
-					"project_nm": project_nm,
-					"memo": memo,
-					"seq_no": seq_no
-				},
-			success: function(data) {
-				//console.log(data);
-				alert("OK --- " + seq_no);
-				location.replace(location.href);
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert(" 올바르지 않습니다.-- kapp_project_ajax.php");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-				return;
-			}
+		jQuery(document).ready(function ($) {
+				$.ajax({
+					header:{"Content-Type":"application/json"},
+					method: "post",
+						url: 'kapp_project_ajax.php',
+						data: {
+							"mode_insert": 'project_change',
+							"project_nm": project_nm,
+							"memo": memo,
+							"seq_no": seq_no
+						},
+					success: function(data) {
+						//console.log(data);
+						alert("Change OK - " + seq_no);
+						location.replace(location.href);
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert(" Error.-- kapp_project_ajax.php");
+						console.log(jqXHR);
+						console.log(textStatus);
+						console.log(errorThrown);
+						return;
+					}
+				});
 		});
-});
-
-
-		//form.mode.value = "update_link";
-		//form.submit();
 	}
 	function contents_upd_run() {
 		form = document.insert_form;
@@ -441,9 +417,9 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-	$('#Decryption').on('click', function() {		//alert('버튼 클릭됨');
+	$('#Decryption').on('click', function() {
 		var memo= $("#memo").val();
-		var pws= $("#form_psw").val();		//alert(" memo:" + memo + ", pw:" + pws); // return;
+		var pws= $("#form_psw").val();
 
 		$.ajax({
 			header:{"Content-Type":"application/json"},
@@ -498,39 +474,38 @@ jQuery(document).ready(function ($) {
 			alert(" project name - duplicate confirm");
 			return false;
 		}
+		if( !confirm('Do you want to Save! ') ) return;
 		//document.insert_form.mode_insert.value='project_insert';
 
 		event.preventDefault();
 		//validation for login form
         $("#progress").html('Inserting <i class="fa fa-spinner fa-spin" aria-hidden="true"></i></span>');
 
-            var formData = new FormData($(this)[0]);
-            $.ajax({
-                url: 'kapp_project_ajax.php',
-                type: 'POST',
-                data: formData,
-                async: true,
-                cache: false,
-                contentType: false,
-                processData: false,
-                success: function (returndata) 
-                {
-                    //show return answer
-                    alert(returndata);
-					location.replace(location.href);
-                },
-                error: function(){
-                alert("error in ajax form submission");
-                                    }
-        });
-		//location.reload();
-        return false;
+		var formData = new FormData($(this)[0]);
+		$.ajax({
+			url: 'kapp_project_ajax.php',
+			type: 'POST',
+			data: formData,
+			async: true,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function (returndata) 
+			{
+				//show return answer
+				alert(returndata);
+				location.replace(location.href);
+			},
+			error: function(){
+				alert("error in ajax form submission");
+			}
+		});
+		return false;
     });
 
-	$('#insert_project').on('click', function() {		//alert('버튼 클릭됨');
+	$('#insert_project').on('click', function() {
 		var g_code = $("#g_name_code").val();
-		var g_name= $("#g_name").val();		
-		//alert(" g_code:" + g_code + ", g_name:" + g_name); //return;
+		var g_name= $("#g_name").val();
 
 		$.ajax({
 			header:{"Content-Type":"application/json"},
@@ -578,7 +553,7 @@ jQuery(document).ready(function ($) {
 					location.replace(location.href);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert("데이터 타입, 또는 URL이 올바르지 않습니다.-- kapp_project_ajax.php");
+				alert("Error. - kapp_project_ajax.php");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -600,7 +575,6 @@ jQuery(document).ready(function ($) {
 <form id="insert_form" name='insert_form' method='post' enctype='multipart/form-data' >
 	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
 	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
-	<input type='hidden' name='g_user'			value='<?=$g_user?>' > 
 	<input type='hidden' name='mode_in'		value='' > 
 	<input type='hidden' name='mode_up'		value='' > 
 	<input type='hidden' name='seq_no' id='seq_no'	value='<?=$_REQUEST['seq_no']?>' > 
@@ -608,8 +582,6 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='mode'			value='<?=$mode?>' > 
 	<input type='hidden' name='mode_insert'		value='project_insert' > 
 	<input type='hidden' name='pg_'				value='<?=$pg_?>' > 
-	<input type='hidden' name='target_'			value='<?=$target_?>' > 
-	<input type='hidden' name='type_'			value='<?=$type_?>' > 
 	<input type='hidden' name='data'			value='<?=$sdata?>' > 
 	<input type='hidden' name='num'				value='' > 
 	<input type='hidden' name='webnum'			value='' > 
@@ -630,9 +602,9 @@ jQuery(document).ready(function ($) {
 			<select style="display:none;" name='sel_g_name' onchange="change_g_name_func(this.value);" title="select group">
 				<option value=''>Project Select</option>
 <?php
-				$result = sql_query( "select * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name asc" );
+				$result = sql_query( "select * from {$tkher['table10_group_table']} where userid='$H_ID' " );
 				while($rs = sql_fetch_array($result)) {
-					if($temp_g_name != $rs['group_name']) {
+					if( $temp_g_name != $rs['group_name']) {
 						$temp_g_name = $rs['group_name'];
 ?>
 						<option value='<?=$rs['group_name']?>:<?=$rs['group_code']?>:<?=$rs['userid']?>:<?=$rs['seqno']?>' <?php if($rs['group_name']==$g_name) echo "selected"; ?>><?=$rs['group_name']?></option>
@@ -647,7 +619,7 @@ jQuery(document).ready(function ($) {
 		if ( isset($H_ID) && $H_LEV > 1) { 
 ?>
 				&nbsp; &nbsp; 
-				<input style="display:none;" type='button' id="insert_project" onclick="javascript:insert_project();" value='Group-Insert' title="group add">
+				<input style="display:;" type='button' id="insert_project" onclick="javascript:insert_project();" value='Group-Insert' title="group add">
 				&nbsp; &nbsp; 
 				<input style="display:none;" type='hidden' name='g_name_update' value='' > 
 <?php
@@ -668,7 +640,7 @@ jQuery(document).ready(function ($) {
 	<tr>
 		<td bgcolor='#f4f4f4' height='30' ><font color='black'>&nbsp; Project Name</td>
 		<td bgcolor='#ffffff'><font color='black'>
-		&nbsp;<input type='text' id='project_nm' name='project_nm' size='50' value='<?=$title_?>' onKeyDown="check_enter('<?=$p_code?>')" >
+		&nbsp;<input type='text' id='project_nm' name='project_nm' size='50' value='' onKeyDown="check_enter('<?=$p_code?>')" >
 		&nbsp;<input type='checkbox' id='dup_confirm' name='dup_confirm' value='Confirm' onClick="return false">&nbsp;
 		&nbsp;<input type='button' onclick="pg_dup_check('<?=$p_code?>')" value='Duplicate check' >
 		
@@ -677,7 +649,8 @@ jQuery(document).ready(function ($) {
 
 	<tr>
 		<td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; Project Code </td>
-		<td bgcolor='#ffffff'>&nbsp;<input type='text' id='project_cd' name='project_cd' size='50' maxlength='300'  value='' readonly></td>
+		<td bgcolor='#ffffff'>
+		&nbsp;<input type='text' id='project_cd' name='project_cd' title='Auto-generation' size='50' maxlength='300' value='' readonly></td>
 	</tr>
 	
 	<tr>
@@ -699,11 +672,12 @@ jQuery(document).ready(function ($) {
 		<td bgcolor='#ffffff' colspan=2><font color='black'>&nbsp; 
 <?php if( isset($H_ID) && $H_ID !== "") { ?>
 
-			<a id='Change_btn' href="javascript:contents_upd('<?=$H_ID?>');" style="background-color:blue;color:yellow;height:25;">Save Change</a>
+			<input type='button' id="Change_btn" onclick="javascript:Project_Name_Change('<?=$H_ID?>');" value="Save Change" style="background-color:red;color:yellow;height:30;" />
+			<!-- <a id='Change_btn' href="javascript:Project_Name_Change('<?=$H_ID?>');" style="background-color:blue;color:yellow;height:25;">Save Change</a> -->
 			<!-- <input type='button'  onclick="javascript:Cancle_run();" value='Cancel Change' style="background-color:red;color:yellow;height:25;"> -->
 
 			<!-- <a id="save_button" href="javascript:void(0)" type="submit" style="background-color:blue;color:yellow;height:25;" />Project Save</a> -->
-			<input id="save_button" type="submit" value="Project Save" style="background-color:blue;color:yellow;height:25;" />
+			<input id="save_button" type="submit" value="Project Save" style="background-color:blue;color:yellow;height:30;" />
 			<!-- curl run button -->
 <?php } ?> 
 
@@ -745,12 +719,9 @@ jQuery(document).ready(function ($) {
 			<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 600px; height: 100%px; padding: 4px;z-index:1000">
 			<table border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='209'>
 <?php
-				if( $g_user or $H_ID ) {
+				if( $H_ID ) {
 					$sql = "select * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name ";
 					$ttt = "my-list";
-				}	else {
-					$sql = "select * from {$tkher['table10_group_table']} order by group_name ";
-					$ttt = "all-list";
 				}
 ?>
 				<tr>
@@ -810,11 +781,11 @@ jQuery(document).ready(function ($) {
 <?php
 		$limite = 10; 
 		$page_num = 10; 
-		if($mode == 'search_rtn') {
+		if( $mode == 'search_rtn') {
 			$sdata = $project_nm;
 		}
-
-		$ls = "SELECT group_name from {$tkher['table10_group_table']} ";
+		//select * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name asc
+		$ls = "SELECT group_name from {$tkher['table10_group_table']} where userid='$H_ID' ";
 		$result = sql_query( $ls );
 		$total = sql_num_rows($result);
 		if( !$page ) $page =1; 
@@ -843,7 +814,7 @@ jQuery(document).ready(function ($) {
 <tbody width='100%'>
 		<?php
 			$ls = " SELECT * from {$tkher['table10_group_table']} ";
-			$ls = $ls . "  ";
+			$ls = $ls . " WHERE userid='$H_ID' ";
 //			$ls = $ls . " WHERE userid='$H_ID' and g_name like '%$sdata%'    ";
 			$ls = $ls . " $limit ";
 
@@ -869,13 +840,13 @@ jQuery(document).ready(function ($) {
 				  <td style="background-color:black;color:<?=$t_color?>;width:10%;" ><?=$userid?></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:40%;" ><?=$memo?></td>
 <?php
-			if ( isset($H_ID) && $H_LEV > 1 ) {
+			if( isset($H_ID) && $H_LEV > 1 ) {
 ?>
 				  <td style="background-color:black;color:<?=$t_color?>;width:10%;" >
 <?php 
-				if ( $H_ID==$userid ) {
+				if( $H_ID==$userid ) {
 ?>
-					  <input type='button' onclick="javascript:contents_del( '<?=$seqno?>', '<?=$project_name?>', '<?=$project_code?>' );" value='delete' style="background-color:red;color:yellow;height:25;">
+					  <!-- <input type='button' onclick="javascript:contents_del( '<?=$seqno?>', '<?=$project_name?>', '<?=$project_code?>' );" value='delete' style="background-color:red;color:yellow;height:25;"> -->
 					  <a href="javascript:call_pg_select( '<?=$seqno?>', '<?=$project_code?>', '<?=$userid?>', '<?=$project_name?>', '<?=$memo?>', '<?=$H_ID?>')" style="background-color:blue;color:yellow;height:25;">Change</a>
 					  <!-- <input type='button' onclick="javascript:call_pg_select( '<?=$seqno?>', '<?=$project_code?>', '<?=$userid?>', '<?=$project_name?>', '<?=$memo?>')" value='Change' style="background-color:blue;color:yellow;height:25;"> -->
 <?php

@@ -1,7 +1,8 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		table_formulaM.php : 계산식 설정 : app_pg50RU.php 에서 call - 
+		table_formulaM.php : 계산식 설정 
+		call: kapp_pg_Upgrade.php, old:app_pg50RU.php
 	*/
 ?>
 <html>
@@ -19,22 +20,25 @@
 
 	/* 
 	 *  table_formulaM.php : 테이블 계산식 적용 프로그램.  
-	    - table_pg70.php에서 콜.
-	    - table_pg50.php에서 콜.
-		- table_pg30.php에서 콜.2018-10-22
-	     call : app_PG50RU.php, kan_table_pg70.php - 2025-04-14
+	    - table_pg70.php - table_pg50.php - table_pg30.php
+	     call : kapp_pg_Upgrade.php, app_PG50RU.php, kan_table_pg70.php
 	 */
-	$H_ID	= get_session("ss_mb_id");	
-	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	if( !$H_ID || $H_LEV < 2 )
-	{
+	$H_ID = get_session("ss_mb_id");	
+	if( !$H_ID || $H_ID =='' ){
 		$url=KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
+	$H_LEV =$member['mb_level'];
+	if( $H_LEV < 2 ){
+		$url=KAPP_URL_T_;
+		echo "<script>window.open( '$url' , '_top', ''); </script>";
+		exit;
+	}
+	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
-	if( isset($_POST['mode_call']) ) $mode_call = $_POST['mode_call'];
+	if( isset($_POST['mode_call']) ) $mode_call = $_POST['mode_call']; //kapp_pg_Upgrade
 	else $mode_call = "";
 	
 	if( isset($_POST['project_nmS']) ) $project_nmS = $_POST['project_nmS'];
@@ -67,13 +71,6 @@
 	$app_pg50RU = "";
 	$app_pg50RU_New = "";
 
-	/*if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
-	else if( $mode_call == 'table_item_run70' ) $table_item_run70 = 'on';
-	else if( $mode_call == 'table_item_run50R' ) $table_item_run50R = 'on';
-	else if( $mode_call == 'app_pg50RC' ) $app_pg50RC = 'on';
-	else if( $mode_call == 'app_pg50RU' ) $app_pg50RU = 'on';
-	else if( $mode_call == 'app_pg50RU_New' ) $app_pg50RU_New = 'on';
-	*/
  	$if_type  = array();
 	$if_data = array();
 	$idata_ = array();
@@ -98,7 +95,10 @@
 	$_SESSION['sellist'] = $sellist;
 	//formula sellist: |fld_7|금액|INT|255, if_line: 6
 	
-	if( isset( $if_data[$if_line]) ) $idata = $if_data[$if_line];
+	if( isset( $if_data[$if_line]) ) {
+		m_("if_data , $if_line : " . $if_data[$if_line] );
+		$idata = $if_data[$if_line];
+	}
 
 	$idata1 = ""; 
 	$idata2 = ""; 
@@ -111,19 +111,10 @@ $iftype = '';
 
 $ifline = $if_line +1;
 
-		for( $i=0; $i<$item_cnt; $i++){
-				if( isset($if_data[$i]) ) $ifdata = $ifdata . '|' . $if_data[$i]; 
-				if( isset($if_type[$i]) ) $iftype = $iftype . '|' . $if_type[$i]; 
-		}
-//m_("ifline:$ifline, ifdata:$ifdata, 11111--- iftype: $iftype");
-//ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |0|13|0|0|0|0|11|0|
-//if_line:6, ifdata:|||||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |||||||11||
-//ifdata:|||||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |||||||11||
-
-//m_("if_line:$if_line, 11111--- idata: $idata, if_data: ".$if_data[$if_line].", if_type: ".$if_type[$if_line]);
-//if_line:6, 11111--- idata: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가, if_data: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가, if_type: 11
-//11111--- idata: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가
-//if_line:6, if_data: Array, 11111--- idata: fld_7 = fld_4 * fld_6:금액 = 수량 * 단가
+	for( $i=0; $i<$item_cnt; $i++){
+			if( isset($if_data[$i]) ) $ifdata = $ifdata . '|' . $if_data[$i]; 
+			if( isset($if_type[$i]) ) $iftype = $iftype . '|' . $if_type[$i]; 
+	}
 
 	if( isset($idata) && $idata !='') {
 		$idata_ = explode(":", $idata);
@@ -148,8 +139,8 @@ $ifline = $if_line +1;
 	$fld_enm_sel_column = $fld_[1];
 	$fld_hnm_sel_column = $fld_[2];
 	if( !$pg_codeS || !$tab_hnmS || !$sellist ) {
-			$url="app_pg50RU.php";	//$PHP_SELF;
-			echo("<meta http-equiv='refresh' content='0; URL=$url'>");
+		$url="kapp_pg_Upgrade.php";
+		echo("<meta http-equiv='refresh' content='0; URL=$url'>");
 		exit;
 	}
 ?>
@@ -161,15 +152,14 @@ $ifline = $if_line +1;
 		var j = calc;
 		var k = makeform.sellist_tab2_index.value;
 		if( i == '' ){
-			alert('Choose column A! i:'+i);// 컬럼 A를 선택하세요!
+			alert('Choose column A! i:'+i);
 			return;
 		}
 		if( k == '' ){
-			//alert('Choose column B! k:'+k);// 컬럼 B를 선택하세요!
 			return;
 		} else {
 			var fldenm = makeform.fld_enm_sel_column.value;
-			var fldhnm = makeform.fld_hnm_sel_column.value; // 금액 - 계산식 선택한 컬럼 
+			var fldhnm = makeform.fld_hnm_sel_column.value;
 			var fld1e = document.getElementById('sellist_tab2'+i).value;
 			fld1ex = fld1e.split(":");
 			var fld1h = fld1ex[1];
@@ -187,15 +177,13 @@ $ifline = $if_line +1;
 		var j = makeform.sellist_calc_index.value;
 		var k = makeform.sellist_tab2_index.value;
 		if( k == '' ){
-			//alert('Choose column B! i:'+i); // 컬럼 B를 선택하세요!
 			return;
 		}
 		if( j == '' ){
-			//alert('Choose a calculation formula! j:'+j); // 계산식을 선택하세요!
 			return;
 		}
 		var fldenm = makeform.fld_enm_sel_column.value;
-		var fldhnm = makeform.fld_hnm_sel_column.value; // 금액
+		var fldhnm = makeform.fld_hnm_sel_column.value;
 		var fld1e = document.getElementById('sellist_tab1'+i).value;
 		fld1ex = fld1e.split(":");
 		var fld1h = fld1ex[1];
@@ -212,15 +200,15 @@ $ifline = $if_line +1;
 		var j = makeform.sellist_calc_index.value;
 		var i = makeform.sellist_tab1_index.value;
 		if( i == '' ){
-			alert('Choose column A! i:'+i);// 컬럼 A를 선택하세요!
+			alert('Choose column A! i:'+i);
 			return;
 		}
 		if( j == '' ){
-			alert('Choose a calculation formula! j:'+j); // 계산식을 선택하세요!
+			alert('Choose a calculation formula! j:'+j);
 			return;
 		}
 		var fldenm = makeform.fld_enm_sel_column.value;
-		var fldhnm = makeform.fld_hnm_sel_column.value; // 금액
+		var fldhnm = makeform.fld_hnm_sel_column.value;
 		var fld1e = document.getElementById('sellist_tab1'+i).value;
 		fld1ex = fld1e.split(":");
 		var fld1h = fld1ex[1];
@@ -239,27 +227,27 @@ $ifline = $if_line +1;
 	}
 	function save_end_run( mode ){
 		mode_call = document.makeform.mode_call.value;
-		document.makeform.mode.value = "POPSearchPG"; // 2023-09-13 set kan
-		document.makeform.action		= mode_call + ".php"; // "app_pg50RU_New.php"; //"table_formulaM.php"; // 2023-09-13 set
+		document.makeform.mode.value = "table_formula"; 
+		document.makeform.action		= mode_call + ".php";
 		document.makeform.submit();
 	}
 	function Back_func( $mode_call ) {
 		pcd = makeform.project_code.value;
 		pnm = makeform.project_name.value;
 		pcdnm = pcd + ":" + pnm;
-		makeform.mode.value="POPSearchPG"; //"SearchPG";
+		makeform.mode.value="table_formula";
 		makeform.action= $mode_call + ".php";
 		makeform.submit();
 	}
 	function Reset_func(mode){
-		document.makeform.mode.value = mode; //ResetCALC
+		document.makeform.mode.value = mode;
 		if_line = document.makeform.if_line.value;	
-		resp = confirm(' Would you like to reset pop-up data removable?'); // \n 팝업데이터 이동식을 다시 설정 하시겠습니까?
+		resp = confirm(' Would you like to reset pop-up data removable?');
 		if( !resp ) return false;
 		else {
 			var i = makeform.sellist_tab1_index.value;
 			var j = makeform.sellist_calc_index.value;
-			var k = makeform.sellist_tab2_index.value;			//alert('i:'+i +', j:'+j+', k:'+k +', if_line:'+if_line);
+			var k = makeform.sellist_tab2_index.value;
 			document.getElementById('sellist_tab1'+i).checked=false;
 			document.getElementById('sellist_calc'+j).checked=false;
 			document.getElementById('sellist_tab2'+k).checked=false;
@@ -295,13 +283,13 @@ $ifline = $if_line +1;
 
 		if( isset($_POST['calcX']) ) $calcX = $_POST['calcX']; 
 		if( isset($_POST['nmx2']) ) $nmx2 = $_POST['nmx2']; 
-
+			$idata11 = $calcX . ":" . $nmx2;
 		$ifdata = '';
 		$iftype = '';
-		for( $i=0; $i<$item_cnt; $i++){
+		for( $i=0; $i<$item_cnt+1; $i++){
 				$ifD= "";
 				$ifT= "0";
-			if($i == $ifline){
+			if( $i == $ifline){
 				$idata11 = $calcX . ":" . $nmx2;
 				$iftype_db = $iftype_db . "|" . "11";
 				if( isset($ifdata_[$i]) ) $ifdata = $ifdata. $idata11 . '|'; 
@@ -317,7 +305,7 @@ $ifline = $if_line +1;
 				if( isset($iftype_[$i]) ) $iftype = $iftype . $iftype_[$i] . '|'; 
 
 				if( isset($ifdata_[$i]) ) $ifD= $ifdata_[$i];
-				if( isset($iftype_[$i]) ) $ifT	= $iftype_[$i];
+				if( isset($iftype_[$i]) ) $ifT= $iftype_[$i];
 ?>
 				<input type='hidden' name='if_type[<?=$i?>]'  value='<?=$ifT?>' >
 				<input type='hidden' name='if_data[<?=$i?>]' value='<?=$ifD?>' > 
@@ -331,13 +319,15 @@ $ifline = $if_line +1;
 			$iftype_db = $iftype;
 			$query="UPDATE {$tkher['table10_pg_table']} SET if_type='$iftype_db',if_data='$ifdata_db' WHERE userid='$H_ID' and pg_code='$pg_code' ";
 			$ret = sql_query($query);
-			if( $ret ) m_("--- formula - Save OK!");
-			else {
-				m_("--- formula - Save ERROR!"); //	echo "sql: " . $query;
+			if( $ret ){
+				m_("--- formula - Save OK! ");
+			} else {
+				m_("--- formula - Save ERROR!");
+				echo "sql: " .$query;
 				exit;
 			}
 		}
-		$_SESSION["mode_session"]='Formula'; //use - app_pg50RU.php
+		$_SESSION["mode_session"]='Formula'; // use - kapp_pg_Upgrade.php
 		set_session('iftype_db',  $iftype_db);
 		set_session('if_line',  $if_line);
 		set_session('formula_data',  $idata11);
@@ -350,12 +340,10 @@ $ifline = $if_line +1;
 	$rsPG = sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) ) {
 		$item_array = $rsPG['item_array'];
-		$col_ = explode("@", $item_array);		//m_( "111 :_col 1:".$col_[1].", 2:".$col_[2]. ", 3:".$col_[3] );
+		$col_ = explode("@", $item_array);
 		$itype = explode("|", $rsPG['if_type']);
 		$idata_ = explode("|", $rsPG['if_data']);
-		//m_("rs if_data: " . $rsPG['if_data']);
-		//rs if_data||
-		$idata11 = $idata_[$if_line+1]; // $calcX . ":" . $nmx2;
+		$idata11 = $idata_[$if_line+1];
 		$itp = $itype[$if_line+1];
 		if( $itp == "11" ) {
 			$idt = $idata_[$if_line+1];
@@ -374,30 +362,23 @@ $ifline = $if_line +1;
 		$iftype = $_POST['iftype'];
 			$iftype_ = explode("|", $iftype);
 
-		//m_("ResetCALC ifline:$ifline, ifdata:$ifdata, iftype: $iftype");
-		//ResetCALC ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, iftype: |0|13|0|0|0|0|11|0|
-
 		$ifdata = '';
 		$iftype = '';
 		for( $i=0; $i<$item_cnt; $i++){
 				if( isset($ifdata_[$i]) ) $ifdata = $ifdata . $ifdata_[$i] . '|'; 
 				if( isset($iftype_[$i]) ) $iftype = $iftype . $iftype_[$i] . '|' ; 
 		}
-		//m_("--- ResetCALC ifline:$ifline, ifdata:$ifdata, 11111--- iftype: $iftype");
-		//ResetCALC ifline:7, ifdata:||crakan59_gmail_1762739990:거래처테이블|||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가||, 11111--- iftype: |0|13|0|0|0|0|11|0|
 	} else {
-		//$idata_ = explode("|", $rsPG['if_data']);//$ifdata_db
-		//$idata_ = explode("|", $ifdata_db);//$ifdata_db
 		$idata = $idata_[$if_line+1];
 		if( isset($idata) && $idata !='') {
 			$idata_ = explode(":", $idata);
 			if( isset($idata_[1]) ) $idata2 = $idata_[1]; 
 			if( isset($idata_[0]) ) $idata1 = $idata_[0]; 
 			$dt = explode(" ", $idata1);
-			if( isset($dt[0]) ) $fd1 = $dt[0]; // $dt[1]은 '='
+			if( isset($dt[0]) ) $fd1 = $dt[0];
 			if( isset($dt[2]) ) $fd2 = $dt[2]; 
 			if( isset($dt[3]) ) $fd3 = $dt[3]; 
-			if( isset($dt[4]) ) $fd4 = $dt[4]; 	//$dt[0]:fld_4,$dt[2]:fld_2,$dt[3]:*,$dt[4]:fld_3
+			if( isset($dt[4]) ) $fd4 = $dt[4];
 		}
 	}
 
@@ -454,17 +435,13 @@ $ifline = $if_line +1;
                                   <tr>
                                      <td valign="top">
 <?php
-				// 숫자 column 만 계산식에 사용 가능하다. 
+	// Only numeric columns can be used in calculations.
 	$j = 0;
-	for($i=0; isset($col_[$i]) && $col_[$i] !== '';$i++) {
+	for( $i=0; isset($col_[$i]) && $col_[$i] !== '';$i++) {
 		$_col = explode("|", $col_[$i]);
-			if( $_col[1] =='seqno') continue;
-			else if( $_col[3] =='CHAR' ) continue;
-			else if( $_col[3] =='VARCHAR' ) continue;
-			else if( $_col[3] =='TEXT' ) continue;// 숫자 와 문자 컬럼만 팝업창에 사용할 수 있게 한다.
-			else if( $_col[3] =='DATE' ) continue;
-			else if( $_col[3] =='DATATIME' ) continue;
-			else if( $_col[3] =='TIMESTAMP' ) continue;
+			if( $_col[1] =='seqno') continue; // Only numeric columns can be used in calculations.
+			else if( $_col[3] =='CHAR' || $_col[3] =='VARCHAR' || $_col[3] =='TEXT' || $_col[3] =='DATE' || $_col[3] =='TIME') continue;
+			else if( $_col[3] =='BLOB' || $_col[3] =='LONGBLOB' || $_col[3] =='DATATIME'|| $_col[3] =='TIMESTAMP') continue;
 		if( $fd2 == $_col[1]) {
 			$tab1_index = $j;
 			echo "<label style='background-color:cyan;'><input type='radio' id='sellist_tab1".$j."' name='sellist_tab1' value='".$_col[1].":".$_col[2]."' onClick=\"sellist_tab1_onclick('".$j."')\" title='".$_col[1]."' checked> ".$_col[2]." </label><br>";
@@ -524,13 +501,9 @@ $ifline = $if_line +1;
 	$j = 0;
 	for($i=0; $col_[$i] != ''; $i++) {
 			$_col = explode("|", $col_[$i]);
-			if($_col[1] =='seqno') continue;
-			else if( $_col[3] =='CHAR' ) continue;
-			else if( $_col[3] =='VARCHAR' ) continue;
-			else if( $_col[3] =='TEXT' ) continue;// 숫자 와 문자 컬럼만 팝업창에 사용할 수 있게 한다.
-			else if( $_col[3] =='DATE' ) continue;
-			else if( $_col[3] =='DATATIME' ) continue;
-			else if( $_col[3] =='TIMESTAMP' ) continue;
+			if($_col[1] =='seqno') continue; //Only numeric columns can be used in calculations.
+			else if( $_col[3] =='CHAR' || $_col[3] =='VARCHAR' || $_col[3] =='TEXT' || $_col[3] =='DATE' || $_col[3] =='TIME') continue;
+			else if( $_col[3] =='BLOB' || $_col[3] =='LONGBLOB' || $_col[3] =='DATATIME'|| $_col[3] =='TIMESTAMP') continue;
 		if( $fd4==$_col[1]) {
 			$tab2_index = $j;
 			echo "<label style='background-color:cyan;'><input type='radio' id='sellist_tab2".$j."' name='sellist_tab2' value='".$_col[1].":".$_col[2]."' onClick=\"sellist_tab2_onclick('".$j."')\" title='".$_col[1]."' checked> ".$_col[2]." </label><br>";
@@ -572,29 +545,5 @@ $ifline = $if_line +1;
 			<input type="hidden" name="formula_data" value="<?=$idata11?>">
 	</form>
 
-<?php
-/*
-	if( $mode == 'table_formula' ){
-		if( $table_item_run30 == 'on' ) {
-			$url = "table_pg30.php";
-		} else if( $table_item_run50R == 'on' ) {
-			set_session('pg_codeS',  $pg_codeS);
-			$url = "table_pg50R.php";
-		} else if( $table_item_run70 == 'on' ) {
-			set_session('pg_codeS',  $pg_codeS);
-			$url = "table_pg70.php";	
-		} else if( $app_pg50RC == 'on' ) {
-			set_session('pg_codeS',  $pg_codeS);
-			$url = "app_pg50RC.php";
-		} else if( $app_pg50RU == 'on' ) {
-			set_session('pg_codeS',  $pg_codeS);
-			$url = "app_pg50RU.php";
-		} else if( $app_pg50RU_New == 'on' ) { // 2021-09-27 add
-			set_session('pg_codeS',  $pg_codeS);
-			$url = "app_pg50RU_New.php";		//echo "<script>window.open('$url', '_self', '');</script>";
-		}
-		echo "<script>save_end_run( 'Save_End' );</script>";	
-	}*/
-?>
 </body>
 </html>

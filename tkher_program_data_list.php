@@ -605,7 +605,7 @@ if( $H_ID==$pg_mid ) {
 <?php
 						for( $i=0; $i < $fld_cnt; $i++){
 							$fff = $fld_enm[$i];
-							if( $fld_type[$i]=='INT' ){
+							if( $fld_type[$i]=='INT' || $fld_type[$i]=='BIGINT' ){
 								$num = number_format( $row[$fff] );
 								echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >$num</a></td> ";
 							} else if( $fld_type[$i]=='TEXT' ){

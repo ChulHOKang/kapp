@@ -21,21 +21,14 @@
    call : $register_action_url = './tkher_register_form_.php';
    call : $register_action_url = './tkher_register_form_update_.php';
 */
-//$U=G5_BBS_URL;//$G5_SESSION_PATH=G5_SESSION_PATH; //G5_SESSION_PATH:/var/www/html/g5/data/session
 if( $is_member ) {
     goto_url('/');
 }
-
-// 세션을 지웁니다.
 set_session("ss_mb_reg", "");
-
 $tkher['title'] = 'Terms of Membership!';// [회원가입약관!]
-
-$register_action_url = './tkher_register_form_.php';	//G5_BBS_URL.'/register_form.php';
+$register_action_url = './tkher_register_form_.php';
 ?>
     <link rel="stylesheet" href="./include/css/style_mb.css">
-    <!-- <link rel="stylesheet" href="./include/css/tkher_mobile.css"> -->
-
     <div id="logo" align=center style='height:100px;background-color:black;color:white;border:1 solid black'>
         <a href="./index.php" target='_TOP'><img src="./logo/logo512-512.png" width=100 title="KAPP"></a>
     </div>

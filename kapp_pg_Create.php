@@ -31,22 +31,38 @@
 <?php
 		if( isset($_POST['mode']) ) $mode		= $_POST['mode'];
 		else  $mode = "";
+		
+	if( isset($_SESSION['project_nmS']) ) {
+		$project_nmS = $_SESSION['project_nmS'];
+		$pcd_nm = explode(":", $project_nmS );
+		$project_code	= $pcd_nm[0];
+		$project_name	= $pcd_nm[1]; 
+	} else {
+		$project_nmS = '';
+		$project_name= "";
+		$project_code= "";
+	}
+	if( isset($_SESSION['tab_hnmS']) ) {
+		$tab_hnmS = $_SESSION['tab_hnmS'];
+		$tcd_nm = explode(":", $tab_hnmS );
+		$tab_enm	= $tcd_nm[0];
+		$tab_hnm	= $tcd_nm[1]; 
+	} else {
+		$tab_hnmS = '';
+		$tab_enm= "";
+		$tab_hnm= "";
+	}
+
 		if( isset($_POST['seqno']) ) $seqno		= $_POST['seqno'];
 		else  $seqno = "";
 		if( isset($_POST['pg_code']) ) $pg_code		= $_POST['pg_code'];
 		else  $pg_code = "";
 		if( isset($_POST['pg_name']) ) $pg_name		= $_POST['pg_name'];
 		else  $pg_name = "";
-		if( isset($_POST['tab_enm']) ) $tab_enm		= $_POST['tab_enm'];
-		else  $tab_enm = "";
 		if( isset($_POST['tab_hnm']) ) $tab_hnm		= $_POST['tab_hnm'];
 		else  $tab_hnm = "";
-		if( isset($_POST['tab_hnmS']) ) $tab_hnmS		= $_POST['tab_hnmS'];
-		else  $tab_hnmS = "";
 		if( isset($_POST['pg_codeS']) ) $pg_codeS		= $_POST['pg_codeS'];
 		else  $pg_codeS = "";
-		if( isset($_POST['project_nmS']) ) $project_nmS		= $_POST['project_nmS'];
-		else  $project_nmS = "";
 ?>
 <body leftmargin="0" topmargin="0">
  
@@ -166,7 +182,7 @@
 		} 
 		document.makeform.item_array.value = str_array;
 		document.makeform.mode.value = 'pg_new_create2'; 
-		document.makeform.mode_call.value = 'app_pg50RC';
+		document.makeform.mode_call.value = 'kapp_pg_Create'; //app_pg50RC
 		document.makeform.action='tkher_program_run.php';
 		document.makeform.target='tab_pg_list';
 		document.makeform.submit();
@@ -188,7 +204,7 @@
 				return false;
 			}
 			document.makeform.mode.value = mode; 
-			document.makeform.mode_call.value = 'app_pg50RC_Test';
+			//document.makeform.mode_call.value = 'app_pg50RC_Test';
 			document.makeform.action='kapp_pg_Create.php'; 
 			document.makeform.target='_self';
 			document.makeform.submit();
@@ -261,7 +277,7 @@
 			document.makeform.pg_make_set.value = "ok";
 			document.makeform.item_array.value = str_array;
 			document.makeform.mode.value = 'pg_new_create'; 
-			document.makeform.mode_call.value = 'app_pg50RC';
+			document.makeform.mode_call.value = 'kapp_pg_Create'; //app_pg50RC
 			document.makeform.action='kapp_pg_Create.php'; 
 			document.makeform.target='_self';
 			document.makeform.submit();
@@ -299,6 +315,36 @@
 	function Pg_name_Dup_Check(){
 		const checkbox = document.getElementById('pgdup_confirm');
 		checkbox.checked = Pg_Dup_Check()
+	}
+	function sendDataToPHP( projectnmS, pnmS) {
+		fetch('kapp_save_session.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+			//location.href="kapp_pg_Create.php?mode=Project_Search";
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	}
+	function change_project_func(pnmS){
+		sendDataToPHP('project_nmS', pnmS);
+		document.makeform.mode.value='Project_Search';
+		document.makeform.action="kapp_pg_Create.php";
+		document.makeform.submit();
+	}
+	function change_table_func(pnmS){ // Relation_Table_func
+		sendDataToPHP('tab_hnmS', pnmS);
+		document.makeform.mode.value='SearchTAB';
+		document.makeform.action="kapp_pg_Create.php";
+		document.makeform.submit();
+		//location.href="kapp_pg_Create.php?mode=SearchTAB";
 	}
 
 //-->
@@ -362,11 +408,12 @@
 			$url = "./tkher_program_run.php?pg_code=". $pg_code;
 			echo "<script>window.open( '".$url."' , '_blank', ''); </script>";
 
+	} else if( $mode == 'Project_Search' ){
 	} else if( $mode == 'SearchTAB' ){
 		$aa				= explode(':', $tab_hnmS);
 		$tab_enm		= $aa[0];
 		$tab_hnm		= $aa[1];
-		$sqlTAB		= "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_name='$tab_hnm' ";  // 프로그램목록에서 검색.
+		$sqlTAB		= "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_name='$tab_hnm' ";  // use Duplicate check
 		$resultTAB		= sql_query($sqlTAB);
 		$table10_tab	= sql_num_rows($resultTAB);
 		$rsTAB			= sql_fetch_array($resultTAB);
@@ -384,9 +431,9 @@
 <center>
 <div id='menu_normal'>
    <table height='100%' cellspacing='0' cellpadding='4' width='500' border='1' class="c1"> 
-		<form name="makeform" method="post" >
+	<Form METHOD='POST' name='makeform' enctype="multipart/form-data">
 			<input type="hidden" name="sellist"	        value="" >
-			<input type="hidden" name="mode"			value="" >
+			<input type="hidden" name="mode" id="mode"  value="" >
 			<input type="hidden" name="mode_call"		value="" >
 			<input type="hidden" name="pg_code"			value="<?=$pg_code?>">
 			<input type="hidden" name="calc"			value="<?=$calc?>"> 
@@ -395,49 +442,46 @@
 			<input type="hidden" name="dup_check"		value="" > 
 		<tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
 New Program Creation (<?=$H_ID?>)<br>
-	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the Project! ' "; ?> >
-
-			<option value=''>1.Select Project</option>
+		Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" title='Please select the table to use for the Project! '>
 <?php 
-	if( isset( $project_nmS ) && $project_nmS !=="" ) {
-		$pcd_nm = explode(":", $project_nmS );
-	}
-		$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
+		if( $mode=='Project_Search' && isset( $_SESSION['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
+		else echo "<option value=''>1.Select Project</option>";
+
+		$result= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " ); 
 		while( $rs = sql_fetch_array($result)) {
-			if( $project_code == $rs['group_code']) $chk = " selected ";
-			else $chk = "";
 ?>
-			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo $chk; ?> title='Project code: <?php echo $project_code;?>' ><?=$rs['group_name']?></option>
+			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php if( $project_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
 <?php	} ?>
-			</SELECT>
-			<SELECT id='pg_codeS' name='pg_codeS' style="display:NONE;" >
+		</SELECT>
+
+		<SELECT id='pg_codeS' name='pg_codeS' style="display:NONE;" >
 <?php
-		$result = sql_query( "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc " );
+		$result = sql_query( "SELECT * from {$tkher['table10_pg_table']} where group_code='$project_code' and userid='$H_ID' order by upday desc " );
 		while( $rs = sql_fetch_array($result)) {
 ?>
 				<option value='<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>' ><?=$rs['pg_name']?></option>
 <?php	} ?>
-			</SELECT>
+		</SELECT>
 </td></tr>
 
 <tr><td align="center" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
-			Table:&nbsp;
-			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" <?php echo" title='Please select the table to use for the program! ' "; ?> >
-					<option value=''>1.Select table</option>
-<?php 
-				if( $mode=='SearchTAB' || $mode=='pg_new_create') {
-?>
-					<option value="<?php echo $tab_hnmS ?>" selected ><?php echo $tab_hnm ?> </option>
+		Table:&nbsp;
+		<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='background-color:#666666;color:yellow;width:80%; height:30px;'>
 <?php
-				}
-				$result = sql_query( "select tab_enm, tab_hnm from {$tkher['table10_table']} where userid='$H_ID' and fld_enm='seqno' order by upday desc " );
-				while( $rs = sql_fetch_array($result)) {
+		if( $mode =='SearchTAB' && isset($_SESSION['tab_nmS']) ) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
+		else echo "<option value=''>2.Select Table</option>";
+		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
+		while( $rs = sql_fetch_array($result)) {
 ?>
-					<option value='<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>' title='Table code: <?=$rs['tab_enm']?>' ><?=$rs['tab_hnm']?></option>
+				<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if($rs['tab_hnm']==$tab_hnm) echo " selected "; ?> title='table code:<?=$rs['tab_enm']?>'><?=$rs['tab_hnm']?></option>
 <?php
-				}
+		}
 ?>
-			</select>
+		</SELECT>
+
+
+
+
 </td></tr>
 <tr><td height="30" align="left" style="border-style:;background-color:#666666;color:cyan;" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> align='center'>
 program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' maxlength='200'  style="border-style:;background-color:black;color:yellow;height:25;width:120;" value='' <?php echo" title=' Enter the name of the program to be created and select the table! ' "; ?> >
@@ -507,7 +551,8 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 	$popdataR =array();
 	$itemR =array();
 	$ifT	= "";	$ifD	= "";	$ifP	= "";
-	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // table select
+//	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // table select
+	if( $mode == 'SearchTAB' ) { // table select
 			if( isset($if_type) ) $iftypeR = explode("|", $if_type );
 			if( isset($if_data) ) $ifdataR = explode("|", $if_data );
 			if( isset($pop_data) ) $popdataR= explode("^", $pop_data );

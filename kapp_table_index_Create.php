@@ -2,6 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 		kapp_table_index_Create.php : Table index create
+		kapp_save_session.php - project_nmS set
 	*/
 	$H_ID	= get_session("ss_mb_id");
 	if( !$H_ID || $H_ID =='' )	{
@@ -38,6 +39,8 @@ tr:hover {background-color: #D6EEEE;}
 	if( isset($_POST['mode']) ) $mode= $_POST['mode'];
 	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else $mode = '';	
+	
+	if( isset($_SESSION['project_nmS']) ) $project_nmS = $_SESSION['project_nmS'];
 	if( isset($project_nmS) && $project_nmS !=='' ){
 		$pcd_nm = explode(":", $project_nmS );
 		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $project_code	= $pcd_nm[0];
@@ -53,6 +56,7 @@ tr:hover {background-color: #D6EEEE;}
 	else  $seqno = "";
 	if( isset($_POST['idx_name']) ) $idx_name= $_POST['idx_name'];
 	else  $idx_name = "";
+/*
 	if( isset($_POST['tab_enm']) ) $tab_enm= $_POST['tab_enm'];
 	else  $tab_enm = "";
 	if( isset($_POST['tab_hnm']) ) $tab_hnm= $_POST['tab_hnm'];
@@ -60,6 +64,19 @@ tr:hover {background-color: #D6EEEE;}
 	if( isset($_POST['tab_hnmS']) ) $tab_hnmS= $_POST['tab_hnmS'];
 	else if( isset($_REQUEST['tab_hnmS']) ) $tab_hnmS= $_REQUEST['tab_hnmS'];
 	else  $tab_hnmS = "";
+*/
+	if( isset($_SESSION['tab_hnmS']) ) {
+		$tab_hnmS =$_SESSION['tab_hnmS'];
+		$tab_R = explode(":", $tab_hnmS);
+		$tab_enm = $tab_R[0];
+		$tab_hnm = $tab_R[1];
+	} else {
+		$tab_hnmS = '';
+		$tab_enm = '';
+		$tab_hnm = '';
+	}
+	
+
 	if( isset($_POST['item_cnt']) ) $item_cnt= $_POST['item_cnt'];
 	else  $item_cnt = 0;
 ?>
@@ -130,11 +147,53 @@ tr:hover {background-color: #D6EEEE;}
 		A_click = 1;//alert("A, j: "+j +", ss: " + ss);//A, j: 7, ss: |tran_reportdate|tran_reportdate|DATETIME|
 		//A, j: 11, ss: |tran_etc1|tran_etc1|VARCHAR|64
 	}
+
+/*
+function sendDataToPHP(userId, data) {
+    fetch('kapp_save_session.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: userId, someData: data }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}*/
+
+	function sendDataToPHP( projectnmS, pnmS) {
+		fetch('kapp_save_session.php', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+		})
+		.then(response => response.json())
+		.then(data => {
+			console.log('Success:', data);
+			location.replace(location.href);
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	}
 	function change_project_func(pnmS){
 		var p_selind = document.kapp_makeform.project_nmS.selectedIndex; 
 		var p_val    = document.kapp_makeform.project_nmS.options[p_selind].value;
 		var p_nm     = document.kapp_makeform.project_nmS.options[p_selind].text;
+
+		// 예시: 버튼 클릭 시 실행
+			sendDataToPHP('project_nmS', pnmS);
+		//document.getElementById('project_nmS').addEventListener('click', () => {
+		//});
 	}
+
 	function change_table_func(tab) {
 		tab = document.kapp_makeform.tab_hnmS.value;
 		document.kapp_makeform.mode.value='SearchTAB';
@@ -334,13 +393,11 @@ jQuery(document).ready(function ($) {
 
 <tr><td colspan='2' align="center" <?php echo" title='Create index of Table \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
 		Creation Index of Table (<?=$H_ID?>)<br>
-			Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" >
+			Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;" >
 
 			<option value=''>1.Select Project</option>
 <?php 
-	if( isset( $project_nmS ) && $project_nmS !=="" ) {
-		$pcd_nm = explode(":", $project_nmS );
-	}
+		if( $mode=='SearchTAB' ) echo "<option value='$project_nmS' selected >$project_name</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
 		while( $rs = sql_fetch_array($result)) {
 			if( $project_code == $rs['group_code']) $chk = " selected ";
@@ -353,18 +410,17 @@ jQuery(document).ready(function ($) {
 
 <tr><td colspan='2' <?php echo" title='New Index creation order \n 1:Enter index name \n 2:Select columns \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;text-align:center;">
 			Table:&nbsp;
-			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;">
-					<option value=''>1.Select table</option>
+
+			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;">
+					<option value=''>2.Select table</option>
 <?php 
-				if( $mode=='SearchTAB' ) {
-?>
-					<option value="<?php echo $tab_hnmS ?>" selected ><?php echo $tab_hnm ?> </option>
-<?php
-				}
-				$result = sql_query( "select * from {$tkher['table10_table']} where userid='$H_ID' and fld_enm='seqno'" );
+				if( $mode=='SearchTAB' ) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
+				$result = sql_query( "select * from {$tkher['table10_table']} where userid='$H_ID' and group_code='$project_code' and fld_enm='seqno'" );//and group_code='$project_code' 
 				while( $rs = sql_fetch_array($result)) {
+					if( $tab_enm == $rs['tab_enm'] ) $sel = ' selected ';
+					else $sel='';
 ?>
-					<option value='<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>' title='Table code: <?=$rs['tab_enm']?>' ><?=$rs['tab_hnm']?></option>
+					<option value='<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>' title='Table code: <?=$rs['tab_enm']?>' <?=$sel?> ><?=$rs['tab_hnm']?></option>
 <?php
 				}
 ?>
@@ -377,32 +433,23 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 &nbsp;<input type='button' onclick="Index_name_Dup_Check()" value='Duplicate check' >
 &nbsp;<input type='button' value='Index Create' onClick="index_Create_button('kapp_index_Create')" style="border-style:;background-color:#666fff;color:yellow; height:30px;">
 </td></tr>
-
 <tr>
 	<td valign="top" style='text-align:left;width:50%;'>
 	<div id="here">
 	<table border="1" style='text-align:left;table-layout:fixed;'>
-
 <?php
 	$qna = "sequence of the work|Select Project and Table.|Enter index name.|Click Column button.|Click Create button.|"; // 4:item cnt, ^:item add.
 	$column_ = "";
-	//m_(" mode: $mode, tab_enm: $tab_enm, $table10_tab, $item_array");//mode: SearchTAB, tab_enm: crakan59_gmail_1764992309, 1
-	//$column_ = "<p style='height:22px;background-color:blue;font-size:24px;text-align:left;font-weight: bold;'>Create index of Table<input type='button' onclick='column_A();' value='Create Index'></p>";
 	if( $mode == 'SearchTAB' ){
-		//$column_ = "<p style='height:32px;background-color:cyan;font-size:24px;text-align:center;font-weight: bold;'>select column of index</p>";
-
-		$itX = explode("@",$item_array);//A, j: 7, ss: |tran_reportdate|tran_reportdate|DATETIME|
+		$itX = explode("@",$item_array);
 		for( $i=0, $j=0; $i<$item_cnt; $i++, $j++){
 			$it = explode("|",$itX[$i]);
 			$column_ = $column_ . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='checkbox' id='column_list".$j."' name='column_list' onclick='column_list_onclickA(this.value, " .$j. ")' value='".$itX[$i]."'><label id='columnR".$j."'>".$it[2]."</label></label><br>";
 		}
 		echo "<script> Print_item_func(\"".$column_."\", \"".$qna."\");</script> "; // 
-	} else {//m_("--- first routine");
+	} else {
 		$column_ = "";
-		//$column_ = "<p style='height:32px;background-color:cyan;font-size:24px;text-align:center;font-weight: bold;'>select column of index</p>";
-	} //if( $table10_pg>0 or $table10_tab>0 ) 
-
-//	echo "<script> Print_item_func(\"".$column_."\", \"".$qna."\");</script> "; // 
+	}
 ?>
 	</table>
 	</div>
@@ -419,54 +466,16 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 				  <td valign="top" style='background-color:#f5f5f5;color:black;height:30px;text-align:center;'>
 					 <SELECT id="fnclist" style="width:100%" onChange="indexlist_onclick(this.value)" multiple size="8" name="fnclist">
 <?php
-//m_("key_array: $key_array"); //key_array: |em_tran_1|tran_date@|em_tran_2|tran_id|tran_rslt@
-//|em_tran_4|tran_refkey@|em_tran_5|tran_status|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@@@
-/*
-ALTER TABLE `kapp_pay` ADD PRIMARY KEY (`num`);
-ALTER TABLE `kapp_member` ADD KEY `mb_today_login` (`mb_today_login`);
-ALTER TABLE `users` DROP INDEX `email_index`;
-COMMIT;
-$sql = "ALTER TABLE $tableName DROP INDEX $indexName;";
-$sql = "ALTER TABLE `$tableName` ADD KEY `$indexName` (`$indexColumn`);";
-$sql = "ALTER TABLE `$tableName` ADD KEY `$indexName` (`$indexColumn1`,`$indexColumn2`);";
-
-ALTER TABLE `kapp_member`
-  ADD PRIMARY KEY (`mb_no`),
-  ADD UNIQUE KEY `mb_id` (`mb_id`),
-  ADD KEY `mb_today_login` (`mb_today_login`),
-  ADD KEY `mb_datetime` (`mb_datetime`),
-  ADD KEY `mb_email` (`mb_email`);
-
-ALTER TABLE `kapp_visit`
-  ADD PRIMARY KEY (`vi_id`),
-  ADD UNIQUE KEY `index1` (`vi_device`,`vi_date`) USING BTREE,
-  ADD KEY `index2` (`vi_date`);
-ALTER TABLE `aboard_dao1764304366`
-  MODIFY `no` int(11) NOT NULL AUTO_INCREMENT;
-ALTER TABLE `solpakan_naver_1754962968`
-  ADD PRIMARY KEY (`seqno`);
-ALTER TABLE `solpakan_naver_1754962968`
-  MODIFY `seqno` int(11) NOT NULL AUTO_INCREMENT;
-COMMIT;
-*/
 	if( $mode=='SearchTAB'){
-		$keyA = explode("@",$key_array);	//$key_cnt= count($keyA);
-		echo "<option value='seqno'>PRIMARY KEY</option>";
+		$keyA = explode("@",$key_array);
+		echo "<option value='seqno' title='Cannot be deleted'>PRIMARY KEY (seqno)</option>";
 		$key_flds = ''; 
 		for( $i=0; $i < count($keyA) && $keyA[$i]!=''; $i++){
 				$key_i = explode("|", $keyA[$i]);
 				$key_cnt = count($key_i);
 				$key_flds = ''; 
-				$key_flds = $key_i[2];
-				//m_("$key_cnt, " . $key_flds . ",$i- keyA:" . $keyA[$i]);
-				//3, tran_date,0- keyA:|em_tran_1|tran_date
-				//4, tran_status,1- keyA:|em_tran_6|tran_status|tran_rslt
-				//3, tran_net,2- keyA:|em_tran_7|tran_net
-				//5, tran_id,3- keyA:|em_tran_2|tran_id|tran_rslt|
-				//|em_tran_1|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@em_tran_2|tran_id|tran_rslt|@
-
+				$key_flds = $key_i[2];//|em_tran_1|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@em_tran_2|tran_id|tran_rslt|@
 				for( $k=3; $k < $key_cnt; $k++) $key_flds = $key_flds . " + " . $key_i[$k];
-
 				$k_m = $key_i[1] . ":" . $keyA[$i];
 				echo "<option value='".$key_i[1]."' title='".$k_m."'>".$key_i[1]." KEY (".$key_flds.") </option>";
 		}
@@ -478,7 +487,7 @@ COMMIT;
 				   </td>
 				 </tr>
 				 <tr>
-					<td height="24">index Name:<input id='index_name' name='index_name' readonly title='readonly'>
+					<td height="24">Selection index:<input id='index_name' name='index_name' readonly title='readonly'>
 					<input type='button' id='Delete_idx' value="Delete" style="border:1px solid black;background-color:red;color:white;height:27px;border-radius:20px;" title='Delete index key. caution!'>
 					<textarea id='mns' onKeyUp='ption()' name='ents' rows='3' cols='60' onChange='chkDescription()' style="display:none;"></textarea>
 					</td>

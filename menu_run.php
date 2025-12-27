@@ -16,9 +16,9 @@
     }*/
 
     function Kout_func() {
-        document.kakao_form.modeA.value = '';
-        document.kakao_form.modeG.value = '';
-        document.kakao_form.mode.value = 'chat_logout';
+        //document.kakao_form.modeA.value = '';
+        //document.kakao_form.modeG.value = '';
+        document.kakao_form.Login_Mode.value = 'chat_logout';
         document.kakao_form.userObject.value = '';
         document.kakao_form.authObject.value = '';
         document.kakao_form.gemail.value = ''; // google
@@ -28,9 +28,9 @@
     }
 
     function Gout_func() {
-        document.kakao_form.modeA.value = '';
-        document.kakao_form.modeG.value = '';
-        document.kakao_form.mode.value = 'chat_logout';
+        //document.kakao_form.modeA.value = '';
+        //document.kakao_form.modeG.value = '';
+        document.kakao_form.Login_Mode.value = 'chat_logout';
         document.kakao_form.userObject.value = '';
         document.kakao_form.authObject.value = '';
         document.kakao_form.gemail.value = ''; // google
@@ -46,14 +46,14 @@
                 Kakao.API.request({
                     url: '/v2/user/me',
                     success: function(res) {
-                        document.kakao_form.mode.value = "Kakao_Login";
+                        document.kakao_form.Login_Mode.value = "Kakao_Login";
                         document.kakao_form.userObject.value = JSON.stringify(res);
                         document.kakao_form.authObject.value = JSON.stringify(authObj);
                         document.kakao_form.submit();
                     },
                     fail: function(err) {
                         alert("11 ailinkapp login fail");
-                        document.kakao_form.mode.value = 'NO';
+                        document.kakao_form.Login_Mode.value = 'NO';
                     }
                 });
             },
@@ -74,11 +74,11 @@
 	$day = date("Y-m-d H:i", time());
 	$Kday = date("Y-m-d H:i", time()) . ' member SignUp';
 
-	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
-	else $mode = "";
+	if( isset($_POST['Login_Mode']) ) $Login_Mode = $_POST['Login_Mode'];
+	else $Login_Mode = "";
 
 	$gsajin = "";
-	if( $mode == 'Google_Login') { 
+	if( $Login_Mode == 'Google_Login') { 
 		$gid    = $_POST['gid'];
 		$gemail = $_POST['gemail'];
 		$gname  = $_POST['gname'];
@@ -101,7 +101,7 @@
 		set_session('ss_mb_id',    $member['mb_id']);
 		set_session('ss_mb_level', $member['mb_level']);
 		set_session('ss_mb_key', md5($member['mb_datetime'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']));
-	} else if( $mode == 'Kakao_Login' ) {
+	} else if( $Login_Mode == 'Kakao_Login' ) {
 
 		$userObject	= $_POST['userObject'];
 		$arr_user	= json_decode( $userObject, true);
@@ -126,7 +126,7 @@
 		set_session('ss_mb_id',    $member['mb_id']);
 		set_session('ss_mb_level', $member['mb_level']);
 		set_session('ss_mb_key', md5($member['mb_datetime'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']));
-	} else if( $mode == 'appgeneratorsystem' ) {
+	} else if( $Login_Mode == 'appgeneratorsystem' ) {
 	} else if( get_session("urllink_login_type") == "Naver_Login_K") {
 	}
 	if( $member['mb_id']) {
@@ -137,7 +137,7 @@
 	} else {
 		$is_member = false;
 		$is_guest = true;
-		$member['mb_id'] = '';
+		$member['mb_id'] = 'Guest';
 		$member['mb_level'] = 1;
 	}
 	if( $is_admin != 'super') {
@@ -210,10 +210,8 @@
         echo "<script>
         const f_popup_w = '700';
         const f_popup_h = '700';
-
         const f_popup_left = Math.ceil((window.screen.width - f_popup_w) / 2);
         const f_popup_top = Math.ceil((window.screen.height - f_popup_h) / 2);
-
         var win = window.open('".KAPP_URL_T_."/add_info.php', '_blank',
             'toolbar=yes,scrollbars=yes,resizable=yes,top=' + f_popup_top + ',left=' + f_popup_left +
             ',width=' + f_popup_w +
@@ -230,9 +228,9 @@
 
     <!-- end -->
     <form name='kakao_form' method='post' enctype='multipart/form-data'>
-        <input type='hidden' name='modeG' value='' />
-        <input type='hidden' name='modeA' value='' />
-        <input type='hidden' name='mode' value='' />
+        <!-- <input type='hidden' name='modeG' value='' />
+        <input type='hidden' name='modeA' value='' /> -->
+        <input type='hidden' name='Login_Mode' value='' />
         <input type='hidden' name='gid' value='' />
         <input type='hidden' name='gsite' value='' />
         <input type='hidden' name='gsajin' value='' />
@@ -244,10 +242,10 @@
         <input name="userObject" id="userObject" type="hidden" value='<?=$_POST['userObject']?>' />
         <input name="authObject" id="authObject" type="hidden" value='<?=$_POST['authObject']?>' />
     </form>
-    <form name='form_menu' method='post' enctype="multipart/form-data">
+    <!-- <form name='form_menu' method='post' enctype="multipart/form-data">
         <input type='hidden' name='mode' value=''>
         <input type='hidden' name='board'>
-    </form>
+    </form> -->
     <ul id='nav'>
         <li <?php if( $cur=='A') echo "class='current'"; ?>>
             <a href="<?=KAPP_URL_?>" target='_blank' title='HOME'><img src='<?=KAPP_URL_T_?>/icon/logo60.png' style='border-style:;height:20px;'></a>
@@ -269,7 +267,7 @@
 	if( $H_ID && $H_LEV > 7) { // 관리자용. 메인 메뉴 설정.
 ?>
                 <li align='left'> <a href='<?=KAPP_URL_T_?>/adm/' target='_blank'
-                        <?php echo " title='Admin Page. ' "; ?>>--- Admin ---</a></li>
+                        <?php echo " title='Admin Page. ' "; ?>> ### Admin ###</a></li>
                 <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/main_img.php' target='_top'
                         <?php echo " title='Admin Register the main image. ' "; ?>>B3. Main-Image Insert</a></li>
                 <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/main_image_list.php' target='_top'
@@ -346,44 +344,32 @@
 ?>
             </ul>
         </li>
-        <?php
-		$pg_run='./index.php';
-?>
-        <li <?php echo "class='current'"; ?>>
-            <a href='#' target='run_menu' <?php echo " title='K-App Create a program.' "; ?>><img
-                    src='<?=KAPP_URL_T_?>/icon/pcman1.png' style='border-style:;height:20px;'>App Make</a>
+        <li class='current'>
+            <a href='#' target='run_menu' ><img src='<?=KAPP_URL_T_?>/icon/pcman1.png' style='border-style:;height:20px;'>App Make</a>
             <ul>
-                <li align='left'> <a href='<?=KAPP_URL_T_?>/index.php?open_mode=on' target='_top'
-                        <?php echo " title='Create a program.' "; ?>>C0.Program-Make</a></li>
-                <li align='left'>
-                    <a href="<?=KAPP_URL_T_?>/program_list3u.php" title='Program List by User' target='_top'>C1.Program
-                        List</a>
-                </li>
-                <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/index.php' target='_self' title='Tree list.'>C2. Tree
-                        Menu List</a></li>
-<?php
-	$board_run = KAPP_URL_T_ . '/menu/board_list3.php';
-?>
-                <li align='left'><a href="<?=$board_run?>" title='Board list' target='_top'>C3.Board List </a></li>
-                <li align='left'>
-					<a href="<?=KAPP_URL_T_?>/menu/ulink_list.php" title='List by group' target='_top'>C4.Link List</a>
+                <li align='left'><a href='<?=KAPP_URL_T_?>/index.php?open_mode=on' target='_top'>C0.Program-Make</a></li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/program_list3u.php" target='_top'>C1.Program List</a></li>
+                <li align='left'><a href='<?=KAPP_URL_T_?>/menu/index.php' target='_self' title='Tree list.'>C2. Tree Menu List</a></li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/menu/board_list3.php" target='_top'>C3.Board List </a></li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/menu/ulink_list.php" target='_top'>C4.Link List</a>
                 </li>
             </ul>
         </li>
     </ul>
+<!-- 
     <FORM name="menu_table_list" Method='post'>
         <input type='hidden' name='pg_name'>
         <input type='hidden' name='pg_code'>
         <input type='hidden' name='mode'>
-    </FORM>
+    </FORM> -->
 
-    <?php
-if( !$H_ID  ) {
+<?php
+if( !$H_ID && $H_ID !=='Guest' ) {
 ?>
     <div class="loginBox">
         <div class="rela">
             <FORM name='loginA' action='<?=KAPP_URL_T_?>/login_checkT.php' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='mode' value=''>
+                <input type='hidden' name='Login_Mode' value=''>
                 <a href="javascript:void(0);" class="loginClose" title="-bg_closeBtn-"><img src="<?=KAPP_URL_T_?>/include/img/bg_closeBtn.png" /></a>
                 <div class="pic"><img src="<?=KAPP_URL_T_?>/include/img/etc_login.png" /></div>
                 <div class="form">
@@ -409,68 +395,47 @@ if( !$H_ID  ) {
             </form>
         </div>
     </div>
-    <?php } else { ?>
+<?php } else { ?>
     <div class="loginBox">
         <div class="rela">
             <FORM name='loginO' action='<?=KAPP_URL_T_?>/logoutT.php' method='post' enctype="multipart/form-data">
-                <input type='hidden' name='mode' value=''>
+                <!-- <input type='hidden' name='Login_Mode' value=''> -->
             </form>
         </div>
     </div>
-    <?php }
-			$Search_Mode = "PG";
-			$Search_run = KAPP_URL_T_ . "/menu/ulink_list.php";
-		if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
-		else $sdata = "";
+<?php }
+	if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
+	else $sdata = "";
 ?>
     <div>
         <table board='0'>
-            <FORM name="fsearchbox" method="post" action="<?=$Search_run?>">
-                <input type='hidden' name='Search_Mode' value='<?=$Search_Mode?>' />
+            <FORM name="fsearchbox" method="post" action="<?=KAPP_URL_T_?>/menu/ulink_list.php">
+            <input type='hidden' name='Search_Mode' value='PG' />
                 <td><a href="<?=KAPP_URL_T_?>" target='_top' title='KAPP HOME'><img src="<?=KAPP_URL_T_?>/icon/logo.png" height='30'></a></td>
                 <td><input type="text" name="sdata" value="<?=$sdata?>" maxlength="250" style='height:30;'></td>
-                <td><input type="button" id="sch_submit" value=" Search " onclick='search_run("<?=KAPP_URL_T_?>")' style='height:30;' title='Link List mode:<?=$Search_Mode?>'></td>
-                <td><input type="button" id="sch_submit" value=" Tree-Search " onclick='search_Tree("<?=KAPP_URL_T_?>")' style='height:30;' title='Tree mode:<?=$Search_Mode?>'></td>
+                <td><input type="button" id="sch_submitA" value=" Search " onclick='search_run("<?=KAPP_URL_T_?>")' style='height:30;' ></td>
+                <td><input type="button" id="sch_submitB" value=" Tree-Search " onclick='search_Tree("<?=KAPP_URL_T_?>")' style='height:30;'></td>
             </form>
         </table>
     </div>
 <?php
-$log_i = "";
-if( isset($H_ID) && $H_LEV > 1 ) {
-	if( get_session("urllink_login_type") == "Google_Login_K") {
-		$log_i = "Google";
-	} else $log_i = "Guest";
+	$log_i = "";
+	if( isset($H_ID) && $H_LEV > 1 ) {
+		if( get_session("urllink_login_type") == "Google_Login_K") {
+			$log_i = "Google";
+		} else $log_i = "Guest";
 ?>
-
-    <div title='Login-Google'>
-        <?=get_session("urllink_login_type")?>:
-		<?=$H_ID?>:<?=$member['mb_email']?>:<?=$member['mb_name']?>:<?=$member['mb_level']?>,
-        Point:<?=number_format($member['mb_point'])?>
-        <br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?> - <?=$config['kapp_visit']?>
-    </div>
-    <?php } else { ?>
-    <div title='<?=$log_i?> visit'><?=$log_i?> - <?=$config['kapp_visit']?>
-        <br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?>
-    </div>
-
-<?php }
-
-	function menu_call($sys_submenu, $cnt){
-		global $H_ID;
-			$sqla = " SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$H_ID' and sys_pg='$H_ID' and sys_menu='$sys_submenu' order by sys_disno";
-			$reta = sql_query($sqla);
-			while( $rsa = sql_fetch_array($reta)) {
-				$pg_lnk		= $rsa['sys_link'];
-				$link_gubun = $rsa['tit_gubun'];
-				if( $link_gubun == 'u' )	{	// u: url 작접 연결.
-					echo " <li align=center> <a href='".$pg_lnk."' target='_blank' title='$rsa[sys_link]' >" . $rsa['sys_subtit'] . "</a></li> ";
-				} else {
-					$lnkR = explode(":", $pg_lnk);
-					echo " <li align=center> <a href=\"javascript:program_run_func1( '".$lnkR[1]."', '$lnkR[0]' );\" target=_self title='".$rsa['sys_link']."' >" . $rsa['sys_subtit'] . "</a></li> ";
-				}
-			}
-	}
-?>
+		<div title='Login-Google'>
+			<?=get_session("urllink_login_type")?>:
+			<?=$H_ID?>:<?=$member['mb_email']?>:<?=$member['mb_name']?>:<?=$member['mb_level']?>,
+			Point:<?=number_format($member['mb_point'])?>
+			<br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?> - <?=$config['kapp_visit']?>
+		</div>
+<?php } else { ?>
+		<div title='<?=$log_i?> visit'><?=$log_i?> - <?=$config['kapp_visit']?>
+			<br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?>
+		</div>
+<?php } ?>
     <script language="JavaScript">
     <!--
     function init() {
@@ -482,7 +447,7 @@ if( isset($H_ID) && $H_LEV > 1 ) {
         if (!sdata) {
             alert(" Search data All!:");
         }
-        document.fsearchbox.Search_Mode.value = "cratree_my_list_menu";
+        //document.fsearchbox.Search_Mode.value = "cratree_my_list_menu";
         document.fsearchbox.action = Search_Mode + "/menu/index.php";
         document.fsearchbox.submit();
     }
@@ -499,44 +464,19 @@ if( isset($H_ID) && $H_LEV > 1 ) {
             fsearchbox.sdata.focus();
             return false;
         }
-        document.fsearchbox.Search_Mode.value = "";
+        //document.fsearchbox.Search_Mode.value = "";
         document.fsearchbox.action = Search_Mode + "/menu/ulink_list.php";
         document.fsearchbox.submit();
     }
-
-    function program_run_func1(pg_name, pg_code) {
-        if (!pg_name || !pg_code) {
-            alert('There is no connection information.');
-            return false;
-        }
-        document.menu_table_list.mode.value = "run_mode";
-        document.menu_table_list.pg_name.value = pg_name;
-        document.menu_table_list.pg_code.value = pg_code;
-        document.menu_table_list.target = '_blank';
-        document.menu_table_list.action = "./tab_list_pg70.php";
-        document.menu_table_list.submit();
-    }
-
-    function program_run_func2(url_) {
-        document.form_menu.action = url_;
-        document.form_menu.submit();
-    }
-
-    function run_board_func(url, board) {
-        document.form_menu.mode.value = 'bbs_listTT';
-        document.form_menu.board.value = board;
-        document.form_menu.action = url;
-        document.form_menu.submit();
-    }
-
+	/*
     function run_func(url) {
         document.form_menu.mode.value = 'run';
         document.form_menu.action = url;
         document.form_menu.submit();
-    }
+    }*/
 
     function logout_func() {
-        document.loginO.mode.value = "logout";
+        //document.loginO.Login_Mode.value = "logout";
         document.loginO.target = "_top";
         document.loginO.action = './logoutT.php';
         document.loginO.submit();
@@ -556,38 +496,35 @@ if( isset($H_ID) && $H_LEV > 1 ) {
         $('.A_Login').on('click', function() {
             var id = document.loginA.mb_id.value;
             var pw = document.loginA.mb_password.value;
-            if (id == '') {
+            if( id == '') {
                 alert('Please enter your ID !!! ');
                 document.loginA.mb_id.focus();
                 return false;
             }
-            if (pw == '') {
+            if( pw == '') {
                 alert('Please enter a password.');
                 document.loginA.mb_password.focus();
                 return false;
             }
-
-            document.loginA.mode.value = "A_login";
+            document.loginA.Login_Mode.value = "A_login";
             document.loginA.submit();
         });
-
         $('.Sign_up').on('click', function() {
-
-            document.loginA.mode.value = "signup";
+            document.loginA.Login_Mode.value = "signup";
             var Upg1_ = "./tkher_register_.php";
             document.loginA.action = Upg1_;
             document.loginA.submit();
         });
         $('.SIGN_S').on('click', function() {
-            document.loginA.mode.value = "signup";
+            document.loginA.Login_Mode.value = "signup";
             var Upg1_ = "./tkher_register_.php";
             document.loginA.action = Upg1_;
             document.loginA.submit();
         });
 
-        $('.login_close').on('click', function(no) {
+        /*$('.login_close').on('click', function(no) {
             //location.href="w.php?no="+no;
-        });
+        });*/
     });
     </script>
 
@@ -596,7 +533,7 @@ if( isset($H_ID) && $H_LEV > 1 ) {
     $(function() {
 
         $("body").on("click", ".C", function() {
-            document.loginO.mode.value = "logout";
+            document.loginO.Login_Mode.value = "logout";
             document.loginO.submit();
         });
         $("body").on("click", ".loginClose", function() {
@@ -635,7 +572,7 @@ if( isset($H_ID) && $H_LEV > 1 ) {
                 Kakao.API.request({
                     url: '/v2/user/me',
                     success: function(res) {
-                        document.kakao_form.mode.value = "Kakao_Login_K";
+                        document.kakao_form.Login_Mode.value = "Kakao_Login_K";
                         document.kakao_form.userObject.value = JSON.stringify(res);
                         document.kakao_form.authObject.value = JSON.stringify(authObj);
                         document.kakao_form.action = 'login_checkT.php';
@@ -643,7 +580,7 @@ if( isset($H_ID) && $H_LEV > 1 ) {
                     },
                     fail: function(err) {
                         alert("1 --- login fail");
-                        document.kakao_form.mode.value = 'NO';
+                        document.kakao_form.Login_Mode.value = 'NO';
                     }
                 });
             },
