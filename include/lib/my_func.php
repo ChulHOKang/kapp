@@ -58,9 +58,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		// use: kapp_tabel_create.php , table30m_A.php
 		global $H_ID, $H_EMAIL, $group_code, $group_name, $config, $kapp_iv, $kapp_key, $tkher;
 		$tabData['data'][][] = array();
-
 //		$tabData['data'][$cnt]['hash_block_table']  = $config['hash_block_table'];
-		
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
 		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
 		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
@@ -82,10 +80,6 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$tabData['data'][$cnt]['relation_data']    = $relation_data;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 
-		//$ret = sql_query( "update {$tkher['config_table']} SET hash_block_table = '$sendData' " ); //where kapp_title ='K-App' 
-		//if( !$ret) 	echo "<br> config_table hash_block_table update Error. --- TAB_curl_send";	
-		//else echo "<br> config_table hash_block_table update OK --- TAB_curl_send";
-
 		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
 
 		$curl = curl_init(); //$curl = curl_init( $url_ );
@@ -103,7 +97,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		if( $response == false) {
 			echo ' TAB_curl_send curl Error : ' . curl_error($curl);
 		} else {
-			echo 'curl 응답 : ' . $response;
+			//echo 'curl 응답 : ' . $response;
 		}
 		curl_close($curl);
 		return $response;
@@ -114,7 +108,6 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$tabData['data'][][] = array();
 		$cnt = 0;
 //		$tabData['data'][$cnt]['hash_block_pg']  = $config['hash_block_pg'];
-
 		$tabData['data'][$cnt]['pg_code']  = $pg_code;
 		$tabData['data'][$cnt]['pg_name']  = $pg_name;
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
@@ -134,7 +127,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$tabData['data'][$cnt]['item_array'] = $item_array;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 
-		$url_ = $curl_snm . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
+		$url_ = $curl_snm . '/_Curl/pg_curl_get_ailinkapp.php';
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -204,7 +197,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$_ms = "PG_curl_send_tabData curl error : " . curl_error($curl);
 			echo 'PG_curl_send_tabData curl error : ' . curl_error($curl);
 		} else {
-			$_ms = 'new PG_curl_send_tabData curl response : ' . $response;
+			//$_ms = 'new PG_curl_send_tabData curl response : ' . $response;
 			//echo 'PG_curl_send_tabData curl response: ' . $response;
 		}
 		curl_close($curl);
@@ -231,7 +224,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$_ms = "new Link_Table_curl_get_ailinkapp fail : " . curl_error($curl);
 			echo 'curl : ' . $_ms;
 		} else {
-			$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
+			//$_ms = 'new Link_Table_curl_get_ailinkapp curl OK : ' . $response;
 			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
@@ -313,7 +306,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$_ms = KAPP_URL_T_ .  ", Link_Table_curl_send fail : " . curl_error($curl);
 			echo 'curl : ' . $_ms;
 		} else {
-			$_ms =KAPP_URL_T_ .  ', Link_Table_curl_send OK : ' . $response;
+			//$_ms =KAPP_URL_T_ .  ', Link_Table_curl_send OK : ' . $response;
 			//echo 'curl : ' . $_ms;
 		}
 		curl_close($curl);
@@ -1576,9 +1569,7 @@ function get_text($str, $html=0, $restore=false)
 	}
 
 	function my_pass_cnt($p_idx) {
-		include "inc/dbcon.php";
-		$pass_result = mysql_query("select pass_cnt from product_cnt where p_idx='$p_idx'",$mc);
-		$pass_rs = mysql_fetch_array($pass_result);
+		$pass_rs = sql_fetch("select pass_cnt from product_cnt where p_idx='$p_idx'");
 		return $pass_rs['pass_cnt'];
 	}
 	function referer_check_url($url='')
