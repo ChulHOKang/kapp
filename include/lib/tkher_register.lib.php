@@ -3,15 +3,15 @@ if (!defined('_KAPP_')) exit;
 
 function empty_mb_id($reg_mb_id)
 {
-    if (trim($reg_mb_id)=='')
-        return "Please enter your member ID."; //, 회원아이디를 입력해 주십시오.
+    if( trim($reg_mb_id)=='')
+        return "Please enter your member ID.";
     else
         return "";
 }
 
 function valid_mb_id($reg_mb_id)
 {
-    if (preg_match("/[^0-9a-z_]+/i", $reg_mb_id))
+    if( preg_match("/[^0-9a-z_]+/i", $reg_mb_id))
         return "Please enter only letters, numbers, and _ for member ID."; //, 회원아이디는 영문자, 숫자, _ 만 입력하세요.
     else
         return "";
@@ -19,8 +19,8 @@ function valid_mb_id($reg_mb_id)
 
 function count_mb_id($reg_mb_id)
 {
-    if (strlen($reg_mb_id) < 3)
-        return "Please enter at least 3 characters."; //, 회원아이디는 최소 3글자 이상 입력하세요. 
+    if (strlen($reg_mb_id) < 8)
+        return "Please enter at least 8 characters.";
     else
         return "";
 }
@@ -34,8 +34,8 @@ function exist_mb_id($reg_mb_id)
 
     $sql = " select count(*) as cnt from `{$tkher['tkher_member_table']}` where mb_id = '$reg_mb_id' ";
     $row = sql_fetch($sql);
-    if ($row['cnt'])
-        return "This is a member ID already in use."; //, 이미 사용중인 회원아이디 입니다.
+    if( $row['cnt'])
+        return "This is a member ID already in use.";
     else
         return "";
 }
@@ -60,7 +60,7 @@ function empty_mb_nick($reg_mb_nick)
 function valid_mb_nick($reg_mb_nick)
 {
     if (!check_string($reg_mb_nick, KAPP_HANGUL + KAPP_ALPHABETIC + KAPP_NUMERIC))
-        return "Hangul 2, English 4 or more"; // , 닉네임은 공백없이 한글, 영문, 숫자만 입력 가능합니다.
+        return "Hangul 2, English 4 or more";
     else
         return "";
 }
@@ -68,7 +68,7 @@ function valid_mb_nick($reg_mb_nick)
 function count_mb_nick($reg_mb_nick)
 {
     if (strlen($reg_mb_nick) < 4)
-        return "Hangul 2, English 4 or more"; //, 닉네임은 한글 2글자, 영문 4글자 이상 입력 가능합니다.
+        return "Hangul 2, English 4 or more";
     else
         return "";
 }
@@ -78,7 +78,7 @@ function exist_mb_nick($reg_mb_nick, $reg_mb_id)
     global $tkher;
     $row = sql_fetch(" select count(*) as cnt from {$tkher['tkher_member_table']} where mb_nick = '$reg_mb_nick' and mb_id <> '$reg_mb_id' ");
     if ($row['cnt'])
-        return "It is an existing nickname."; //, 이미 존재하는 닉네임입니다.
+        return "It is an existing nickname.";
     else
         return "";
 }
@@ -87,7 +87,7 @@ function reserve_mb_nick($reg_mb_nick)
 {
     global $config;
     if (preg_match("/[\,]?{$reg_mb_nick}/i", $config['kapp_prohibit_id']))
-        return "It is an existing nickname."; //, 이미 예약된 단어로 사용할 수 없는 닉네임 입니다.
+        return "It is an existing nickname.";
     else
         return "";
 }
@@ -95,7 +95,7 @@ function reserve_mb_nick($reg_mb_nick)
 function empty_mb_email($reg_mb_email)
 {
     if (!trim($reg_mb_email))
-        return "Please enter your e-mail address."; //, E-mail 주소를 입력해 주십시오.
+        return "Please enter your e-mail address.";
     else
         return "";
 }
@@ -119,7 +119,7 @@ function prohibit_mb_email($reg_mb_email)
     $email_domains = array_map('strtolower', $email_domains);
     $email_domain = strtolower($domain);
 
-    if (in_array($email_domain, $email_domains))
+    if( in_array($email_domain, $email_domains))
         return "Mail is not available., $domain "; //메일은 사용할 수 없습니다.
 
     return "";
@@ -130,7 +130,7 @@ function exist_mb_email($reg_mb_email, $reg_mb_id)
     global $tkher;
     $row = sql_fetch(" select count(*) as cnt from `{$tkher['tkher_member_table']}` where mb_email = '$reg_mb_email' and mb_id <> '$reg_mb_id' ");
     if ($row['cnt'])
-        return "E-mail address already in use."; //, 이미 사용중인 E-mail 주소입니다.
+        return "E-mail address already in use.";
     else
         return "";
 }
@@ -138,7 +138,7 @@ function exist_mb_email($reg_mb_email, $reg_mb_id)
 function empty_mb_name($reg_mb_name)
 {
     if (!trim($reg_mb_name))
-        return "Please enter a name."; //, 이름을 입력해 주십시오.
+        return "Please enter a name.";
     else
         return "";
 }
@@ -146,7 +146,7 @@ function empty_mb_name($reg_mb_name)
 function valid_mb_name($mb_name)
 {
     if (!check_string($mb_name, KAPP_HANGUL))
-        return "You can only enter Korean characters without spaces."; //, 이름은 공백없이 한글만 입력 가능합니다.
+        return "You can only enter Korean characters without spaces.";
     else
         return "";
 }
