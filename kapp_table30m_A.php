@@ -498,25 +498,17 @@ jQuery(document).ready(function ($) {
 		document.insert.line_index.value = no;
 	}
 
-	function Project_change_funcX(cd){
-		index=document.insert.project_code.selectedIndex;
-		nm = document.insert.project_code.options[index].text;
-		document.insert.project_name.value=nm;
-		return;
-	}
-	function sendDataToPHP( projectnmS, pnmS) {
-		fetch('kapp_save_session.php', {
+	function sendDataToPHP( projectnmS, pnmdataS ) {
+		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+			body: JSON.stringify({ projectnmS: projectnmS, pnmdataS: pnmdataS }),
 		})
 		.then(response => response.json())
 		.then(data => {
 			console.log('Success:', data);
-			//location.href="kapp_table30m_A.php?mode=Project_Search";
-			//location.replace(location.href);
 		})
 		.catch((error) => {
 			console.error('Error:', error);
@@ -527,21 +519,7 @@ jQuery(document).ready(function ($) {
 		location.href="kapp_table30m_A.php?mode=Project_Search";
 	}
 	function change_table_func(pnmS){ // Relation_Table_func
-		/*
-		alert("t: " + pnmS);//t: dao_1757214499:ABC:dao_1755421034:Project59
-		da = pnmS.split(":");
-		document.insert.project_nmS.value=pnmS;
-		document.insert.project_code.value=da[2];
-		document.insert.project_name.value=da[3];
-		if( pnmS == '') {
-			alert('Select Relation Table!');
-			return false;
-		}
-		document.getElementById('mode').value = 'SearchTAB';
-		document.getElementById('new_tab_hnm').value = da[1];
-		alert("mode: " + document.getElementById('mode').value + ", " + document.getElementById('new_tab_hnm').value);
-		*/
-		sendDataToPHP('tab_hnmS', pnmS);
+		sendDataToPHP('tab_hnmS', pnmS); //my_func
 		location.href="kapp_table30m_A.php?mode=SearchTAB";
 	}
 </script>
@@ -1321,7 +1299,7 @@ jQuery(document).ready(function ($) {
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', memo='key column', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', memo='$item_array', sqltable='$item_list' " );//memo='key column'
 		$line_set = $cnt;
 		$mq3 = sql_query( $item_list );
 		if( !$mq3 ) {
@@ -1392,7 +1370,7 @@ jQuery(document).ready(function ($) {
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='key column', sqltable='$item_list' " );
+		sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$item_array', sqltable='$item_list' " );//memo='key column'
 		$line_set = $cnt;
 		$fld_enm  = "fld_" . $ARR;
 		$mq1 = sql_query( $item_list );
@@ -1406,19 +1384,15 @@ jQuery(document).ready(function ($) {
 		}
 		$old_tab_enm= $_POST['old_tab_enm'];
 		//new_table_name: ABC_CCC_New, tab: dao_1757214499:ABC:dao_1755421034:Project59
-		//new_table_name: ABC_DDD_New, tab: dao_1757214499:ABC:dao_1755421034:Project59
 		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$old_tab_enm."' ";// old table copy pg
 		$resultPG	= sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
 			$rsPG = sql_fetch_array($resultPG);
-			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', pg_code='$new_tab_enm', pg_name='$new_tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='".$rsPG['relation_data']."', item_cnt=".$rsPG['item_cnt'].", userid='$H_ID', tab_mid='$H_ID' ";
+			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', pg_code='$new_tab_enm', pg_name='$new_tab_hnm', item_array='".$rsPG['item_array']."', if_type='".$rsPG['if_type']."', if_data='".$rsPG['if_data']."', pop_data='".$rsPG['pop_data']."', relation_data='', relation_type='', item_cnt=".$rsPG['item_cnt'].", userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
 		} else {
 			m_(" Copy ERROR : mode:".$mode.", old pg tab_enm: $tab_enm pg_code:".$new_tab_enm );
-			//Copy ERROR : mode:table_new_copy, old pg tab_enm:  pg_code:dao_1766811819
-			//Copy ERROR : mode:table_new_copy, pg_code:dao_1766811625
-			//Copy ERROR : mode:table_new_copy, pg_code:dao_1766810942
 			//new_table_name: ABCYY_New, tab: dao_1766735120:ABCYY:dao_1755421034:Project59
 		}
 		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
