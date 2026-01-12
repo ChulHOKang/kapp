@@ -130,59 +130,74 @@
 		$relation_data =get_session("relation_dataPG");
 		$relation_type =get_session("relation_typePG"); 
 		if( $relation_data !=='' ) {
-			$rdata = explode("@", $relation_data);
-			$rtype = explode("@", $relation_type);
+			$rdata = explode("^", $relation_data); // @ ^
+			$rtype = explode("^", $relation_type); // @ ^
+			$rt = explode("@", $rtype[0]);  //Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^	// '^' -> ':'  Update:fld_1:fld_2:
 			for( $i=0; $i < count( $rdata); $i++ ){
 				if( isset( $rdata[$i]) && $rdata[$i] !=="" && $rdata[$i] !=="undefined"){
-					//echo $i . ", rdata: " . $rdata[$i] . "<br>";
-					relation_func( $rdata[$i], $pg_code, $rtype[$i] ); 
+					relation_func( $rdata[$i], $pg_code, $rt[$i] ); //relation_func( $rdata[$i], $pg_code, $rtype[$i] ); 
 				}
 			}
 		}
-		//m_("- $relation_data, $relation_type"); - dao_1644456532:거래처$fld_2:거래처|=|fld_1:거래처명$fld_6:외상매출액|+|fld_7:미수총액, Update:fld_1:
 		$rungo = "./tkher_program_data_list.php?pg_code=" . $pg_code;
 		echo "<script>window.open( '$rungo' , '_self', ''); </script>";
 	} else {
-		m_(" insert ERROR --- mode:$mode, table: " . $tab_enm . ", pg_code: " . $pg_code);	
+		m_(" insert ERROR --- mode:$mode, table: " . $tab_enm . ", pg_code: " . $pg_code);	exit;
 	}
-	//dao_1766735120:ABCYY
-	//$fld_1:fld1|=|fld_5:product:VARCHAR
-	//$fld_7:날짜|=|fld_1:날짜:TIMESTAMP
-	//$fld_5:fld5|+|fld_6:total_count:INT
-	//$fld_6:fld6|+|fld_7:tottal_price:BIGINT@@
-	
-	//dao_1766735120:ABCYY
-	//$fld_1:fld1|=|fld_5:product:VARCHAR
-	//$fld_7:날짜|=|fld_1:날짜:TIMESTAMP
-	//$fld_1:fld1|=|fld_5:product:VARCHAR
-	//$fld_5:fld5|+|fld_6:total_count:INT
-	//$fld_6:fld6|+|fld_7:tottal_price:BIGINT@@
-	//sql: INSERT INTO dao_1766735120 SET kapp_userid= 'dao' , kapp_pg_code= 'dao_1757214499' , fld_5 = '배추' , fld_1 = '2025-12-26 18:21' , fld_5 = '배추' , fld_6=fld_6 + 3000 , fld_7=fld_7 + 6000000
+/*
+dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$
+fld_1:fld1|=|fld_1:fld1:VARCHAR$
+fld_7:날짜|=|fld_7:날짜:TIMESTAMP$
+fld_5:fld5|+|fld_5:fld5:INT$
+fld_6:fld6|+|fld_6:fld6:INT^000
+dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT^111
+
+dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$
+fld_1:fld1|=|fld_5:product:VARCHAR$
+fld_7:날짜|=|fld_1:날짜:TIMESTAMP$
+fld_5:fld5|+|fld_6:total_count:INT$
+fld_6:fld6|+|fld_7:tottal_price:BIGINT
+
+Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
+|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^
+|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^
+|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
+*/
 
 	function relation_func( $rdata, $pg_code, $rtype ){
 		global $H_ID, $pg_code;
 		$r_data = explode("$", $rdata);
 		$r_tab = $r_data[0];
-		$tab_r = explode(":", $r_tab);		//dao_1537844601:data
-		$r_table = $tab_r[0];
-		$r_t = explode(":", $rtype);//Insert:::@@	// '^' -> ':'  Update:fld_1:fld_2:
-		if( isset($r_t[0]) ) $r_type = $r_t[0];					// type = 'Update' or 'Insert'
+		$tab_r = explode(":", $r_tab);		// dao_1537844601:data
+		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
+
+		$r_t = explode(":", $rtype); //Update:fld_1:fld_1:CHAR           // Update:::@@^^^
+
+		if( isset($r_t[0]) ) $r_type = $r_t[0];					// $r_t[0] = 'Update' or 'Insert'
 		else $r_type = "";	
-		if( isset($r_t[1]) ) $up_key = $r_t[1];					// program field ,    //Update Key field 
+		if( isset($r_t[1]) ) $up_key = $r_t[1];					// $r_t[1] program field ,  Update Key field 
 		else $up_key = "";
-		if( isset($r_t[2]) ) $dd_key = $r_t[2];					// Update Key field , //program field 
+		if( isset($r_t[2]) ) $dd_key = $r_t[2];					// $r_t[2] relation table,  Update Key field 
 		else $dd_key = "";
-		if( isset($r_t[3]) ) $ty_key = $r_t[3];					// relation field key data type
+		if( isset($r_t[3]) ) $ty_key = $r_t[3];					// $r_t[3] relation field key data type CHAR or INT
 		$ty_key = "";
+
 		if( isset($_POST[$up_key]) && $_POST[$up_key] !=='' ) $update_key_data = $_POST[$up_key];
 		else $update_key_data = "";
+		//--------------------------------------
+			$SQLA = "select seqno from `" . $r_table . "` ";
+			if( $ty_key == "CHAR" ) $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	
+			else if( $ty_key == "INT" ) $SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
+			else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
+		$retA = sql_fetch( $SQLA ); // Update에서 데이터가 없으면 Insert 있으면 Update 처리를 위해 select
+		//---------------------------------------
 		if( $r_type == 'Update'){
 			$SQLR = "UPDATE " . $r_table . " SET ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
 				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
 				$fld_r1	= $fld_r[0];
-				$fld_sik= $fld_r[1];
+				$fld_sik= $fld_r[1];  // =, -, +
 				$fld_r2	= $fld_r[2];
 				$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
 				$f_enm	= $fld1[0];
@@ -205,12 +220,49 @@
 			else if( $ty_key == "INT" ) $SQLR = $SQLR . " where " . $dd_key . " = " .$update_key_data. " ";	
 			else $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
 
-			$ret  = sql_query($SQLR);
-			if( $ret ) { //echo("<script>alert('Relation Save pg70_write_r: relation-Table is $r_table Created.  ');</script>");
-				$rungo = "./tkher_program_data_list.php?pg_code=" . $pg_code;
-				echo "<script>window.open( '$rungo' , '_self', ''); </script>";
-			}else{
-				//echo "sql: " . $SQLR; exit;
+			if( $retA ) {
+				$ret  = sql_query($SQLR);
+				if( $ret ) { //echo("<script>alert('Relation Save pg70_write_r: relation-Table is $r_table Created.  ');</script>");
+					//m_("r_table: $r_table Update");
+				}else{
+					echo "SQLR: " . $SQLR; exit;
+				}
+			} else {
+				$SQLAR = "INSERT INTO " . $r_table . " SET ";
+				$SQLAR = $SQLAR . "kapp_userid= '" . $H_ID . "' , ";
+				$SQLAR = $SQLAR . "kapp_pg_code= '" . $pg_code . "' , ";
+				for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
+					$r_fld		= $r_data[$i];
+					$fld_r		= explode("|", $r_fld);		// fld_1:상품|=|fld_1:상품
+					$fld_r1	= $fld_r[0];
+					$fld_sik	= $fld_r[1];
+					$fld_r2	= $fld_r[2];
+					$fld1		= explode(":", $fld_r1);		// fld_1:상품|=|fld_1:상품
+					$f_enm	= $fld1[0];
+					$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
+					$r_enm	= $fld2[0];
+
+					if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
+					else $post_enm = "";
+					if( $fld_sik == '=' ) {
+						if( $i==1 )	$SQLAR = $SQLAR . $r_enm . " = '" . $post_enm . "'  ";
+						else		$SQLAR = $SQLAR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+					} else if( $fld_sik == '+' ) {
+						if( $i==1 )	$SQLAR = $SQLAR . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
+						else		$SQLAR = $SQLAR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
+					} else if( $fld_sik == '-' ) {
+						if( $i==1 )	$SQLAR = $SQLAR . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
+						else		$SQLAR = $SQLAR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
+					}
+				}
+				$SQLAR = $SQLAR . " "; 
+				$ret =sql_query($SQLAR);
+				if( $ret ) { 
+					//m_("--- r_table: $r_table Insert");
+				}else{
+					echo "SQLAR: " . $SQLAR; exit;
+					//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
+				}
 			}
 		} else { // insert - relation
 			$SQLR = "INSERT INTO " . $r_table . " SET ";
@@ -226,28 +278,25 @@
 				$f_enm	= $fld1[0];
 				$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
 				$r_enm	= $fld2[0];
-
 				if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 				else $post_enm = "";
 				if( $fld_sik == '=' ) {
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . " = '" . $post_enm . "'  ";
 					else			$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
-				} else if( $fld_sik == '+' ) {	 // updte를 의미한다. 보완필요.
+				} else if( $fld_sik == '+' ) {
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
 					else			$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
-				} else if( $fld_sik == '-' ) {	 // updte를 의미한다. 보완필요.
+				} else if( $fld_sik == '-' ) {
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 					else			$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 				}
 			}
-			$SQLR = $SQLR . " "; //echo "sql: " . $SQLR; exit;
-			
-			//sql: INSERT INTO dao_1766735120 SET kapp_userid= 'dao' , kapp_pg_code= 'dao_1757214499' , fld_5 = '배추' , fld_1 = '2025-12-26 18:21' , fld_5 = '배추' , fld_6=fld_6 + 3000 , fld_7=fld_7 + 6000000
+			$SQLR = $SQLR . " ";
 			$ret =sql_query($SQLR);
 			if( $ret ) { 
-				$rungo = "./tkher_program_data_list.php?pg_code=" . $pg_code;
+				//m_("r_table: $r_table Insert");
 			}else{
-				echo "sql: " . $SQLR; exit;
+				echo "r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
 				//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 			}
 			

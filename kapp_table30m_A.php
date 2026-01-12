@@ -22,23 +22,36 @@
 	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
 	else $H_EMAIL = '';
 
-	if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+	if( isset($_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode='';
-	if( isset($_SESSION['project_nmS']) ) $project_nmS = $_SESSION['project_nmS'];
-	if( isset($project_nmS) && $project_nmS !=='' ){
+
+	if( isset($_POST['old_tab_enm']) ) $old_tab_enm= $_POST['old_tab_enm'];
+	else $old_tab_enm='';
+
+	if( $mode == 'Project_Search'){
+		$project_nmS = $_POST['project_nmS'];
 		$pcd_nm = explode(":", $project_nmS );
 		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $project_code	= $pcd_nm[0];
 		else $project_code = '';	
 		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $project_name	= $pcd_nm[1]; 
 		else $project_name= "";
 	} else {
-		$project_nmS = '';
-		$project_name= "";
-		$project_code= "";
+		if( isset($_POST['project_nmS']) && $_POST['project_nmS'] !='' ) {
+			$project_nmS = $_POST['project_nmS'];
+			$pcd_nm = explode(":", $project_nmS );
+			if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $project_code	= $pcd_nm[0];
+			else $project_code = '';	
+			if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $project_name	= $pcd_nm[1]; 
+			else $project_name= '';
+		} else {
+			$project_nmS = '';
+			$project_name= '';
+			$project_code= '';
+		}
 	}
 
-	if( $mode == 'SearchTAB' && isset($_SESSION['tab_hnmS']) ) {
-		$tab_hnmS =$_SESSION['tab_hnmS'];
+	if( $mode == 'SearchTAB' ) {
+		$tab_hnmS =$_POST['tab_hnmS'];
 		$tab_R = explode(":", $tab_hnmS);
 		$tab_enm = $tab_R[0];
 		$tab_hnm = $tab_R[1];
@@ -46,11 +59,22 @@
 		$project_code = $tab_R[2];
 		$project_name = $tab_R[3];
 	} else {
-		$tab_hnmS = '';
-		$tab_enm = '';
-		$tab_hnm = '';
-		$new_tab_hnm = '';
+		if( isset($_POST['tab_hnmS']) && $_POST['tab_hnmS'] !='' ) {
+			$tab_hnmS =$_POST['tab_hnmS'];
+			$tab_R = explode(":", $tab_hnmS);
+			$tab_enm = $tab_R[0];
+			$tab_hnm = $tab_R[1];
+			$new_tab_hnm = $tab_R[1];
+			$project_code = $tab_R[2];
+			$project_name = $tab_R[3];
+		} else {
+			$tab_hnmS = '';
+			$tab_enm = '';
+			$tab_hnm = '';
+			$new_tab_hnm = '';
+		}
 	}
+
 		$uid = explode('@', $H_ID);
 		$new_tab_enm = $uid[0] . "_" . time();
 
@@ -211,11 +235,12 @@
 		}
 	}
 	function Save_Update(cnt){ // Modification Registration - 수정등록
-		tab_hnm = document.insert.tab_hnm.value;
-		msg = " The data in the table is deleted. Want to regenerate? table is " + tab_hnm + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
-		if ( window.confirm( msg ) )
-		{
-			tab = document.insert.tab_hnmS.value;
+		tab = document.insert.tab_hnmS.value;
+		tabA = tab.split(":");
+		//alert("tab: " + tab);
+		document.insert.old_tab_enm.value = tabA[0];
+		msg = " The data in the table is deleted. Want to regenerate? table is " + tab + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
+		if ( window.confirm( msg ) ){
 			document.insert.mode.value='table_update_remake';
 			document.insert.del_mode.value		="";
 			document.insert.action="kapp_table30m_A.php";
@@ -353,7 +378,7 @@
 			fnm = document.insert["fld_hnm[" + i + "]"].value;
 			if( !len) {
 				if( fnm ) {
-					alert('Check the column length input!'); //컬럼 길이 입력을 확인 하세요!
+					alert('Check the column length input! ' + fnm); //컬럼 길이 입력을 확인 하세요!
 					return false;
 				}
 			}
@@ -392,7 +417,7 @@ jQuery(document).ready(function ($) {
 				location.replace(location.href);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				alert(" 올바르지 않습니다.-- kapp_project_ajax.php");
+				alert(" Error.-- kapp_project_ajax.php");
 				console.log(jqXHR);
 				console.log(textStatus);
 				console.log(errorThrown);
@@ -497,7 +522,7 @@ jQuery(document).ready(function ($) {
     function line_getA(no){
 		document.insert.line_index.value = no;
 	}
-
+	// no use
 	function sendDataToPHP( projectnmS, pnmdataS ) {
 		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
@@ -515,12 +540,22 @@ jQuery(document).ready(function ($) {
 		});
 	}
 	function change_project_func(pnmS){
-		sendDataToPHP('project_nmS', pnmS);
-		location.href="kapp_table30m_A.php?mode=Project_Search";
+		//sendDataToPHP('project_nmS', pnmS);
+		//location.href="kapp_table30m_A.php?mode=Project_Search";
+		document.insert.mode.value="Project_Search";
+		document.insert.action="kapp_table30m_A.php";
+		document.insert.submit();
 	}
 	function change_table_func(pnmS){ // Relation_Table_func
-		sendDataToPHP('tab_hnmS', pnmS); //my_func
-		location.href="kapp_table30m_A.php?mode=SearchTAB";
+		//sendDataToPHP('tab_hnmS', pnmS); //my_func
+		tab = pnmS.split(":");
+		hnm=tab[1];
+		enm=tab[0];
+		document.insert.old_tab_enm.value = enm;
+		document.insert.mode.value="SearchTAB";
+		document.insert.action="kapp_table30m_A.php";
+		document.insert.submit();
+		//location.href="kapp_table30m_A.php?mode=SearchTAB";
 	}
 </script>
 
@@ -643,7 +678,7 @@ jQuery(document).ready(function ($) {
 ?>
 	<Form METHOD='POST' name='insert' enctype="multipart/form-data">
 		<input type="hidden" name="mode" id="mode" >
-		<input type="hidden" name="old_tab_enm" id="old_tab_enm" value=''>
+		<input type="hidden" name="old_tab_enm" id="old_tab_enm" value='<?=$old_tab_enm?>'>
 		<input type="hidden" name="new_tab_enm" id="new_tab_enm" value='<?=$new_tab_enm?>'>
 		<input type="hidden" name="project_code" id="project_code" value='<?=$project_code?>'>
 		<input type="hidden" name="project_name" id="project_name" value='<?=$project_name?>'>
@@ -1044,12 +1079,12 @@ jQuery(document).ready(function ($) {
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
 	}
 	if( $mode == "table_create_reaction" ){
-		create_reaction_func();
+		create_reaction_func(); // line reset
 	} else if( $mode == "table_update_remake" ){
 		$view_set=1; // update_pg_func()에서 참고 내용을 1번만 출력 하도록 한다.
-		update_remake_func();
-	}
-	if( $mode == "table_create" ) {
+		$tab_enm = $_POST['old_tab_enm'];		//m_("tab_enm: " . $tab_enm);
+		update_remake_func( $tab_enm ); // drop and remake
+	} else if( $mode == "table_create" ) {
 		create_func();
 	} else if( $mode == "table_new_copy" ){	// copy and new.
 		copy_func();
@@ -1174,15 +1209,15 @@ jQuery(document).ready(function ($) {
 		$if_type = "";
 		$if_data = "";
 		$item_cnt   = 0;
-		For( $ARR=1; $ARR < $line_set ; $ARR++ ) {
-			if( isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !=='' ) $fld_hnm	=	$_POST["fld_hnm"][$ARR];
-			else $fld_hnm =	'';
+		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
+			$fld_hnm = $_POST["fld_hnm"][$ARR];
 			if( $fld_hnm !== '' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
 				$fld_enm	=	$_POST["fld_enm"][$ARR];
-				$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
-				$fld_len	=	$_POST["fld_len"][$ARR];
+				
+				if( $fld_type == 'CHAR' || $fld_type == 'VARCHAR' && $fld_len=='') $fld_len=15;
+				else $fld_len	=	$_POST["fld_len"][$ARR];
 				$memo		=	$_POST["memo"][$ARR];
 				$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$if_type = $if_type . "|" . "0";
@@ -1205,7 +1240,7 @@ jQuery(document).ready(function ($) {
 				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
-					m_("error --- insert table10_table - $tab_enm");
+					m_("error --- insert table10_table - $new_tab_enm");
 					//echo "sql: " . $sql; exit;
 				}
 				$Asqltable=''; $if_lineA=0; $if_typeA=''; $if_dataA=''; $relation_dataA='';
@@ -1239,7 +1274,7 @@ jQuery(document).ready(function ($) {
 			$Tret = TAB_curl_sendA( $new_tab_enm, $new_tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
 			if( $Tret ) {
 				//m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
-				$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $tab_enm; 
+				$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $new_tab_enm; 
 				$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
 			} else  m_("TAB_curl_sendA -- Error");
 		} else {
@@ -1249,7 +1284,7 @@ jQuery(document).ready(function ($) {
 		exit;
 	}
 
-	function create_reaction_func(){
+	function create_reaction_func(){ // line reset
 		global $H_ID, $tab_enm, $mode, $project_code, $project_name;
 		global $config;
 		global $tkher;
@@ -1266,14 +1301,14 @@ jQuery(document).ready(function ($) {
 		$item_array = "";
 		$if_type = "";
 		$if_data = "";
-		For( $ARR=1; $_POST["fld_hnm"][$ARR] ; $ARR++ ) {
+		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
-			if( $fld_hnm ) {
+			if( $fld_hnm !='' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
 				$fld_enm		=	$_POST["fld_enm"][$ARR];
-				$fld_hnm		=	$_POST["fld_hnm"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
-				$fld_len		=	$_POST["fld_len"][$ARR];
+				if( $fld_type == 'CHAR' || $fld_type == 'VARCHAR' && $fld_len=='') $fld_len=15;
+				else $fld_len	=	$_POST["fld_len"][$ARR];
 				$memo		=	$_POST["memo"][$ARR];
 				$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$if_type = $if_type . "|" . "0";
@@ -1338,14 +1373,14 @@ jQuery(document).ready(function ($) {
 			$if_type = "";
 			$if_data = "";
 		$item_cnt   = 0;
-		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]); $ARR++ ) {
+		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
-			if( $fld_hnm ) {
+			if( $fld_hnm !='' ) {
 				$seqno		=$_POST["seqno"][$ARR];
 				$fld_enm	=$_POST["fld_enm"][$ARR];
-				$fld_hnm	=$_POST["fld_hnm"][$ARR];
 				$fld_type	=$_POST["fld_type"][$ARR];
-				$fld_len	=$_POST["fld_len"][$ARR];
+				if( $fld_type == 'CHAR' || $fld_type == 'VARCHAR' && $fld_len=='') $fld_len=15;
+				else $fld_len	=	$_POST["fld_len"][$ARR];
 				$memo		=$_POST["memo"][$ARR];
 				$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$if_type = $if_type . "|" . "0";
@@ -1398,8 +1433,8 @@ jQuery(document).ready(function ($) {
 		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 	}
 
-	function update_remake_func(){
-		global $H_ID, $tab_enm, $mode, $project_code, $project_name;
+	function update_remake_func( $tab_enm ){
+		global $H_ID, $mode, $project_code, $project_name;
 		global $config;
 		global $tkher;
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
@@ -1416,7 +1451,7 @@ jQuery(document).ready(function ($) {
 		$item_array = '';
 		$if_type = '';
 		$if_data = '';
-		For( $ARR=1; $_POST["fld_hnm"][$ARR] ; $ARR++ ) {
+		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
 			$fld_enmO	=	$_POST["Afld_enm"][$ARR];
 			$fld_hnmO	=	$_POST["Afld_hnm"][$ARR];
 			$fld_typeO	=	$_POST["Afld_type"][$ARR];
@@ -1424,12 +1459,12 @@ jQuery(document).ready(function ($) {
 			$fld_O      = "|". $fld_enmO ."|". $fld_hnmO  ."|". $fld_typeO ."|". $fld_lenO . "@";
 			//$memoO		=	$_POST["Amemo"][$ARR]; //Afld_memo
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
-			if( $fld_hnm ) {
+			if( $fld_hnm !='' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
-				$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 				$fld_enm	=	$_POST["fld_enm"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
-				$fld_len	=	$_POST["fld_len"][$ARR];
+				if( $fld_type == 'CHAR' || $fld_type == 'VARCHAR' && $fld_len=='') $fld_len=15;
+				else $fld_len	=	$_POST["fld_len"][$ARR];
 				$memo		=	$_POST["memo"][$ARR];
 				$if_lineA	=	$_POST["Aif_line"][$ARR];
 				$if_typeA	=	$_POST["Aif_type"][$ARR];
@@ -1487,9 +1522,10 @@ jQuery(document).ready(function ($) {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$new_tab_hnm', pg_code='$tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
 				$link_ = KAPP_URL_T_ . "/kapp_table30m_A.php";
-				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point - update_remake_func()
+				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );
 		}
-		echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
+		//echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
+		echo "<script>location.replace(location.href)</script>";
 	}
 	//----------------------------------------------------------------------
 	//컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요

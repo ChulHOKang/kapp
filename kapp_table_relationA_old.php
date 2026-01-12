@@ -356,7 +356,7 @@
 		}
 		here_relation.innerHTML=ss;
 	} 
-	function sendDataToPHP( projectnmS, pnmdataS ) { /* No use */
+	function sendDataToPHP( projectnmS, pnmdataS ) { /* don't change */
 		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
 			headers: {
@@ -377,7 +377,7 @@
 			alert('Select Project!');
 			return false;
 		}
-		//sendDataToPHP('relation_project_nmS', pnmS);
+		sendDataToPHP('relation_project_nmS', pnmS);
 		document.getElementById('mode').value = 'Project_Search';
 		document.makeform.action="kapp_table_relationA.php";
 		document.makeform.submit();	//location.replace(location.href);
@@ -395,10 +395,10 @@
 		document.getElementById('tab_enm').value = pgcodeS[2];
 		document.getElementById('tab_hnm').value = pgcodeS[3];
 		document.getElementById('mode').value = 'pg_codeS_Search';
-		//sendDataToPHP('relation_pg_codeS', pcdS);
-		document.makeform.action="kapp_table_relationA.php";
-		document.makeform.submit();
-		//location.replace(location.href);
+		//document.makeform.action="kapp_table_relationA.php";
+		//document.makeform.submit();
+		sendDataToPHP('relation_pg_codeS', pcdS);
+		location.replace(location.href);
 	}
 	function Change_Relation_Table_func(ptbS){
 		relation_reset = document.getElementById('relation_reset').value;
@@ -409,7 +409,7 @@
 		}
 		tb = ptbS.split(':');
 		document.getElementById('item_array_'+no).value = tb[2];
-		//sendDataToPHP('Rtab_hnmS', ptbS);
+		sendDataToPHP('Rtab_hnmS', ptbS);
 		document.getElementById('mode').value = 'Relation_SearchTAB';
 		document.makeform.action="kapp_table_relationA.php";
 		document.makeform.submit();
@@ -423,6 +423,7 @@
 <?php
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else if( isset($_SESSION['mode']) ) $mode = $_SESSION['mode'];
 	else $mode = '';
 	if( $mode == 'table_relation_save' ) {
 		$pg_code = $_POST['pg_code'];
@@ -471,10 +472,10 @@
 	if( $mode == 'Delete_Check' ) {
 		$pg_code = $_POST['pg_code'];
 		relation_all_delete( $pg_code );
-		$_POST['relation_project_nmS'] = '';
-		$_POST['relation_pg_codeS'] = '';
-		$_POST['Rtab_hnmS'] = '';
-		$_POST['mode'] = '';
+		$_SESSION['relation_project_nmS'] = '';
+		$_SESSION['relation_pg_codeS'] = '';
+		$_SESSION['Rtab_hnmS'] = '';
+		$_SESSION['mode'] = '';
 	} else {
 		if( isset($_POST['mode']) ) $mode =$_POST['mode'];
 		if( isset($_POST['relation_type_key']) ) $relation_type_key = $_POST['relation_type_key'];
@@ -498,14 +499,14 @@
 		if( isset($_POST['relation_num']) ) $relation_num = $_POST['relation_num'];
 	}
 	if( $mode=='Project_Search' ) {
-		if( isset($_POST['relation_project_nmS']) && $_POST['relation_project_nmS'] !='' ){
-			$relation_project_nmS = $_POST['relation_project_nmS'];
+		if( isset($_SESSION['relation_project_nmS']) && $_SESSION['relation_project_nmS'] !='' ){
+			$relation_project_nmS = $_SESSION['relation_project_nmS'];
 			$pcd_nm = explode(":", $relation_project_nmS );
 			$project_code	= $pcd_nm[0];
 			$project_name	= $pcd_nm[1]; 
 		}
-	} else if( isset($_POST['relation_project_nmS']) && $_POST['relation_project_nmS'] !='' ){ // _SESSION
-		$relation_project_nmS = $_POST['relation_project_nmS'];
+	} else if( isset($_SESSION['relation_project_nmS']) && $_SESSION['relation_project_nmS'] !='' ){
+		$relation_project_nmS = $_SESSION['relation_project_nmS'];
 		$pcd_nm = explode(":", $relation_project_nmS );
 		$project_code	= $pcd_nm[0];
 		$project_name	= $pcd_nm[1]; 
@@ -517,9 +518,9 @@
 	relation_type=Update:fld_1:fld_5:CHAR^^
 	relation_data = dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT^dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_5:fld5|+|fld_7:tottal_price:BIGINT^
 	*/
-	if( $mode=='pg_codeS_Search' ) {
-		if( isset($_POST['relation_pg_codeS']) && $_POST['relation_pg_codeS']!='' ){ //_SESSION - _POST
-			$relation_pg_codeS =$_POST['relation_pg_codeS'];
+	if( $mode=='pg_codeS_Search' ) { //|| isset($_SESSION['relation_pg_codeS'])
+		if( isset($_SESSION['relation_pg_codeS']) && $_SESSION['relation_pg_codeS']!='' ){
+			$relation_pg_codeS =$_SESSION['relation_pg_codeS'];
 			$pg_A = explode("!", $relation_pg_codeS); //^ !
 			$pg_ = explode(":", $pg_A[0]);
 			$pg_code = $pg_[0];
@@ -539,9 +540,9 @@
 				}
 			}
 		}
-	} else if( $mode!='Project_Search' && isset($_POST['relation_pg_codeS']) && $_POST['relation_pg_codeS'] !='' ){
+	} else if( $mode!='Project_Search' && isset($_SESSION['relation_pg_codeS']) && $_SESSION['relation_pg_codeS'] !='' ){
 		//relation_pg_codeS= $pg_code:$pg_name:$tab_enm:$tab_hnm:$group_code:$group_name!relation_data!relation_type!$item_array
-		$relation_pg_codeS =$_POST['relation_pg_codeS'];
+		$relation_pg_codeS =$_SESSION['relation_pg_codeS'];
 		$pg_A = explode("!", $relation_pg_codeS);
 		$pg_ = explode(":", $pg_A[0]);
 		$pg_code = $pg_[0];
@@ -560,12 +561,12 @@
 			}
 		}
 	}
-	if( $mode!='Project_Search' && $mode!='Relation_SearchTAB' && isset($_POST['relation_pg_codeS']) ) {
+	if( $mode!='Project_Search' && $mode!='Relation_SearchTAB' && isset($_SESSION['relation_pg_codeS']) ) {
 		Fetch_pg_code($pg_code, $pg_name);
 	}
 	if( $mode=='Relation_SearchTAB' ) {
-		if( isset($_POST['Rtab_hnmS']) && $_POST['Rtab_hnmS'] !='' ){ // _SESSION
-			$Rtab_hnmS =$_POST['Rtab_hnmS'];
+		if( isset($_SESSION['Rtab_hnmS']) && $_SESSION['Rtab_hnmS'] !='' ){
+			$Rtab_hnmS =$_SESSION['Rtab_hnmS'];
 			$relation_TAB = explode(":", $Rtab_hnmS); //dao_1766735120:ABCYY
 			$tab_enmR = $relation_TAB[0];
 			$tab_hnmR = $relation_TAB[1];
@@ -592,6 +593,7 @@
 			}
 		}
 	}
+	//m_( "mode: ". $_SESSION['mode'] . ", pj: " . $_SESSION['relation_project_nmS'] . ", pg: " . $_SESSION['relation_pg_codeS'] .", tab: ". $Rtab_hnmS );
 ?>
 <center>
    <table width='300' cellspacing='0' cellpadding='4' border='1' class="c1">
@@ -616,7 +618,7 @@
 			<SELECT id='relation_project_nmS' name='relation_project_nmS' onchange="change_project_func(this.value);" style="background-color:#666666;color:yellow;width:50%;height:30px;">
 <?php 
 		echo "<option value=''>1.Select Project</option>";
-		if( isset( $_POST['relation_project_nmS']) ) echo "<option value='$relation_project_nmS' selected title='".$_POST['relation_project_nmS']."'>$project_name</option>";
+		if( isset( $_SESSION['relation_project_nmS']) ) echo "<option value='$relation_project_nmS' selected title='".$_SESSION['relation_project_nmS']."'>$project_name</option>";
 		$result= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
 		while( $rs = sql_fetch_array($result)) {
 ?>
@@ -627,7 +629,7 @@
 		<SELECT id='relation_pg_codeS' name='relation_pg_codeS' onchange="change_program_func(this.value);" style="background-color:#666666;color:yellow;width:45%; height:30px;" >
 <?php
 		echo "<option value=''>2.Select program</option>";
-		if( isset( $_POST['relation_pg_codeS']) ) echo "<option value='$relation_pg_codeS' selected >$pg_name</option>";
+		if( isset( $_SESSION['relation_pg_codeS']) ) echo "<option value='$relation_pg_codeS' selected >$pg_name</option>";
 		$result= sql_query( "SELECT * from {$tkher['table10_pg_table']} where group_code='$project_code' and userid='$H_ID' order by seqno desc " );
 		while( $rs = sql_fetch_array($result)) {
 ?>
@@ -693,13 +695,13 @@
 								<tr><td>
 		<SELECT id='Rtab_hnmS' name='Rtab_hnmS' onchange="Change_Relation_Table_func(this.value);" style="background-color:#666666;color:yellow;height:33px;font-size:15;" >
 <?php 
-		if( $mode=='Relation_SearchTAB' || isset($_POST['Rtab_hnmS']) ) {
+		if( $mode=='Relation_SearchTAB' || isset($_SESSION['Rtab_hnmS']) ) {
 			$tab_R = explode(":", $Rtab_hnmS);
 			$tab_enmR = $tab_R[0];
 			$tab_hnmR = $tab_R[1];
 		}
 		echo "<option value=''>Select Relation Table</option>";
-		if( $mode !='Delete_Check' && $mode!='pg_codeS_Search' && $mode=='Relation_SearchTAB' || isset($_POST['Rtab_hnmS']) )
+		if( $mode !='Delete_Check' && $mode!='pg_codeS_Search' && $mode=='Relation_SearchTAB' || isset($_SESSION['Rtab_hnmS']) )
 			echo "<option value='$Rtab_hnmS' selected >$tab_hnmR</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='$H_ID' and fld_enm='seqno' " );//관계용테이블선택.
 		while( $rs = sql_fetch_array($result)) {
@@ -979,7 +981,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		$ret = sql_query($query);
 		if( $ret ) m_(" Delete, Complete the relationship. pg_code:".$pg_code);
 		else m_("Program Delete error! pg_code: $pg_code");
-		$_POST['Rtab_hnmS'] ='';
+		$_SESSION['Rtab_hnmS'] ='';
 		echo "<script>delete_after_run( '' , '$pg_code' );</script>"; 
 	}
 	function item_color( $relation_num ){
