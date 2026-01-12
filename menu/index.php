@@ -246,8 +246,8 @@ if( $total > 0 ) {
 	}
 	$result = sql_query( $query);
 } else $total = 0;
-	if( isset($_POST['Search_Mode']) ) $Search_Mode = $_POST['Search_Mode'];
-	else $Search_Mode = "";
+//	if( isset($_POST['Search_Mode']) ) $Search_Mode = $_POST['Search_Mode'];
+//	else $Search_Mode = ""; // 25-12-27 close
 ?>
 
 <body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
@@ -366,7 +366,7 @@ if( $result ){
 <td align='right'>
 </td>
 </tr></table>
-<?php if($H_ID){ ?>
+<?php if( $H_ID !=='' ){ ?>
 		<form name='form_view' method='post' enctype='multipart/form-data' >
 			<input type='hidden' name='mode' value='' />						
 			<input type='hidden' name='Hid'  value='<?=$H_ID?>' />						
