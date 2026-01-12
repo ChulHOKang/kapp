@@ -316,25 +316,24 @@
 		const checkbox = document.getElementById('pgdup_confirm');
 		checkbox.checked = Pg_Dup_Check()
 	}
-	function sendDataToPHP( projectnmS, pnmS) {
-		fetch('kapp_save_session.php', {
+	function sendDataToPHP( projectnmS, pnmdataS ) {
+		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+			body: JSON.stringify({ projectnmS: projectnmS, pnmdataS: pnmdataS }),
 		})
 		.then(response => response.json())
 		.then(data => {
 			console.log('Success:', data);
-			//location.href="kapp_pg_Create.php?mode=Project_Search";
 		})
 		.catch((error) => {
 			console.error('Error:', error);
 		});
 	}
 	function change_project_func(pnmS){
-		sendDataToPHP('project_nmS', pnmS);
+		sendDataToPHP('project_nmS', pnmS); //my_func
 		document.makeform.mode.value='Project_Search';
 		document.makeform.action="kapp_pg_Create.php";
 		document.makeform.submit();
@@ -409,7 +408,7 @@
 			echo "<script>window.open( '".$url."' , '_blank', ''); </script>";
 
 	} else if( $mode == 'Project_Search' ){
-	} else if( $mode == 'SearchTAB' ){
+	} else if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS'])){
 		$aa				= explode(':', $tab_hnmS);
 		$tab_enm		= $aa[0];
 		$tab_hnm		= $aa[1];
@@ -468,7 +467,7 @@ New Program Creation (<?=$H_ID?>)<br>
 		Table:&nbsp;
 		<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='background-color:#666666;color:yellow;width:80%; height:30px;'>
 <?php
-		if( $mode =='SearchTAB' && isset($_SESSION['tab_nmS']) ) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
+		if( $mode =='SearchTAB' || isset($_SESSION['tab_nmS']) ) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
 		else echo "<option value=''>2.Select Table</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
 		while( $rs = sql_fetch_array($result)) {
@@ -498,7 +497,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 <div id="here">
 <?php
 	$column_ = "";
-	if( $mode == 'SearchTAB' ){
+	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS']) ){
 		$column_ = "<p style='font-size:24px;text-align:center;font-weight: bold;border-radius:20px;border:1 solid black;height:22px;'>Select ALL: <input type='checkbox' id='all_confirm' name='all_confirm' value='Confirm' onClick='return false'>&nbsp;<input type='button' onclick='column_A();' value='Click ALL' title='Select all or deselect' ></p>";
 
 		$itX = explode("@",$item_array);
@@ -552,7 +551,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 	$itemR =array();
 	$ifT	= "";	$ifD	= "";	$ifP	= "";
 //	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // table select
-	if( $mode == 'SearchTAB' ) { // table select
+	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS'])) { // table select
 			if( isset($if_type) ) $iftypeR = explode("|", $if_type );
 			if( isset($if_data) ) $ifdataR = explode("|", $if_data );
 			if( isset($pop_data) ) $popdataR= explode("^", $pop_data );

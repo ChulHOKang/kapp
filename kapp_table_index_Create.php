@@ -40,13 +40,23 @@ tr:hover {background-color: #D6EEEE;}
 	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else $mode = '';	
 	
-	if( isset($_SESSION['project_nmS']) ) $project_nmS = $_SESSION['project_nmS'];
+	/*if( isset($_SESSION['project_nmS']) ) $project_nmS = $_SESSION['project_nmS'];
 	if( isset($project_nmS) && $project_nmS !=='' ){
 		$pcd_nm = explode(":", $project_nmS );
 		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $project_code	= $pcd_nm[0];
 		else $project_code = '';	
 		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $project_name	= $pcd_nm[1]; 
 		else $project_name= "";
+	} else {
+		$project_nmS = '';
+		$project_name= "";
+		$project_code= "";
+	}*/
+	if( $mode=='Project_Search' || isset( $_SESSION['project_nmS']) ) { //|| isset( $_SESSION['project_nmS'])
+		$project_nmS = $_SESSION['project_nmS'];
+		$pcd_nm = explode(":", $project_nmS );
+		$project_code	= $pcd_nm[0];
+		$project_name	= $pcd_nm[1]; 
 	} else {
 		$project_nmS = '';
 		$project_name= "";
@@ -65,7 +75,7 @@ tr:hover {background-color: #D6EEEE;}
 	else if( isset($_REQUEST['tab_hnmS']) ) $tab_hnmS= $_REQUEST['tab_hnmS'];
 	else  $tab_hnmS = "";
 */
-	if( isset($_SESSION['tab_hnmS']) ) {
+	if( $mode=='SearchTAB' || isset($_SESSION['tab_hnmS']) ) {
 		$tab_hnmS =$_SESSION['tab_hnmS'];
 		$tab_R = explode(":", $tab_hnmS);
 		$tab_enm = $tab_R[0];
@@ -75,7 +85,6 @@ tr:hover {background-color: #D6EEEE;}
 		$tab_enm = '';
 		$tab_hnm = '';
 	}
-	
 
 	if( isset($_POST['item_cnt']) ) $item_cnt= $_POST['item_cnt'];
 	else  $item_cnt = 0;
@@ -145,57 +154,49 @@ tr:hover {background-color: #D6EEEE;}
 	}
 	function column_list_onclickA( ss, j ){
 		A_click = 1;//alert("A, j: "+j +", ss: " + ss);//A, j: 7, ss: |tran_reportdate|tran_reportdate|DATETIME|
-		//A, j: 11, ss: |tran_etc1|tran_etc1|VARCHAR|64
 	}
 
-/*
-function sendDataToPHP(userId, data) {
-    fetch('kapp_save_session.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: userId, someData: data }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}*/
-
-	function sendDataToPHP( projectnmS, pnmS) {
-		fetch('kapp_save_session.php', {
+	function sendDataToPHP( projectnmS, pnmdataS ) {
+		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify({ projectnmS: projectnmS, pnmS: pnmS }),
+			body: JSON.stringify({ projectnmS: projectnmS, pnmdataS: pnmdataS }),
 		})
 		.then(response => response.json())
 		.then(data => {
 			console.log('Success:', data);
-			location.replace(location.href);
 		})
 		.catch((error) => {
 			console.error('Error:', error);
 		});
 	}
-	function change_project_func(pnmS){
+	function change_project_funcX(pnmS){
 		var p_selind = document.kapp_makeform.project_nmS.selectedIndex; 
 		var p_val    = document.kapp_makeform.project_nmS.options[p_selind].value;
 		var p_nm     = document.kapp_makeform.project_nmS.options[p_selind].text;
-
-		// 예시: 버튼 클릭 시 실행
-			sendDataToPHP('project_nmS', pnmS);
-		//document.getElementById('project_nmS').addEventListener('click', () => {
-		//});
+		sendDataToPHP('project_nmS', pnmS);  //my_func
+	}
+	function change_project_func(pnmS){
+		if( pnmS == '') {
+			alert('Select Project!');
+			return false;
+		}
+		sendDataToPHP('project_nmS', pnmS); //my_func
+		document.getElementById('mode').value = 'Project_Search';
+		document.kapp_makeform.action="kapp_table_index_Create.php";
+		document.kapp_makeform.submit();
 	}
 
-	function change_table_func(tab) {
+	function change_table_funcX(tab) {
 		tab = document.kapp_makeform.tab_hnmS.value;
+		document.kapp_makeform.mode.value='SearchTAB';
+		document.kapp_makeform.action="kapp_table_index_Create.php";
+		document.kapp_makeform.submit();
+	}
+	function change_table_func(pnmS){
+		sendDataToPHP('tab_hnmS', pnmS);
 		document.kapp_makeform.mode.value='SearchTAB';
 		document.kapp_makeform.action="kapp_table_index_Create.php";
 		document.kapp_makeform.submit();
@@ -361,8 +362,8 @@ jQuery(document).ready(function ($) {
 </script>
 
 <?php
-
-	if( $mode == 'SearchTAB' ){
+//m_("--- tab_hnmS: $tab_hnmS");
+	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS']) ){
 		$aa				= explode(':', $tab_hnmS);
 		$tab_enm		= $aa[0];
 		$tab_hnm		= $aa[1];
@@ -371,9 +372,9 @@ jQuery(document).ready(function ($) {
 		$key_msg		= $rsTAB['key_msg'];
 		$item_array		= $rsTAB['memo'];
 		$key_array		= $rsTAB['relation_data'];
-		$project_code	    = $rsTAB['group_code'];  
-		$project_name	    = $rsTAB['group_name'];  
-		$project_nmS	= $project_code.":".$project_name;
+		//$project_code	    = $rsTAB['group_code'];  
+		//$project_name	    = $rsTAB['group_name'];  
+		//$project_nmS	= $project_code.":".$project_name;
 		$itX = explode("@",$item_array);
 		$item_cnt		= count($itX) -1;
 		//m_("$item_cnt");
@@ -397,7 +398,7 @@ jQuery(document).ready(function ($) {
 
 			<option value=''>1.Select Project</option>
 <?php 
-		if( $mode=='SearchTAB' ) echo "<option value='$project_nmS' selected >$project_name</option>";
+		if( $mode=='Project_Search' || isset( $_SESSION['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
 		while( $rs = sql_fetch_array($result)) {
 			if( $project_code == $rs['group_code']) $chk = " selected ";
@@ -414,8 +415,8 @@ jQuery(document).ready(function ($) {
 			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;">
 					<option value=''>2.Select table</option>
 <?php 
-				if( $mode=='SearchTAB' ) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
-				$result = sql_query( "select * from {$tkher['table10_table']} where userid='$H_ID' and group_code='$project_code' and fld_enm='seqno'" );//and group_code='$project_code' 
+				if( $mode=='SearchTAB' || isset($_SESSION['tab_nmS'])) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
+				$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and group_code='$project_code' and fld_enm='seqno'" );
 				while( $rs = sql_fetch_array($result)) {
 					if( $tab_enm == $rs['tab_enm'] ) $sel = ' selected ';
 					else $sel='';
@@ -424,7 +425,7 @@ jQuery(document).ready(function ($) {
 <?php
 				}
 ?>
-			</select>
+			</SELECT>
 </td></tr>
 
 <tr><td colspan='2' style="text-align:left;background-color:#666666;color:cyan;" >
@@ -440,7 +441,7 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 <?php
 	$qna = "sequence of the work|Select Project and Table.|Enter index name.|Click Column button.|Click Create button.|"; // 4:item cnt, ^:item add.
 	$column_ = "";
-	if( $mode == 'SearchTAB' ){
+	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS'])){
 		$itX = explode("@",$item_array);
 		for( $i=0, $j=0; $i<$item_cnt; $i++, $j++){
 			$it = explode("|",$itX[$i]);
@@ -466,7 +467,7 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 				  <td valign="top" style='background-color:#f5f5f5;color:black;height:30px;text-align:center;'>
 					 <SELECT id="fnclist" style="width:100%" onChange="indexlist_onclick(this.value)" multiple size="8" name="fnclist">
 <?php
-	if( $mode=='SearchTAB'){
+	if( $mode=='SearchTAB' || isset($_SESSION['tab_nmS'])){
 		$keyA = explode("@",$key_array);
 		echo "<option value='seqno' title='Cannot be deleted'>PRIMARY KEY (seqno)</option>";
 		$key_flds = ''; 
