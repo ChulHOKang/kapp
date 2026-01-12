@@ -37,23 +37,15 @@ tr:hover {background-color: #D6EEEE;}
 	$key_msg='';
 
 	if( isset($_POST['mode']) ) $mode= $_POST['mode'];
-	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else $mode = '';	
 	
-	/*if( isset($_SESSION['project_nmS']) ) $project_nmS = $_SESSION['project_nmS'];
-	if( isset($project_nmS) && $project_nmS !=='' ){
+	if( $mode=='Project_Search' ) { //|| isset( $_SESSION['project_nmS'])
+		$project_nmS = $_POST['project_nmS'];
 		$pcd_nm = explode(":", $project_nmS );
-		if( isset($pcd_nm[0]) && $pcd_nm[0] !=='' ) $project_code	= $pcd_nm[0];
-		else $project_code = '';	
-		if( isset($pcd_nm[1]) && $pcd_nm[1] !=='' ) $project_name	= $pcd_nm[1]; 
-		else $project_name= "";
-	} else {
-		$project_nmS = '';
-		$project_name= "";
-		$project_code= "";
-	}*/
-	if( $mode=='Project_Search' || isset( $_SESSION['project_nmS']) ) { //|| isset( $_SESSION['project_nmS'])
-		$project_nmS = $_SESSION['project_nmS'];
+		$project_code	= $pcd_nm[0];
+		$project_name	= $pcd_nm[1]; 
+	} else if( isset( $_POST['project_nmS']) && $_POST['project_nmS']!='' ) {
+		$project_nmS = $_POST['project_nmS'];
 		$pcd_nm = explode(":", $project_nmS );
 		$project_code	= $pcd_nm[0];
 		$project_name	= $pcd_nm[1]; 
@@ -62,21 +54,13 @@ tr:hover {background-color: #D6EEEE;}
 		$project_name= "";
 		$project_code= "";
 	}
-	if( isset($_POST['seqno']) ) $seqno= $_POST['seqno'];
-	else  $seqno = "";
-	if( isset($_POST['idx_name']) ) $idx_name= $_POST['idx_name'];
-	else  $idx_name = "";
-/*
-	if( isset($_POST['tab_enm']) ) $tab_enm= $_POST['tab_enm'];
-	else  $tab_enm = "";
-	if( isset($_POST['tab_hnm']) ) $tab_hnm= $_POST['tab_hnm'];
-	else  $tab_hnm = "";
-	if( isset($_POST['tab_hnmS']) ) $tab_hnmS= $_POST['tab_hnmS'];
-	else if( isset($_REQUEST['tab_hnmS']) ) $tab_hnmS= $_REQUEST['tab_hnmS'];
-	else  $tab_hnmS = "";
-*/
-	if( $mode=='SearchTAB' || isset($_SESSION['tab_hnmS']) ) {
-		$tab_hnmS =$_SESSION['tab_hnmS'];
+	if( $mode=='SearchTAB' ) {
+		$tab_hnmS =$_POST['tab_hnmS'];
+		$tab_R = explode(":", $tab_hnmS);
+		$tab_enm = $tab_R[0];
+		$tab_hnm = $tab_R[1];
+	} else if( isset($_POST['tab_hnmS']) && $_POST['tab_hnmS']!='' ) {
+		$tab_hnmS =$_POST['tab_hnmS'];
 		$tab_R = explode(":", $tab_hnmS);
 		$tab_enm = $tab_R[0];
 		$tab_hnm = $tab_R[1];
@@ -86,6 +70,10 @@ tr:hover {background-color: #D6EEEE;}
 		$tab_hnm = '';
 	}
 
+	if( isset($_POST['seqno']) ) $seqno= $_POST['seqno'];
+	else  $seqno = "";
+	if( isset($_POST['idx_name']) ) $idx_name= $_POST['idx_name'];
+	else  $idx_name = "";
 	if( isset($_POST['item_cnt']) ) $item_cnt= $_POST['item_cnt'];
 	else  $item_cnt = 0;
 ?>
@@ -183,7 +171,7 @@ tr:hover {background-color: #D6EEEE;}
 			alert('Select Project!');
 			return false;
 		}
-		sendDataToPHP('project_nmS', pnmS); //my_func
+		//sendDataToPHP('project_nmS', pnmS);
 		document.getElementById('mode').value = 'Project_Search';
 		document.kapp_makeform.action="kapp_table_index_Create.php";
 		document.kapp_makeform.submit();
@@ -196,7 +184,7 @@ tr:hover {background-color: #D6EEEE;}
 		document.kapp_makeform.submit();
 	}
 	function change_table_func(pnmS){
-		sendDataToPHP('tab_hnmS', pnmS);
+		//sendDataToPHP('tab_hnmS', pnmS);
 		document.kapp_makeform.mode.value='SearchTAB';
 		document.kapp_makeform.action="kapp_table_index_Create.php";
 		document.kapp_makeform.submit();
