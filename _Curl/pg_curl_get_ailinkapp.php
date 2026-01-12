@@ -26,7 +26,7 @@
     if( isset($tabData) ){
         $message = '';
     } else {
-        $message = '_api pg_curl_get_ailinkapp data 전달 실패';
+        $message = '_api pg_curl_get_ailinkapp data Error';
     }
 			$kapp_theme0 = '';
 			$kapp_theme1 = '';
