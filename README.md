@@ -78,4 +78,51 @@ DB 관련 정보와 관리자의 메일과 비번만 설정하면 셋업이 완�
 K-APP 시스템 발전에 큰 도움이 될 것 입니다.
 
 감사합니다.
+============
+K-APP System Features. What is K-APP? K-APP is a development tool that allows you to create web programs without coding on the Internet. It automatically generates web source code.
 
+K-APP Features?
+The K-APP System is a development tool that allows you to create web programs without coding on the Internet. It automatically generates web source code.
+--- Operating Server Environment --- Server Character Set: UTF-8 Unicode (utf8) Web Server: Apache Database: MariaDB PHP Version: 7.3.33 phpMyAdmin: Version Information: 5.1.1
+
+--- K-APP System Features --- Easily create web programs by simply entering column information without coding. This CRUD-type program aims to enable anyone, even non-experts, to easily create and use programs right away.
+
+I work on this in my spare time, so it takes a lot of time.
+
+This system is a program development tool based on the Apache web server that generates PHP programs.
+
+The function is simple: enter DB Table column information to create a table. CRUD Program Create allows you to configure data entry column properties such as check boxes, list boxes, radio buttons, popup window settings, and calculation formulas. This program creates programs that allow you to register, retrieve, modify, and delete data.
+
+When registering records, you can configure relationships between tables and one-dimensional tables. There's also a feature to download the generated source code and upload it to your server for installation.
+
+You can upload and run database settings, table creation, and PHP execution source code on your server.
+Points are required when downloading the source code. Points can be earned through production activities. Program creation information is linked to other servers so that others can utilize it. We plan to create this information on a blockchain in the future. All program creation tasks are coded and stored in the database. We plan to further develop this program by configuring an AI dataset to enable the automatic generation of precise programs.
+
+-- Tree menus can be created.
+
+Created programs can be directly executed by linking to a URL.
+
+-- Bulletin boards can be created.
+
+The design for creating programs is the same for all programs. The designed dataset information can be generated and provided in various programming languages. - This is a future development area. Standardization work is needed for each programming language. Cooperation and donations are desperately needed to enable language-specific work.
+
+--- Installation Instructions --- To install, run the setup directory. Simply enter the database-related information and the administrator's email address and password to complete the setup. Log in by entering the email address and password used during setup.
+
+--- Uploading to the Server --- When uploading to the server, create a directory named "kapp" and upload it. You can use a different name.
+
+--- You can freely change the background image. Please refer to the B3. Main Image Insert and B4. Main Image List menu items in the first icon on the left.
+
+--- Future Development Plans:
+
+Development of an artificial intelligence system using program generation code information.
+
+Program generation information can be generated on the blockchain.
+The design for program generation is the same for all programs. Designed data can be generated in any language and provided as source code. - This is a future plan. We need to standardize the programming languages ​​we want to create. We desperately need your cooperation and donations to enable us to work on each programming language.
+
+If you encounter any issues, please email solpakan@naver.com and we'll check. Since we don't always check our emails, it may take some time.
+
+We're all working hard until everyone can create and utilize programs.
+
+-- Donations --- The development of this system requires the cooperation and donations of interested parties. If this system is helpful to you, please donate. If you can afford a donation of $12 per year, it will be a great help in the development of the K-APP system.
+
+Thank you.
