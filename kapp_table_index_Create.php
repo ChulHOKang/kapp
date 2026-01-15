@@ -351,7 +351,7 @@ jQuery(document).ready(function ($) {
 
 <?php
 //m_("--- tab_hnmS: $tab_hnmS");
-	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS']) ){
+	if( $mode == 'SearchTAB' || isset($_POST['tab_nmS']) ){
 		$aa				= explode(':', $tab_hnmS);
 		$tab_enm		= $aa[0];
 		$tab_hnm		= $aa[1];
@@ -386,11 +386,11 @@ jQuery(document).ready(function ($) {
 
 			<option value=''>1.Select Project</option>
 <?php 
-		if( $mode=='Project_Search' || isset( $_SESSION['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
+		if( $mode=='Project_Search' || isset( $_POST['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by upday desc " ); 
 		while( $rs = sql_fetch_array($result)) {
+			$chk = "";
 			if( $project_code == $rs['group_code']) $chk = " selected ";
-			else $chk = "";
 ?>
 			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo $chk; ?> title='Project code: <?php echo $project_code;?>' ><?=$rs['group_name']?></option>
 <?php	} ?>
@@ -403,7 +403,7 @@ jQuery(document).ready(function ($) {
 			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;">
 					<option value=''>2.Select table</option>
 <?php 
-				if( $mode=='SearchTAB' || isset($_SESSION['tab_nmS'])) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
+				if( $mode=='SearchTAB' || isset($_POST['tab_nmS'])) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
 				$result = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and group_code='$project_code' and fld_enm='seqno'" );
 				while( $rs = sql_fetch_array($result)) {
 					if( $tab_enm == $rs['tab_enm'] ) $sel = ' selected ';
@@ -429,7 +429,7 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 <?php
 	$qna = "sequence of the work|Select Project and Table.|Enter index name.|Click Column button.|Click Create button.|"; // 4:item cnt, ^:item add.
 	$column_ = "";
-	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS'])){
+	if( $mode == 'SearchTAB' || isset($_POST['tab_nmS'])){
 		$itX = explode("@",$item_array);
 		for( $i=0, $j=0; $i<$item_cnt; $i++, $j++){
 			$it = explode("|",$itX[$i]);
@@ -455,7 +455,7 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 				  <td valign="top" style='background-color:#f5f5f5;color:black;height:30px;text-align:center;'>
 					 <SELECT id="fnclist" style="width:100%" onChange="indexlist_onclick(this.value)" multiple size="8" name="fnclist">
 <?php
-	if( $mode=='SearchTAB' || isset($_SESSION['tab_nmS'])){
+	if( $mode=='SearchTAB' || isset($_POST['tab_nmS'])){
 		$keyA = explode("@",$key_array);
 		echo "<option value='seqno' title='Cannot be deleted'>PRIMARY KEY (seqno)</option>";
 		$key_flds = ''; 

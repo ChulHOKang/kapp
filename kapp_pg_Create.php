@@ -29,11 +29,11 @@
 <meta name="robots" content="ALL">
 </head>
 <?php
-		if( isset($_POST['mode']) ) $mode		= $_POST['mode'];
-		else  $mode = "";
+		if( isset($_POST['mode']) ) $mode=$_POST['mode'];
+		else  $mode="";
 		
-	if( isset($_SESSION['project_nmS']) ) {
-		$project_nmS = $_SESSION['project_nmS'];
+	if( isset($_POST['project_nmS']) && $_POST['project_nmS']!='' ) {
+		$project_nmS = $_POST['project_nmS'];
 		$pcd_nm = explode(":", $project_nmS );
 		$project_code	= $pcd_nm[0];
 		$project_name	= $pcd_nm[1]; 
@@ -42,8 +42,8 @@
 		$project_name= "";
 		$project_code= "";
 	}
-	if( isset($_SESSION['tab_hnmS']) ) {
-		$tab_hnmS = $_SESSION['tab_hnmS'];
+	if( isset($_POST['tab_hnmS']) && $_POST['tab_hnmS']!='' ) {
+		$tab_hnmS = $_POST['tab_hnmS'];
 		$tcd_nm = explode(":", $tab_hnmS );
 		$tab_enm	= $tcd_nm[0];
 		$tab_hnm	= $tcd_nm[1]; 
@@ -333,13 +333,13 @@
 		});
 	}
 	function change_project_func(pnmS){
-		sendDataToPHP('project_nmS', pnmS); //my_func
+		//sendDataToPHP('project_nmS', pnmS); //my_func
 		document.makeform.mode.value='Project_Search';
 		document.makeform.action="kapp_pg_Create.php";
 		document.makeform.submit();
 	}
 	function change_table_func(pnmS){ // Relation_Table_func
-		sendDataToPHP('tab_hnmS', pnmS);
+		//sendDataToPHP('tab_hnmS', pnmS);
 		document.makeform.mode.value='SearchTAB';
 		document.makeform.action="kapp_pg_Create.php";
 		document.makeform.submit();
@@ -367,7 +367,7 @@
 
 	if( $mode == 'pg_new_create') {
 		$pg_code= $H_ID . "_" . time();
-		$_SESSION['pg_code'] = $pg_code;
+		$_POST['pg_code'] = $pg_code;
 			$rel_type = ""; 
 			$rel_data = ""; 
 			$pop_data = ""; 
@@ -408,7 +408,7 @@
 			echo "<script>window.open( '".$url."' , '_blank', ''); </script>";
 
 	} else if( $mode == 'Project_Search' ){
-	} else if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS'])){
+	} else if( $mode == 'SearchTAB' || isset($_POST['tab_nmS'])){
 		$aa				= explode(':', $tab_hnmS);
 		$tab_enm		= $aa[0];
 		$tab_hnm		= $aa[1];
@@ -443,13 +443,15 @@
 New Program Creation (<?=$H_ID?>)<br>
 		Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:80%; height:30px;" title='Please select the table to use for the Project! '>
 <?php 
-		if( $mode=='Project_Search' && isset( $_SESSION['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
-		else echo "<option value=''>1.Select Project</option>";
+		echo "<option value=''>1.Select Project</option>";
+		if( $mode=='Project_Search' && isset( $_POST['project_nmS']) ) echo "<option value='".$project_nmS."' selected >".$project_name."</option>";
 
 		$result= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " ); 
 		while( $rs = sql_fetch_array($result)) {
+			$chk='';
+			if( $project_code==$rs['group_code']) $chk='selected';
 ?>
-			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php if( $project_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
+			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php echo $chk;?> ><?=$rs['group_name']?></option>
 <?php	} ?>
 		</SELECT>
 
@@ -467,19 +469,18 @@ New Program Creation (<?=$H_ID?>)<br>
 		Table:&nbsp;
 		<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='background-color:#666666;color:yellow;width:80%; height:30px;'>
 <?php
-		if( $mode =='SearchTAB' || isset($_SESSION['tab_nmS']) ) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
-		else echo "<option value=''>2.Select Table</option>";
+		echo "<option value=''>2.Select Table</option>";
+		if( $mode =='SearchTAB' || isset($_POST['tab_nmS']) && $_POST['tab_nmS']!='' ) echo "<option value='".$tab_hnmS."' selected >".$tab_hnm."</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='".$H_ID."' and fld_enm='seqno'  order by upday desc");	//group by tab_enm " );
 		while( $rs = sql_fetch_array($result)) {
+			$chk='';
+			if($rs['tab_hnm']==$tab_hnm) $chk= 'selected';
 ?>
-				<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if($rs['tab_hnm']==$tab_hnm) echo " selected "; ?> title='table code:<?=$rs['tab_enm']?>'><?=$rs['tab_hnm']?></option>
+				<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php echo $chk;?> title='table code:<?=$rs['tab_enm']?>'><?=$rs['tab_hnm']?></option>
 <?php
 		}
 ?>
 		</SELECT>
-
-
-
 
 </td></tr>
 <tr><td height="30" align="left" style="border-style:;background-color:#666666;color:cyan;" <?php echo" title='New program creation order \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> align='center'>
@@ -490,14 +491,13 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 
 <input type='button' value='Create' onClick="Create_button('kapp_Create')" style="border-style:;background-color:#666fff;color:yellow; height:25px;" title='program Create and duplicate check' >
 
-
 </td></tr>
 <tr><td valign="top">
 
 <div id="here">
 <?php
 	$column_ = "";
-	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS']) ){
+	if( $mode == 'SearchTAB' || isset($_POST['tab_nmS']) ){
 		$column_ = "<p style='font-size:24px;text-align:center;font-weight: bold;border-radius:20px;border:1 solid black;height:22px;'>Select ALL: <input type='checkbox' id='all_confirm' name='all_confirm' value='Confirm' onClick='return false'>&nbsp;<input type='button' onclick='column_A();' value='Click ALL' title='Select all or deselect' ></p>";
 
 		$itX = explode("@",$item_array);
@@ -530,7 +530,6 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 <tr><td height="24" title='Enter the column name and click the button! ' >
 </td></tr>
 
-
 		<input type='hidden' id='column_attribute_index' name='column_attribute_index' >
 		<input type='hidden' id='column_index' name='column_index' >
 		<input type='hidden' name='multy_menu_sel' >
@@ -551,7 +550,7 @@ program name:<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>
 	$itemR =array();
 	$ifT	= "";	$ifD	= "";	$ifP	= "";
 //	if( isset($table10_pg) || isset($table10_tab) || isset($item_cnt) ) { // table select
-	if( $mode == 'SearchTAB' || isset($_SESSION['tab_nmS'])) { // table select
+	if( $mode == 'SearchTAB' || isset($_POST['tab_nmS'])) { // table select
 			if( isset($if_type) ) $iftypeR = explode("|", $if_type );
 			if( isset($if_data) ) $ifdataR = explode("|", $if_data );
 			if( isset($pop_data) ) $popdataR= explode("^", $pop_data );

@@ -627,11 +627,13 @@
 		<SELECT id='relation_pg_codeS' name='relation_pg_codeS' onchange="change_program_func(this.value);" style="background-color:#666666;color:yellow;width:45%; height:30px;" >
 <?php
 		echo "<option value=''>2.Select program</option>";
-		if( isset( $_POST['relation_pg_codeS']) ) echo "<option value='$relation_pg_codeS' selected >$pg_name</option>";
+		if( isset( $_POST['relation_pg_codeS']) && $_POST['relation_pg_codeS']!='' ) echo "<option value='".$relation_pg_codeS."' selected>".$pg_name."</option>";
 		$result= sql_query( "SELECT * from {$tkher['table10_pg_table']} where group_code='$project_code' and userid='$H_ID' order by seqno desc " );
 		while( $rs = sql_fetch_array($result)) {
+			$chk = '';
+			if( $pg_code==$rs['pg_code']) $chk= 'selected';
 ?>
-			<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>!<?=$rs['relation_data']?>!<?=$rs['relation_type']?>!<?=$rs['item_array']?>" <?php if( $pg_code==$rs['pg_code']) echo " selected ";?> ><?=$rs['pg_name']?></option>
+			<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>!<?=$rs['relation_data']?>!<?=$rs['relation_type']?>!<?=$rs['item_array']?>" <?php echo $chk;?> ><?=$rs['pg_name']?></option>
 <?php   } ?>
 		</SELECT>
 		<br>Relation Number:<SELECT id='relation_num' name='relation_num' onchange="change_relation_num_func(this.value);" style="border-style:;background-color:#666666;color:yellow; height:30px;font-size:15;" >
@@ -700,11 +702,13 @@
 		}
 		echo "<option value=''>Select Relation Table</option>";
 		if( $mode !='Delete_Check' && $mode!='pg_codeS_Search' && $mode=='Relation_SearchTAB' || isset($_POST['Rtab_hnmS']) )
-			echo "<option value='$Rtab_hnmS' selected >$tab_hnmR</option>";
+			echo "<option value='".$Rtab_hnmS."' selected >".$tab_hnmR."</option>";
 		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='$H_ID' and fld_enm='seqno' " );//관계용테이블선택.
 		while( $rs = sql_fetch_array($result)) {
+			$chk='';
+			if( $tab_enmR==$rs['tab_enm']) $chk= 'selected';
 ?>
-			<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['memo']?>" title='Table code:<?=$rs['tab_hnm']?>:<?=$rs['memo']?>' <?php if( $tab_enmR==$rs['tab_enm']) echo ' selected '; ?> ><?=$rs['tab_hnm']?></option>
+			<option value="<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['memo']?>" title='Table code:<?=$rs['tab_hnm']?>:<?=$rs['memo']?>' <?php echo $chk;?> ><?=$rs['tab_hnm']?></option>
 <?php
 		}
 ?>

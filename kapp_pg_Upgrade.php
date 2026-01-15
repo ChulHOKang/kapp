@@ -1026,7 +1026,7 @@
 		<br>Program:<SELECT id='pg_codeS' name='pg_codeS' onchange="change_program_func(this.value);" style="background-color:#666666;color:yellow;width:45%; height:30px;" >
 <?php
 		echo "<option value=''>2.Select program</option>";
-		if( $mode=='pg_codeS_Search' || isset( $_POST['pg_codeS']) ) echo "<option value='$pg_codeS' selected >$pg_name</option>";
+		if( $mode=='pg_codeS_Search' ) echo "<option value='".$pg_codeS."' selected >".$pg_name."</option>";
 
 		$result= sql_query( "SELECT * from {$tkher['table10_pg_table']} where group_code='$project_code' and userid='$H_ID' " );
 		while( $rs = sql_fetch_array($result)) {
