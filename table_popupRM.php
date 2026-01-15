@@ -2,8 +2,8 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 	 *  table_popupRM.php : PopUp Window setup 프로그램. <- table_popupR.php
-        call : kapp_pg_Upgrade.php, app_pg50RU.php 에서 콜.
-        call : app_pg50RC.php 에서 콜.
+        call : kapp_pg_Upgrade.php, kapp_pg_Upgrade.php 에서 콜.
+        call : kapp_pg_Create.php 에서 콜.
         X call : table_pg50R.php 에서 콜.
 	    C call : kan_table_pg70.php,   - table_pg70.php에서 콜.
 		
@@ -51,10 +51,6 @@
 	else $project_code = "";
 	if( isset( $_POST["project_name"]) ) $project_name = $_POST["project_name"]; 
 	else $project_name = "";
-	//if( isset($_POST["group_code"]) ) $group_code = $_POST["group_code"]; 
-	//else $group_code = "";
-	//if( isset($_POST["group_name"]) ) $group_name = $_POST["group_name"]; 
-	//else $group_name = "";
 	if( isset($_POST["pg_codeS"]) ) $pg_codeS = $_POST["pg_codeS"]; 
 	else $pg_codeS = "";
 	if( isset($_POST["pg_code"]) ) $pg_code = $_POST["pg_code"]; 
@@ -79,15 +75,10 @@
 
 	$tab_enm_pop = "";
 	$tab_hnm_pop = "";
-	$app_pg50RU = "";
-	$app_pg50RC = "";
-	/*	if( $mode_call == 'table_item_run30' ) $table_item_run30 = 'on';
-	else if( $mode_call == 'table_item_run50' ) $table_item_run50 = 'on';
-	else if( $mode_call == 'table_item_run50R' ) $table_item_run50R = 'on';
-	else if( $mode_call == 'table_item_run70' ) $table_item_run70 = 'on';
-	else */
-	if( $mode_call == 'kapp_pg_Upgrade' ) $app_pg50RU = 'on';
-	else if( $mode_call == 'kapp_pg_Create' ) $app_pg50RC = 'on';
+	$kapp_pg_Upgrade = "";
+	$kapp_pg_Create = "";
+	if( $mode_call == 'kapp_pg_Upgrade' ) $kapp_pg_Upgrade = 'on';
+	else if( $mode_call == 'kapp_pg_Create' ) $kapp_pg_Create = 'on';
 	$pop_move_data = '';
 	$Column_movable ='';
 	
@@ -129,14 +120,11 @@
 		if( isset($pop_table) && $pop_table !='' ) $_SESSION['old_pop_tab']= $pop_table;
 		else $_SESSION['old_pop_tab'] = "";
 		
-		//$sqlPG = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-		//$resultPG = sql_query($sqlPG);
-
 		$Sql = "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 		$rsPG = sql_fetch($Sql); //rs_data_get($pg_code);
 	
 		
-		if( $rsPG['group_code'] ) {
+		if( $rsPG['pg_code'] ) {
 			$tab_enm	=$rsPG['tab_enm'];
 			$tab_hnm	=$rsPG['tab_hnm'];
 			$item_cnt	=$rsPG['item_cnt'];
@@ -167,7 +155,6 @@
 					$if_TabS = "";
 					$pop_tabS = "";
 			}
-			$pg_codeS = $rsPG['pg_code'] . ":" . $rsPG['pg_name'];
 			$tab_hnmS = $rsPG['tab_enm'] . ":" . $rsPG['tab_hnm'];
 			$tab_hnm  = $rsPG['tab_hnm'];
 			
@@ -212,11 +199,9 @@
 				$Column_name	= $ColnmA[$ln];
 				$Column_movable ='';
 				$popup_data	= "";
-				//m_("$ln - if_line: $if_line - col_: " . $col_[$if_line] );
-				//2 - if_line: 1 - col_: |fld_2|거래처|VARCHAR|15
 			}
 		}
-	} else {  // mode == '' 아니다		
+	} else {  // mode != '' 
 			if( isset($_POST['tab_enm_pop']) ) $tab_enm_pop = $_POST['tab_enm_pop'];
 			else $tab_enm_pop = "";
 			if( isset($_POST['tab_hnm_pop']) ) $tab_hnm_pop = $_POST['tab_hnm_pop'];
@@ -273,14 +258,11 @@
 		$tab_enm_pop = $pop_[0];	
 		$tab_hnm_pop = $pop_[1];
 		$pop_table   = ""; //$pop_[0];	처음 팝업 테이블 선택시에 set 한다 중요.
-	} else if( $mode =="Save_End" ) {
-		m_('=============  No use,  Save_End , mode: ' + $mode ); // 확인필요...
+	} else if( $mode =="Save_End" ) {	m_('=============  No use,  Save_End , mode: ' + $mode ); // 확인필요...
 		if( isset($if_data[$if_line]) ) $pop_table = $if_data[$if_line];	
 		else $pop_table	    = "";	
 		$move_pop_data	= $_POST["move_pop_data"];
 	} else if( $mode =="table_popup_save" ) {
-			//m_("11111---------------- mode: $mode, --- if_typeD:". $if_typeD);	//--- if_typeD:|13|1|3||
-			//11111---------------- mode: table_popup_save, --- if_typeD:|13|13|||||||
 	} else { // 팝업이 설정되지않은 상테에서 처음 실행할때 탄다.
 		if( $mode_call=="kapp_pg_Create" || $mode_call=="kapp_pg_Upgrade" ){ // add 2023-09-12 : if 추가 else 이전 까지  - 테스트 미완성 중요.
 			$ln	= $if_line + 1;
@@ -292,21 +274,8 @@
 				else $if_typeX = $if_typeX . "0|";
 			}
 			$if_typeD = $if_typeX;			
-			//m_("mode: $mode, if_typeD:". $if_typeD);			//if_typeD:|13|1|3||
-			//mode: , if_typeD:0|0|13|13|0|0|0|0|0|
-			//mode: , if_typeD:||13|13||||||
 		} else {
 			m_("Error -- mode_call: $mode_call");
-			/*$ln	= $if_line + 1;
-			$type_ = explode("|", $if_typeD ); // $if_typeD=rsPG['if_type'] 
-			if( $type_[$ln] !== '13') m_("Reset to column using popup window."); // 팝업창을 사용하는 컬럼으로 재설정합니다.
-			$type_[$ln] = '13'; // 13:popup column으로 설정.
-			$if_type = '';
-			for( $i=0; $i< $item_cnt; $i++ ) {
-				if( isset($type_[$i]) ) $if_type = $if_type . $type_[$i] . "|";
-				else $if_type = $if_type . "|";
-			}
-			$if_typeD = $if_type; */
 		}
 	}
 		$pop_col = array();
@@ -424,14 +393,14 @@
 		document.makeform.pop_tab1_click.value = pop_click_col;
 	}
 	function sellist_tab2_onclick(click_col) { // pg table click
-		if( click_col < 0 ) {// \n 프로그램의 컬럼을 선택하세요! 
+		if( click_col < 0 ) {
 			alert(' Please select the program column!');
 			return false;
 		}
 		var i = click_col;
         document.makeform.pg_tab2_click.value = click_col;
 		pop_tab_no = document.makeform.pop_tab1_click.value;
-		if( pop_tab_no == ''){ // \n 팝업 테이블의 컬럼을 선택하세요! 
+		if( pop_tab_no == ''){
 			alert(' Please select a column in the popup table!');
 			return false;
 		}
@@ -448,7 +417,6 @@
 		var pop_tabS_text	 = makeform.pop_tabS[selind].text;
 		var pop_tabS_value = 	makeform.pop_tabS[selind].value;
 		if( pop_tabS_value == '' ) {
-			//alert( pop_tabS_text + ", pop_tabS_value: " + pop_tabS_value + ", selind: " +selind );
 			alert("Select a pop-up table and specify the columns!"); return false;//팝업 테이블을 선택하고 컬럼을 지정 하세요!
 		}
 		if( !confirm(' Would you like to save it?') ) return false;
@@ -466,12 +434,11 @@
 		tnm = makeform.tab_hnm.value;
 		tnmS= makeform.tab_hnmS.value;
 		pcdnm = pcd + ":" + pnm;
-		makeform.mode.value= "SearchPG"; 
+		makeform.mode.value= "pg_codeS_Search"; //  SearchPG - pg_codeS_Search
 		makeform.action= $mode_call + ".php";
 		makeform.submit();
 	}
 	function save_end_run( mode, pop_tabS, if_line, move_pop_data){
-		m_("save_end_run --- mode: " + mode); //XX on use
 		document.makeform.if_line.value = if_line; 
 		pg_code = document.makeform.pg_code.value; 
 		document.makeform.move_pop_data.value=move_pop_data;
@@ -519,9 +486,9 @@
 			alert(' Select a table column in the popup window! i:'+i);
 			return false;
 		}
-		if( j < 0 ) {// \n 프로그램의 컬럼을 선택하세요! 
+		if( j < 0 ) {
 			alert(' Please select the program  column! j:'+j);
-			return false; //makeform.sellist_tab2.focus();
+			return false; 
 		}
 		var fld1e = document.getElementById('sellist_tab1'+i).value;//pop_tab
 		fld1ex = fld1e.split(":");
@@ -539,7 +506,7 @@
 	function pop_table_func(tab, if_line) {
 		reset = document.makeform.reset.value;
 		document.makeform.if_TabS.value = tab;
-		const ln = if_line*1 + 1; // 중요. 계산은 *1 해야만 값이 계산된다. 안그러면 if_line이 1이면 11로 계산된다. 스크립트 버그?
+		const ln = if_line*1 + 1;
 		var if_DD = '';
 		var DD = document.makeform.if_dataD.value; 
 		item_cnt = document.makeform.item_cnt.value;
@@ -550,20 +517,13 @@
 			}
 		} else {
 			var if_D = DD.split("|");
-			var len = if_D.length - 1; // 컬럼수를 맞춰야한다. 중요. 8 , 7
+			var len = if_D.length - 1;
 			if_D[ln] = tab;
 			for( i=0; i< len; i++) {
 				if_DD = if_DD + if_D[i] + "|";
 			}
 		}
-//alert( item_cnt + ", pop_table_func tab: " +tab +", if_line: " +if_line + ", if_DD: " + if_DD + ", DD: " + DD);
-//9, pop_table_func tab: crakan59_gmail_1762739990:거래처테이블, if_line: 1, if_DD: ||, DD: ||
-//9, pop_table_func tab: crakan59_gmail_1762740284:성품테이블, if_line: 2, 
-
 		document.makeform.if_dataD.value = if_DD;
-		//alert("pop_table_func --- if_DD: " + if_DD);
-		//pop_table_func --- if_DD: ||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||||
-
 		document.makeform.mode.value='SearchTAB';
 		tabsel = tab.split(":");
 		document.makeform.tab_enm_pop.value=tabsel[0];
@@ -574,7 +534,7 @@
 	}
 	function downItemA() {
 		var j = document.makeform.pop_tab1_click.value;
-		if ( j < 0 ){	// column 선택 확인.
+		if ( j < 0 ){
 			alert(' Please select a column! ' );
 			return false;
 		}
@@ -586,25 +546,25 @@
 
 		var top_line = 0;
 		var end_line = len -1;
-		if (j == end_line ) { // down		//if (j == top_line ) { // up
+		if (j == end_line ) {
 			alert('top_line j:' + j);
-			return false; // down은 마지막 컬럼이면 return false
+			return false;
 		}
 		if (j < 0 ) {
 			alert(' Please select a column! ' );
 			return false;
 		}
-		tmpiftype = document.makeform.iftypeA.value; // 선택한 컬럼의 다음 컬럼 백업.
-		tmpifdata = document.makeform.ifdataA.value; //alert( 'st --- D:' +tmpifdata + ' , T:'+tmpiftype );
+		tmpiftype = document.makeform.iftypeA.value;
+		tmpifdata = document.makeform.ifdataA.value;
 		ifT = tmpiftype.split('|'); 
 		ifD = tmpifdata.split('|');
 		var stT = '';
 		var stD = '';
 		for (k = 0; k < colnm.length; k++) {
 			if(k == j){
-				bufT = ifT[k+1]; // 백업
+				bufT = ifT[k+1];
 				bufD = ifD[k+1];
-				ifT[k+1] = ifT[j];       //val:|0|13|11|0
+				ifT[k+1] = ifT[j];
 				ifD[k+1] = ifD[j]; 
 				ifT[j] = bufT;
 				ifD[j] = bufD;
@@ -633,7 +593,7 @@
 		document.makeform.item_array.value = str_array;
 		document.makeform.item_arrays.value = str_array; 
 		document.getElementById('column_list'+i).checked=true;
-		document.makeform.pop_tab1_click.value = i; // click point set
+		document.makeform.pop_tab1_click.value = i;
 	}
 	//----------------------------------------------
 	function upItemA() {
@@ -712,7 +672,7 @@
 		}
 		var colnm = document.getElementsByName('sellist_tab1');
 		colnm_value = colnm[j].value;	
-		st = colnm_value.split(':'); // st:fld_8:stock
+		st = colnm_value.split(':');
 		resp = confirm(' Are you sure you want to exclude columns? j:'+j+':'+st[1]); // \n 컬럼을 제외 하시겠습니까?
 		if( !resp ) return false; 
 		var item_cnt_pop = colnm.length;
@@ -735,17 +695,17 @@
 			if( chk == 1){
 				if( i == end_line ){ // 마지막 라인이면 다음번째 가져올 컬럼이 없다.
 				} else {
-					colnm_value = colnm[j].value; // 선택한컬럼의 다음번째 컬럼을 가져온다.
+					colnm_value = colnm[j].value;
 					document.getElementById('sellist_tab1'+i).value = colnm_value; // pop_tab
 					st = colnm_value.split(':');
-					document.getElementById('columnR'+i).innerHTML = st[1];// 컬럼명출력.
+					document.getElementById('columnR'+i).innerHTML = st[1];// column name display
 				}
 			}
 		}
 		var kk = item_cnt_pop -1;
 		document.makeform.item_cnt_pop.value = kk;
 		document.getElementById('sellist_tab1'+kk).value = '';
-		document.getElementById('columnRX'+kk).innerHTML = ''; // 컬럼 label 출력화면에서 제거..
+		document.getElementById('columnRX'+kk).innerHTML = ''; // column label erase
 		document.makeform.pop_tab1_click.value = '';
 		var str_array = '';
 		for( k = 0; k < kk; k++) {
@@ -753,8 +713,8 @@
 			st = colnm_value.split(':'); 
 			str_array += st[0] + ':' + st[1] + '@';
 		}
-		makeform.item_array_pop.value = str_array; // display:none
-		makeform.pdata1.value = str_array; // Add 2022-02-18     display:none
+		makeform.item_array_pop.value = str_array;
+		makeform.pdata1.value = str_array;
 		return;
 	}
 	function rr_func( ss ){
@@ -791,8 +751,6 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 			<input type="hidden" name="pg_code"         value="<?=$pg_code?>">
 			<input type="hidden" name="project_code"  value="<?=$project_code?>">
 			<input type="hidden" name="project_name"  value="<?=$project_name?>">
-			<!-- <input type="hidden" name="group_code"	    value="<?=$group_code?>">
-			<input type="hidden" name="group_name"	  value="<?=$group_name?>"> -->
 			<input type="hidden" name='move_pop_data' value="<?=$move_pop_data?>" > 
 			<input type="hidden" name='pop_tab1_click' value='' > 
 			<input type="hidden" name='pg_tab2_click'   value='' > 
@@ -924,25 +882,12 @@ PopUp Window Column Setup<font color='gray'>(PG: kapp/table_popupRM.php: user le
 </form>
 <?php
 if( $mode == 'table_popup_save' ){
-	//m_("333 ----------- table_popup_save ");
-	//333 ----------- table_popup_save 
-	/*if( $table_item_run30 == 'on' ) {
-		$url = "table_pg30.php";
-	} else if( $table_item_run50R == 'on' ) {
-		set_session('pg_codeS',  $pg_codeS);
-		$url = "table_pg50R.php";
-	} else if( $table_item_run70 == 'on' ) {
-		set_session('pg_codeS',  $pg_codeS);
-		$url = "table_pg70.php";
-	} else */
-	if( $app_pg50RU == 'on' ) {
-		set_session('pg_codeS',  $pg_codeS);
+	if( $kapp_pg_Upgrade == 'on' ) {
 		$url = "kapp_pg_Upgrade.php";
-	} else if( $app_pg50RC == 'on' ) {
-		set_session('pg_codeS',  $pg_codeS);
-		$url = "app_pg50RC.php";
+	} else if( $kapp_pg_Create == 'on' ) {
+		$url = "kapp_pg_Create.php";
 	}
-	//m_("url: $url -- 333 pg_codeS: $pg_codeS ");//url: app_pg50RU.php -- 333 pg_codeS: crakan59_gmail_1763174071:매출장부 
+	set_session('pg_codeS',  $pg_codeS);
 	//echo "<script>save_end_run('Save_End','$pop_tabS','$if_line','$move_pop_data');</script>";	
 }
 function movable_func( $move_col ){

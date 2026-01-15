@@ -1,15 +1,15 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 
-	$ss_mb_id	= get_session("ss_mb_id");
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-
-	if( !$H_ID || $H_LEV < 2 )
-	{
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( !$H_ID ){
 		m_("Only registered members can use it after membership.");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
+	} else {
+		$H_LEV = $member['mb_level'];
 	}
 
 /* ---------------------------------------------------------------------------------
@@ -31,12 +31,18 @@
 
 <?php
 
-			$mode = $_POST['mode'];
-			$seqno = $_POST['seqno'];
-			$tab_enm = $_POST['tab_enm'];
-			$tab_hnm = $_POST['tab_hnm'];
-			$tab_hnmS = $_POST['tab_hnmS'];
-			$pg_codeS = $_POST['pg_codeS'];
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode='';
+	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
+	else $seqno='';
+	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
+	else $tab_enm='';
+	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
+	else $tab_hnm='';
+	if( isset($_POST['tab_hnmS']) ) $tab_hnmS = $_POST['tab_hnmS'];
+	else $tab_hnmS='';
+	if( isset($_POST['pg_codeS']) ) $pg_codeS = $_POST['pg_codeS'];
+	else $pg_codeS='';
 ?>
 <link rel="stylesheet" type="text/css" href="admin.css">
 <body leftmargin="0" topmargin="0">
@@ -44,20 +50,20 @@
 <script language="JavaScript"> 
 <!--
 	function rdata_sel(pg_rdata) {
-			var ret_data="";
-			rdata = pg_rdata.split("$");
-			for( i=1; rdata[i]!=""; i++ ) {
-				rrdata = rdata[i];
-				if( !rrdata ) break;
-				fld = rrdata.split("|");
-				fld_p		= fld[0];
-				rel_sik	= fld[1];
-				fld_r		= fld[2];
-				fld1 = fld_p.split(":");
-				fld2 = fld_r.split(":");
-				ret_data = ret_data + fld1[1] + rel_sik + fld2[1] + ",";
-			}
-			return ret_data;
+		var ret_data="";
+		rdata = pg_rdata.split("$");
+		for( i=1; rdata[i]!=""; i++ ) {
+			rrdata = rdata[i];
+			if( !rrdata ) break;
+			fld = rrdata.split("|");
+			fld_p		= fld[0];
+			rel_sik	= fld[1];
+			fld_r		= fld[2];
+			fld1 = fld_p.split(":");
+			fld2 = fld_r.split(":");
+			ret_data = ret_data + fld1[1] + rel_sik + fld2[1] + ",";
+		}
+		return ret_data;
 	}
 
 	function sellist_onclick() {
@@ -74,12 +80,12 @@
 		makeform.pg_relation.value = "";
 		var selind = makeform.sellist.selectedIndex;
 		var tab = ""; 
-		tab=makeform.sellist.options[selind].value;
-		var pgR="";
+		tab = makeform.sellist.options[selind].value;
+		var pgR ="";
 		var formula_data = "";
 		var pop_table = "";
-		var iftype="";
-		var ifdata="";
+		var iftype ="";
+		var ifdata ="";
 		pgR = tab.split("!");
 		makeform.tab_enm.value=pgR[0];
 		makeform.tab_hnm.value=pgR[1];
@@ -105,13 +111,13 @@
 				if( typeX == "" ) break;
 				dataX = ifdata[i];
 				if( typeX == '11') { 
-					formula_data=dataX.split(":"); 
-					makeform.pg_formula.value=formula_data[1];
-				} else formula_data="";	//fld_4 = fld_2 * fld_3:금액 = 단가 * 수량
+					formula_data =dataX.split(":"); 
+					makeform.pg_formula.value =formula_data[1];
+				} else formula_data ="";	//fld_4 = fld_2 * fld_3:금액 = 단가 * 수량
 				if( typeX == '13') { 
-					pop_table=dataX.split(":"); 
-					makeform.tb_popup.value=pop_table[1];
-				} else pop_table="";
+					pop_table =dataX.split(":"); 
+					makeform.tb_popup.value =pop_table[1];
+				} else pop_table ="";
 			}
 		}	else iftype='';
 		var pop_move="";
@@ -147,7 +153,6 @@
 		}	else fld='';
 		makeform.pg_array.value=fld_h;
 		rrr = pgR[5];
-		//alert('rrr:'+rrr);	 //rrr:dao_1537844601:입고정보$fld_1:상품|=|fld_1:상품$fld_2:수량|=|fld_2:수량$fld_2:수량|=|fld_3:재고$fld_5:일자|=|fld_4:일자
 		if( rrr ) {
 			rel = rrr.split("$");
 			rtb = rel[0];
@@ -155,39 +160,6 @@
 			makeform.tb_relation.value = rtab[1];
 			makeform.pg_relation.value = rdata_sel( rrr );			//
 		}
-	}
-
-	function change_table_func(tab) {
-		tab = document.makeform.tab_hnmS.value;
-		document.makeform.mode.value='SearchTAB';	// table_relation.php에 전달한다.
-		document.makeform.action="table_pg70.php";
-		document.makeform.target='runf_main';
-		document.makeform.submit();
-	}
-
-	function change_program_func(pg) {
-		pg = document.makeform.pg_codeS.value;
-		document.makeform.mode.value='SearchPG';
-		document.makeform.action="table_pg70.php";
-		document.makeform.target='runf_main';
-		document.makeform.submit();
-		return;
-	}
-
-	function relation_setup(pg)
-	{
-		pg_name = document.makeform.pg_name.value;
-		if( !pg_name ) {
-			alert(" Please select or enter program name!");
-			document.makeform.pg_name.focus();
-			return false;
-		}
-
-		document.makeform.mode.value = 'SearchPG';
-		document.makeform.mode_call.value = 'program_pglist';
-		document.makeform.action='table_relation.php';
-		document.makeform.target='tab_pg_list';
-		document.makeform.submit();
 	}
 
 	function run_pg(pg_code)
@@ -200,16 +172,12 @@
 		}
 		document.makeform.mode.value = 'program_pglist';
 		document.makeform.mode_call.value = 'program_pglist';
-		//document.makeform.action='tkher_program_run.php';
 		document.makeform.action='tkher_program_run.php?pg_code='+pg_code;
-//		document.makeform.action='table_pg70_write.php';
-//		document.makeform.action='table_item_run70.php';
 		document.makeform.target= 'tab_pg_list';
 		document.makeform.submit();
 	}
 
-	 function run_tablelist(pg)
-	{
+	function run_tablelist(pg){
 			pg_name = document.makeform.pg_name.value;
 			if( !pg_name ) {
 				alert(" Please select a Program! ");
@@ -227,24 +195,7 @@
 			}
 	}
 
-	 function run_pg_list(pg)
-	{
-			pg_name = document.makeform.pg_name.value;
-			if( !pg_name ) {
-				alert(" Please select a Program! ");
-				document.makeform.pg_name.focus();
-				return false;
-			} else {
-				document.makeform.mode.value='program_pglist';
-				document.makeform.action='tab_list_pg70.php';
-				document.makeform.target='tab_pg_list';
-				document.makeform.submit();
-				tab_hnm = document.makeform.pg_name.value;
-			}
-	}
-	
-	function program_search_onclick()
-	{
+	function program_search_onclick(){
 			pg_name = document.makeform.program_name_search.value;
 			if( !pg_name ) {
 				alert(" Please enter the program name! ");
@@ -258,12 +209,10 @@
 
 	function group_code_change_func(cd){
 		index = document.makeform.group_code.selectedIndex;
-		//alert('index: ' + index );
 		nm = document.makeform.group_code.options[index].text;
 		document.makeform.group_name.value = nm;
 		vv = document.makeform.group_code.options[index].value;
 		document.makeform.group_codeX.value = vv;
-		//alert('cd: ' + cd + ', nm: ' + nm);
 		document.makeform.mode.value = "project_search";
 		document.makeform.action ="program_pglist.php";
 		document.makeform.submit();
@@ -276,10 +225,6 @@
 	$w='100%';
 	$w2='200';
 	$pg_code = $H_ID . "_" . time();
-	if( $mode_session == 'POPUP') {
-	} else if( $mode_session == 'Formula') {
-	}
-	//---------------------------------------------------------------------------------------------------------
 	if( $mode == 'SearchTAB' ){
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
@@ -347,42 +292,32 @@
 
 			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
- if( strlen($_POST['group_name']) > 0 ){
+	echo "<option value=''>Select Project</option>";
+	if( $mode=='project_search' || isset($_POST['group_codeX']) ) echo "<option value='".$_POST['group_codeX']."' selected >".$_POST['group_name']."</option>";
+
+			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
+			while( $rs = sql_fetch_array( $result)) {
+				$check = '';
+				if( isset($_POST['group_codeX']) && $rs['group_code']== $_POST['group_codeX'] ) $check = 'selected';
 ?>
-							<option value='<?=$group_code?>' selected ><?=$_POST['group_name']?></option>
-<?php
-			} else {
-?>
-							<option value=''>Select Project</option>
-<?php
-			}
-					$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
-					while( $rs = sql_fetch_array( $result)) {
-?>
-							<option value='<?=$rs['group_code']?>'><?=$rs['group_name']?></option>
-							<!-- <option value='<?=$rs['group_code']?>' <?php if($rs['group_name']==$group_name) echo "selected"; ?>><?=$rs['group_name']?></option> -->
-<?php
-					}
-?>
-			</select>
+				<option value='<?=$rs['group_code']?>' <?php echo $check; ?> ><?=$rs['group_name']?></option>
+<?php       } ?>
+			</SELECT>
 			
 			
 			<b>[ Program List ]</b> <br> 
 		</tr>
 		<tr>
 		   <td width="100%" valign="top" align="left">
-			  <!-- <div id='menu_normal'> -->
-							<!-- <table cellspacing="0" cellpadding="0" width="200" border="0">
-								  <tr>
-                                     <td valign="top"> -->
+
 			<select id="sellist" name="sellist" onDblClick="run_tablelist('program_pglist')" onChange="" onClick="sellist_onclick()" multiple='multiple' size="14" <?php echo "title=' Double-click to view the data list.' "; ?> style="border-style:;background-color:black;color:cyan; WIDTH: 315px; height:150;">
 <?php
-			$program_name_search = $_POST['program_name_search'];
-			if( $program_name_search )
-					$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_name like '%$program_name_search%' order by pg_name ";
-			else if( $mode == "project_search" )
+			if( $mode == "project_search" )
 					$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='".$_POST['group_codeX']."' order by upday desc";
-			else	$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc";
+			else if( isset($_POST['program_name_search']) && $_POST['program_name_search'] !='' )
+					$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_name like '%$program_name_search%' order by pg_name ";
+			else	$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='".$group_code."' order by upday desc";
+			//else	$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc";
 			$result = sql_query($sql);
 			while($rsP = sql_fetch_array($result)) {
 					$seqno = $rsP['seqno']; 
@@ -394,9 +329,7 @@
 			}//while
 ?>
 		</select>
-                                    <!--  </td>
-                                   </tr>
-                            </table> -->
+
                        </div>
                       </td>
 					</tr>

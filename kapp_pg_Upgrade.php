@@ -62,13 +62,10 @@
 		$tab_enm='';
 		$tab_hnm = '';
 	}
-
 	if( isset($_POST['pop_tabS']) ) $pop_tabS = $_POST['pop_tabS'];
 	else $pop_tabS = '';
-
 	if( isset($_POST['seqno']) ) $seqno = $_POST['seqno'];
 	else $seqno = '';
-
 	if( isset($_POST['mode_session']) && $_POST['mode_session'] !=='' ) $mode_session   = $_POST['mode_session'];
 	else if( isset($_SESSION['mode_session']) && $_SESSION['mode_session'] !=='' ) $mode_session   = $_SESSION['mode_session'];
 	else $mode_session   = '';
@@ -248,8 +245,7 @@
 				var str_val = makeform.pg_codeS.options[i].value;
 				var pgnm = makeform.pg_codeS.options[i].text;
 				if(pg_name == pgnm){
-					alert("Program name is duplicate. Please use a different name!");
-					// \n 프로그램명이 중복입니다. 다른 명칭을 사용해주세요! pgnm:
+					alert("Program name is duplicate. Please use a different name!"); // \n 프로그램명이 중복입니다. 다른 명칭을 사용해주세요! pgnm:
 					document.makeform.pg_name.focus();
 					return false;
 				}
@@ -266,8 +262,8 @@
 		ss="";
 		for(i=0;i<len;i++){
 			rr = qna1[i].split('|');
-			lenj = rr.length-2; // 정답을 전달 경우. - 문제 풀이 형식. k_func_ok(,,)
-			ok = rr.length-1;   // 정답을 전달 경우. - 문제 풀이 형식. - 정답번호. k_func_ok(,,ok=정답번호)
+			lenj = rr.length-2;
+			ok = rr.length-1; 
 			ss+=" &#160; <p><form><div>"+(i+1)+". "+rr[0]+"</div> ";
 			for(k=0,j=1; k < lenj; k++, j++){
 				ss+=" &#160; <label><span><input type='radio' name='qna' onclick=\"k_func_ok('"+ rr[j] +"', "+j+", "+rr[ok]+")\" value="+ rr[j] +">" +j+'. '  + rr[j]+" &#160; </span></label><br>";
@@ -329,9 +325,6 @@
 				document.makeform.ifcheck[0].checked=true;
 				break;
 		}
-
-
-
 	}
 	function column_list_onclickA( ss, j ){ 
 		document.makeform.column_attribute.value = '';
@@ -341,8 +334,8 @@
 		document.makeform.column_data_type.value   = col_attr[3];
 		if_type = document.makeform["if_type[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
-		document.makeform.col_attr_old.value = if_type; // column attribute - old save
-		alert("column_list_onclickA if_type: "+if_type);//ifcheck_onclickA r: 13, column_index: 1
+		document.makeform.col_attr_old.value = if_type; 
+		alert("column_list_onclickA if_type: "+if_type);
 		switch( if_type ){
 			case 0:
 				document.makeform.ifcheck[0].checked=true;
@@ -386,7 +379,7 @@
 
 	function downItemA() {
 		var j = document.makeform.column_index.value;
-		if ( j < 0 ){	// column 선택 확인.
+		if ( j < 0 ){
 			alert(' Please select a column! ' );
 			return false;
 		}
@@ -397,7 +390,7 @@
 		var end_line = len -1;
 		if (j == end_line ) {
 			alert('end_line j:' + j);
-			return false; // down은 마지막 컬럼이면 return false
+			return false; 
 		}
 		if (j < 0 ) {
 			alert(' Please select a column! ' );
@@ -431,7 +424,7 @@
 			colnm_value = colnm[k].value;
 			st = colnm_value.split('|');
 			str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
-			document.getElementById('columnR'+k).innerHTML = st[2];//컬럼 내용 화면출력.
+			document.getElementById('columnR'+k).innerHTML = st[2];
 		}
 		makeform.item_array.value = str_array;
 		document.getElementById('column_list'+i).checked=true;
@@ -440,7 +433,7 @@
 	}
 	function upItemA() {
 		var j = document.makeform.column_index.value;
-		if ( j < 0 ){	// column 선택 확인.
+		if ( j < 0 ){
 			alert(' Please select a column! ' );
 			return false;
 		}
@@ -483,13 +476,13 @@
 		var str_array = '';
 		for (k = 0; k < colnm.length; k++) {
 			colnm_value = colnm[k].value;
-			st = colnm_value.split('|');       //val:275|fld_2|작업공정|CHAR|10
+			st = colnm_value.split('|');
 			str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
-			document.getElementById('columnR'+k).innerHTML = st[2];//컬럼 내용 화면출력.
+			document.getElementById('columnR'+k).innerHTML = st[2];
 		}
 		makeform.item_array.value = str_array;
 		document.getElementById('column_list'+i).checked=true;
-		document.makeform.column_index.value = i; // click point set
+		document.makeform.column_index.value = i;
 	} 
 	function del_func() {
 		var pg = document.makeform.pg_codeS.value;
@@ -553,12 +546,12 @@
 		document.makeform.item_cnt.value = kk;
 		fld_msg = document.getElementById('column_list'+kk).value
 		document.getElementById('column_list'+kk).value = '';
-		document.getElementById('columnRX'+kk).innerHTML = ''; // 컬럼 label 출력화면에서 제거..
+		document.getElementById('columnRX'+kk).innerHTML = ''; 
 		document.makeform.column_index.value = '';
 		var str_array = '';
 		for (k = 0; k < kk; k++) {
 			colnm_value = colnm[k].value;
-			st = colnm_value.split('|');       //val:275|fld_2|작업공정|CHAR|10
+			st = colnm_value.split('|');
 			str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
 		}
 		makeform.item_array.value = str_array;
@@ -597,13 +590,13 @@
 		}
 		document.makeform.if_line.value = selind;
 		var colnm = document.getElementsByName('column_list');
-		var colnm_value = colnm[selind].value; //colnm_value: |fld_2|fld2|VARCHAR|15
+		var colnm_value = colnm[selind].value; 
 
 		st = colnm_value.split('|');
 		var col_len = st[4];
 		var new_column = st[0]+"|"+st[1]+"|"+st[2]+"|"+st[3]+"|" + "255";
 		document.makeform.if_column.value = st[1];
-		document.makeform.sellist.value = new_column; //colnm_value;// 기존에 sellist:listbox에서 사용하던 것 hidden 추가.
+		document.makeform.sellist.value = new_column;
 
 		var obj1 = document.makeform.ifcheck.value; 
 		var obj2 = document.makeform.column_attribute.value;
@@ -614,7 +607,7 @@
 				document.makeform.column_attribute.value		= '';
 				document.makeform["if_type[" + selind + "]"].value = r;
 				break;
-			case 1: //	msge="Radio Button";	//alert( st[3] + ", r: " + r + ", col_attr_old: " + col_attr_old);//INT, r: 1, col_attr_old: 0
+			case 1: 
 				if( st[3] == 'TEXT' || st[3] == 'DATE'  || st[3] == 'TIME' || st[3] == 'DATETIME' || st[3] == 'PASSWORD' ){
 					alert( st[3] + ", type cannot be set" );
 					document.makeform["if_type[" + selind + "]"].value = 0;
@@ -692,7 +685,7 @@
 					document.makeform.target          = '_self';
 					document.makeform.action          = 'table_formulaM.php';
 					document.makeform.mode.value      = 'run13';
-					document.makeform.mode_call.value = 'kapp_pg_Upgrade'; //document.makeform.mode_call.value = 'table_item_run50R';
+					document.makeform.mode_call.value = 'kapp_pg_Upgrade';
 					document.makeform.submit();
 				} else {
 					alert( st[3] + ", You cannot set the text type" );
@@ -869,7 +862,6 @@
 		var item_cnt = colnm.length;
 		var str_array= "";
 
-		//중요! - 컬럼 순서변경, 컬럼명칭 변경, 컬럼 조건및 조건데이터 처리 에따른 item_array 재생성.18-09-11
 		for( i = 0; i < item_cnt; i++) {
 			colnm_value = colnm[i].value;
 			st = colnm_value.split('|');
@@ -890,7 +882,7 @@
 		document.makeform.submit();
 	}
 
-
+	// no use
 	function sendDataToPHP( projectnmS, pnmdataS ) {
 		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
@@ -912,7 +904,7 @@
 			alert('Select Project!');
 			return false;
 		}
-		//sendDataToPHP('project_nmS', pnmS); //my_func
+		//sendDataToPHP('project_nmS', pnmS);
 		document.makeform.mode.value='Project_Search';
 		document.makeform.action="kapp_pg_Upgrade.php";
 		document.makeform.submit();
@@ -934,7 +926,7 @@
 	if( $mode_session == 'POPUP') {
 		if( isset($_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j= $if_line_session+1;
-		$mode					= 'SearchPG';
+		$mode					= 'pg_codeS_Search';
 		$aa						= explode(':', $pop_tabS );
 		if( isset( $aa[1]) &&  $aa[1] !=='' ) $column_attribute	= $aa[1]; 
 		else  $column_attribute = ''; 
@@ -947,12 +939,11 @@
 		$flda = explode('|', $arr);
 		if( isset( $flda[1]) && $flda[1] !=='' ) $fld_sel = $flda[1]; 
 		else  $fld_sel = '';; 
-		//$mode_session = '';
 		set_session('mode_session',  '');
 	} else if( $mode_session == 'Formula') {
 		if( isset( $_POST['if_line']) && $_POST['if_line'] !== 0 ) $if_line_session	= $_POST['if_line'];
 		$j	 = $if_line_session+1;
-		$mode				='SearchPG';
+		$mode				='pg_codeS_Search';
 		if( isset($_POST['formula_data']) && $_POST['formula_data'] !=='' ) $calc = explode(':', $_POST['formula_data'] );
 		else $calc = array();
 		if( isset( $calc[1]) && $calc[1] !=='' ) $column_attribute	= $calc[1];
@@ -969,7 +960,6 @@
 		else  $fld_sel =''; 
 		set_session('mode_session',  '');
 	}
-//	if( $mode=='pg_codeS_Search' || isset( $_SESSION['pg_codeS']) ){
 	if( $mode=='pg_codeS_Search' ){
 			$sqlPG			= "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
 			$resultPG		= sql_query($sqlPG);
@@ -1035,8 +1025,8 @@
 		
 		<br>Program:<SELECT id='pg_codeS' name='pg_codeS' onchange="change_program_func(this.value);" style="background-color:#666666;color:yellow;width:45%; height:30px;" >
 <?php
+		echo "<option value=''>2.Select program</option>";
 		if( $mode=='pg_codeS_Search' || isset( $_POST['pg_codeS']) ) echo "<option value='$pg_codeS' selected >$pg_name</option>";
-		else echo "<option value=''>2.Select program</option>";
 
 		$result= sql_query( "SELECT * from {$tkher['table10_pg_table']} where group_code='$project_code' and userid='$H_ID' " );
 		while( $rs = sql_fetch_array($result)) {
@@ -1119,7 +1109,7 @@
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA( 9,4)" <?php if( $fld_sel_type=='9') echo " checked "; ?> >Attached file
   <span class="checkmark"></span>
 </label>
-<br><!-- 예를들면 수량과 단가를 입력하면 금액을 계산하여주는 컬럼입니다. -->
+<br><!-- 예를들면 수량과 단가를 입력하면 금액을 계산하는 컬럼입니다. -->
 <label class="container" <?php echo "title='table_formulaM.php \n This column is calculated and output when data is registered.\n For example, if you enter quantity and unit price,\n it is a column that calculates the amount.' "; ?>>
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(11,5)" <?php if( $fld_sel_type=='11') echo " checked "; ?> >Formula <font color='blue'>[Setup]</font>
   <span class="checkmark"></span>

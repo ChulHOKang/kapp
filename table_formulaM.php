@@ -53,10 +53,10 @@
 	else $pg_codeS = "";	 // pg_codeS:dao_1633396679:출고:dao_1633396679:출고:9999:출고
 	if( isset($_POST["tab_hnmS"]) ) $tab_hnmS = $_POST["tab_hnmS"];
 	else $tab_hnmS = "";
-	if( isset($_POST["group_code"]) ) $group_code = $_POST["group_code"]; 
-	else $group_code = "";
-	if( isset($_POST["group_name"]) ) $group_name = $_POST["group_name"]; 
-	else $group_name = "";
+	//if( isset($_POST["group_code"]) ) $group_code = $_POST["group_code"]; 
+	//else $group_code = "";
+	//if( isset($_POST["group_name"]) ) $group_name = $_POST["group_name"]; 
+	//else $group_name = "";
 	if( isset($_POST["pg_code"]) ) $pg_code = $_POST["pg_code"]; 
 	else $pg_code = "";
 	if( isset($_POST["pg_name"]) ) $pg_name = $_POST["pg_name"]; 
@@ -96,7 +96,7 @@
 	//formula sellist: |fld_7|금액|INT|255, if_line: 6
 	
 	if( isset( $if_data[$if_line]) ) {
-		m_("if_data , $if_line : " . $if_data[$if_line] );
+		//m_("if_data , $if_line : " . $if_data[$if_line] );
 		$idata = $if_data[$if_line];
 	}
 
@@ -235,7 +235,7 @@ $ifline = $if_line +1;
 		pcd = makeform.project_code.value;
 		pnm = makeform.project_name.value;
 		pcdnm = pcd + ":" + pnm;
-		makeform.mode.value="table_formula";
+		makeform.mode.value="pg_codeS_Search"; //table_formula - pg_codeS_Search
 		makeform.action= $mode_call + ".php";
 		makeform.submit();
 	}
@@ -385,7 +385,7 @@ $ifline = $if_line +1;
 ?>
 
 
-			<input type="hidden" name="mode"			value="" >
+			<input type="hidden" name="mode"			value="<?=$mode?>" >
 			<input type="hidden" name="mode_call"	value="<?=$mode_call?>" >
 			<input type="hidden" name="tab_enm"		value="<?=$tab_enm?>">
 			<input type="hidden" name="tab_hnm"		value="<?=$tab_hnm?>">
@@ -400,8 +400,8 @@ $ifline = $if_line +1;
 			<input type="hidden" name="ifdata"	value="<?=$ifdata?>">
 			<input type="hidden" name="pg_code"	    value="<?=$pg_code?>">
 			<input type="hidden" name="pg_name"	    value="<?=$pg_name?>">
-			<input type="hidden" name="group_code"	value="<?=$group_code?>">
-			<input type="hidden" name="group_name"	value="<?=$group_name?>">
+			<!-- <input type="hidden" name="group_code"	value="<?=$group_code?>">
+			<input type="hidden" name="group_name"	value="<?=$group_name?>"> -->
 			<input type="hidden" name="project_code"	value="<?=$project_code?>">
 			<input type="hidden" name="project_name"	value="<?=$project_name?>">
 			<input type="hidden" name="project_nmS"	value="<?=$project_nmS?>">
@@ -524,7 +524,7 @@ $ifline = $if_line +1;
                       </td>
                      </tr>
 					  <tr>
-						<td height="24" style='background-color:cyan;'>Formula:<input id='nmx2' name='nmx2' maxlength='200' size='60' value='<?=$idata2?>' style='height:33;' readonly></td>
+						<td height="24" style='background-color:cyan;'>Formula:<input id='nmx2' name='nmx2' value='<?=$idata2?>' style='height:33;WIDTH:100%'></td>
 					  </tr>
 					<tr>
                       <td align="center" >
