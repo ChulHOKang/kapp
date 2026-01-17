@@ -66,7 +66,7 @@
 		coin_minus_func($H_ID, $config['kapp_download_point']); //$config[cf_download_point] , ($H_ID, 1000)
 		$sqltable	= $_POST['sql_list'];
 		$tab_enm	= $_POST['tab_enm'];
-		$item_cnt	= $_POST['item_cnt'];
+		//$item_cnt	= $_POST['item_cnt'];
 	} else{
 		m_("write_r : Error, "); exit;
 	}
