@@ -1,15 +1,16 @@
 <?php
-// 	$link : 로드할 URL 주소
-// 	$total : 전체 목록수
-// 	$page : 현재 페이지
-// 	$size : 한페이지에 보여줄 목록수
-// 	$seek : 목록 열지정
-// 	사용예 :  본페이지에서 $size값을 선언해주고
-//		$seek=($page*$size)-$size;
-//		mysql_data_seek($mq,$seek); 
-//		*페이징이 들어갈 위치에서 함수를 호출해 준다.
-//		paging($link,$total,$page,$size); 
-
+/*
+$link : 로드할 URL 주소
+ 	$total : 전체 목록수
+ 	$page : 현재 페이지
+ 	$size : 한페이지에 보여줄 목록수
+ 	$seek : 목록 열지정
+ 	사용예 :  본페이지에서 $size값을 선언해주고
+		$seek=($page*$size)-$size;
+		mysql_data_seek($mq,$seek); 
+		*페이징이 들어갈 위치에서 함수를 호출해 준다.
+		paging($link,$total,$page,$size); 
+*/
 
 //function paging($link, $total, $page, $size, $page_num){
 function paging($link, $total, $page, $size){
@@ -37,14 +38,11 @@ function paging($link, $total, $page, $size){
 		echo("<a href='javascript:page_move(1)'>[First]</a><span>.</span>");
 	} else {
 		echo("<span>[Start].</span>");
-		//echo("<img src=./include/img/btn/b_first_silver.gif border=0 height=30 title='First'>");
 	}
 	if( $page > $page_num ) {
 		$back_page = $first_page - 1;
-		//echo("<a href='javascript:page_move($back_page)' ><img src=./include/img/btn/btn_prev.png width=30 title='previous'></a>");
 		echo("<a href='javascript:page_move($back_page)' >[Prev]</a><span>.</span>");
 	} else {
-		//echo("<img src=./include/img/btn/btn_prev.png width=30 title='Previous'>");
 		//echo("<span>[Prev].</span>");
 	}
 	for( $i=$first_page; $i <= $last_page; $i++ ){
@@ -55,16 +53,13 @@ function paging($link, $total, $page, $size){
 	if( $last_page < $total_page){
 		$next_page=$last_page+1;
 		echo("<a href='javascript:page_move($next_page)'>[Next]</a><span>.</span>");
-		//echo("<a href='javascript:page_move($next_page)'><img src=./include/img/btn/btn_next.png width=30 title='B Next Page'></a>");
 	}else { 
-		//echo("<img src=./include/img/btn/btn_next.png width=30 title='Btn Next Page'>");
 		//echo("<span>[Next].</span>");
 	}
 	if( $last_page < $total_page){
 		echo("<a href='javascript:page_move($total_page)'>[Last]</a>");
 	}else{
 		echo("<span>[End]</span>");
-		//echo("<img src=./include/img/btn/b_last_silver.gif border=0 height=30 title='Last'>");
 	}
 	echo "</div>";
 }

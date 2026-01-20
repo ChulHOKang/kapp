@@ -3,7 +3,7 @@
    ==========================================================================================      
    tkher_db_lib.php : Use in Source Create
    - tkher_config_link.php : include
-   lib : sql_connect($host, $user, $pass, $db=TKHER_MYSQL_DB)      
+   lib : sql_connect($host, $user, $pass, $db=KAPP_MYSQL_DB)      
          sql_select_db($db, $connect)
    ------------------------------------------------------------------------------------------ 
 */
@@ -18,7 +18,7 @@
 
     $tkher_iurl = '';
 	$tkher_path = index_url_path();      
-//	$tkher_config_file = TKHER_PATH_T_ . "/tkher_config_link.php";       
+//	$tkher_config_file = KAPP_PATH_T_ . "/tkher_config_link.php";       
 
 	$tkher_config_file = "./tkher_config_link.php";       
 	//include_once( $tkher_config_file );   // 설정 파일      
@@ -36,13 +36,12 @@ for ($i=0; $i<$ext_cnt; $i++) {
     if (isset($_GET[$ext_arr[$i]]))  unset($_GET[$ext_arr[$i]]);      
     if (isset($_POST[$ext_arr[$i]])) unset($_POST[$ext_arr[$i]]);      
 }      
-define('TKHER_VERSION__', 'TKHER_V1');      
-define('_TKHER_', true);
-define('TKHER_MYSQLI_USE', true);
-define('TKHER_DISPLAY_SQL_ERROR', FALSE);
+define('KAPP_VERSION__', 'KAPP_V1');      
+define('_KAPP_', true);
+define('KAPP_MYSQLI_USE', true);
+define('KAPP_DISPLAY_SQL_ERROR', FALSE);
 
-	function index_url_path()       
-	{       
+	function index_url_path() {
 		global $tkher_iurl;
 		$result['path']	= str_replace('\\', '/', dirname(__FILE__));       
 		$tilde_rm		= preg_replace('/^\/\~[^\/]+(.*)$/', '$1', $_SERVER['SCRIPT_NAME']);       
@@ -52,41 +51,38 @@ define('TKHER_DISPLAY_SQL_ERROR', FALSE);
 		$result['root']	= preg_replace($pattern, '', $result['path']);  
 		
 		$port = ($_SERVER['SERVER_PORT'] == 80 || $_SERVER['SERVER_PORT'] == 443) ? '' : ':'.$_SERVER['SERVER_PORT'];       
-		//$http = 'http' . ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') ? 's' : '') . '://'; 
-        $http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';		
+        //$http = 'http' . (( $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' || $_SERVER['HTTPS']=='on') ? 's' : '') . '://';		
+		if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') $http = "https://";
+		else if( isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on' ) $http = "https://";
+		else if( isset($_SERVER['REQUEST_SCHEME']) && $_SERVER['REQUEST_SCHEME'] == 'https') $http = "https://";
+		else  $http = "http://";
+
 		$user = str_replace(preg_replace($pattern, '', $_SERVER['SCRIPT_FILENAME']), '', $_SERVER['SCRIPT_NAME']);       
 		$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];       
 		if(isset($_SERVER['HTTP_HOST']) && preg_match('/:[0-9]+$/', $host))       
 			$host	= preg_replace('/:[0-9]+$/', '', $host);       
 		$host		= preg_replace("/[\<\>\'\"\\\'\\\"\%\=\(\)\/\^\*]/", '', $host);       
+		$words = explode( '/', $_SERVER['SCRIPT_FILENAME'] );
 		$tkher_iurl	= $http.$host.$port.$user.$root;       
 		$tkher_ipath	= $result['path'];       
-		$tkher_u		= substr($tkher_iurl, 0, -2);		//0부터 뒤의 -1까지. , 마지막부분 '/' 없이 전달한다. 예:https://tkher.com       
-		$tkher_p		= substr($tkher_ipath, 0, -2);       
-		define('TKHER_URL_',				$tkher_u );       
-		define('TKHER_PATH_',			$tkher_p );       
-		define('TKHER_URL_T_',			$tkher_iurl );       
-		define('TKHER_PATH_T_',		$tkher_ipath );       
-		define('TKHER_LOGO_URL_',	$tkher_u . '/logo' );       
-//		define('TKHER_PATH_CRATREE_', $tkher_p.'/cratree' );       
+		
+		$tkher_u = $http . $host;
+		$tkher_p = "/" . $words[1] . "/" . $words[2] . "/" . $words[3];
+
+		define('KAPP_URL_',		$tkher_u );       
+		define('KAPP_URL',		$tkher_u );    // tkher_u:     https://fation.net
+		define('KAPP_PATH_',		$tkher_p );       
+		define('KAPP_URL_T_',		$tkher_iurl );       
+		define('KAPP_PATH_T_',		$tkher_ipath );       
+		define('KAPP_LOGO_URL_',	$tkher_u . '/logo' );       
 		return $result;       
-//		return $root;       
 	}       
 	function m_($message) {       
 		echo "<script language='javascript'>alert('$message');</script>";       
 	}       
-//		$tkher_path = index_url_path();      
-//		$tkher_config_file = TKHER_PATH_T_ . "/tkher_config_link.php";       
-		//m_("root:$tkher_path[root], $tkher_path[path], tkher_config_file:$tkher_config_file");
-		//root:/cratree/dao, /var/www/html/cratree/dao, tkher_config_file:/var/www/html/cratree/dao/tkher_config_link.php
-		//tkher_path:/var/www/html/cratree/dao, tkher_config_file:/var/www/html/cratree/dao/tkher_config_link.php
-		//tkher_path:/cratree/dao, tkher_config_file:/var/www/html/cratree/dao/tkher_config_link.php
-		//tkher_path:Array, tkher_config_file:/var/www/html/cratree/dao/tkher_config_link.php
-//		$tkher_config_file = "./tkher_config_link.php";       
-//		include_once( $tkher_config_file );   // 설정 파일      
 
-if (!defined('TKHER_SET_TIME_LIMIT')) define('TKHER_SET_TIME_LIMIT', 0);      
-@set_time_limit(TKHER_SET_TIME_LIMIT);      
+if (!defined('KAPP_SET_TIME_LIMIT')) define('KAPP_SET_TIME_LIMIT', 0);      
+@set_time_limit(KAPP_SET_TIME_LIMIT);      
 //==============================================================================
 // SQL Injection 등으로 부터 보호를 위해 sql_escape_string() 적용
 //------------------------------------------------------------------------------
@@ -101,29 +97,11 @@ if (get_magic_quotes_gpc()) {
 	@extract($_GET);      
 	@extract($_POST);      
 	@extract($_SERVER);      
-	/*
-		$dbconfig_file = TKHER_PATH_T_ . "./tkher_dbcon.php";        
-	if ( file_exists($dbconfig_file) ) {       
-		$a = TKHER_LIB_PATH;       
-		include_once($dbconfig_file);       
-		include_once( $_fileLIB );    // 공통 라이브러리       
-		$connect_db = sql_connect(TKHER_MYSQL_HOST, TKHER_MYSQL_USER, TKHER_MYSQL_PASSWORD) or die('MySQL Connect Error!!!');       
-		$select_db  = sql_select_db(TKHER_MYSQL_DB, $connect_db) or die('MySQL DB Error!!!');       
-		$tkher['connect_db'] = $connect_db;       
-		sql_set_charset('utf8', $connect_db);       
-		if(defined('TKHER_MYSQL_SET_MODE') && TKHER_MYSQL_SET_MODE) sql_query("SET SESSION sql_mode = '' ");       
-		if (defined(TKHER_TIMEZONE)) sql_query(" set time_zone = '".TKHER_TIMEZONE."'");       
-	} else {       
-		   m_(" dbconfig_file:/var/www/html/t/data/tkher_dbconfig.php no found.  ");      
-			echo "<script language='javascript'>window.open('/t/tkher_dbcon_create.php?mid=dao','','');</script>";       
-	} */      
 
-
-	// DB 연결      
-	function sql_connect($host, $user, $pass, $db=TKHER_MYSQL_DB)      
+	function sql_connect($host, $user, $pass, $db=KAPP_MYSQL_DB)      
 	{      
 		global $tkher;      
-		if(function_exists('mysqli_connect') && TKHER_MYSQLI_USE) {      
+		if(function_exists('mysqli_connect') && KAPP_MYSQLI_USE) {      
 			$link = mysqli_connect($host, $user, $pass, $db);      
 			// 연결 오류 발생 시 스크립트 종료      
 			if (mysqli_connect_errno()) {      
@@ -140,7 +118,7 @@ if (get_magic_quotes_gpc()) {
 	function sql_select_db($db, $connect)      
 	{      
 		global $tkher;      
-		if(function_exists('mysqli_select_db') && TKHER_MYSQLI_USE)      
+		if(function_exists('mysqli_select_db') && KAPP_MYSQLI_USE)      
 			return @mysqli_select_db($connect, $db);      
 		else      
 			return @mysql_select_db($db, $connect);      
@@ -149,12 +127,12 @@ if (get_magic_quotes_gpc()) {
 	{      
 		global $tkher;      
 		if(!$link) $link = $tkher['connect_db'];      
-		if(function_exists('mysqli_set_charset') && TKHER_MYSQLI_USE)      
+		if(function_exists('mysqli_set_charset') && KAPP_MYSQLI_USE)      
 			mysqli_set_charset($link, $charset);      
 		else      
 			mysql_query(" set names { $charset } ", $link);      
 	}      
-function sql_query($sql, $error=TKHER_DISPLAY_SQL_ERROR, $link=null)
+function sql_query($sql, $error=KAPP_DISPLAY_SQL_ERROR, $link=null)
 {
     global $tkher;
 
@@ -169,7 +147,7 @@ function sql_query($sql, $error=TKHER_DISPLAY_SQL_ERROR, $link=null)
     // `information_schema` DB로의 접근을 허락하지 않습니다.
     $sql = preg_replace("#^select.*from.*where.*`?information_schema`?.*#i", "select 1", $sql);
 
-    if(function_exists('mysqli_query') && TKHER_MYSQLI_USE) {
+    if(function_exists('mysqli_query') && KAPP_MYSQLI_USE) {
         if ($error) {
             $result = @mysqli_query($link, $sql) or die("<p>$sql<p>" . mysqli_errno($link) . " : " .  mysqli_error($link) . "<p>error file : {$_SERVER['SCRIPT_NAME']}");
         } else {
@@ -188,7 +166,7 @@ function sql_query($sql, $error=TKHER_DISPLAY_SQL_ERROR, $link=null)
 
 
 // 쿼리를 실행한 후 결과값에서 한행을 얻는다.
-function sql_fetch($sql, $error=TKHER_DISPLAY_SQL_ERROR, $link=null)
+function sql_fetch($sql, $error=KAPP_DISPLAY_SQL_ERROR, $link=null)
 {
     global $tkher;
 
@@ -205,7 +183,7 @@ function sql_fetch($sql, $error=TKHER_DISPLAY_SQL_ERROR, $link=null)
 // 결과값에서 한행 연관배열(이름으로)로 얻는다.
 function sql_fetch_array($result)
 {
-    if(function_exists('mysqli_fetch_assoc') && TKHER_MYSQLI_USE)
+    if(function_exists('mysqli_fetch_assoc') && KAPP_MYSQLI_USE)
         $row = @mysqli_fetch_assoc($result);
     else
         $row = @mysql_fetch_assoc($result);
@@ -215,7 +193,7 @@ function sql_fetch_array($result)
 
 function sql_num_rows($result)
 {
-    if(function_exists('mysqli_num_rows') && TKHER_MYSQLI_USE)
+    if(function_exists('mysqli_num_rows') && KAPP_MYSQLI_USE)
         return mysqli_num_rows($result);
     else
         return mysql_num_rows($result);
@@ -226,7 +204,7 @@ function sql_num_rows($result)
 // 단, 결과 값은 스크립트(script) 실행부가 종료되면서 메모리에서 자동적으로 지워진다.
 function sql_free_result($result)
 {
-    if(function_exists('mysqli_free_result') && TKHER_MYSQLI_USE)
+    if(function_exists('mysqli_free_result') && KAPP_MYSQLI_USE)
         return mysqli_free_result($result);
     else
         return mysql_free_result($result);
@@ -237,7 +215,7 @@ function sql_free_result($result)
 @ini_set("session.use_trans_sid", 0);    // PHPSESSID를 자동으로 넘기지 않음
 @ini_set("url_rewriter.tags",""); // 링크에 PHPSESSID가 따라다니는것을 무력화함.
 
-//session_save_path(TKHER_SESSION_PATH);
+//session_save_path(KAPP_SESSION_PATH);
 
 if (isset($SESSION_CACHE_LIMITER))
     @session_cache_limiter($SESSION_CACHE_LIMITER);
@@ -250,7 +228,7 @@ else
 //ini_set("session.gc_divisor", 100); // session.gc_divisor는 session.gc_probability와 결합하여 각 세션 초기화 시에 gc(쓰레기 수거) 프로세스를 시작할 확률을 정의합니다. 확률은 gc_probability/gc_divisor를 사용하여 계산합니다. 즉, 1/100은 각 요청시에 GC 프로세스를 시작할 확률이 1%입니다. session.gc_divisor의 기본값은 100입니다.
 
 //session_set_cookie_params(0, '/');
-//ini_set("session.cookie_domain", TKHER_COOKIE_DOMAIN);
+//ini_set("session.cookie_domain", KAPP_COOKIE_DOMAIN);
 
 @session_start();
 //==============================================================================
@@ -314,10 +292,10 @@ function pagingA($link, $total, $page, $size){ // paging() pagingA()로 적용�
 }
 //--------
 function relation_func( $rdata, $pg_code, $rtype ){
-	global $H_ID, $pg_code;
+	global $H_ID;
 	$r_data = explode("$", $rdata);
 	$r_tab = $r_data[0];
-	$tab_r = explode(":", $r_tab);		// dao_1537844601:data
+	$tab_r = explode(":", $r_tab);
 	$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
 
 	$r_t = explode(":", $rtype); //Update:fld_1:fld_1:CHAR           // Update:::@@^^^
@@ -333,13 +311,13 @@ function relation_func( $rdata, $pg_code, $rtype ){
 
 	if( isset($_POST[$up_key]) && $_POST[$up_key] !=='' ) $update_key_data = $_POST[$up_key];
 	else $update_key_data = "";
-	//--------------------------------------
-		$SQLA = "select seqno from `" . $r_table . "` ";
-		if( $ty_key == "CHAR" ) $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	
-		else if( $ty_key == "INT" ) $SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
-		else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
-	$retA = sql_fetch( $SQLA ); // Update에서 데이터가 없으면 Insert 있으면 Update 처리를 위해 select
-	//---------------------------------------
+
+	$SQLA = "select seqno from `" . $r_table . "` ";
+	if( $ty_key == "CHAR" ) $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	
+	else if( $ty_key == "INT" ) $SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
+	else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
+	$retA = sql_fetch( $SQLA );
+
 	if( $r_type == 'Update'){
 		$SQLR = "UPDATE " . $r_table . " SET ";
 		for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
@@ -357,17 +335,17 @@ function relation_func( $rdata, $pg_code, $rtype ){
 			if( $fld_sik == '=' ) {
 				if( $i==1 )	$SQLR = $SQLR . $r_enm . " = '" . $post_enm . "'  ";
 				else		$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
-			} else if( $fld_sik == '+' ) {	 // updte를 의미한다. 보완필요.
+			} else if( $fld_sik == '+' ) {
 				if( $i==1 )	$SQLR = $SQLR . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
 				else		$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
-			} else if( $fld_sik == '-' ) {	   // updte를 의미한다. 보완필요.
+			} else if( $fld_sik == '-' ) {
 				if( $i==1 )	$SQLR = $SQLR . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 				else		$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 			}
 		}
 		if( $ty_key == "CHAR" ) $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";	
 		else if( $ty_key == "INT" ) $SQLR = $SQLR . " where " . $dd_key . " = " .$update_key_data. " ";	
-		else $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
+		else $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";
 
 		if( $retA ) {
 			$ret  = sql_query($SQLR);
@@ -448,7 +426,6 @@ function relation_func( $rdata, $pg_code, $rtype ){
 			echo "r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
 			//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 		}
-		
 	}// if
 }
 
