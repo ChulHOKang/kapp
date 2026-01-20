@@ -461,7 +461,11 @@ if( $mode != 'Search') {
 <tbody width='100%'>
 <?php
 		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " seqno int auto_increment not null, ";
+//		$item_list = $item_list . " seqno int auto_increment not null, ";
+		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
+
     $line=0;
 	$i=1;
 	if( $mode !== "Search") {

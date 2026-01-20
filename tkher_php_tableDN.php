@@ -2,11 +2,12 @@
 	include_once('./tkher_start_necessary.php');
 
 	/* ----------------------------------------------------------------------
-	    tkher_php_tableDN     : 데이터베이스관련및 최에 필요한 모든 소스 다운로드.
+		KAPP : Create Apps with No Code
 		tkher_php_tableDN.php : table create source and download.
+		- table create source generator : $create_table		= $path . $H_ID . "/" . $tab_enm . "_table_index.php";
 		- call : table10i.php : column list program.
 
-		setup.php을 앞축화일에 추가함.: 21-07-22
+		setup.php을 앞축화일에 추가함.
 			
 			$default_file	= "./include/default.gif";								//첨부화일 default file.
 			$tkher_logo		= "../logo/logo25a.jpg";
@@ -15,7 +16,7 @@
 			$tkher_dblnk	= "./tkher_config_link.php";
 			$table_paging	= "./table_paging.php";			// program list 에서사용 : 공통.
 			$popup_win		= "./popup_callDN.php";			// program write 에서사용 : 공통.
-			$urllink_index	= "./urllink_index.php";		// db user login page - 2021-03-04 add
+			$urllink_index	= "./kapplink_index.php";		// urllink_index.php - 2026-01-20 , db user login page - 2021-03-04 add
 			$tkher_pg_lib_common= "./tkher_pg_lib_common.php";
 			$setup          = "./setup.php";                // appgenerator setup 용.
 
@@ -27,14 +28,14 @@
 			$memo =$memo. "table_paging.php\n"; 
 			$memo =$memo. "popup_callDN.php\n"; 
 
-			$memo =$memo. "excel_upload_user.php\n";   // add 2021-09-30
-			$memo =$memo. "excel_download_user.php\n"; // add 2021-09-30
+			$memo =$memo. "excel_upload_user.php\n";
+			$memo =$memo. "excel_download_user.php\n";
 
-			$memo =$memo. "urllink_index.php\n"; 
+			$memo =$memo. "kapplink_index.php\n"; //urllink_index.php 2026-01-20
 			$memo =$memo. "tkher_pg_lib_common.php\n";
 			$memo =$memo. "setup.php\n"; // appgenerator setup 용.
 
-			$memo =$memo. $pg_code + "_table_index.php\n"; // add 2021-09-30
+			$memo =$memo. $pg_code + "_table_index.php\n";
 
 		//--- table data process source ----------------
 		$table_list_php   = $Zdir."/$tab_enm"."_run.php";
@@ -45,21 +46,17 @@
 		../t/file + H_ID 를 ./file + H_ID 로 변경 - 2023-07-19
 	---------------------------------------------------------------------- */
 	$H_ID		= get_session("ss_mb_id"); 
-	$H_LEV = $member['mb_level']; 
-	$H_POINT = $member['mb_point']; 
-	if( !$H_ID or $H_LEV < 2 ) {
-		my_msg("You need to login. ");exit;
+	if( !$H_ID ) {
+		m_("You need to login. ");exit;
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
+	$H_LEV = $member['mb_level']; 
+	$H_POINT = $member['mb_point']; 
 
 	/////////////////////////< tree file create >////////////////////////////
 	$mid = $H_ID;
-	//$path = KAPP_PATH_ . "/cratree/";	 //KAPP_PATH_CRATREE_;		// . "../../cratree/";
 	$path = KAPP_PATH_T_ . "/file/"; // 2023-06-27 위치를 변경함. 소스생성 위치를 t/file 폴드 사용
-
 	$mode 		= $_POST['mode'];
-	//echo "mode:". $mode . ", path:".$path; //mode:sqltable, path:/home1/solpakanurl/public_html/cratree/
-	//m_("mode:". $mode);
 	$pg_code 	= $_POST['pg_code'];
 
 	if( $mode=='DN_sqltable' || $mode=='sqltable_only') {
@@ -88,7 +85,7 @@
 	fwrite($fsi,"<html> \r\n");
 	fwrite($fsi,"<head> \r\n");
 	fwrite($fsi,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
-	fwrite($fsi,"<TITLE>AppGenerator.net AppGenerator is generator program. Made in Kang ChulHo</TITLE>  \r\n");
+	fwrite($fsi,"<TITLE>KAPP - No coding app generator system. Create Apps with No Code. Made in Kang ChulHo</TITLE>  \r\n");
 	fwrite($fsi,"<link rel='shortcut icon' href='./logo25a.jpg'> \r\n");
 	fwrite($fsi,"<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> \r\n");
 	fwrite($fsi,"<meta name='keywords' content='app generator, app maker, appgenerator, app, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> \r\n");
@@ -154,17 +151,8 @@
 	fwrite($fsi,".boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
 	fwrite($fsi,"</style>  \r\n");
 
-	//--------------------------------------------------------  script -----------------
 	fwrite($fsi,"<script language='JavaScript'>   \r\n"); 
-	
-	//fwrite($fsi,"	function program_data_list($"."pg_code) {   \r\n");
-	//fwrite($fsi,"		document.form_view.action='".$pg_code."_run.php';   \r\n");
-	//fwrite($fsi,"		document.form_view.target='_self';   \r\n");
-	//fwrite($fsi,"		document.form_view.submit();   \r\n");
-	//fwrite($fsi,"	}   \r\n");
-	
 	fwrite($fsi,"	function table_data_list($"."pg_code) {   \r\n");
-	//fwrite($fsi,"		document.form_view.action='".$pg_code."_run.php';   \r\n");//2021-03-04 변경.
 	fwrite($fsi,"		document.form_view.action=$"."pg_code;   \r\n");
 	fwrite($fsi,"		document.form_view.target='_self';   \r\n");
 	fwrite($fsi,"		document.form_view.submit();   \r\n");
@@ -173,7 +161,6 @@
 	fwrite($fsi,"	function table_data_delete($"."tab_enm){   \r\n");
 	fwrite($fsi,"		if( confirm(\"Are you sure you want to delete table:".$tab_enm."? \") ) {   \r\n");
 	fwrite($fsi,"			document.form_view.mode.value='table_data_delete';   \r\n");
-	//fwrite($fsi,"			document.form_view.action='".$pg_code."_table_index.php';   \r\n");
 	fwrite($fsi,"			document.form_view.action='".$tab_enm."_table_index.php';   \r\n");
 	fwrite($fsi,"			document.form_view.submit();   \r\n");
 	fwrite($fsi,"		}   \r\n");
@@ -181,19 +168,11 @@
 
 	fwrite($fsi,"	function table_create($"."pg_code ){   \r\n");
 	fwrite($fsi,"		document.form_view.mode.value	= 'table_create';   \r\n");
-//	fwrite($fsi,"		document.form_view.action		= '".$pg_code."_table_index.php';   \r\n");
 	fwrite($fsi,"		document.form_view.action		= '".$tab_enm."_table_index.php';   \r\n");
 	fwrite($fsi,"		document.form_view.submit();   \r\n");
 	fwrite($fsi,"	}   \r\n");
 
-	//fwrite($fsi,"	function db_create($"."pg_code ){   \r\n");
-	//fwrite($fsi,"		document.form_view.mode.value	= 'db_create';   \r\n");
-	//fwrite($fsi,"		document.form_view.action		= 'tkher_dbcon_create.php';   \r\n");
-	//fwrite($fsi,"		document.form_view.submit();   \r\n");
-	//fwrite($fsi,"	}   \r\n");
-
 	fwrite($fsi,"	function db_create($"."pg_code ){   \r\n");
-	//---------- 추가 2021-01-24 입력확인용 추가 ----------------
 	fwrite($fsi,"		if( !document.form_view.db_name.value || !document.form_view.db_id.value || !document.form_view.db_password.value ){   \r\n");
 	fwrite($fsi,"			alert('db name or db user id or password Confirm your input please');   \r\n");
 	fwrite($fsi,"			if( !document.form_view.db_name.value ) document.form_view.db_name.focus();   \r\n");
@@ -201,20 +180,16 @@
 	fwrite($fsi,"			else if( !document.form_view.db_password.value ) document.form_view.db_password.focus();   \r\n");
 	fwrite($fsi,"			return false;   \r\n");
 	fwrite($fsi,"		}   \r\n");
-	//---------------------------------------------------- end -----------------------
+
 	fwrite($fsi,"		document.form_view.mode.value	= 'db_create';   \r\n");
-//	fwrite($fsi,"		document.form_view.action		= 'tkher_dbcon_create.php';   \r\n"); // 2021-09-29 
 	fwrite($fsi,"		document.form_view.action		= 'tkher_dbcon_create.php?table_create_pg=".$tab_enm."_table_index.php';   \r\n");
 	fwrite($fsi,"		document.form_view.submit();   \r\n");
 	fwrite($fsi,"	}   \r\n");
 
-
-	//---------- 추가 2021-01-24 DB 재생성 부분 추가 2021-03-03:urllink_index.php add -------
 	fwrite($fsi,"	function db_recreate($"."pg_code ){      \r\n");
-	//fwrite($fsi,"			document.form_view.mode.value = 'db_recreate';      \r\n");
 	fwrite($fsi,"			document.form_view.mode.value = 'db_login';      \r\n");
 	fwrite($fsi,"			document.form_view.target = '_blank';      \r\n");
-	fwrite($fsi,"			document.form_view.action = 'urllink_index.php';      \r\n");
+	fwrite($fsi,"			document.form_view.action = 'kapplink_index.php';      \r\n"); //urllink_index.php 2026-01-20
 	fwrite($fsi,"			document.form_view.submit();      \r\n");
 	fwrite($fsi,"		}      \r\n");
 
@@ -230,8 +205,6 @@
 	fwrite($fsi,"			document.form_view.action		= 'tkher_dbcon_create.php';      \r\n");
 	fwrite($fsi,"			document.form_view.submit();      \r\n");
 	fwrite($fsi,"	}      \r\n");
-	//---------------------------------------------------- end -----------------------
-
 
 	fwrite($fsi,"	function home_func($"."pg_code){   \r\n");
 	fwrite($fsi,"		form_view.mode='home_func';   \r\n");
@@ -245,7 +218,6 @@
 	
 	fwrite($fsi,"                                 \r\n");
 	fwrite($fsi,"<div class='HeadTitle01AX'>   \r\n");
-//	fwrite($fsi,"	<P href='#' class='on' title='Table Create, table code:".$tab_enm." , Table name:".$tab_hnm."'>Table Create : ".$tab_enm."</P>   \r\n");
 	fwrite($fsi,"	<P class='on' title='Table Create, table code:".$tab_enm." , Table name:".$tab_hnm."'><a href=\"javascript:home_func('".$tab_enm."');\" style='color:cyan'>Table Create : ".$tab_enm."</a></P>   \r\n");
 	fwrite($fsi,"</div>   \r\n");
 
@@ -259,9 +231,6 @@
 	fwrite($fsi,"	<div class='boardViewX'>   \r\n");
 	fwrite($fsi,"		<div class='viewHeader'>   \r\n");
 	fwrite($fsi,"			<span title='tkher_table_create down : tkher_php_table_DN'>tkher_table:".$tab_enm."(".$tab_hnm.") &nbsp;&nbsp;&nbsp; Date:<?=date(\"Y-m-d H:i:s\" ); ?></span>   \r\n");
-	// 2021-03-04 : change
-	//fwrite($fsi,"			<input type='button' value='List' onclick=\"javascript:table_data_list('".$pg_code."');\" class='Btn_List01A' title='Data List'>   \r\n");
-	//fwrite($fsi,"			<input type='button' value='List' onclick=\"javascript:table_data_list('".$pg_code."_run.php');\" class='Btn_List01A' title='Data List'>   \r\n");
 	fwrite($fsi,"			<input type='button' value='List' onclick=\"javascript:table_data_list('".$tab_enm."_run.php');\" class='Btn_List01A' title='Data List'>   \r\n");
 	fwrite($fsi,"		</div>   \r\n");
 	fwrite($fsi,"		<div class='viewSubjX'><span title='(tkher_code:".$tab_enm.":".$tab_hnm.")'>".$tab_hnm."</span> </div>   \r\n");
@@ -274,7 +243,6 @@
 	fwrite($fsi,"				$"."rungo = '".$tab_enm."_table_index.php';   \r\n");
 	fwrite($fsi,"			if ( ($"."result = sql_query( $"."SQL ) )==false )   \r\n");
 	fwrite($fsi,"			{   \r\n");
-	//fwrite($fsi,"				printf(\"delete Invalid query: %s\n\", $"."SQL);   \r\n");
 	fwrite($fsi,"				printf(\"delete Invalid query: %s\", $"."SQL);   \r\n");
 	fwrite($fsi,"				echo \"<script>table_data_list('$"."rungo'); </script>\";   \r\n");
 	fwrite($fsi,"			} else {   \r\n");
@@ -315,15 +283,14 @@
 
 	fwrite($fsi,"				if( $"."row == true) {		\r\n");
 	fwrite($fsi,"?>								\r\n");
-	fwrite($fsi,"					<input type='button' value='Table Delete' onclick=\"javascript:table_data_delete('".$tab_enm."');\" class='Btn_List03A' title='The table exists. You can delete the table and create it again.'>      \r\n");//테이블이 존재합니다. 테이블을 삭제후 다시 생성할수있습니다.
-    //------------ add 2021-03-04 : DB reset page add - urllink_index.php -------
+	fwrite($fsi,"					<input type='button' value='Table Delete' onclick=\"javascript:table_data_delete('".$tab_enm."');\" class='Btn_List03A' title='The table exists. You can delete the table and create it again.'>  \r\n");//테이블이 존재합니다. 테이블을 삭제후 다시 생성할수있습니다.
+
 	fwrite($fsi,"				<br><br><input type='button' value='DB Reset' onclick=\"javascript:db_recreate('".$tab_enm."');\" class='Btn_List03A'  title='Run only when resetting the DB user ID and password.' >  \r\n");//DB 사용자 아이디와 비밀번호를 재설정할때에만 실행하세요.
 	
 	fwrite($fsi,"					<p>Table created. You can delete the table and regenerate it. </p>      \r\n");
-	//----------------------------------------------------------------------
+
 	fwrite($fsi,"<?php		} else if( $"."connect_dbcheck != 'dberror' ) { ?>			\r\n");
-	// ------------ add start ---
-				//-------------------------------------- start
+
 	fwrite($fsi,"<?php			if( $"."_POST['mode'] != 'db_recreate' ) {  \r\n");
 	fwrite($fsi,"					$"."hostnm = KAPP_MYSQL_HOST;          \r\n");
 	fwrite($fsi,"					$"."dbnm = KAPP_MYSQL_DB;              \r\n");
@@ -341,26 +308,14 @@
 	fwrite($fsi,"				$"."dbnm = KAPP_MYSQL_DB;  \r\n");
 	fwrite($fsi,"				$"."usernm = KAPP_MYSQL_USER;  \r\n");
 	fwrite($fsi,"				$"."passwordnm = KAPP_MYSQL_PASSWORD;  \r\n");
-				//-------------------------------------- end
 	fwrite($fsi,"?>     \r\n");
-
-	// ------------ add end   ---
-    /* 제거부분 --------
-	fwrite($fsi,"					<input type='button' value='Table Create' onclick=\"javascript:table_create('".$tab_enm."');\" class='Btn_List03A'  title='Create a table. ' ><br>    \r\n");
-
-	fwrite($fsi,"					<p>Create a table!</p>      \r\n");
-	fwrite($fsi,"<?php		}			    \r\n");
-	fwrite($fsi,"			if ( $"."connect_dbcheck == 'dberror' ) { ?>   \r\n");
-    */
 
 	fwrite($fsi," <div>      \r\n");
 
-    //------------------------------ add start
 	fwrite($fsi," 				<p>DB ReCreate : tkher_db_lib.php </p> \r\n");
 	fwrite($fsi," <div class='menu1T' align='center'><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>*Host Name</span></div> \r\n");
 	fwrite($fsi," <div class='menu1A'><input type='text' name='host_name' value='localhost' style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='Please enter a Host Name'></div>  \r\n");
 	fwrite($fsi," <div class='blankA'> </div> \r\n");
-	//------------------------------ add end
 
 	fwrite($fsi," <div class='menu1T' align='center'><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>*DB Name</span></div>  \r\n");
 	fwrite($fsi," <div class='menu1A'><input type='text' name='db_name' value='<?=$"."dbnm?>' style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='Please enter a DB Name'></div>  \r\n");
@@ -375,8 +330,6 @@
 	fwrite($fsi," <div class='blankA'> </div>  \r\n");
 
 	fwrite($fsi," <input type='button' value='DB_ReSet Save' onclick=\"javascript:db_recreate_action('".$tab_enm."');\" class='Btn_List04A' title='After setting db, you can create a table.'>      \r\n");
-
-	//fwrite($fsi," <input type='button' value='DB_Set' onclick=\"javascript:db_create('".$pg_code."');\" class='Btn_List03A' title='After setting db, you can create a table.'>      \r\n");//db를 설정한후에 table을 생성할수있습니다.
 
 	fwrite($fsi,"<?php											\r\n");
 	fwrite($fsi,"					echo \"<p>You can ReSet DB.  : connect_dbcheck:<?=$"."connect_dbcheck?> </p>\";      \r\n");
@@ -403,17 +356,15 @@
 	fwrite($fsi," <div class='menu1A'><input type=password name='db_password' value='' style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='Please enter a DB User Password'></div>  \r\n");
 	fwrite($fsi," <div class='blankA'> </div>  \r\n");
 
-	fwrite($fsi," <input type='button' value='DB Login' onclick=\"javascript:db_create('".$tab_enm."');\" class='Btn_List03A' title='After setting and login db, you can create a table.'>      \r\n");//db를 설정and login 한후에 table을 생성할수있습니다. 2021-09-29
+	fwrite($fsi," <input type='button' value='DB Login' onclick=\"javascript:db_create('".$tab_enm."');\" class='Btn_List03A' title='After setting and login db, you can create a table.'>      \r\n");  //db setup and login after you can table create. 
 
 	fwrite($fsi," <p>After setting db, you can create a table.</p>      \r\n");
 	fwrite($fsi,"<?php	}	?>										\r\n");
-
-	fwrite($fsi," <p>Files that need to be uploaded only once.</p>      \r\n");// 처음한번만 업로드하면되는화일들.
-
-	fwrite($fsi," <p> ".$tab_enm."_table_index.php      : DB Table Create</p>      \r\n");
-	fwrite($fsi," <p> urllink_index.php       : DB Set - db name, db user, db password</p>      \r\n");
-	fwrite($fsi," <p> tkher_dbcon_create.php  : tkher_dbcon.php create </p>      \r\n");		// DB Setup 용.
-	fwrite($fsi," <p> tkher_dbcon_create.php  : tkher_dbcon_Table.php create </p>      \r\n"); // table create 용.
+	fwrite($fsi," <p>Files that need to be uploaded only once.</p>      \r\n"); // 처음한번만 업로드하면되는화일들.
+	fwrite($fsi," <p> ".$tab_enm."_table_index.php      : DB Table Create</p>      \r\n"); //urllink_index.php 2026-01-20
+	fwrite($fsi," <p> kapplink_index.php       : DB Set - db name, db user, db password</p>      \r\n");
+	fwrite($fsi," <p> tkher_dbcon_create.php  : tkher_dbcon.php create </p>      \r\n");		// DB Setup .
+	fwrite($fsi," <p> tkher_dbcon_create.php  : tkher_dbcon_Table.php create </p>      \r\n");  // table create .
 	fwrite($fsi," <p> tkher_pg_lib_common.php : DB lib  </p>      \r\n");
 	
 	fwrite($fsi," <p> tkher_config_link.php</p>      \r\n");
@@ -431,25 +382,24 @@
 fclose($fsi);
 
 	include('./include/lib/pclzip.lib.php');
-	 $zf = $tab_enm . '_table.zip';
-	 $zff = "./file/".$H_ID."/" . $zf;	 //$zff="../t/file/".$H_ID."/".$zf;	//echo "<br>zff:" . $zff;// zff:../cratree/dao/dao_1632726444_table.zip
-	$zipfile = new PclZip($zff);				//압축파일.zip
+	$zf = $tab_enm . '_table.zip';
+	$zff = "./file/".$H_ID."/" . $zf;
+	$zipfile = new PclZip($zff);
 
-	//-- 파일명,디렉토리 또는 배열로 지정가능 
 	$table_run		= $tab_enm . "_table_index.php";    // DB , Table create 
 	$data				= array();
-	$Zdir				= "./file/" . $H_ID;			// $Zdir= "../t/file/" . $H_ID; // 소스 생성된 디렉토리. 2023-07-19 change
-	$file_php 		= "./file/" . $H_ID . "/" . $table_run;	 //$file_php= "../t/file/" . $H_ID . "/" . $table_run;	 
-	$default_file	= "./include/img/default.gif";								//첨부화일 default file.
+	$Zdir				= "./file/" . $H_ID;
+	$file_php 		= "./file/" . $H_ID . "/" . $table_run;
+	$default_file	= "./include/img/default.gif";
 	$tkher_logo		= "./logo/logo25a.jpg";
 	$table_lib		= "./source_down_pg/tkher_db_lib.php";
 	$table_lib2		= "./source_down_pg/urllink_db_lib.php";
-	$tkher_dbcon	= "./source_down_pg/tkher_dbcon_create.php";	// 
+	$tkher_dbcon	= "./source_down_pg/tkher_dbcon_create.php";
 	$tkher_dblnk	= "./source_down_pg/tkher_config_link.php";
 	$table_paging	= "./source_down_pg/table_paging.php";
 	$popup_win		= "./source_down_pg/popup_callDN.php";
 	
-	$urllink_index	= "./source_down_pg/urllink_index.php";		// db user login page - 2021-03-04 add
+	$urllink_index	= "./source_down_pg/kapplink_index.php";		// urllink_index.php 2026-01-20
 	$tkher_pg_lib_common = "./source_down_pg/tkher_pg_lib_common.php";
 	$excel_upload_user   = "./source_down_pg/excel_upload_user.php";  
 	$excel_download_user = "./source_down_pg/excel_download_user.php";  // 13
@@ -510,19 +460,14 @@ fclose($fsi);
 			$memo =$memo. "tkher_config_link.php\n";
 			$memo =$memo. "table_paging.php\n"; 
 			$memo =$memo. "popup_callDN.php\n"; 
-			$memo =$memo. "excel_upload_user.php\n";    // add:2021-09-30
-			$memo =$memo. "excel_download_user.php\n";  // add:2021-09-30
+			$memo =$memo. "excel_upload_user.php\n";
+			$memo =$memo. "excel_download_user.php\n";
 
-			$memo =$memo. "<b>urllink_index.php <- DB setup file</b> \n"; 
+			$memo =$memo. "<b>kapplink_index.php <- DB setup file</b> \n"; //urllink_index.php 2026-01-20
 			$memo =$memo. "tkher_pg_lib_common.php\n";
-
-			//$memo =$memo. "tkher_dbconfig_create.php \n"; 
-			//$memo =$memo. "urllink_db_lib.php \n"; 
-			//$memo =$memo. "setup.php <- installation executable file \n";
-			//echo "data_msg: " . $data_msg;
 		}
 		
-	} else { // $mode="sqltable_only" Table 관련 소스만 압축 생성		//m_("222". $mode);
+	} else { // $mode="sqltable_only" Table 관련 소스만 압축 생성
 		$memo = "\n * <b>sqltable_only</b> : \n";
 		if( file_exists( $table_list_php ) )
 		{
@@ -577,7 +522,7 @@ echo "<br><b>Source list:</b><br>" . $memo;
 <p><a href='<?=$zff?>' target='_blank' title="memo:<?=$memo?>"><b>[ Down RUN:<?=$zf?> ]</b></a></p>
 <br> Uncompress and upload the files to the server.
 <br><b> You can run the file : '<?=$tab_enm?>_table_index.php' 
-<br> DB setup! run only once at first : 'urllink_index.php' </b>
+<br> DB setup! run only once at first : 'kapplink_index.php' </b>
 <br>
 <?php 
 if( $H_LEV > 7 ) { // 테이블부분만 7 그대로 두고 머지 소스다운 프로그램은 7-> 0 으로 변경. 2020-11-19
