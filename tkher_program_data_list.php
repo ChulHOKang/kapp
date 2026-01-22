@@ -35,6 +35,9 @@
 	else if( isset( $_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode = '';
 	
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
+
 	if( !$pg_code ) {
 		$pg_code = $_SESSION['pg_code'];
 		m_("pg code - ERROR : pg_code: $pg_code "); exit;//
@@ -123,17 +126,18 @@ $(function () {
 
 <script type="text/javascript" >
 <!--
+	function title_func(fld_code){       
+		document.view_form.page.value = 1;                
+		document.view_form.fld_code.value= fld_code;           
+		document.view_form.mode.value='title_func';           
+		document.view_form.action='tkher_program_data_list.php';
+		document.view_form.submit();                         
+	} 
 	function home_func(pg_code){
-		view_form.mode='home_func';
-		view_form.action='tkher_program_data_list.php?pg_code='+pg_code;
-		view_form.submit();
+		document.view_form.mode.value='home_func';
+		document.view_form.action='tkher_program_data_list.php';
+		document.view_form.submit();
 	}
-	function Change_Csel(c_sel){
-		document.c_sel.c_sel.value=c_sel;
-		document.view_form.c_sel.value=c_sel;
-		document.c_sel.submit();
-	}
-
 	function Change_Csel3(c_sel){
 		document.view_form.search_choice.value=c_sel;
 		document.view_form.c_sel3.value=c_sel;
@@ -305,13 +309,8 @@ $(function () {
 	}	
 	function group_code_change_func(cd,pg_code){
 		index = document.view_form.group_code.selectedIndex;
-		//nm = document.view_form.group_code.options[index].text;
-		//document.view_form.group_name.value = nm;
-		//vv = document.view_form.group_code.options[index].value;
-		//document.view_form.group_code.value = vv;
 		document.view_form.mode.value = "project_search";
 		document.view_form.action ="tkher_program_data_list.php";
-		//document.view_form.action ="tkher_program_data_list.php?pg_code="+pg_code;
 		document.view_form.submit();
 		return;
 	}
@@ -328,12 +327,6 @@ $(function () {
 	$cur='B';
 	include "./menu_run.php";
 
-/*	
-	if( isset($_REQUEST['c_sel']) ) $c_sel= $_REQUEST['c_sel'];
-	else  $c_sel = "";
-	if( isset($_REQUEST['c_sel3']) ) $c_sel3= $_REQUEST['c_sel3'];
-	else  $c_sel3 = "";
-*/
 	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
 	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
 	else  $searchT = "";
@@ -373,18 +366,6 @@ $(function () {
 	} else  $line_cnt	= 10;
 	if( $line_cnt < 10  ) $line_cnt	= 10;
 	$page_cnt	= 10;
-	
-	/*$SQL1 = "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
-	if( ( $result = sql_query( $SQL1 ) )==false ){
-		printf("Invalid query: %s\n", $SQL1);
-		m_("sql Error ");
-		exit();
-	} else {
-		$my_rs = sql_fetch_array($result);
-	}
-	$levR= $my_rs['grant_view']; 
-	$levW= $my_rs['grant_write']; 
-	*/
 ?>
 			<br>
 			<div>
@@ -399,6 +380,13 @@ $(function () {
 				if( $search_choice == "like")		$SQL1 = $SQL1 . " where `$search_fld` $search_choice '%$searchT%' ";
 				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
 			}
+			if( $mode=='title_func' ){      
+				if( $search_choice != '' && $search_text !='') {   
+					$SQL1 = $SQL1 . " where $search_fld $search_choice '%$search_text%' ";      
+					$SQL1 = $SQL1 . " order by $fld_code ";      
+				} else $SQL1 = $SQL1 . " order by $fld_code ";      
+			}      
+
 			if( ($result = sql_query( $SQL1 ) )==false ){
 				printf("Invalid query: %s\n", $SQL1);
 				echo "SQL:" . $SQL1; m_(" 4 Select Error ");
@@ -533,6 +521,7 @@ if( $H_ID==$pg_mid ) {
 
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
+						<input type="hidden" name='fld_code'		value='<?=$fld_code?>' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
 						<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
 						<input type="hidden" name='tab_hnm'		value='<?=$tab_hnm?>' />
@@ -573,21 +562,31 @@ if( $H_ID==$pg_mid ) {
 <?php
 					for( $i=0; $i < $fld_cnt; $i++){
 						$fff = $fld_hnm[$i];
-						echo " <th class='cell03'>$fff</th> ";
+						$fenm = $fld_enm[$i];
+						echo " <th class='cell03' title='$fenm:$fff Sort click' onclick=\"javascript:title_func('".$fenm."')\">$fff</th> ";
 					}
 ?>
 			</tr>
 		</thead>
-		<tbody width=100%>
+		<tbody width='100%'>
 <?php
 	if( $H_LEV>= $grant_view || $pg_mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
-			$OrderBy	= " order by seqno desc ";
+			//$OrderBy	= " order by seqno desc ";
+			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " order by seqno desc ";        
 			if( $mode == "search" ){
 				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
 				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
 			} 
+			else if( $mode=='title_func' ) {     
+				if( $search_choice != '' && $search_text !='') {     
+					if( $search_choice == 'like' )	$SQL = $SQL . " where $search_fld $search_choice '%$search_text%' ";  
+					else					$SQL = $SQL . " where $search_fld $search_choice '$search_text' ";       
+				}     
+			}     
+
 			$SQL = $SQL . $OrderBy . $SQL_limit;
 			if( ($result = sql_query( $SQL ) )==false )	{
 				printf("Record 0 : query: %s\n", $SQL);
