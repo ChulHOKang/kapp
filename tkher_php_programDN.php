@@ -142,9 +142,18 @@
 	//-------------------- style end ---------
 
 	fwrite($fsr," <script type='text/javascript' >                          \r\n");
+	
+	fwrite($fsr,"	function title_func(fld_code){                       \r\n");
+	fwrite($fsr,"		document.view_form.page.value = 1;                \r\n");
+	fwrite($fsr,"		document.view_form.fld_code.value= fld_code;           \r\n");
+	fwrite($fsr,"		document.view_form.mode.value='title_func';           \r\n");
+	fwrite($fsr,"		document.view_form.action='".$runF1."';                \r\n");
+	fwrite($fsr,"		document.view_form.submit();                         \r\n");
+	fwrite($fsr,"	} \r\n");
+
 	fwrite($fsr,"	function home_func($"."pg_code){                       \r\n");
 	fwrite($fsr,"		document.view_form.page.value = 1;                \r\n");
-	fwrite($fsr,"		document.view_form.mode='home_func';           \r\n");
+	fwrite($fsr,"		document.view_form.mode.value='home_func';           \r\n");
 	fwrite($fsr,"		document.view_form.action='".$runF1."';                \r\n");
 	fwrite($fsr,"		document.view_form.submit();                         \r\n");
 	fwrite($fsr,"	} \r\n");
@@ -213,6 +222,8 @@
 
 	fwrite($fsr,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
 	fwrite($fsr,"			else $"."mode='';  \r\n");
+	fwrite($fsr,"			if( isset($"."_POST['fld_code']) ) $"."fld_code=$"."_POST['fld_code']; \r\n");
+	fwrite($fsr,"			else $"."fld_code='';  \r\n");
 
 	fwrite($fsr,"			if( isset($"."_POST['c_sel']) ) $"."c_sel=$"."_POST['c_sel']; \r\n");
 	fwrite($fsr,"			else $"."c_sel='';  \r\n");
@@ -290,12 +301,20 @@ fwrite($fsr,"<?php       \r\n");
 fwrite($fsr,"			$" . "tab_enm = '" . $tab_enm . "';   \r\n");
 fwrite($fsr,"			$" ."SQL1 = \"SELECT * from " . $tab_enm . " \";   \r\n");
 fwrite($fsr,"			if( $" ."mode=='SR' ){   \r\n");
-fwrite($fsr,"				if( $"."search_choice == 'like')		$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";   \r\n");
-fwrite($fsr,"				else									$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '$"."search_text' \";   \r\n");
+fwrite($fsr,"				if( $"."search_choice == 'like') $"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";   \r\n");
+fwrite($fsr,"				else		$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '$"."search_text' \";   \r\n");
 fwrite($fsr,"			}   \r\n");
-fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL1 ) )==false )   \r\n");
-fwrite($fsr,"			{   \r\n");
-fwrite($fsr,"				printf(\"Invalid query: %s\n\", $"."SQL1);   \r\n");
+
+fwrite($fsr,"			if( $"."mode=='title_func' ){      \r\n");
+fwrite($fsr,"				if( $"."search_choice != '' && $"."search_text !='') {   \r\n");
+fwrite($fsr,"					$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";      \r\n");
+fwrite($fsr,"					$"."SQL1 = $"."SQL1 . \" order by $"."fld_code \";      \r\n");
+fwrite($fsr,"				} else $"."SQL1 = $"."SQL1 . \" order by $"."fld_code \";      \r\n");
+fwrite($fsr,"			}      \r\n");
+
+
+
+fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL1 ) )==false ){   \r\n");
 fwrite($fsr,"				m_(\" ERROR : Select $tab_enm  \");   \r\n");
 fwrite($fsr,"				$"."total_count = 0;   \r\n");
 fwrite($fsr,"			} else {   \r\n");
@@ -316,7 +335,7 @@ fwrite($fsr,"?>               \r\n");
 
 fwrite($fsr,"			<div style='width:99%;'>          \r\n");
 fwrite($fsr,"				<div class='viewHeaderT'>          \r\n");
-fwrite($fsr,"						<span>appgenerator.net: $pg_code &nbsp;&nbsp;&nbsp;&nbsp;Total: <strong><"."?=$"."total_count?> &nbsp;&nbsp;&nbsp;&nbsp; Page:<?=$"."page?></strong>          \r\n");
+fwrite($fsr,"						<span>".$pg_name.": $pg_code &nbsp;&nbsp;&nbsp;&nbsp;Total: <strong><"."?=$"."total_count?> &nbsp;&nbsp;&nbsp;&nbsp; Page:<?=$"."page?></strong>          \r\n");
 fwrite($fsr,"						&nbsp;&nbsp;&nbsp;&nbsp;          \r\n");
 fwrite($fsr,"							<select id='line_cntS' name='line_cntS' onChange='Change_line_cnt(this.options[this.selectedIndex].value)' style='height:20;'>          \r\n");
 fwrite($fsr,"								<option value='5'  <?php if($"."line_cnt=='5' )  echo \" selected \" ?> >5</option>         \r\n");
@@ -327,13 +346,14 @@ fwrite($fsr,"								<option value='50'  <?php if($"."line_cnt=='50')   echo \" 
 fwrite($fsr,"								<option value='100' <?php if($"."line_cnt=='100') echo \" selected \" ?>  >100</option>     \r\n");
 fwrite($fsr,"							</select>          \r\n");
 fwrite($fsr,"						</span>          \r\n");
-fwrite($fsr,"					<!-- <input type='button' value='Write' onclick=\"javascript:table_record_write('table_write');\" class='btn_bo02T'> -->  \r\n");
+//fwrite($fsr,"					<!-- <input type='button' value='Write' onclick=\"javascript:table_record_write('table_write');\" class='btn_bo02T'> -->  \r\n");
 fwrite($fsr,"				</div>          \r\n");
 fwrite($fsr,"			</div>           \r\n");
 
 
 fwrite($fsr,"					<form name='view_form' method='post' enctype='multipart/form-data' >    \r\n");
 fwrite($fsr,"						<input type='hidden' name='mode'		value='<?=$"."mode?>' />    \r\n");
+fwrite($fsr,"						<input type='hidden' name='fld_code'		value='<?=$"."fld_code?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='seqno'		value='' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='page'		value='<?=$"."page?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='tab_enm'		value='<?=$"."tab_enm?>' />    \r\n");
@@ -354,7 +374,10 @@ fwrite($fsr,"		<thead>   \r\n");
 fwrite($fsr,"			<tr>   \r\n");
 fwrite($fsr,"				<th style='width:30px; height:100%px;text-align:center;font-weight:bold'>No</th>   \r\n");
  					for( $i=0; $i < $fld_cnt; $i++){ 
-fwrite($fsr,"					<th class='cell03'>".$fld_hnm[$i]."</th>    \r\n");
+//onclick=\"javascript:home_func('" . $pg_code . "')\"
+//fwrite($fsr,"					<th class='cell03'>".$fld_hnm[$i]."</th>    \r\n");
+fwrite($fsr,"					<th class='cell03' title='Sort ".$fld_hnm[$i]." click' onclick=\"javascript:title_func('" . $fld_enm[$i] . "')\" >".$fld_hnm[$i]."</th>    \r\n");
+
  					} 
 					
 fwrite($fsr,"			</tr>   			\r\n");
@@ -366,18 +389,31 @@ fwrite($fsr,"<?php    \r\n");
 fwrite($fsr,"			$"."SQL		= \"SELECT * from $tab_enm \";  \r\n");
 fwrite($fsr," 			$"."SQL_limit	= \"  limit $"."start , $"."last; \";  \r\n");
 
-fwrite($fsr,"			$"."OrderBy	= \" order by seqno desc \";    \r\n");
-fwrite($fsr,"			if( $"."mode == \"SR\" ){    \r\n");
+//fwrite($fsr,"			$"."OrderBy	= \" order by seqno desc \";    \r\n");
+fwrite($fsr,"			if( $"."mode=='title_func' ) $"."OrderBy = \" order by $"."fld_code \";    \r\n");
+fwrite($fsr,"			else $"."OrderBy	= \" order by seqno desc \";        \r\n");
 
+fwrite($fsr,"			if( $"."mode == \"SR\" ){    \r\n");
 fwrite($fsr,"				if( $"."search_choice == 'like' )	$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";  \r\n");
 fwrite($fsr,"				else							$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '$"."search_text' \";  \r\n");
-
-
 fwrite($fsr,"			}     \r\n");
+
+fwrite($fsr,"			else if( $"."mode=='title_func' ) {     \r\n");
+fwrite($fsr,"				if( $"."search_choice != '' && $"."search_text !='') {     \r\n");
+fwrite($fsr,"					if( $"."search_choice == 'like' )	$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";  \r\n");
+fwrite($fsr,"					else					$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '$"."search_text' \";       \r\n");
+fwrite($fsr,"				}     \r\n");
+fwrite($fsr,"			}     \r\n");
+
+
+
+
+
 fwrite($fsr,"			$"."SQL = $"."SQL . $"."OrderBy . $"."SQL_limit;    \r\n");
+
 fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL ) )==false )    \r\n");
 fwrite($fsr,"			{    \r\n");
-fwrite($fsr,"				printf(\"Record 0 : query: %s\n\", $"."SQL);    \r\n");
+//fwrite($fsr,"				printf(\"Record 0 : query: %s\n\", $"."SQL);    \r\n");
 fwrite($fsr,"			} else {    \r\n");
 fwrite($fsr,"				if( $"."page > 1 ) $"."no=($"."page -1) * $"."line_cnt;    \r\n");
 fwrite($fsr,"				else $"."no=0;    \r\n");
