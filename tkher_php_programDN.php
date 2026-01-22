@@ -9,7 +9,7 @@
 	$H_ID		= get_session("ss_mb_id"); 
 	$H_LEV=$member['mb_level']; 
 	if( !$H_ID or $H_LEV < 2 ) {
-		my_msg("You need to login. ");exit;
+		m_("You need to login. ");exit;
 		//echo "<script>window.open('/', '_top', '');</script>";exit;
 	}
 	$mode=$_POST['mode'];
@@ -31,41 +31,18 @@
 	$runF4 = $pg_code . "_view.php";	//$runF3 = "./" . $pg_code . "_update.php";
 
 	$runfile = $path . $H_ID . "/" . $pg_code . "_run.php";
-	$fsr = fopen("$runfile","w+");		//list file
+	$fsr = fopen("$runfile","w+");
 
 	fwrite($fsr,"<?php \r\n");
 
-/*
-fwrite($fsr,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
-fwrite($fsr,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
-fwrite($fsr,"	$"."searchNameA = 'appgenerator.net';  \r\n");
-fwrite($fsr,"	$"."searchNameB = 'appgenerator.net';  \r\n");
-fwrite($fsr,"	if( $"."_SERVER['HTTP_HOST'] == $"."searchNameA ) {   \r\n");
-fwrite($fsr,"       include '../../tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php   //  2023-06-27
-fwrite($fsr,"		include '../../tkher_dbconX.php';		  \r\n");  //  2023-06-27
-fwrite($fsr,"	} else if( $"."_SERVER['HTTP_HOST'] == $"."searchNameB ) {   \r\n");
-fwrite($fsr,"       include '../../tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php  //  2023-06-27
-fwrite($fsr,"		include '../../tkher_dbconX.php';		  \r\n"); //  2023-06-27
-fwrite($fsr,"	} else {  \r\n");
-fwrite($fsr,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
-fwrite($fsr,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
-fwrite($fsr,"		// tkher_dbcon_create.php에서 generator.  \r\n");
-fwrite($fsr,"	}  \r\n");
-*/
-//fwrite($fsr,"	$"."searchNameAA = $"."_SERVER['HTTP_HOST'];  \r\n");
-//fwrite($fsr,"	$"."searchNameBB = $"."_SERVER['DOCUMENT_ROOT'];  \r\n");
-fwrite($fsr,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
-fwrite($fsr,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
-fwrite($fsr,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");	//	call:tkher_config_link.php 
-fwrite($fsr,"	    // 포함  \r\n");
-fwrite($fsr,"	} else {    \r\n");
-fwrite($fsr,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
-fwrite($fsr,"		// DB 정보를  사용자 서버에서 설치할떄  \r\n");
-fwrite($fsr,"		// tkher_dbcon_create.php에서 generator.  \r\n");
-fwrite($fsr,"	}  \r\n");
 
+	fwrite($fsr,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+	fwrite($fsr,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+	fwrite($fsr,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");
+	fwrite($fsr,"	} else {    \r\n");
+	fwrite($fsr,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
+	fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
+	fwrite($fsr,"	}  \r\n");
 
 //	fwrite($fsr," include './table_paging.php';	\r\n"); // 2023-07-06 tkher_db_lib.php에 pagingA()로 적용함 -- 중요
 	fwrite($fsr,"?> \r\n");
@@ -74,16 +51,14 @@ fwrite($fsr,"	}  \r\n");
 	fwrite($fsr,"<head> \r\n");
 
 	fwrite($fsr,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
-	fwrite($fsr,"<TITLE>AppGenerator.net AppGenerator is generator program. Made in Kang ChulHo</TITLE>  \r\n");
+	fwrite($fsr,"<TITLE>KAPP - no code webapp generator, No code app creation Made in ChulHo Kang : solpakan89@gmail.com</TITLE>  \r\n");
 	fwrite($fsr,"<link rel='shortcut icon' href='./logo25a.jpg'> \r\n");
 	fwrite($fsr,"<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> \r\n");
-	fwrite($fsr,"<meta name='keywords' content='app generator, app maker, appgenerator, app, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> \r\n");
-	fwrite($fsr,"<meta name='description' content='app generator, app maker, appgenerator, app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 '> \r\n");
+	fwrite($fsr,"<meta name='keywords' content='no code webapp generator, No code app creation, no code webapp create, web generator'> \r\n");
+	fwrite($fsr,"<meta name='description' content='no code webapp generator, No code app creation, no code webapp create, web generator'> \r\n");
 	fwrite($fsr,"<meta name='robots' content='ALL'> \r\n");
-
 	fwrite($fsr,"</head> \r\n");
 
-	//----------------
 	fwrite($fsr,"<script src=\"//code.jquery.com/jquery.min.js\"></script> \r\n");
 	fwrite($fsr,"<script> \r\n");
 	fwrite($fsr,"$"."(function () { \r\n");
@@ -139,15 +114,11 @@ fwrite($fsr,"	}  \r\n");
 	fwrite($fsr,".btn_bo03T{width:84px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}  \r\n");
 	
 	fwrite($fsr,".viewHeaderT{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}  \r\n"); // text-align:right;
-
 	fwrite($fsr,".viewHeaderT span{left:0;top:12px;font-size:14px;color:#686868;}  \r\n"); // position:absolute; 제거
-
 	fwrite($fsr,".boardViewT{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
 	fwrite($fsr,".boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
 	fwrite($fsr,".listTableT{width:100%px;text-decoration: none;}  \r\n");
-//	fwrite($fsr,".listTableT th{height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}  \r\n"); // 2024-01-08
 	fwrite($fsr,".listTableT th{word-break:break-all;height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}  \r\n");
-//	fwrite($fsr,".listTableT td{height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}  \r\n"); // 2024-01-08
 	fwrite($fsr,".listTableT td{word-break:break-all;height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}  \r\n");
 	fwrite($fsr,".listTableT td a span{font-size:14px;color:#69604f;}  \r\n");
 	fwrite($fsr,".listTableT td a .t01{font-size:14px;color:#d01c27;}  \r\n");
@@ -203,8 +174,8 @@ fwrite($fsr,"	}  \r\n");
 	fwrite($fsr,"	} \r\n");
 	fwrite($fsr,"	function excel_down(){ \r\n");
 	fwrite($fsr,"		document.view_form.mode.value = 'excel_create'; \r\n");
-	//fwrite($fsr,"		document.view_form.action='down_excel_file.php'; \r\n");
-	fwrite($fsr,"		document.view_form.action='excel_download_user.php'; \r\n"); // 2021-09-30
+
+	fwrite($fsr,"		document.view_form.action='excel_download_user.php'; \r\n");
 	fwrite($fsr,"		document.view_form.submit(); \r\n");
 	fwrite($fsr,"	} \r\n");
 
@@ -233,31 +204,30 @@ fwrite($fsr,"	}  \r\n");
 	fwrite($fsr,"			document.view_form.action = '".$runF1."' \r\n");
 	fwrite($fsr,"			document.view_form.submit(); \r\n");
 	fwrite($fsr,"	} \r\n");
-
 	fwrite($fsr," </script> \r\n");
-	//------------------------------------- end ---------------------------
+
 	fwrite($fsr,"<?php \r\n");
 
-fwrite($fsr,"			if( isset($"."_POST['page']) ) $"."page=$"."_POST['page'];  \r\n");
-fwrite($fsr,"			else $"."page=1;   \r\n");
-fwrite($fsr,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
-fwrite($fsr,"			else $"."mode='';  \r\n");
+	fwrite($fsr,"			if( isset($"."_POST['page']) ) $"."page=$"."_POST['page'];  \r\n");
+	fwrite($fsr,"			else $"."page=1;   \r\n");
 
-//	fwrite($fsr,"	$"."c_sel		= $"."_POST['c_sel']; \r\n");
-fwrite($fsr,"			if( isset($"."_POST['c_sel']) ) $"."c_sel=$"."_POST['c_sel']; \r\n");
-fwrite($fsr,"			else $"."c_sel='';  \r\n");
-//	fwrite($fsr,"	$"."c_sel3		= $"."_POST['c_sel3']; \r\n");
-fwrite($fsr,"			if( isset($"."_POST['c_sel3']) ) $"."c_sel3=$"."_POST['c_sel3']; \r\n");
-fwrite($fsr,"			else $"."c_sel3='';  \r\n");
-//	fwrite($fsr,"	$"."search_fld	= $"."_POST['search_fld']; \r\n");
-fwrite($fsr,"			if( isset($"."_POST['search_fld']) ) $"."search_fld=$"."_POST['search_fld']; \r\n");
-fwrite($fsr,"			else $"."search_fld='';  \r\n");
-//	fwrite($fsr,"	$"."search_text	= $"."_POST['search_text']; \r\n");
-fwrite($fsr,"			if( isset($"."_POST['search_text']) ) $"."search_text=$"."_POST['search_text']; \r\n");
-fwrite($fsr,"			else $"."search_text='';  \r\n");
-//	fwrite($fsr,"	$"."search_choice = $"."_POST['search_choice']; \r\n");
-fwrite($fsr,"			if( isset($"."_POST['search_choice']) ) $"."search_choice=$"."_POST['search_choice']; \r\n");
-fwrite($fsr,"			else $"."search_choice='';  \r\n");
+	fwrite($fsr,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
+	fwrite($fsr,"			else $"."mode='';  \r\n");
+
+	fwrite($fsr,"			if( isset($"."_POST['c_sel']) ) $"."c_sel=$"."_POST['c_sel']; \r\n");
+	fwrite($fsr,"			else $"."c_sel='';  \r\n");
+
+	fwrite($fsr,"			if( isset($"."_POST['c_sel3']) ) $"."c_sel3=$"."_POST['c_sel3']; \r\n");
+	fwrite($fsr,"			else $"."c_sel3='';  \r\n");
+
+	fwrite($fsr,"			if( isset($"."_POST['search_fld']) ) $"."search_fld=$"."_POST['search_fld']; \r\n");
+	fwrite($fsr,"			else $"."search_fld='';  \r\n");
+
+	fwrite($fsr,"			if( isset($"."_POST['search_text']) ) $"."search_text=$"."_POST['search_text']; \r\n");
+	fwrite($fsr,"			else $"."search_text='';  \r\n");
+
+	fwrite($fsr,"			if( isset($"."_POST['search_choice']) ) $"."search_choice=$"."_POST['search_choice']; \r\n");
+	fwrite($fsr,"			else $"."search_choice='';  \r\n");
 
 	fwrite($fsr,"	$"."tab_enm	    = \"" .$tab_enm. "\"; \r\n");
 	fwrite($fsr,"	$"."tab_hnm	    = \"" .$tab_hnm. "\"; \r\n");
@@ -278,7 +248,7 @@ fwrite($fsr,"			else $"."search_choice='';  \r\n");
 		$fld_cnt		= $rsPG['item_cnt'];
 		$pg_name	= $rsPG['pg_name']; 
 	} else {
-			my_msg(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! ");// exit;
+			m_(" program name ERROR : table10_pg , pg_name:$pg_name , pg_code:$pg_code NO Found! ");// exit;
 	}
 	$fld_enm	= array();
 	$fld_hnm	= array();
@@ -301,11 +271,10 @@ fwrite($fsr,"			else $"."search_choice='';  \r\n");
 	//$page		= $_POST[page];
 	//$in_day		= date("Y-m-d H:i");
 
-//fwrite($fsr,"			$"."line_cnt	= $"."_POST['line_cnt'];	 \r\n");
-fwrite($fsr,"			if( isset($"."_POST['line_cnt']) ) $"."line_cnt=$"."_POST['line_cnt']; \r\n");
+
+fwrite($fsr,"			if( isset($"."_POST['line_cnt']) && $"."_POST['line_cnt'] !='' ) $"."line_cnt=$"."_POST['line_cnt']; \r\n");
 fwrite($fsr,"			else $"."line_cnt=10;  \r\n");
-//fwrite($fsr,"			if( !$"."line_cnt  ) $"."line_cnt	= 10;					 \r\n");
-fwrite($fsr,"			$"."page_num = 10;			// #[1] [2] [3] 갯수  - 10:고정.  \r\n");
+fwrite($fsr,"			$"."page_num = 10;     \r\n");
 
 fwrite($fsr," ?> \r\n");
 
@@ -327,7 +296,7 @@ fwrite($fsr,"			}   \r\n");
 fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL1 ) )==false )   \r\n");
 fwrite($fsr,"			{   \r\n");
 fwrite($fsr,"				printf(\"Invalid query: %s\n\", $"."SQL1);   \r\n");
-fwrite($fsr,"				my_msg(\" ERROR : Select $tab_enm  \");   \r\n");
+fwrite($fsr,"				m_(\" ERROR : Select $tab_enm  \");   \r\n");
 fwrite($fsr,"				$"."total_count = 0;   \r\n");
 fwrite($fsr,"			} else {   \r\n");
 fwrite($fsr,"				$"."total_count = sql_num_rows($"."result);   \r\n");

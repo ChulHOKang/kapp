@@ -87,8 +87,6 @@ fwrite($fsi,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\
 fwrite($fsi,"	} else {    \r\n");
 fwrite($fsi,"       include './tkher_db_lib.php';		\r\n");
 fwrite($fsi,"		include './tkher_dbcon_Table.php';  \r\n");
-fwrite($fsi,"		// DB info for setup for user server \r\n");
-fwrite($fsi,"		// tkher_dbcon_create.php - generator.  \r\n");
 fwrite($fsi,"	}  \r\n");
 
 fwrite($fsi,"?> \r\n");
@@ -96,11 +94,11 @@ fwrite($fsi,"?> \r\n");
 fwrite($fsi,"<html> \r\n");
 fwrite($fsi,"<head> \r\n");
 fwrite($fsi,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
-fwrite($fsi,"<TITLE>AppGenerator is generator program. Made in ChulHo Kang : solpakan89@gmail.com</TITLE>  \r\n");
+fwrite($fsi,"<TITLE>KAPP - Create Apps with No Code . Made in ChulHo Kang : solpakan89@gmail.com</TITLE>  \r\n");
 fwrite($fsi,"<link rel='shortcut icon' href='/logo/logo25a.jpg'> \r\n");
 fwrite($fsi,"<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> \r\n");
-fwrite($fsi,"<meta name='keywords' content='app generator, app maker, appgenerator, app, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> \r\n");
-fwrite($fsi,"<meta name='description' content='app generator, app maker, appgenerator, app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 '> \r\n");
+fwrite($fsi,"<meta name='keywords' content='no code webapp generator, No code app creation, no code webapp create, web generator'> \r\n");
+fwrite($fsi,"<meta name='description' content='no code webapp generator, No code app creation, no code webapp create, web generator,'> \r\n");
 fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 fwrite($fsi,"</head> \r\n");
 fwrite($fsi,"<?php                                 \r\n");
@@ -193,6 +191,15 @@ fwrite($fsi,"	$"."_SESSION['relation_dataPG']= $"."relation_dataPG; \r\n");
 fwrite($fsi,"	$"."_SESSION['relation_typePG']= $"."relation_typePG; \r\n");
 
 fwrite($fsi,"	$"."in_day = date('Y-m-d H:i:s');   \r\n");
+
+fwrite($fsi,"	    \r\n");
+fwrite($fsi,"	if( isset($"."_POST['page']) ) $"."page = $"."_POST['page'];	    \r\n");
+fwrite($fsi,"	else if( isset($"."_REQUEST['page']) ) $"."page = $"."_REQUEST['page'];	    \r\n");
+fwrite($fsi,"	else $"."page=1;	    \r\n");
+fwrite($fsi,"	if( isset($"."_POST['line_cnt']) ) $"."line_cnt = $"."_POST['line_cnt'];	    \r\n");
+fwrite($fsi,"	else if( isset($"."_REQUEST['line_cnt']) ) $"."line_cnt = $"."_REQUEST['line_cnt'];	    \r\n");
+fwrite($fsi,"	else $"."line_cnt = 10;	    \r\n");
+
 fwrite($fsi,"?>                                 \r\n");
 
 fwrite($fsi,"          <span title='pg:".$pg_code."'>K-App:".$pg_code."&nbsp;&nbsp;&nbsp;<?=$"."in_day?></span> \r\n");
