@@ -18,13 +18,14 @@
 
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href= KAPP_URL_T_ . "/logo/land25.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 
 <style>
 table { border-collapse: collapse; }
@@ -83,10 +84,9 @@ $(function () {
   });
 });
 </script>
-
 <link rel="stylesheet" href= KAPP_URL_T_ . "/include/css/common.css" type="text/css" />
 <link rel="stylesheet" href= KAPP_URL_T_ . "/include/css/kancss.css" type="text/css">
-</head>
+
 <body leftmargin="0" topmargin="0">
 
 <script type="text/javascript" src= KAPP_URL_T_ . "/include/js/ui.js"></script>
@@ -194,59 +194,44 @@ $(function () {
 
 	} else if( $mode == 'App_search' && $data == '') {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " ";
+		$ls = $ls . " where userid='$H_ID'";
 		$ls = $ls . " ORDER BY upday desc ";
 	} else if( $modeMy == 'My_List' ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		if( $data !=="") $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
 		else if( $data =="") $ls = $ls . " where userid='$H_ID' ";
-		else  $ls = $ls . " ";
 		$ls = $ls . " ORDER BY upday desc ";
-
 	} else if( $mode == 'App_search' ) {
-
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $data !=="" ) $ls = $ls . " where $param $sel '%$data%' ";
-		else if( $data =="" ) $ls = $ls . " ";
+		if( $data !=="" ) $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
+		else if( $data =="" ) $ls = $ls . " where userid='$H_ID'";
 		else  $ls = $ls . " ";
 		$ls = $ls . " ORDER BY upday desc ";
 
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " ";
+		$ls = $ls . " where userid='$H_ID'";
 		$ls = $ls . " ORDER BY upday desc ";
 	}
-	//echo "ls: " . $ls; exit;
-
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-
 	if(!$App_Page) $App_Page=1; 
 	$total_page = intval(($total-1) / $limit_cnt)+1; 
-
 	$first = ($App_Page-1) * $limit_cnt; 
 	$last = $limit_cnt; 
-
 	if($total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-
-	if ($App_Page == "1")
-		$no = $total;
-	else {
-		$no = $total - ($App_Page - 1) * $limit_cnt;
-	}
-
+	if( $App_Page == "1") $no = $total;
+	else $no = $total - ($App_Page - 1) * $limit_cnt;
 ?>
 <center>
 <?php
-		//$cur='B'; //include_once "./menu_run.php"; 
 		if( $mode=="Search" ) $T_msg = "[ Set App permissions : ". $pg_name . " ]";
 		else $T_msg = "[ Set App permissions ]";
 		if( isset($H_ID) ) $T_msg = $T_msg . ", P:" . $member['mb_point']. ", L:" . $member['mb_level'] . "," .$member['mb_email'];
 		else $T_msg = $T_msg . " , " . $ip;
 ?>
 	<FORM name="insert_form" Method='post'  enctype="multipart/form-data" >
-
 			<input type="hidden" name="read_"	value="" >
 			<input type="hidden" name="write_"	value="" >
 			<input type="hidden" name="seqno_"	value="" >
@@ -254,12 +239,11 @@ $(function () {
 			<input type="hidden" name="mode"	value="<?=$mode?>" >
 			<input type="hidden" name="modeMy"	value="<?=$modeMy?>" >
 			<input type='hidden' name='App_Page' value="<?=$App_Page?>">
-			<input type="hidden" name="tab_hnmS" value=''> <!-- table10i_old.php  -->
+			<input type="hidden" name="tab_hnmS" value=''>
 			<input type="hidden" name="pg_name" value='<?=$pg_name?>'> 
 			<input type="hidden" name="pg_code" value='<?=$pg_code?>' > 
 			<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
 			<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
-
 		<div>
 			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
 				<option value="pg_name">App name</option>
@@ -271,13 +255,7 @@ $(function () {
 			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
 			<input type='button' value='Search' onclick="javascript:App_search();" >
 		</div>
-
-<!-- <tr>
-	<td style='background-color:#f4f4f4;color:blue;' align='center' colspan='7'><?=$T_msg?></td> 
-</tr> -->
-
 <span title='my data print - app_permission.php'><strong><a onclick="javascript:my_data();" style="border-style:;background-color:black;color:yellow;height:28;border-radius:20px;"><?=$T_msg?></a></strong></span>
-
 <table class='floating-thead' width='100%' cellspacing="0" cellpadding="0" >
 <thead  width='100%'>
       <tr>
@@ -292,12 +270,10 @@ $(function () {
 </thead>
 
 <tbody width='100%'  height='400'>
-
 <?php
     $line=0;
 	$i=1;
 	if( $mode !== "Search") $ls = $ls . " $limit ";
-	//$ls = $ls . " $limit ";
 	$resultT = sql_query( $ls );
 	while( $rsP = sql_fetch_array( $resultT ) ) { 
 		$pg_code = $rsP['pg_code'];
@@ -311,38 +287,21 @@ $(function () {
 			<td bgcolor="#FFFFFF" title="user:<?=$rsP['userid']?>, userid:<?=$rsP['userid']?>"><?=$rsP['userid']?></td>
 			<td bgcolor="#FFFFFF" title="project code:<?=$rsP['group_code']?>"><?=$rsP['group_name']?></td>
 			<td bgcolor="#FFFFFF" title="pg_code:<?=$rsP['pg_code']?>"><?=$rsP['pg_name']?> (<?=$rsP['pg_code']?>)</td>
-			<td bgcolor="#FFFFFF" ><select name='grant_read_<?=$i?>' >
-
-				<!-- <option value="7" <?php if($rsP['grant_view']==7) echo "selected"; ?> title='Level:7 higher'>Level:7</option>
-				<option value="6" <?php if($rsP['grant_view']==6) echo "selected"; ?> title='Level:6 higher'>Level:6</option>
-				<option value="5" <?php if($rsP['grant_view']==5) echo "selected"; ?> title='Level:5 higher'>Level:5</option>
-				<option value="4" <?php if($rsP['grant_view']==4) echo "selected"; ?> title='Level:4 higher'>Level:4</option>
-				<option value="3" <?php if($rsP['grant_view']==3) echo "selected"; ?> title='Level:3 higher'>Level:3</option>
-				<option value="2" <?php if($rsP['grant_view']==2) echo "selected"; ?> title='Level:2 higher'>Level:2</option>
-				<option value="1" <?php if($rsP['grant_view']==1 || $rsP['grant_view']==0) echo "selected"; ?>>Level:1</option> -->
-
+			<td bgcolor="#FFFFFF" >
+			<SELECT name='grant_read_<?=$i?>' >
 				<option value='1' <?php if($grant_view==0||$grant_view==1)  echo " selected"; ?> >Guest</option>
 				<option value='2' <?php if($grant_view==2)  echo " selected"; ?> >Member</option>
 				<option value='3' <?php if($grant_view==3)  echo " selected"; ?> >For creators only</option>
 				<option value='8' <?php if($grant_view==8)  echo " selected"; ?> >Only system manager</option>
-			  </select>
-			  </td>
-			<td bgcolor="#FFFFFF" align="center"><select name="grant_write_<?=$i?>" >
-
-				<!-- <option value="7" <?php if($rsP['grant_write']==7) echo "selected"; ?> title='Level:7 higher'>Level:7</option>
-				<option value="6" <?php if($rsP['grant_write']==6) echo "selected"; ?> title='Level:6 higher'>Level:6</option>
-				<option value="5" <?php if($rsP['grant_write']==5) echo "selected"; ?> title='Level:5 higher'>Level:5</option>
-				<option value="4" <?php if($rsP['grant_write']==4) echo "selected"; ?> title='Level:4 higher'>Level:4</option>
-				<option value="3" <?php if($rsP['grant_write']==3) echo "selected"; ?> title='Level:3 higher'>Level:3</option>
-				<option value="2" <?php if($rsP['grant_write']==2) echo "selected"; ?> title='Level:2 higher'>Level:2</option>
-				<option value="1" <?php if($rsP['grant_write']==1 || $rsP['grant_write']==0) echo "selected";?> >Level:1</option> -->
-
+			</select></td>
+			<td bgcolor="#FFFFFF" align="center">
+			<SELECT name="grant_write_<?=$i?>" >
 				<option value='1' <?php if($grant_write==0||$grant_write==1)  echo " selected"; ?> >Guest</option>
 				<option value='2' <?php if($grant_write==2)  echo " selected"; ?> >Member</option>
 				<option value='3' <?php if($grant_write==3)  echo " selected"; ?> >For creators only</option>
 				<option value='8' <?php if($grant_write==8)  echo " selected"; ?> >Only system manager</option>
-			  </select>
-			  </td>
+			</select>
+			</td>
 			<td bgcolor="#FFFFFF" align="center" width='10%'>
 <?php
 	if( $H_ID == $rsP['userid'] ){
@@ -371,19 +330,15 @@ $(function () {
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$pg_name."', '".$pg_code."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $pg_name.' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$pg_name."', '".$pg_code."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Create and download table creation source and data processing program source of $pg_name.' >&nbsp;&nbsp; ";
 	} else {
-		//$data = $_POST['data'];
-		$first_page = intval(($App_Page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
+		$first_page = intval(($App_Page-1)/$page_num+1)*$page_num-($page_num-1);
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;
 		$prev = $first_page-1;
-
 		if($App_Page > $page_num) 
 			echo"<a href='#' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-		for($i = $first_page; $i <= $last_page; $i++)
-		{
+		for($i = $first_page; $i <= $last_page; $i++){
 			if($App_Page == $i) echo" <b>$i</b> "; 
-			else 
-				echo"<a href='#' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[$i]</a>";
+			else echo"<a href='#' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[$i]</a>";
 		}
 		$next = $last_page+1;
 		if($next <= $total_page) 

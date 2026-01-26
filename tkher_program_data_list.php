@@ -17,17 +17,16 @@
 
 	$H_ID  = get_session("ss_mb_id"); 
 	if( isset($H_ID) && $H_ID !=='' ) {
-		//m_("You need to login. ");
 		$H_LEV = $member['mb_level']; 
 		$H_POINT	= $member['mb_point']; 
 	} else {
+		m_("You need to login. ");
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
 
 	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
 	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
-	else if( isset( $_SESSION['pg_code']) ) $pg_code= $_SESSION['pg_code'];
 	else $pg_code = '';
 
 
@@ -37,23 +36,11 @@
 	
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
-
-	if( !$pg_code ) {
-		$pg_code = $_SESSION['pg_code'];
-		m_("pg code - ERROR : pg_code: $pg_code "); exit;//
-	} else $_SESSION['pg_code']= $pg_code;
+	if( $mode == "project_search" ) $group_code = $_POST['group_code'];
+	else if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
+	else $group_code = '';
 
 	$pg_mid= ''; $tab_mid= ''; 
-
-	if( $mode == "project_search" ) {
-		$group_code = $_POST['group_code'];	//	m_("$mode, $group_code");
-		$_SESSION['group_code']=$group_code;
-	} else {
-		if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
-		else if( isset( $_SESSION['group_code']) ) $group_code= $_SESSION['group_code'];
-		else $group_code = '';
-	}
-
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
@@ -76,16 +63,15 @@
 	}
 ?>
 <html> 
-<head> 
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<head>
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
-
-</head> 
+</head>
 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
@@ -364,7 +350,6 @@ $(function () {
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=="" ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
-	if( $line_cnt < 10  ) $line_cnt	= 10;
 	$page_cnt	= 10;
 ?>
 			<br>
@@ -406,7 +391,6 @@ $(function () {
 			}
 	} else {
 		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
-		//자료를 볼수 있는 권한이 없습니다. 볼수있는 권한은 생성자 이상의 레벨입니다.
 	}
 
 ?>
@@ -421,18 +405,16 @@ $(function () {
 			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 							<option value=''>Select Project</option>
 <?php
- if( isset($group_name) && $group_name !==''){
+			if( $H_LEV > 7) $result=sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
+			else $result=sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
+
+			while( $rs = sql_fetch_array( $result)) {
+				$chk = '';
+				if( $group_code == $rs['group_code'] ) $chk =' selected ';
 ?>
-							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
+				<option value='<?=$rs['group_code']?>' <?php echo $chk; ?> ><?=$rs['group_name']?></option>
 <?php
 			}
-					if( $H_LEV > 7) $result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
-					else			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
-					while( $rs = sql_fetch_array( $result)) {
-?>
-							<option value='<?=$rs['group_code']?>' <?php if( $group_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
-<?php
-					}
 ?>
 			</select>
 				<a href="#" id="contentlink" rel="subcontent2">
@@ -459,7 +441,7 @@ $(function () {
 	}	else {
 			m_(" -----------Please login"); exit;
 	}
-	while ( $rs = sql_fetch_array( $result )  ) {
+	while( $rs = sql_fetch_array( $result )  ) {
 		$pg_codeA = $rs['pg_code'];
 		$pg_nameA = $rs['pg_name'];
 ?>

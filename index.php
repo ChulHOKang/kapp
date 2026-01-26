@@ -1,6 +1,8 @@
 <?php
 	include_once('./kapp_start_necessary_TT.php');
    /*
+		KAPP : Create Apps with No Code
+		AI-Powered App Builder - No Code Required
 		index.php - kapp_start_necessary_TT.php
 		indexTT.php - tkher_start_necessary.php
    */
@@ -31,11 +33,11 @@
 <html>
 <head>
 	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-	<TITLE>K-APP. no coding system. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
 	<link rel="shortcut icon" href="./icon/logo25a.jpg">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-	<meta name="keywords" content="web app generator, web app, web, no coding, CRUD, php, DB, php source code, web tool ">
-	<meta name="description" content="web app generator, web app, web, no coding, CRUD, php, DB, php source code, web tool ">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 
@@ -219,10 +221,6 @@ body {
 			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'>
 			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.Table List</a></li>
 
-			<!-- <li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
-			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/app_pg50RC.php' target='run_menu'>
-			<img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' style='width:24px;height:22px;'>Program Create</a></li> -->
-
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
 			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_pg_Create.php' target='run_menu'>
 			<img src='<?=KAPP_URL_T_?>/logo/appmaker.jpg' style='width:24px;height:22px;'>.Program Create</a></li>
@@ -238,6 +236,9 @@ body {
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
 			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'>
 			<img src='<?=KAPP_URL_T_?>/logo/seedX.png' style='width:24px;height:22px;'>.Program List A</a></li>
+			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list_ai.php' target='run_menu'>
+			<img src='<?=KAPP_URL_T_?>/logo/seedX.png' style='width:24px;height:22px;'>.Program List AI</a></li>
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
 			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_pglist.php' target='run_menu'>
 			<img src='<?=KAPP_URL_T_?>/logo/berry.png' style='width:24px;height:22px;'>.Program List B</a></li>
@@ -258,10 +259,6 @@ body {
 	$src = KAPP_URL_T_ . '/indexTT.php';
 ?>
 <iframe src='<?=$src?>' title='url data' name='run_menu' width='100%' height='100%'></iframe>
-			<!-- <a href="javascript:common.openProj01()" class="btn_req">
-				<span>PROJECT REQUEST</span>
-				<img src="./include/img/ico/ico_arr01.png" />
-			</a> -->
 </body>
 </html>
 <?php
