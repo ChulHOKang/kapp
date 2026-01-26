@@ -177,7 +177,6 @@ $(function () {
 		document.table_list.submit();
 	}
 	function Change_line_cnt( $line){
-		
 		document.table_list.page.value = 1;
 		document.table_list.line_cnt.value = $line;
 		document.table_list.action='kapp_program_list_all.php';
@@ -216,46 +215,24 @@ $(function () {
 	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
 	else $page=1;
 
-   if( isset($_POST['param']) ) $param	= $_POST["param"];   
-   if( isset($_POST['sel']) )   $sel	= $_POST["sel"];   
-   if( isset($_POST['seqno']) ) $seqno	= $_POST["seqno"];   
-   if( isset($_POST['pg_code']) ) $pg_code	= $_POST["pg_code"];   
-   if( isset($_POST['pg_name']) ) $pg_name= $_POST["pg_name"];   
+	if( isset($_POST['param']) ) $param	= $_POST["param"];   
+	if( isset($_POST['sel']) )   $sel	= $_POST["sel"];   
+	if( isset($_POST['seqno']) ) $seqno	= $_POST["seqno"];   
+	if( isset($_POST['pg_code']) ) $pg_code	= $_POST["pg_code"];   
+	if( isset($_POST['pg_name']) ) $pg_name= $_POST["pg_name"];   
 
-	/* if( $mode == 'Search' ) {
-			$aa = explode(':', $tab_hnmS);
-			$tab_enm = $aa[0];
-			$tab_hnm = $aa[1];
-		if( !$tab_enm ) {
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where fld_enm='seqno' ";
-			$ls = $ls . " ORDER BY tab_hnm asc, seqno asc ";
-		} else {
-			$ls = "SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where tab_enm='$tab_enm' and fld_enm='seqno' ";
-			$result = sql_query( $ls );
-			$rs		= sql_fetch_array( $result );
-			$group_code	= $rs['group_code'];
-			$group_name	= $rs['group_name'];
-			$sqltable   = $rs['sqltable'];
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where tab_enm='$tab_enm' ";
-		}
-   } else */
 	if( $mode == 'Program_Search' ) {
-		if( !$data ){
-			$sel   = 'like';
-			$param = 'pg_name';
-		}
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param like '%$data%' " . $wsel;
+			if($wsel!='') $ls = $ls . " where $param like '%$data%' " . $wsel;
+			else $ls = $ls . " where $param like '%$data%' ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param $sel '$data' " . $wsel;
+			if($wsel!='') $ls = $ls . " where $param $sel '$data' " . $wsel;
+			else $ls = $ls . " where $param $sel '$data' ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY group_code, upday desc, $param ";
 			$ls = $ls . $OrderBy;
@@ -263,13 +240,15 @@ $(function () {
 	} else if( $data !== "" ) { // program 검색.
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where pg_name like '%$data%' ". $wsel;
+			if($wsel!='') $ls = $ls . " where pg_name like '%$data%' ". $wsel;
+			else $ls = $ls . " where pg_name like '%$data%' ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where pg_name $sel '$data' " . $wsel;
+			if($wsel!='') $ls = $ls . " where pg_name $sel '$data' " . $wsel;
+			else $ls = $ls . " where pg_name $sel '$data' ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;

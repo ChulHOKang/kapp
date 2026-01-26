@@ -156,44 +156,25 @@ $(function () {
 });
 </script>
 <script type="text/javascript" >
-	function project_name_change_func(){
-		seqno = document.project_search.seqno.value;
-		group_code = document.project_search.group_codeX.value;
-		group_name = document.project_search.group_name.value;
-		project_name = document.project_search.project_name.value;
-		project_code = document.project_search.project_codeX.value;
-		msg = " Do you want to change the project name of program " + group_name + " to " + project_name + "?";
-		if ( window.confirm( msg ) )
-		{
-			document.project_search.mode.value ="project_name_change";
-			document.project_search.action ="program_list_ai.php";
-			document.project_search.group_name.value = project_name;
-			document.project_search.submit();
-		} else return false;
-	}
-	function project_code_change_funcA(cd ){
-		index = document.getElementById("project_code").selectedIndex;
-		var arr = document.getElementById("project_code").options;
-		document.project_search.project_codeX.value = arr[index].value;
-		document.project_search.project_name.value = arr[index].text;
-		Gindex = document.getElementById("group_code").selectedIndex;
-		var Garr = document.getElementById("group_code").options;
-		document.project_search.group_codeX.value = Garr[Gindex].value;
-		document.project_search.group_name.value = Garr[Gindex].text;
-		return;
-	}
+	function title_func(fld_code){       
+		document.project_search.page.value = 1;                
+		document.project_search.fld_code.value= fld_code;           
+		document.project_search.mode.value='title_func';           
+		document.project_search.action='program_list_ai.php';
+		document.project_search.submit();                         
+	} 
 	function group_code_change_func(cd){
 		index = document.project_search.group_code.selectedIndex;
 		nm = document.project_search.group_code.options[index].text;
 		document.project_search.group_name.value=nm;
 		vv = document.project_search.group_code.options[index].value;
-		document.project_search.group_codeX.value=vv;
+		//document.project_search.group_codeX.value=vv;
 		document.project_search.action ="program_list_ai.php";
 		document.project_search.submit();
 		return;
 	}
 	function program_run_funcList2( seqno, pg_name, pg_code ) {
-		document.project_search.mode.value		="tab_list_pg70";
+		document.project_search.mode.value		="program_list_ai"; //tab_list_pg70
 		document.project_search.seqno.value		=seqno;
 		document.project_search.pg_name.value	=pg_name;
 		document.project_search.pg_code.value	=pg_code;
@@ -209,14 +190,36 @@ $(function () {
 		document.project_search.target='_self';
 		document.project_search.submit();
 	}
+	function Change_line_cnt( $line){
+		document.project_search.page.value = 1;
+		document.project_search.mode.value		='';
+		document.project_search.line_cnt.value = $line;
+		document.project_search.action='program_list_ai.php';
+		document.project_search.submit();
+	}
+	function Search_func(){
+		document.project_search.page.value = 1;
+		document.project_search.mode.value		='Program_Search';
+		document.project_search.action='program_list_ai.php';
+		document.project_search.submit();
+	}
+
 </script>
 
  <BODY>
  <center>
 <?php
-	$limite = 15;
-	$page_num = 10;
+	//$limite = 15;
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=='' ){
+		$line_cnt	= $_POST['line_cnt'];
+	} else  $line_cnt	= 10;
 
+	$page_num = 10;
+	if( isset( $_POST['fld_code']) && $_POST['fld_code']!='' ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
+
+	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
+	else $page=1;
 	if( isset($_POST['data']) ) $data = $_POST['data'];
 	else $data = '';
 	if( isset($_POST['param']) ) $param	= $_POST['param'];
@@ -230,93 +233,67 @@ $(function () {
 	else $pg_code = '';
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
-   
-   if( $mode=='project_name_change'){
-		$project_code	= $_POST["project_codeX"];
-		$project_name	= $_POST["project_name"];
-		$query="update {$tkher['table10_pg_table']} set group_code='$project_code', group_name='$project_name' where seqno='$seqno' ";
-		$g = sql_query( $query );
-		if( !$g ) my_msg("Change Project Error");
-		else  my_msg("Project name changed! ");
-		$group_code = $project_code;
-		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where group_code='" . $project_code . "' and userid='$H_ID'";
-		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
-   } else if( $mode == 'Search' ) {
-			$aa = explode(':', $tab_hnmS);
-			$tab_enm = $aa[0];
-			$tab_hnm = $aa[1];
-		if( !$tab_enm ) {
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
-			$ls = $ls . " ORDER BY tab_hnm asc, seqno asc ";
-		} else {
-			$ls = "SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where tab_enm='$tab_enm' and fld_enm='seqno' and userid='$H_ID'";
-			$result = sql_query( $ls );
-			$rs		= sql_fetch_array( $result );
-			$group_code	= $rs['group_code'];
-			$group_name	= $rs['group_name'];
-			$sqltable   = $rs['sqltable'];
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where tab_enm='$tab_enm' and userid='$H_ID'";
-		}
-   } else if( $mode == 'Program_Search' ) {
+	
+	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
+		$group_code = $_POST['group_code'];   
+		$wsel = " and group_code = '$group_code' ";
+	} else {
+		$group_code= '';
+		$wsel = '';
+	}
+
+	if( $mode == 'Program_Search' ) {
 		$page = 1;
-		if( !$data ){
-			$sel   = 'like';
-			$param = 'pg_name';
-		} else {
-			$sel   = $_POST['sel'];
-			$param = $_POST['param'];
-		}
-		if($sel == 'like') {
+		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param like '%$data%' and userid='$H_ID'";
-			$ls = $ls . " ORDER BY upday desc, $param ";
+			$ls = $ls . " where $param like '%$data%' and userid='$H_ID' " . $wsel;
+			//$ls = $ls . " ORDER BY upday desc, $param ";
+			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
+			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param $sel '$data' ";
-			$ls = $ls . " ORDER BY upday desc, $param ";
+			$ls = $ls . " where $param $sel '$data' " . $wsel;
+			//$ls = $ls . " ORDER BY upday desc, $param ";
+			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
+			$ls = $ls . $OrderBy;
 		}
 	} else if( $mode == "Project_Search" ) { // Project_Search
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where group_code='".$_POST['group_code']."' and userid='$H_ID'";
+		$ls = $ls . " where userid='$H_ID' " . $wsel;
 		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
-	} else if( isset($data) && $data !== "" ) {
-		$sel   = $_POST['sel'];
-		$param = $_POST['param'];
-		if( !$param ) $param = 'pg_name';
-		if( !$sel )   $sel   = 'like';
-		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where pg_name like '%$data%' and userid='$H_ID'";
-		$ls = $ls . " ORDER BY upday desc, $param ";
-		if($sel == 'like') {
+	} else if( isset($data) && $data != '' ) {
+		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where pg_name like '%$data%' and userid='$H_ID'";
+			$ls = $ls . " where pg_name like '%$data%' and userid='$H_ID' " . $wsel;
 			$ls = $ls . " ORDER BY upday desc, $param ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where pg_name $sel '$data' and userid='$H_ID'";
-			$ls = $ls . " ORDER BY upday desc, $param ";
+			$ls = $ls . " where pg_name $sel '$data' and userid='$H_ID' " . $wsel;
+			$ls = $ls . " ORDER BY upday desc, pg_name asc ";
 		}
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where userid='$H_ID' ";
-		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
+		$ls = $ls . " where userid='$H_ID' " . $wsel;
+		//$ls = $ls . " ORDER BY upday desc, pg_name asc ";
+		if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
+		$ls = $ls . $OrderBy;
    }
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-	if(!$page) $page=1;
-	$total_page = intval(($total-1) / $limite)+1;
-	$first = ($page-1)*$limite;
-	$last = $limite;
-	if($total < $last) $last = $total;
+//m_("$mode, total: $total");
+	if( !$page) $page=1;
+	$total_page = intval(($total-1) / $line_cnt)+1;
+	$first = ($page-1)*$line_cnt;
+	$last = $line_cnt;
+	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-	if ($page == "1"){
+	if( $page == 1){
 		$no = $total;
 	} else {
-		$no = $total - ($page - 1) * $limite;
+		$no = $total - ($page - 1) * $line_cnt;
 	}
 	$cur='B';
 	include_once "./menu_run.php";
@@ -329,14 +306,10 @@ $(function () {
 	else $group_name = '';
 ?>
 <h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total?></h2>
-		<form name="project_search" method="post" action="program_list_ai.php" enctype="multipart/form-data" >
+<FORM name="project_search" method="post" action="program_list_ai.php" enctype="multipart/form-data" >
 			<input type="hidden" name="seqno" value='<?=$_POST['seqno']?>' >
 			<input type="hidden" name="group_name" >
-			<input type='hidden' name='project_name' >
-			<input type="hidden" name="group_codeX" >
-			<input type='hidden' name='project_codeX' >
-			<input type='hidden' name='mode'    value='Project_Search'>
-			<input type='hidden' name='modeS'   value='Program_Search'>
+			<input type='hidden' name='mode'    value='<?=$mode?>'>
 			<input type='hidden' name='page'    value="<?=$page?>">
 			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
 			<input type="hidden" name='pg_name' value="<?=$pg_name?>">
@@ -344,71 +317,58 @@ $(function () {
 			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
 			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
-		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
-<?php
- if( isset($group_name) && $group_name !== "" ){
-?>
-							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
-<?php
-} else {
-?>
-							<option value=''>Select Project</option>
-<?php
-}
+		<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
 
+	<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
+<?php
+			echo "<option value=''>Select Project</option>";
 			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
 			while($rs = sql_fetch_array($result)) {
+				$chk='';
+				if( $rs['group_code'] == $group_code ) $chk = ' selected ';
 ?>
-							<option value='<?=$rs['group_code']?>'><?=$rs['group_name']?></option>
+				<option value='<?=$rs['group_code']?>' <?php echo $chk; ?> ><?=$rs['group_name']?></option>
 <?php
 			}
 ?>
-			</select>
-			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
-				<option value="pg_name">Program</option>
-			</select>
-			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="like">Like</option>
-				<option value="=">=</option>
-			</select>
-			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
-			<input type="submit" value="Search">
-		</form>
-<?php
-		if( $mode=='Project_Change' ) {
-?>
-			<SELECT id='project_code' name='project_code' onchange="project_code_change_funcA(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' title='Select the project' >
-				<option value=''>select project</option>
-<?php
-			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
-			while($rs = sql_fetch_array($result)) {
-?>
-				<option value='<?=$rs['group_code']?>' <?php if($rs['group_name']==$group_name) echo " selected "; ?> title='<?php echo $rs['group_name'].":".$rs['group_code']; ?>'><?=$rs['group_name']?></option>
-<?php
-			}
-?>
-			</select>
-<?php
-			echo "<input type='button' value='Change Project' onclick=\"javascript:project_name_change_func();\" style='height:25px;background-color:red;color:yellow;border:1 solid black' 
-			title='Change the project of the $pg_name' >( $pg_name:$pg_code, Change the project of the program )";
-		}
-?>
-	<input type='hidden' name='group_nameX' >
-	<input type='hidden' name='param' value='<?=$param?>'>
-	<input type='hidden' name='sel' value='<?=$sel?>'>
-	<input type='hidden' name='data' value='<?=$data?>'>
-	<input type='hidden' name='sel1' value='<?=$sel1?>'>
-	<input type='hidden' name='param2' value='<?=$param2?>'>
-	<input type='hidden' name='sel2' value='<?=$sel2?>'>
-	<input type='hidden' name='data2' value='<?=$data2?>'>
+	</select>
+	<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
+		<option value="pg_name">Program</option>
+	</select>
+	<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
+		<option value="like">Like</option>
+		<option value="=">=</option>
+	</select>
+	<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
+	<input type="button" id="Search" name="Search" value='Search' onclick='Search_func()';>
+	<!-- <input type="submit" value="Search"> -->
+
+<span>
+View Line: 
+	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
+		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
+		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
+		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
+		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+</span>
+</FORM>
+
 <table class='floating-thead' style="width:3000px; table-layout:;">
 <thead>
 	<tr>
 	<th>NO</th>
-	<th>userid</th>
+<?php
+ echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+ echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+ echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
+ echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
+
+?>
+	<!-- <th>userid</th>
 	<th>Project</th>
 	<th>Program</th>
-	<th>Table</th>
+	<th>Table</th> -->
 	<th>Column array</th>
 	<th>column type</th>
 	<th>Column Attributes</th>
@@ -426,10 +386,10 @@ $(function () {
  <?php
 	$line=0;
 	$i=1;
-	if($mode == "" || $mode == "Program_Search" || $mode=="Project_Search")	$ls = $ls . " $limit ";
+	if( $mode == "" || $mode == "Program_Search" || $mode=="Project_Search")	$ls = $ls . " $limit ";
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) {
-		$line=$limite*$page + $i - $limite;
+		$line=$line_cnt*$page + $i - $line_cnt;
 		$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
