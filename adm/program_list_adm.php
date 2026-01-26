@@ -92,19 +92,39 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
+
 <style>
+<!-- 
+textarea {
+	  width: 200px;
+	  height: 150px;
+	  padding: 0px;
+	  border: 2px solid #ccc;
+	  border-radius: 0px;
+	  background-color: #000000;
+	  font-family: Arial, sans-serif;
+	  font-size: 12px;
+	  color: #fff;
+	  /*resize: vertical;  Allows vertical resizing only */
+	}
+	textarea:focus {
+	  border-color: #007bff; /* Changes border color on focus */
+	  outline: none; /* Removes default outline on focus */
+	}
 table { border-collapse: collapse; }
 th { background: #cdefff; height: 27px; }
-th, td { border: 1px solid silver; padding:5px; }
+th, td { border: 1px solid silver; padding:0px; }
+ -->
 </style>
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/admin.css" type="text/css" />
+
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
@@ -136,16 +156,6 @@ $(function () {
 });
 </script>
 <script type="text/javascript" >
-	function group_name_add_func(){
-		nm = document.project_search.group_name.value;
-		msg = " Do you want to register the group name of "+nm+"?"; // \n (" + nm + "의 그룹명을 등록할까요?) \n
-		if ( window.confirm( msg ) )
-		{
-			document.project_search.mode.value			="group_name_add";
-			document.project_search.action="program_list_adm.php";
-			document.project_search.submit();
-		} else return false;
-	}
 	function project_name_change_func(){
 		seqno = document.project_search.seqno.value;
 		group_code = document.project_search.group_codeX.value;
@@ -200,7 +210,7 @@ $(function () {
 		document.project_search.submit();
 	}
 </script>
-</head>
+
  <BODY>
  <center>
 <?php
@@ -221,30 +231,7 @@ $(function () {
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
    
-   if( $mode == 'Delete_mode' ) {
-		$query	="delete from {$tkher['table10_pg_table']} where seqno=$seqno ";
-		$mq1	=sql_query($query);
-		if( !$mq1 ) {
-			my_msg(" $pg_name Program delete failed!");
-		} else my_msg(" Deleted the program $pg_name! ");
-		$url = "program_list_adm.php";
-		echo "<script>window.open( '$url' , '_self', '');</script>";
-   } else if( $mode=='group_name_add'){
-		$group_code	= $H_ID . "_" . time();
-		$group_name	= $_REQUEST["group_name"];
-		$result	= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' and group_name='$group_name' " );
-		$total		= sql_num_rows( $result );
-		if( $total ) my_msg(" Group name is duplicate. Use a different name! ");
-		else {
-			$query="insert into {$tkher['table10_group_table']} set group_code='$group_code', group_name='$group_name', userid='$H_ID' , memo='program_list_adm.php' ";
-			$g = sql_query( $query );
-			if( !$g ) my_msg("Add error");
-			else  my_msg("Group added! ");
-		}
-			$resultT = sql_query( "SELECT * from {$tkher['table10_pg_table']} where pg_name='$pg_name' " );
-			$total		= sql_num_rows( $resultT );
-			$mode='Search';
-   } else if( $mode=='project_name_change'){
+   if( $mode=='project_name_change'){
 		$project_code	= $_POST["project_codeX"];
 		$project_name	= $_POST["project_name"];
 		$query="update {$tkher['table10_pg_table']} set group_code='$project_code', group_name='$project_name' where seqno='$seqno' ";
@@ -414,8 +401,8 @@ $(function () {
 	<input type='hidden' name='param2' value='<?=$param2?>'>
 	<input type='hidden' name='sel2' value='<?=$sel2?>'>
 	<input type='hidden' name='data2' value='<?=$data2?>'>
-<table class='floating-thead' width="1900">
-<thead width="1900">
+<table class='floating-thead' style="width:3000px; table-layout:;">
+<thead>
 	<tr>
 	<th>NO</th>
 	<th>userid</th>
@@ -433,12 +420,9 @@ $(function () {
 	<th>Cnt</th>
 	<th>Memo</th>
 	<th>Date</th>
-<!-- <?php if($mode!=='Search') { ?>
-	<th>Delete</th>
-<?php } ?> -->
 	</tr>
 </thead>
-<tbody width="1500">
+<tbody width="100%">
  <?php
 	$line=0;
 	$i=1;
@@ -458,11 +442,11 @@ $(function () {
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' >
-	<td><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
-	<td><?=$rs['userid']?> </td>
+	<td style='width:2%;'><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
+	<td style='width:2%;'><?=$rs['userid']?> </td>
 	<td title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
-	<td><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
 	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
 	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
 	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
@@ -471,17 +455,9 @@ $(function () {
 	<td><textarea id='pop_mvfld' name='pop_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
 	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
 	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td>
-	<td><?=$rs['item_cnt']?></td>
-	<td><?=$rs['memo']?></td>
+	<td width='8px'><?=$rs['item_cnt']?></td>
+	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:300px;" readonly><?=$rs['memo']?></textarea></td>
 	<td><?=$rs['upday']?></td>
-	<!-- <?php
-		if( $mode !== 'Search' && $H_ID==$rs['userid'] ) {
-			echo "<td><input type='button' name='del' onclick=\"javascript:program_delete_func('".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\"  value='delete' style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Delete program. '><br>
-			<input type='button' name='project_change' value='Change' onclick=\"javascript:project_func('".$rs['group_code']."','".$rs['group_name']."','".$rs['pg_name']."', '".$rs['pg_code']."', '".$rs['seqno']."');\" style='height:22px;background-color:red;color:yellow;border:1 solid black'  title='Be careful! Change project. '> </td>"; //\n 프로그램 $rs['pg_name']을 삭제합니다. 주의하세요!
-		} else {
-			echo "<td>-</td>";
-		}
-?> -->
 	</TR>
 <?php
 		$i++;
@@ -503,7 +479,7 @@ $(function () {
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_backX('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 	} else {
-		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1); // $page_num =10
+		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;
 		$prev = $first_page-1;
