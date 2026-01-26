@@ -1,8 +1,9 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		: app_pg50RU_update.php - table_item_run50_pg50RU.php copy, table_item_run50.php copy
-		- call from: app_pg50RU.php , mode:Pg_Upgrade
+		: app_pg50RU_update.php : call - kapp_pg_Upgrade.php - 2025-12-20
+		: - table_item_run50_pg50RU.php copy, table_item_run50.php copy
+		- call from: kapp_pg_Upgrade.php, app_pg50RU.php , mode:Pg_Upgrade
 		- call: tkher_program_data_list.php
 		- pg_curl_send() : curl - /_Curl/pg_curl_get_ailinkapp.php
 	*/
@@ -23,12 +24,12 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 <?php

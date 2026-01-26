@@ -13,11 +13,6 @@
 		exit;
 	}
 	connect_count($host_script, $H_ID, 0, $referer);	// log count
-	/*if( $member['mb_level'] < 2) {
-		m_("member page");
-		//echo("<meta http-equiv='refresh' content='0; URL=indexTT.php'>");
-		exit;
-	}*/
 	$formula_		= "";
 	$poptable_		= "";
 	$column_all		= "";
@@ -49,8 +44,7 @@
 	}
 
 	if( isset($_POST['pj_name']) ) $pj_name = $_POST['pj_name'];
-	 $pj_name = "";
-    //m_("page: " . $page . ", pj_code: " . $pj_code . ", pj_code_check: " . $pj_code_check );
+	$pj_name = "";
 
 	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
 		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
@@ -68,13 +62,13 @@
 				else $dataX	= "";
 
 				$ddd		= $list[$i];
-				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				$fld		= explode("|", $ddd);
 				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
-						if( !$typeX ) { // 0 or ''
+						if( !$typeX ) {
 						} else if( $typeX == "11" ) { // calc
 							$formula = explode(":", $dataX);
 							$formula_ = $formula[1];
-						} else if( $typeX == "13" ) { // 팝업창
+						} else if( $typeX == "13" ) { // popup
 							$poptable = explode(":", $dataX);
 							$poptable_ = $poptable[1];
 						} else {
@@ -82,7 +76,7 @@
 						}
 		}
 		
-		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
+		$popdata = explode("@", $popdata);
 		$pop_fld ="";
 		for ( $i=0,$j=1; $j < 100; $i++, $j++ ){
 			if( isset($popdata[$j]) ) {
@@ -90,25 +84,22 @@
 				$popfld = explode(":", $popfld);
 				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
 			} else {
-				//m_("-----");
 				break;
 			}
 		}
 		if( isset($popdata[0]) && $popdata[0] !=="" ){
 			$mpop = $popdata[0];
-			$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
+			$mpop = explode("$", $mpop);
 			$pop_mvfld = "";
-			//for ( $i=0,$j=1; $mpop[$j] != ""; $i++, $j++ ){
 			for ( $i=0,$j=1; $j < 100 ; $i++, $j++ ){
 				if( isset($mpop[$j]) ){
-					$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
+					$mv = explode("|", $mpop[$j]);
 					$fld1 = $mv[0];
 					$fld2 = $mv[1];
 					$mvfld1 = explode(":", $fld1);
 					$mvfld2 = explode(":", $fld2);
 					$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
 				} else {
-					//m_("-----333333");
 					break;
 				}
 			}
@@ -136,13 +127,14 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="./icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 <style>
 table { border-collapse: collapse; }
 th { background: #cdefff; height: 27px; }
@@ -182,10 +174,8 @@ $(function () {
 <script type="text/javascript" >
 <!--
 	function program_del_funcList2( seqno, pg_name, pg_code, hid, mid ) {
-		//alert("pg_name:" + pg_name+ ", pg_code:" + pg_code+ ", seqno: " + seqno);
-		msg = "Are you sure you want to delete the program " + pg_name +"?";//  \n( 프로그램 " + pg_name + "을 삭제할까요?) \n
-		if ( window.confirm( msg ) )
-		{
+		msg = "Are you sure you want to delete the program " + pg_name +"?";
+		if ( window.confirm( msg ) ){
 			document.table_list.mode.value			="Delete_mode";
 			document.table_list.seqno.value		=seqno;
 			document.table_list.pg_code.value	=pg_code;
@@ -201,57 +191,42 @@ $(function () {
 		document.table_list.seqno.value		=seqno;
 		document.table_list.pg_name.value	=pg_name;
 		document.table_list.pg_code.value	=pg_code;
-		//alert("pg_code:" + pg_code);
-		document.table_list.action				="./tkher_program_data_list.php";  // data list
+		document.table_list.action				="./tkher_program_data_list.php";
 		document.table_list.target				="_blank";
 		document.table_list.submit();
 	}
-	//app_pg50RU.php
 	function program_upgrade( seqno, pg_code, userid ) {
-		alert("program_upgrade --- ");
 		document.table_list.mode.value		="program_upgrade";
 		document.table_list.seqno.value		=seqno;
 		document.table_list.userid.value	=userid;
-		document.table_list.pg_code.value	=pg_code;	//alert("pg_code:" + pg_code);
-		document.table_list.action= "./app_pg50RU.php";
+		document.table_list.pg_code.value	=pg_code;
+		document.table_list.action= "./kapp_pg_Upgrade.php";
 		document.table_list.target ="_blank";
 		document.table_list.submit();
 	}
 
 	function page_func( page, data ){
-		document.tkher_search.mode.value		=''; // page click
+		document.tkher_search.mode.value		='';
 		document.tkher_search.data.value		=data;
 		document.tkher_search.page.value		=page;
 		document.tkher_search.action		="program_list3.php";
-		document.tkher_search.target='_self'; // .htm
+		document.tkher_search.target='_self';
 		document.tkher_search.submit();
 	}
-	/*
-	function kmember(mid) {
-		document.tkher_search.mode.value='';
-		document.tkher_search.mid.value=mid;
-		var num = document.getElementById("kapp_user").selectedIndex;
-		var arr = document.getElementById("kapp_user").options;
-		document.tkher_search.mid_nm.value= arr[num].text;
-		document.tkher_search.pj_code.value='';
-		document.tkher_search.action="program_list3.php";
-		document.tkher_search.submit();
-	}*/
 	function kproject_func(pj) {
 		document.tkher_search.mode.value='';
 		document.tkher_search.pj_code.value=pj;
 		Prj = pj.split(':');
 		var num = document.getElementById("kproject").selectedIndex;
 		var arr = document.getElementById("kproject").options;
-		document.tkher_search.pj_name.value= Prj[1]; //arr[num].text;
+		document.tkher_search.pj_name.value= Prj[1];
 		document.tkher_search.pj_code.value= Prj[0];
-
 		document.tkher_search.action="program_list3.php";
 		document.tkher_search.submit();
 	}
 //-->
 </script>
-</head>
+
  <BODY>
  <center>
  <?php
