@@ -161,6 +161,7 @@ $sys_subtitS = 'Admin K-App';
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_member.php' target='run_menu' title='Kapp Member'>2.<img src='<?=KAPP_URL_T_?>/icon/berry.png' width='15' height='15'>Kapp Member</a></li>
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='point_list_adm.php' target='run_menu' title='Point history'>3.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
 	
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_permission_adm.php' target='run_menu' title='Program permission'>5.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>APP R/W Permission</a></li>
 
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_program_list_adm_ai.php' target='run_menu' title='Program List detail'>5.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>Program List AI</a></li>
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='program_pglist_adm.php' target='run_menu'>8.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Program List B</a></li>
