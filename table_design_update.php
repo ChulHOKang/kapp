@@ -1,7 +1,9 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-	 * table_design_update.php  - table30m_A.php copy - 2025-06-30 : table30m_Create.php - kan2023-08-25 - kan
+	 * table_design_update.php 
+		: call - kapp_table_list.php, table10i.php
+		- table30m_A.php copy - 2025-06-30 : table30m_Create.php - kan2023-08-25 - kan
 	   2025-06-30 : table30m_Create.php
 	   2024-01-04 : TIME fld type add. $view_set=1 add
 	   2024-01-03 : $item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; 보완.
@@ -65,28 +67,16 @@
 				else m_("Error! Changed name of Table : " . $tab_nmS0 . ", name:" . $tab_hnm . " <- " . $tab_nmS1);
 			}
 	}
-	/*
-	if( $mode=='group_name_add'){
-		$uid = explode('@', $H_ID); // id is email
-		$group_code	= $uid[0] . "_" . time();
-		$group_name	= $_POST["group_name"];
-		$query="insert into {$tkher['table10_group_table']} set group_code='$group_code', group_name='$group_name', userid='$H_ID' , memo='table30m' ";
-		$g = sql_query( $query );
-		if( !$g ){ m_("Project Add error");
-			echo "group sql: " . $query;
-		} else  m_("Project added! ");
-		$resultT = sql_query( "SELECT * from {$tkher['table10_table']} where userid='$H_ID'  and tab_enm='$tab_enm' " );
-		$total		= sql_num_rows( $resultT );
-	}*/
 ?>
 
 <html>
 <head>
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 	<style>

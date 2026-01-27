@@ -1,22 +1,32 @@
 <?php
 	include_once('./tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");
-	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
-	else $H_POINT = 0;
-	$ip = $_SERVER['REMOTE_ADDR'];
-	connect_count($host_script, $H_ID, 0 ,$referer);
 	/*
-		table10i.php : no use -> kapp_table_list.php change
-		: table-{$tkher['table10_table']}
-		: Table list. 
+		kapp_table_list.php : table10i.php copy - table-{$tkher['table10_table']}
+		: call - table_design_update.php 
 		- Download : Download data from db table to excel
 		- Upload : Upload excel data to table
 		- Delete : table and app all delete
 		- Update : table re design
 		- Data list : app data list
 	*/
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( $H_ID == '' ) {
+		m_("login please");
+		echo("<meta http-equiv='refresh' content='0; URL=./'>"); exit;
+	}
+	$H_LEV=$member['mb_level'];
+	if( $H_LEV < 2) {
+		m_("login please");
+		echo("<meta http-equiv='refresh' content='0; URL=./'>"); exit;
+	}
+
+	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
+	else $H_POINT = 0;
+	$ip = $_SERVER['REMOTE_ADDR'];
+	connect_count($host_script, $H_ID, 0 ,$referer);
 	$day = date("Y-m-d H:i:s");
-	$pg_ = 'table10i.php';
+	$pg_ = 'kapp_table_list.php';
 ?>
 <html>
 <head>
@@ -85,58 +95,67 @@ $(function () {
 <link rel="stylesheet" href="./include/css/kancss.css" type="text/css">
 
 <?php
-	$limite = 15;
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=='' ){
+		$line_cnt	= $_POST['line_cnt'];
+	} else  $line_cnt	= 10;
 	$page_num = 10;
-	if( isset($_REQUEST["sdata"]) ) $sdata	= $_REQUEST["sdata"];
-	else $sdata	= "";
-	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
-	else if( isset($_POST['page']) ) $page = $_POST['page'];
+	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
 
-	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
-	else $mode	= "";
-	if( isset($_POST["data"]) ) $data = $_POST["data"];
-	else $data	= "";
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode	= '';
 
-	if( isset($_REQUEST["pg_code"]) ) $pg_code		= $_REQUEST["pg_code"];
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
+	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
+		$group_code = $_POST['group_code'];   
+		$wsel = " and group_code = '$group_code' ";
+	} else {
+		$group_code= '';
+		$wsel = '';
+	}
+
+	if( isset($_POST["pg_code"]) ) $pg_code		= $_POST["pg_code"];
 	else $pg_code		= "";
-	if( isset($_REQUEST["tab_enm"]) ) $tab_enm	= $_REQUEST["tab_enm"];
+	if( isset($_POST["tab_enm"]) ) $tab_enm	= $_POST["tab_enm"];
 	else $tab_enm		= "";
-	if( isset($_REQUEST["tab_hnm"]) ) $tab_hnm	= $_REQUEST["tab_hnm"];
+	if( isset($_POST["tab_hnm"]) ) $tab_hnm	= $_POST["tab_hnm"];
 	else $tab_hnm		= "";
 
-	if( isset($_POST['param']) ) $param =$_POST['param'];
+	if( isset($_POST['param']) && $_POST['param']!='' ) $param =$_POST['param'];
 	else $param = "tab_hnm";
+	if( isset($_POST['sel']) && $_POST['sel']!='' ) $sel =$_POST['sel'];
+	else $sel = "";
+	if( isset($_POST['data']) && $_POST['data']!='' ) $data = $_POST['data'];
+	else $data	= "";
 
    if( $H_ID !=='' && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
 			printf("query:%s", $query );
-			m_(" $tab_hnm table delete failed."); // \\n (  기존의 $tab_hnm 테이블 정보 삭제 실패)
+			m_(" $tab_hnm table delete failed.");
 				exit;
 		} else {
 			$query	="delete from {$tkher['table10_pg_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 			$mq3	=sql_query($query);
 			if( !$mq3 ) {
 				printf("query:%s", $query );
-				m_(" $tab_hnm table delete failed.");	// \\n (  기존의 프로그램:$tab_hnm 정보 삭제 실패)
+				m_(" $tab_hnm table delete failed.");
 				exit;
 			}
 			if( kapp_table_check( $tab_enm ) ){
 				$query	="drop table $tab_enm";
 				$mq2	=sql_query($query);
 				if( !$mq2 ) {
-					m_(" DB $tab_hnm Failed to delete table. ");	// \\n ( DB $tab_hnm 테이블 삭제 실패)
+					m_(" DB $tab_hnm Failed to delete table. ");
 					exit;
 				}
-				m_(" Table information and program deletion succeeded! ");// \\n ( $tab_enm, $tab_hnm 테이블 정보와 프로그램 삭제 성공!)
+				m_(" Table information and program deletion succeeded! ");
 			}
 		}
-		$url = "table10i.php";
+		$url = "kapp_table_list.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
-   } else if( $H_ID && $mode=='group_name_add'){
-   } else if( $H_ID && $mode=='group_name_change'){
    } else if( $mode == 'Search' ) {
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
@@ -144,7 +163,9 @@ $(function () {
 		if( !$tab_enm ) {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " WHERE fld_enm='seqno' and userid='$H_ID'";
-			$ls = $ls . " ORDER BY upday desc"; //tab_hnm asc, seqno asc ";
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc";
+			$ls = $ls . $OrderBy;
 		} else {
 			$result = sql_query( "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' and userid='$H_ID'" );
 			$rs		= sql_fetch_array( $result );
@@ -153,48 +174,66 @@ $(function () {
 			$sqltable   = $rs['sqltable'];
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " where tab_enm='$tab_enm' and userid='$H_ID'";
-			$ls = $ls . " ORDER BY disno ";
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc";
+			$ls = $ls . $OrderBy;
 		}
-   } else if( $mode == 'Table_Search' && isset($data) ) {
-		if( isset($_POST['sel']) ) $sel =$_POST['sel'];
-		else $sel = "";
+   } else if( $mode == 'Table_Search' ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			if( isset($data) && $data !==""  ){
+			if( isset($data) && $data !=''  ){
 				$ls = $ls . " where fld_enm='seqno' and $param like '%$data%' and userid='$H_ID'";
-				$ls = $ls . " ORDER BY $param ";
-			} else  $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' ORDER BY upday desc";
+				if( $wsel!='') $ls = $ls . $wsel;
+				if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+				else $OrderBy	= " ORDER BY $param ";
+				$ls = $ls . $OrderBy;
+			} else {
+				$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
+				if( $wsel!='') $ls = $ls . $wsel;
+				if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+				else $OrderBy	= " ORDER BY $param ";
+				$ls = $ls . $OrderBy;
+			}
 		} else {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
-			if( isset($data) && $data !=="" ) {
+			if( isset($data) && $data !='' ) {
 				$ls = $ls . " where fld_enm='seqno' and $param $sel '$data' and userid='$H_ID'";
 			} else {
 				$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
 			}
-			$ls = $ls . " ORDER BY upday desc"; //$param ";
+			if( $wsel!='') $ls = $ls . $wsel;
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc";
+			$ls = $ls . $OrderBy;
 		}
-   } else if( $mode == 'My_List' ) {
+	} else if( $mode == 'Search_Project' ) {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
-		$ls = $ls . " where fld_enm='seqno' and userid='$H_ID' ";
-		$ls = $ls . " ORDER BY upday desc";
+		if( $wsel!='') $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' " . $wsel;
+		else $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' ";
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy= " ORDER BY upday desc ";
+		$ls = $ls . $OrderBy;
    } else {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
-		$ls = $ls . " ORDER BY upday desc"; 
+		if( $wsel!='') $ls = $ls . $wsel;
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy	= " ORDER BY upday desc";
+		$ls = $ls . $OrderBy;
    }
 
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
 		if(!$page) $page=1;
-		$total_page = intval(($total-1) / $limite)+1;
-		$first = ($page-1)*$limite;
-		$last = $limite;
+		$total_page = intval(($total-1) / $line_cnt)+1;
+		$first = ($page-1)*$line_cnt;
+		$last = $line_cnt;
 		if($total < $last) $last = $total;
 		$limit = " limit $first, $last ";
 		if ($page == "1")
 			$no = $total;
 		else {
-			$no = $total - ($page - 1) * $limite;
+			$no = $total - ($page - 1) * $line_cnt;
 		}
 
 
@@ -217,56 +256,39 @@ $(function () {
 ?>
 <script type="text/javascript" >
 <!--
+	function title_func(fld_code){       
+		document.table_list.page.value = 1;                
+		document.table_list.fld_code.value= fld_code;           
+		document.table_list.mode.value='title_func';           
+		document.table_list.action='kapp_table_list.php';
+		document.table_list.submit();                         
+	} 
 	function check_enter() { if (event.keyCode == 13) { search_func(); } }
 	function Cancle_run() {
 		window.open('/','_top','');
-	}
-	function group_name_add_func(){
-		nm = document.table_list.group_name.value;
-		msg = " Do you want to register the group name of "+nm+"? "; // \n (" + nm + "의 그룹명을 등록할까요?)
-		if ( window.confirm( msg ) )
-		{
-			document.table_list.mode.value ="group_name_add";
-			document.table_list.action = "table10i.php";
-			document.table_list.submit();
-		} else return false;
-	}
-	function group_name_change_func(nm){
-		group_name = document.table_list.group_name.value;
-		msg = " Do you want to change the group name of table " + nm + " to " + group_name + "?  ";//\n ( 테이블 " + nm + "의 그룹명을 " + group_name +"으로 변경할까요?) \n
-		if ( window.confirm( msg ) )
-		{
-			document.table_list.mode.value ="group_name_change";
-			document.table_list.action ="table10i.php";
-			document.table_list.submit();
-		} else return false;
 	}
 	function excel_upload_func(tab_enm, tab_hnm){
 		document.table_list.mode.value		="Upload_mode_table10i";
 		document.table_list.tab_enm.value	=tab_enm;
 		document.table_list.tab_hnm.value	=tab_hnm;
-		document.table_list.action			="excel_load.php"; // user용: excel_upload_user.php
+		document.table_list.action			="excel_load.php";
 		document.table_list.submit();
 	}
 	function excel_down_func(tab_enm, tab_hnm){
-		//Lid = document.table_list.tab_enm.value;
 		Lid = document.table_list.login_id.value;
-		//alert("Lid:"+Lid + ", tab_enm:" + tab_enm);
 		if( !Lid ) {
 			alert("member page "); return false;
 		} else {
 			document.table_list.mode.value		="Excel_mode_table10i";
 			document.table_list.tab_enm.value	=tab_enm;
 			document.table_list.tab_hnm.value	=tab_hnm;
-			document.table_list.action			="down_excel_file.php"; // user용: excel_download_user.php
+			document.table_list.action			="down_excel_file.php";
 			document.table_list.submit();
 		}
 	}
-	//---------------------------------------------
 	function table_update_func(tab_enm, tab_hnm, group_code , mid) {
 		msg = "table are also update. \n Do you want to update the " + tab_hnm + " table? ";
-		if ( window.confirm( msg ) )
-		{
+		if ( window.confirm( msg ) ){
 			document.table_list.mode.value ="Search";
 			document.table_list.mid.value	=mid;
 			document.table_list.tab_enm.value	=tab_enm;
@@ -281,22 +303,15 @@ $(function () {
 	}
 	function delete_table_func(tab_enm, tab_hnm ) {
 		msg = "When you delete a table, all the programs that used the table are also deleted. \n Data can not be recovered.\n Do you want to delete the " + tab_hnm + " table? ";
-		if ( window.confirm( msg ) )
-		{
+		if ( window.confirm( msg ) ){
 			document.table_list.mode.value ="Delete_mode";
 			document.table_list.tab_enm.value	=tab_enm;
 			document.table_list.tab_hnm.value	=tab_hnm;
-			document.table_list.action ="table10i.php";
+			document.table_list.action ="kapp_table_list.php";
 			document.table_list.submit();
 		} else {
 			return false;
 		}
-	}
-	function change_table_func() {
-		tab = document.table_list.tab_hnmS.value;
-		document.table_list.mode.value='Search';
-		document.table_list.action="table10i.php";
-		document.table_list.submit();
 	}
 	function table_sel_func(enm, hnm, data, page) {
 		document.table_list.data.value = data;
@@ -305,7 +320,7 @@ $(function () {
 		document.table_list.tab_enm.value=enm;
 		document.table_list.tab_hnm.value=hnm;
 		document.table_list.mode.value='Search';
-		document.table_list.action="table10i.php";
+		document.table_list.action="kapp_table_list.php";
 		document.table_list.target='_self'; // .htm
 		document.table_list.submit();
 	}
@@ -329,12 +344,12 @@ $(function () {
 	}
 	function tkher_source_create(hnm, enm, $coin){
 		if( $coin < 1000 ) {
-			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);//UrlLinCoin Point가 부족합니다. point를 축적해야합니다.
+			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);
 			return false;
 		} else {
 			if( confirm("Are you sure you want to Create? ") ) {
 				document.table_list.mode.value = "DN_sqltable";
-				document.table_list.action = 'tkher_php_tableDN.php';// download source create.
+				document.table_list.action = 'tkher_php_tableDN.php';
 				document.table_list.target = '_blank';
 				document.table_list.submit();
 			} else {
@@ -344,12 +359,12 @@ $(function () {
 	}
 	function Table_source_create(hnm, enm, $coin){
 		if( $coin < 1000 ) {
-			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);//UrlLinCoin Point가 부족합니다. point를 축적해야합니다.
+			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);
 			return false;
 		} else {
 			if( confirm("Are you sure you want to Create? ") ) {
-				document.table_list.mode.value	= "sqltable_only"; // table 생성 소스만 다운.
-				document.table_list.action		= 'tkher_php_tableDN.php';// download source create.
+				document.table_list.mode.value	= "sqltable_only";
+				document.table_list.action		= 'tkher_php_tableDN.php';
 				document.table_list.target		= '_blank';
 				document.table_list.submit();
 			} else {
@@ -362,54 +377,68 @@ $(function () {
 		var tab = document.table_list.tab_hnmS.value;
 		document.table_list.page.value =1;
 		document.table_list.mode.value='Table_Search';
-		document.table_list.action="table10i.php";
-		document.table_list.target='_self'; // .htm
+		document.table_list.action="kapp_table_list.php";
+		document.table_list.target='_self';
 		document.table_list.submit();
 	}
 	function run_back( mode, data, page){
-		document.table_list.mode.value		='';//Program_Search
+		document.table_list.mode.value		='';
 		document.table_list.data.value		=data;
 		document.table_list.page.value		=page;
-		document.table_list.action		="table10i.php";
-		document.table_list.target='_self'; // .htm
+		document.table_list.action		="kapp_table_list.php";
+		document.table_list.target='_self';
 		document.table_list.submit();
 	}
 	function page_func( page, data ){
 
-		document.table_list.mode.value		=''; // page click
+		document.table_list.mode.value		='';
 		document.table_list.data.value		=data;
 		document.table_list.page.value		=page;
-		document.table_list.action		="table10i.php";
-		document.table_list.target='_self'; // .htm
+		document.table_list.action		="kapp_table_list.php";
+		document.table_list.target='_self';
 		document.table_list.submit();
 
 	}
 	function my_data(){
 		//alert("-- my"); return;
-		document.table_list.mode.value='My_List'; // page click
-		document.table_list.action		="table10i.php";
-		document.table_list.target='_self'; // .htm
+		document.table_list.mode.value='My_List';
+		document.table_list.action		="kapp_table_list.php";
+		document.table_list.target='_self';
+		document.table_list.submit();
+	}
+	function Change_line_cnt( $line){
+		document.table_list.page.value = 1;
+		document.table_list.line_cnt.value = $line;
+		document.table_list.action='kapp_table_list.php';
+		document.table_list.submit();
+	}
+	function group_code_change_func(cd){
+		index=document.table_list.group_code.selectedIndex;
+		nm = document.table_list.group_code.options[index].text;
+		document.table_list.mode.value='Search_Project';
+		document.table_list.group_name.value=nm;
+		document.table_list.action		="kapp_table_list.php";
+		document.table_list.target='_self';
 		document.table_list.submit();
 	}
 //-->
 </script>
 <body>
-<?php
-		$cur='B';
-		//include_once "./menu_run.php";
-?>
+<center>
+<h2 title='pg:kapp_program_list_all'>KAPP Table List (total:<?=$total?>)</h2>
+
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
-	<input type="hidden" name="mode" >
+	<input type="hidden" name="mode" value="<?=$mode?>">
 	<input type="hidden" name="mid" >
 	<input type='hidden' name='page' value="<?=$page?>">
-	<input type="hidden" name="tab_hnmS" value=''> <!-- table10i_old.php  -->
+	<input type="hidden" name="tab_hnmS" value=''>
 	<input type="hidden" name="pg_name" value=''>
 	<input type="hidden" name="pg_code" value='<?=$pg_code?>' >
 	<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
 	<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
-	<input type='hidden' name='group_code' >
 	<input type='hidden' name='group_name' >
+	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
 <?php
 		if( $mode == "Search" ) $T_msg = "[ Table10i, Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
 		else $T_msg = "[ ".$member['mb_id']." ]";
@@ -426,14 +455,39 @@ $(function () {
 				<option value="group_name" style="background-color:gray;color:white;">Project Name</option>
 			</select>
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="like">Like</option>
-				<option value="=">=</option>
+				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
+				<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
 			</select>
 			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
 			<input type='button' value='Search' onclick="javascript:table_search();" >
 		</div>
 
-<span title='my data print - table10i.php'><strong><a onclick="javascript:my_data();" style="border-style:;background-color:black;color:yellow;height:28;border-radius:20px;"><?=$T_msg?></a></strong></span>
+<span title='my data print - kapp_table_list.php'><strong><a onclick="javascript:my_data();" style="background-color:black;color:yellow;height:36px;border-radius:20px;">&nbsp;&nbsp;&nbsp;<?=$T_msg?></a></strong></span>
+<br>
+<span>
+		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
+			<option value=''>Project</option>
+<?php
+			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
+			while($rs = sql_fetch_array($result)) {
+				$chk = '';
+				if( $rs['group_code']==$group_code) $chk =' selected ';
+?>
+				<option value='<?=$rs['group_code']?>' <?php echo $chk; ?>><?=$rs['group_name']?></option>
+<?php
+			}
+?>
+		</select>
+</span>
+<span>
+View Line: 
+	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
+		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
+		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
+		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
+		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+</span>
 
 <table class='floating-thead' width='100%'>
 <thead  width='100%'>
@@ -441,12 +495,13 @@ $(function () {
 		<TH>no</TH>
 <?php
 if( $mode != 'Search') {
+	echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+	echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+	echo " <th title='Program Sort click' onclick=title_func('tab_hnm')>Table name</th> ";
+	echo " <th title='Table Sort click' onclick=title_func('tab_enm')>Table code</th> ";
+	echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
+
 ?>
-	<TH>user</TH>
-	<TH>Project</TH>
-	<TH>table title </TH>
-	<TH>table of DB</TH>
-	<TH>date</TH>
 	<TH>Excel</TH>
 	<TH>Manage</TH>
 <?php
@@ -476,7 +531,7 @@ if( $mode != 'Search') {
 	while( $rs = sql_fetch_array( $resultT ) ) {
 		$group_code = $rs['group_code'];
 		$mid = $rs['userid'];
-		$line=$limite*$page + $i - $limite;
+		$line=$line_cnt*$page + $i - $line_cnt;
 		$bgcolor = "#eeeeee";
 		if( $H_ID == $mid) $bcolor ="style='background-color:white;'";
 		else $bcolor='';
@@ -487,8 +542,8 @@ if( $mode != 'Search') {
 <?php
 		if( $mode !== 'Search') {
 ?>
-			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>'><?=$rs['userid']?></TD>
-			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>'><?=$rs['group_name']?></TD>
+			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>' ><?=$rs['userid']?></TD>
+			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>' ><?=$rs['group_name']?></TD>
 			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
 			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_hnm']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></TD>
 			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >

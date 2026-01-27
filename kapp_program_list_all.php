@@ -154,7 +154,7 @@ $(function () {
 		index=document.table_list.group_code.selectedIndex;
 		nm = document.table_list.group_code.options[index].text;
 		document.table_list.mode.value='Search_Project';
-		document.table_list.group_nameX.value=nm;
+		document.table_list.group_name.value=nm;
 		document.table_list.action		="kapp_program_list_all.php";
 		document.table_list.target='_self';
 		document.table_list.submit();
@@ -198,10 +198,10 @@ $(function () {
 	} else  $line_cnt	= 10;
 	$page_num = 10; 
 
-	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
-	else $fld_code = '';
 	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];   
 	else $mode= '';
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
 	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
 		$group_code = $_POST['group_code'];   
 		$wsel = " and group_code = '$group_code' ";
@@ -317,11 +317,8 @@ $(function () {
 		<input type="hidden" name="pg_name" > 
 		<input type="hidden" name="pg_code" > 
 		<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
-<?php 
-		//if( $mode=='Search' ) {
-?>
 			&nbsp;&nbsp;&nbsp;
-			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
+		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
 							<option value=''>Project</option>
 <?php
 					$result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
@@ -333,20 +330,10 @@ $(function () {
 <?php
 					}
 ?>
-			</select>
-<?php
-		//}
-?>
+		</select>
 	<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
 	<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
-	<input type='hidden' name='group_nameX' >
-	<input type='hidden' name='param' value='<?=$param?>'>
-	<input type='hidden' name='sel' value='<?=$sel?>'>
-	<input type='hidden' name='data' value='<?=$data?>'>
-	<input type='hidden' name='sel1' value='<?=$sel1?>'>
-	<input type='hidden' name='param2' value='<?=$param2?>'>
-	<input type='hidden' name='sel2' value='<?=$sel2?>'>
-	<input type='hidden' name='data2' value='<?=$data2?>'>
+	<input type='hidden' name='group_name' >
 <span>
 View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
@@ -365,7 +352,7 @@ View Line:
 	echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
 	echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
 	echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
-	echo " <th title='Table Sort click' onclick=title_func('upday')>Date</th> ";
+	echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
 ?>
 	</tr>
 </thead>
