@@ -377,7 +377,7 @@
 	}
 
 	function table_list(){
-		window.open( 'table10i.php' , '_self', '');
+		window.open( 'kapp_table_list.php' , '_self', '');
 		return;
 	}
 
@@ -985,7 +985,7 @@
 <?php
 
 	$tabData['data'][][] = array();
-	function TAB_curl_send( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
+	function TAB_curl_sendXXX( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		global $tabData, $mid, $H_EMAIL, $group_code, $group_name, $config;
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
 		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
