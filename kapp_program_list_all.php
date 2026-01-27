@@ -224,30 +224,30 @@ $(function () {
 	if( $mode == 'Program_Search' ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if($wsel!='') $ls = $ls . " where $param like '%$data%' " . $wsel;
+			if( $wsel!='') $ls = $ls . " where $param like '%$data%' " . $wsel;
 			else $ls = $ls . " where $param like '%$data%' ";
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if($wsel!='') $ls = $ls . " where $param $sel '$data' " . $wsel;
+			if( $wsel!='') $ls = $ls . " where $param $sel '$data' " . $wsel;
 			else $ls = $ls . " where $param $sel '$data' ";
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY group_code, upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		}
 	} else if( $data !== "" ) { // program 검색.
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if($wsel!='') $ls = $ls . " where pg_name like '%$data%' ". $wsel;
+			if( $wsel!='') $ls = $ls . " where pg_name like '%$data%' ". $wsel;
 			else $ls = $ls . " where pg_name like '%$data%' ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if($wsel!='') $ls = $ls . " where pg_name $sel '$data' " . $wsel;
+			if( $wsel!='') $ls = $ls . " where pg_name $sel '$data' " . $wsel;
 			else $ls = $ls . " where pg_name $sel '$data' ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
@@ -255,14 +255,14 @@ $(function () {
 		}
 	} else if( $mode == 'Search_Project' && $group_code!='') {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where group_code= '$group_code' ";
+		if( $wsel!='' ) $ls = $ls . " where group_code= '$group_code' ";
 		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-		else $OrderBy	= " ORDER BY upday desc ";
+		else $OrderBy= " ORDER BY upday desc ";
 		$ls = $ls . $OrderBy;
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $wsel ) $ls = $ls . " where group_code= '$group_code' ";
-		if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+		if( $wsel!='' ) $ls = $ls . " where group_code= '$group_code' ";
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
 		else $OrderBy	= " ORDER BY upday desc ";
 		$ls = $ls . $OrderBy;
 	}
@@ -302,8 +302,8 @@ $(function () {
 				<option value="pg_name">Program</option>
 			</select> 
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="like">Like</option>
-				<option value="=">=</option>
+				<option value="=" <?php if($sel == '=') echo " selected ";?>>=</option>
+				<option value="like" <?php if($sel == 'like') echo " selected ";?>>Like</option>
 			</select>
 			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="submit" value="Search">
@@ -360,38 +360,30 @@ View Line:
 <thead  width="100%">
 	<tr>
 	<th>NO</th>
-	<!-- <th>Project</th>
-	<th>User</th>
-	<th>Program</th>
-	<th>Table</th> -->
 <?php
- echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
- echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
- echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
- echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
+	echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+	echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+	echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
+	echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
+	echo " <th title='Table Sort click' onclick=title_func('upday')>Date</th> ";
 ?>
-	<th>Date</th>
 	</tr>
 </thead>
 <tbody width="100%">
  <?php
 	$line=0;
 	$i=1;
-	//if( $mode == "" || $mode == "Program_Search")	
 	$ls = $ls . " $limit "; // none table click 
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) { 
 		$mid=$rs['userid'];
 		$group_name = $rs['group_name'];
 		$group_code = $rs['group_code'];
-		
 		if( $page>1 ) $line=$line_cnt*$page + $i - $line_cnt;
 		else $line=$i;
-
 		$bgcolor = "#eeeeee";
 		if( $H_ID == $mid) $bcolor ="style='background-color:white;'";
 		else $bcolor='';
-		
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );

@@ -1,19 +1,25 @@
 <?php
 	include_once('./tkher_start_necessary.php');
+	/*
+		app_permission.php : app grant level setting.
+		- table10u1_PC.php :  table permission : no use
+	*/
 	$H_ID = get_session("ss_mb_id");	
-	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
-	else $H_LEV = 1;
-	$ip = $_SERVER['REMOTE_ADDR'];
-	if ( !$H_ID || $H_LEV < 2) {
+	if ( !$H_ID ) {
 		m_("Login Please!");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	/*
-		app_permission.php : app grant level setting.
-		- table10u1_PC.php :  table permission : no use
-	*/
+	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
+	else $H_LEV = 1;
+	if( $H_LEV < 2) {
+		m_("Login Please!");
+		$url= KAPP_URL_T_;
+		echo "<script>window.open( '$url' , '_top', ''); </script>";
+		exit;
+	}
+	$ip = $_SERVER['REMOTE_ADDR'];
 ?>
 
 <html>
@@ -57,7 +63,7 @@ th, td { border: 1px solid silver; padding:5px; }
 $(function () {
   $('table.floating-thead').each(function() {
     if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
+        $(this).css('border-collapse','separate').css('border-spacing',0);
     }
     $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
   });
@@ -93,20 +99,20 @@ $(function () {
 <script type="text/javascript" src= KAPP_URL_T_ . "/include/js/common.js"></script>
 <script type="text/javascript" >
 <!--
-
+	function title_func(fld_code){       
+		document.insert_form.App_Page.value = 1;                
+		document.insert_form.fld_code.value= fld_code;           
+		document.insert_form.mode.value='title_func';           
+		document.insert_form.action='app_permission.php';
+		document.insert_form.submit();                         
+	} 
 	function edit_attr_save(aaa, no, num){ 
 		p = document.insert_form.App_Page.value;
-		//alert('aaa:'+aaa+', no:'+no+', num:'+num+', page:'+p);
-		//aaa:0, no:1215, num:dao_1537753861
 		var sel_r = eval("document.insert_form.grant_read_" + aaa + ".value");
-		//insert_form.grant_read.value;
-		var sel_w = eval("document.insert_form.grant_write_" + aaa + ".value");	 	//insert_form.grant_read.value;
-		//var memo = eval("document.insert_form.grant_memo_" + aaa + ".value");	 	//insert_form.grant_read.value;
-		
+		var sel_w = eval("document.insert_form.grant_write_" + aaa + ".value");
 		document.insert_form.read_.value = sel_r;
 		document.insert_form.write_.value = sel_w;
 		document.insert_form.seqno_.value = no;
-		//document.insert_form.memo_.value = memo;
 		document.insert_form.mode.value = "update_level";
 
 		var res = confirm(" Do you want to save it?");
@@ -115,51 +121,58 @@ $(function () {
 
 	function App_search(){
 		var tab_hnm = document.insert_form.data.value;
-		//alert('data tab_hnm:'+tab_hnm);
 		var tab = document.insert_form.tab_hnmS.value;
 		document.insert_form.App_Page.value =1;
-		document.insert_form.modeMy.value='';
 		document.insert_form.mode.value='App_search';
 		document.insert_form.action="app_permission.php";
-		document.insert_form.target='_self'; // .htm
+		document.insert_form.target='_self';
 		document.insert_form.submit();
 	}
 
 	function page_func( App_Page, data ){
-
-		document.insert_form.mode.value		=''; // App_Page click
+		document.insert_form.mode.value		='';
 		document.insert_form.data.value		=data;
 		document.insert_form.App_Page.value=App_Page;
 		document.insert_form.action="app_permission.php";
-		document.insert_form.target='_self'; // .htm
-
+		document.insert_form.target='_self';
 		document.insert_form.submit();
 	}
-	function my_data(){
-		//alert("-- my"); return;
-		document.insert_form.App_Page.value =1;
-		document.insert_form.mode.value=''; // Table_page click
-		document.insert_form.modeMy.value='My_List'; // Table_page click
-		document.insert_form.action		="app_permission.php";
-		document.insert_form.target='_self'; // .htm
+	function Change_line_cnt( $line){
+		document.insert_form.App_Page.value = 1;
+		document.insert_form.action='app_permission.php';
+		document.insert_form.submit();
+	}
+	function group_code_change_func(cd){
+		index=document.insert_form.group_code.selectedIndex;
+		nm = document.insert_form.group_code.options[index].text;
+		document.insert_form.mode.value='Search_Project';
+		document.insert_form.group_name.value=nm;
+		document.insert_form.action="app_permission.php";
+		document.insert_form.target='_self';
+		document.insert_form.submit();
+	}
+	function run_func( pg ){
+		pg_code = pg;
+		document.insert_form.action='./tkher_program_data_list.php';
+		document.insert_form.target				="_blank";
+		document.insert_form.pg_code.value	=pg_code;
 		document.insert_form.submit();
 	}
 //-->
 </script>
 
 <?php
-	$w='100%';
-	$w2='800';
-
-	$limit_cnt = 15; 
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
+		$line_cnt	= $_POST['line_cnt'];
+	} else  $line_cnt	= 10;
 	$page_num = 10; 
+
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
 
 	if( isset($_REQUEST['App_Page']) ) $App_Page = $_REQUEST['App_Page'];
 	else if( isset($_POST['App_Page']) ) $App_Page = $_POST['App_Page'];
 	else $App_Page = 1;
-
-	if( isset($_POST['modeMy']) ) $modeMy = $_POST['modeMy'];
-	else $modeMy = "";   
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";   
@@ -167,15 +180,21 @@ $(function () {
 	if( $mode == 'My_List') $my = " userid='".$H_ID."' ";
 	else $my ='';
 
-	if( isset($_POST['data']) && $_POST['data'] !=="" ) $data = $_POST['data'];
-	else $data = "";   
-	if( isset($_POST['sel']) && $_POST['sel'] !=="" ) $sel = $_POST['sel'];
-	else $sel = "";   
-	if( isset($_POST['param']) && $_POST['param'] !=="" ) $param = $_POST['param'];
+	if( isset($_POST['param']) && $_POST['param'] !="" ) $param = $_POST['param'];
 	else $param = "";   
+	if( isset($_POST['sel']) && $_POST['sel'] !="" ) $sel = $_POST['sel'];
+	else $sel = "";   
+	if( isset($_POST['data']) && $_POST['data'] !="" ) $data = $_POST['data'];
+	else $data = "";   
 
-	$param ="pg_name";
-	//m_("mode:".$mode);
+	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
+		$group_code = $_POST['group_code'];   
+		$wsel = " and group_code = '$group_code' ";
+	} else {
+		$group_code= '';
+		$wsel = '';
+	}
+
 	if( $mode == "update_level") {
 		$seqno = $_POST['seqno_'];
 		$sel_r = $_POST['read_'];
@@ -185,44 +204,54 @@ $(function () {
 		if( $mq ){ echo("<script>alert('App reset complete')</script>");}
 
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $data !=="" && $modeMy == 'My_List') $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
-		else if( $data !=="" && $modeMy == '') $ls = $ls . " where $param like '%$data%' ";
-		else if( $data =="" && $modeMy == 'My_List') $ls = $ls . " where userid='$H_ID' ";
-		else if( $data =="" && $modeMy == '') $ls = $ls . " ";
-		else  $ls = $ls . " ";
-		$ls = $ls . " ORDER BY upday desc ";
+		if( $data !='' ){
+			if( $sel == 'like' ) $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
+			else $ls = $ls . " where $param $sel '$data' and userid='$H_ID'";
+		} else $ls = $ls . " where userid='$H_ID' ";
+		if( $wsel!='' ) $ls = $ls . $wsel;
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy= " ORDER BY upday desc ";
+		$ls = $ls . $OrderBy;
 
-	} else if( $mode == 'App_search' && $data == '') {
-		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where userid='$H_ID'";
-		$ls = $ls . " ORDER BY upday desc ";
-	} else if( $modeMy == 'My_List' ) {
-		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $data !=="") $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
-		else if( $data =="") $ls = $ls . " where userid='$H_ID' ";
-		$ls = $ls . " ORDER BY upday desc ";
 	} else if( $mode == 'App_search' ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $data !=="" ) $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
-		else if( $data =="" ) $ls = $ls . " where userid='$H_ID'";
-		else  $ls = $ls . " ";
-		$ls = $ls . " ORDER BY upday desc ";
+		if( $data !='' ){
+			if( $sel == 'like' ) $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
+			else $ls = $ls . " where $param $sel '$data' and userid='$H_ID'";
+		} else $ls = $ls . " where userid='$H_ID' ";
+		if( $wsel!='' ) $ls = $ls . $wsel;
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy= " ORDER BY upday desc ";
+		$ls = $ls . $OrderBy;
 
+	} else if( $mode == 'Search_Project' && $group_code!='') {
+		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
+		if( $data !='' ){
+			if( $sel == 'like' ) $ls = $ls . " where $param $sel '%$data%' and userid='$H_ID'";
+			else $ls = $ls . " where $param $sel '$data' and userid='$H_ID'";
+		} else $ls = $ls . " where userid='$H_ID' ";
+		if( $wsel!='' ) $ls = $ls . $wsel;
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy= " ORDER BY upday desc ";
+		$ls = $ls . $OrderBy;
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID'";
-		$ls = $ls . " ORDER BY upday desc ";
+		if( $wsel!='' ) $ls = $ls . $wsel;
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+		else $OrderBy= " ORDER BY upday desc ";
+		$ls = $ls . $OrderBy;
 	}
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-	if(!$App_Page) $App_Page=1; 
-	$total_page = intval(($total-1) / $limit_cnt)+1; 
-	$first = ($App_Page-1) * $limit_cnt; 
-	$last = $limit_cnt; 
+
+	$total_page = intval(($total-1) / $line_cnt)+1; 
+	$first = ($App_Page-1) * $line_cnt; 
+	$last = $line_cnt; 
 	if($total < $last) $last = $total;
 	$limit = " limit $first, $last ";
 	if( $App_Page == "1") $no = $total;
-	else $no = $total - ($App_Page - 1) * $limit_cnt;
+	else $no = $total - ($App_Page - 1) * $line_cnt;
 ?>
 <center>
 <?php
@@ -237,35 +266,65 @@ $(function () {
 			<input type="hidden" name="seqno_"	value="" >
 			<input type="hidden" name="memo_"	value="" >
 			<input type="hidden" name="mode"	value="<?=$mode?>" >
-			<input type="hidden" name="modeMy"	value="<?=$modeMy?>" >
 			<input type='hidden' name='App_Page' value="<?=$App_Page?>">
 			<input type="hidden" name="tab_hnmS" value=''>
 			<input type="hidden" name="pg_name" value='<?=$pg_name?>'> 
 			<input type="hidden" name="pg_code" value='<?=$pg_code?>' > 
 			<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
 			<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
+			<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
+			<input type='hidden' name='group_name' >
 		<div>
 			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
 				<option value="pg_name">App name</option>
 			</select> 
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="like">Like</option>
-				<option value="=">=</option>
+				<option value="=" <?php if($sel == '=') echo " selected ";?> >=</option>
+				<option value="like" <?php if($sel == 'like') echo " selected ";?>>Like</option>
 			</select>
 			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
 			<input type='button' value='Search' onclick="javascript:App_search();" >
 		</div>
-<span title='my data print - app_permission.php'><strong><a onclick="javascript:my_data();" style="border-style:;background-color:black;color:yellow;height:28;border-radius:20px;"><?=$T_msg?></a></strong></span>
+<span title='kapp permission' style="border-style:;background-color:black;color:yellow;height:28;border-radius:20px;"><strong><?=$T_msg?></strong></span>
+<br>
+<span>
+	<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
+		<option value=''>Project</option>
+<?php
+	$result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
+	while($rs = sql_fetch_array($result)) {
+		$chk = '';
+		if( $rs['group_code']==$group_code) $chk =' selected ';
+?>
+		<option value='<?=$rs['group_code']?>' <?php echo $chk; ?>><?=$rs['group_name']?></option>
+<?php
+	}
+?>
+	</SELECT>
+</span>
+
+<span>
+View Line: 
+<SELECT id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
+	<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
+	<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
+	<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
+	<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
+</SELECT>&nbsp;&nbsp;&nbsp;&nbsp; 
+</span>
+
 <table class='floating-thead' width='100%' cellspacing="0" cellpadding="0" >
 <thead  width='100%'>
       <tr>
         <TH width="2%" height="28" align="center" bgcolor="#EEEEEE" title=''>no</TH>
-        <TH width="10%" height="28" align="center" bgcolor="#EEEEEE" title=''>User</TH>
-        <TH width="20%" height="28" align="center" bgcolor="#EEEEEE" title=''>Project</TH>
-        <TH width="40%" height="28" align="center" bgcolor="#EEEEEE" title=''>App Name</TH>
-        <TH width="4%" align="center" bgcolor="#EEEEEE" title='Read permission - Read permission above level'>Grant View</TH>
-        <TH width="4%" align="center" bgcolor="#EEEEEE" title='Write permission - Write permission above level'>Grant Write</TH>
-        <TH width="10%" align="center" bgcolor="#EEEEEE">Submit</TH>
+<?php
+	echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+	echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+	echo " <th title='App Name Sort click' onclick=title_func('pg_name')>App Name</th> ";
+?>
+        <TH width='4%' align='center' bgcolor='#EEEEEE' title='Read permission - Read permission above level'>Grant View</TH>
+        <TH width='4%' align='center' bgcolor='#EEEEEE' title='Write permission - Write permission above level'>Grant Write</TH>
+        <TH width='10%' align='center' bgcolor='#EEEEEE'>Submit</TH>
       </tr>
 </thead>
 
@@ -273,12 +332,12 @@ $(function () {
 <?php
     $line=0;
 	$i=1;
-	if( $mode !== "Search") $ls = $ls . " $limit ";
+	if( $mode != 'Search') $ls = $ls . " $limit ";
 	$resultT = sql_query( $ls );
 	while( $rsP = sql_fetch_array( $resultT ) ) { 
 		$pg_code = $rsP['pg_code'];
 		$pg_name = $rsP['pg_name'];
-		$line = $limit_cnt*$App_Page + $i - $limit_cnt;
+		$line = $line_cnt*$App_Page + $i - $line_cnt;
 		$grant_view = $rsP['grant_view'];
 		$grant_write = $rsP['grant_write'];
 ?>
@@ -286,7 +345,7 @@ $(function () {
 			<TD><?=$line?></TD>
 			<td bgcolor="#FFFFFF" title="user:<?=$rsP['userid']?>, userid:<?=$rsP['userid']?>"><?=$rsP['userid']?></td>
 			<td bgcolor="#FFFFFF" title="project code:<?=$rsP['group_code']?>"><?=$rsP['group_name']?></td>
-			<td bgcolor="#FFFFFF" title="pg_code:<?=$rsP['pg_code']?>"><?=$rsP['pg_name']?> (<?=$rsP['pg_code']?>)</td>
+			<td bgcolor="#FFFFFF" title="Click run, pg_code:<?=$rsP['pg_code']?>" ><a onclick="run_func('<?=$pg_code?>')" style='background-color:cyan;color:black;'><?=$rsP['pg_name']?> (<?=$rsP['pg_code']?>) </a></td>
 			<td bgcolor="#FFFFFF" >
 			<SELECT name='grant_read_<?=$i?>' >
 				<option value='1' <?php if($grant_view==0||$grant_view==1)  echo " selected"; ?> >Guest</option>
@@ -306,7 +365,7 @@ $(function () {
 <?php
 	if( $H_ID == $rsP['userid'] ){
 ?>
-			<input type='button' value='Execution' <?php echo " title='Save Settings' "; ?> border="0" onClick="edit_attr_save(<?=$i?>,'<?=$rsP['seqno']?>','<?=$rsP['pg_name']?>')" style="cursor:hand;" >
+			<input type='button' value='Execution' <?php echo " title='Read and Write permission settings' "; ?> border="0" onClick="edit_attr_save(<?=$i?>,'<?=$rsP['seqno']?>','<?=$rsP['pg_name']?>')" style="cursor:hand;" >
 <?php } ?>
 			</td>
 		  </tr>
@@ -322,14 +381,6 @@ $(function () {
   <tr>
     <td align="center" bgcolor="f4f4f4">
 <?php
-	if( $mode=='Search' ) {
-		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$App_Page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
-		
-		echo "<input type='button' value='Data Insert' onclick=\"program_run_funcList('".$pg_name."', '".$pg_code."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data Write of $pg_name' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$pg_name."', '".$pg_code."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of $pg_name' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$pg_name."', '".$pg_code."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $pg_name.' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$pg_name."', '".$pg_code."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Create and download table creation source and data processing program source of $pg_name.' >&nbsp;&nbsp; ";
-	} else {
 		$first_page = intval(($App_Page-1)/$page_num+1)*$page_num-($page_num-1);
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;
@@ -343,7 +394,6 @@ $(function () {
 		$next = $last_page+1;
 		if($next <= $total_page) 
 			echo"<a href='#' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
-	}
 ?>
 	</td>
   </tr>
