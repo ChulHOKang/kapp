@@ -8,88 +8,12 @@ include_once('./tkher_start_necessary.php');
 	$H_ID	= $ss_mb_id;	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	$formula_		= "";
 	$poptable_		= "";
-	$column_all		= "";
-	$pop_fld			= "";
+	$column_all		= ""; //my_func 
+	$pop_fld= "";
 	$pop_mvfld		= "";
 	$relation_db	= "";
 	$rel_mvfld		= "";
-	$gita				= "";	// 1,3,5,7,9
-
-	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
-		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
-				$list	= explode("@", $item);
-				$iftype = explode("|", $iftype);	
-				$ifdata = explode("|", $ifdata);	
-				$column_all		="";
-				$formula_		="";
-				$poptable_		="";
-				$gita				="";
-		for( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
-				if( isset($iftype[$j]) ) {
-					$typeX	= $iftype[$j];
-				} else $typeX	= "";
-				if( isset($ifdata[$j]) ) $dataX = $ifdata[$j];
-				else $dataX = "";
-				if( isset($list[$i]) && $list[$i] !=="" ) {
-					$ddd		= $list[$i];
-					$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
-					if( isset($fld[2]) && isset($fld[3]) ) $column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
-				}
-
-				if( !$typeX ) { // 0 or ''
-				} else if( $typeX == "11" ) { // calc
-					$formula = explode(":", $dataX);
-					$formula_ = $formula[1];
-				} else if( $typeX == "13" ) { // 팝업창
-					$poptable = explode(":", $dataX);
-					$poptable_ = $poptable[1];
-				} else {
-					$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
-				}
-		}
-		// $fld_1:상품명|fld_3:제품명$fld_8:재고|fld_4:수량@fld_1:상품명@fld_2:규격@fld_3:원가@fld_4:판매가@fld_5:구분@fld_6:거래처@fld_8:재고@	
-		// 3번 분류한다. 첫번째 @로, 두번째 $로, 세번째 |로
-		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
-		$pop_fld ="";
-		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
-			if( isset($popdata[$j]) ) {
-				$popfld = $popdata[$j];
-				$popfld = explode(":", $popfld);
-				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
-				else $pop_fld = $pop_fld . ",";
-			}
-		}
-		$mpop = $popdata[0];
-		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
-		$pop_mvfld = "";
-		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
-			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
-			$fld1 = $mv[0];
-			$fld2 = $mv[1];
-			$mvfld1 = explode(":", $fld1);
-			$mvfld2 = explode(":", $fld2);
-
-			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
-		}
-			$relationdata = explode("$", $relationdata);
-			$rel_db = $relationdata[0];
-			$reldb = explode(":", $rel_db);
-			if( isset($reldb[1]) ) $relation_db = $reldb[1];
-			else $relation_db = "";
-			$rel_mvfld = "";
-		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
-			$reldata = $relationdata[$j];
-			$rel = explode("|", $reldata );
-			$fld1 = $rel[0];
-			$sik = $rel[1];
-			$fld2 = $rel[2];
-			$rmvfld1 = explode(":", $fld1);
-			$rmvfld2 = explode(":", $fld2);
-
-			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
-		}
-
-	}
+	$gita= "";	// 1,3,5,7,9
 ?>
 
 <html>
@@ -237,19 +161,19 @@ $(function () {
 			else $OrderBy	= " ORDER BY group_code, upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		}
-	} else if( $data !== "" ) { // program 검색.
+	} else if( $data != '' ) { // program 검색.
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			if( $wsel!='') $ls = $ls . " where pg_name like '%$data%' ". $wsel;
 			else $ls = $ls . " where pg_name like '%$data%' ";
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			if( $wsel!='') $ls = $ls . " where pg_name $sel '$data' " . $wsel;
 			else $ls = $ls . " where pg_name $sel '$data' ";
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, $param ";
 			$ls = $ls . $OrderBy;
 		}

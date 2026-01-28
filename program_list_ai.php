@@ -15,80 +15,10 @@
 	$relation_db	= "";
 	$rel_mvfld		= "";
 	$gita				= "";
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
-
-	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
-		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
-				$list	= explode("@", $item);
-				$iftype = explode("|", $iftype);
-				$ifdata = explode("|", $ifdata);
-				$column_all		="";
-				$formula_		="";
-				$poptable_		="";
-				$gita				="";
-		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
-				if(isset($iftype[$j]) ) $typeX	= $iftype[$j];
-				else $typeX = "";
-				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
-				else $dataX = "";
-				$ddd		= $list[$i];
-				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
-				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
-						if( !$typeX ) { // 0 or ''
-						} else if( $typeX == "11" ) { // calc
-							$formula = explode(":", $dataX);
-							if( isset($formula[1]) ) $formula_ = $formula[1];
-						} else if( $typeX == "13" ) { // 팝업창
-							$poptable = explode(":", $dataX);
-							if( isset($poptable[1]) ) $poptable_ = $poptable[1];
-						} else {
-							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
-						}
-		}
-		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
-		$pop_fld ="";
-		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
-			if( isset($popdata[$j]) ){
-				$popfld = $popdata[$j];
-				$popfld = explode(":", $popfld);
-				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
-				else  $pop_fld = $pop_fld . ",";
-			} else {
-				$pop_fld = $pop_fld . ",";
-			}
-		}
-		$mpop = $popdata[0];
-		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
-		$pop_mvfld = "";
-		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
-			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
-			$fld1 = $mv[0];
-			$fld2 = $mv[1];
-			$mvfld1 = explode(":", $fld1);
-			$mvfld2 = explode(":", $fld2);
-			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
-		}
-			$relationdata = explode("$", $relationdata);
-			$rel_db = $relationdata[0];
-			$reldb = explode(":", $rel_db);
-			if( isset($reldb[1]) ) $relation_db = $reldb[1];
-			else  $relation_db = "";
-			$rel_mvfld = "";
-		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
-			$reldata = $relationdata[$j];
-			$rel = explode("|", $reldata );
-			$fld1 = $rel[0];
-			$sik = $rel[1];
-			$fld2 = $rel[2];
-			$rmvfld1 = explode(":", $fld1);
-			$rmvfld2 = explode(":", $fld2);
-			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
-		}
-	}
 ?>
 <html>
 <head>
@@ -209,8 +139,7 @@ $(function () {
  <BODY>
  <center>
 <?php
-	//$limite = 15;
-	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=='' ){
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
 
@@ -247,19 +176,17 @@ $(function () {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param like '%$data%' and userid='$H_ID' " . $wsel;
-			//$ls = $ls . " ORDER BY upday desc, $param ";
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			if( $fld_code!=='' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
 			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param $sel '$data' " . $wsel;
-			//$ls = $ls . " ORDER BY upday desc, $param ";
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+			$ls = $ls . " where $param $sel '$data' and userid='$H_ID' " . $wsel;
+			if( $fld_code!=='' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
 			$ls = $ls . $OrderBy;
 		}
-	} else if( $mode == "Project_Search" ) { // Project_Search
+	} else if( $mode == "Project_Search" ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' " . $wsel;
 		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
@@ -267,34 +194,37 @@ $(function () {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name like '%$data%' and userid='$H_ID' " . $wsel;
-			$ls = $ls . " ORDER BY upday desc, $param ";
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc, $param asc";
+			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name $sel '$data' and userid='$H_ID' " . $wsel;
-			$ls = $ls . " ORDER BY upday desc, pg_name asc ";
+			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+			else $OrderBy	= " ORDER BY upday desc, $param asc";
+			$ls = $ls . $OrderBy;
 		}
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' " . $wsel;
-		//$ls = $ls . " ORDER BY upday desc, pg_name asc ";
-		if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
 		else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
 		$ls = $ls . $OrderBy;
    }
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-//m_("$mode, total: $total");
-	if( !$page) $page=1;
 	$total_page = intval(($total-1) / $line_cnt)+1;
-	$first = ($page-1)*$line_cnt;
+	if( $page == 1 ) {
+		$first = 0;
+		$no = $total;
+	} else {
+		$first = ($page-1)*$line_cnt;
+		$no = $total - ($page - 1) * $line_cnt;
+	}
 	$last = $line_cnt;
 	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-	if( $page == 1){
-		$no = $total;
-	} else {
-		$no = $total - ($page - 1) * $line_cnt;
-	}
+
 	$cur='B';
 	include_once "./menu_run.php";
 
@@ -336,8 +266,8 @@ $(function () {
 		<option value="pg_name">Program</option>
 	</select>
 	<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-		<option value="like">Like</option>
-		<option value="=">=</option>
+		<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
+		<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
 	</select>
 	<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 	<input type="button" id="Search" name="Search" value='Search' onclick='Search_func()';>
@@ -354,8 +284,11 @@ View Line:
 </span>
 </FORM>
 
-<table class='floating-thead' style="width:3000px; table-layout:;">
-<thead>
+<!-- <table class='floating-thead' width="1900">
+<thead  width="100%"> -->
+
+<table class='floating-thead' style="width:1900px; table-layout:;">
+<thead width="100%">
 	<tr>
 	<th>NO</th>
 <?php
@@ -363,12 +296,8 @@ View Line:
  echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
  echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
  echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
-
+ echo " <th title='date Sort click' onclick=title_func('upday')>Date</th> ";
 ?>
-	<!-- <th>userid</th>
-	<th>Project</th>
-	<th>Program</th>
-	<th>Table</th> -->
 	<th>Column array</th>
 	<th>column type</th>
 	<th>Column Attributes</th>
@@ -379,14 +308,15 @@ View Line:
 	<th>Column</th>
 	<th>Cnt</th>
 	<th>Memo</th>
-	<th>Date</th>
+	<!-- <th>Date</th> -->
 	</tr>
 </thead>
 <tbody width="100%">
  <?php
 	$line=0;
 	$i=1;
-	if( $mode == "" || $mode == "Program_Search" || $mode=="Project_Search")	$ls = $ls . " $limit ";
+//	if( $mode == "" || $mode == "Program_Search" || $mode=="Project_Search")	$ls = $ls . " $limit ";
+	$ls = $ls . " $limit ";
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) {
 		$line=$line_cnt*$page + $i - $line_cnt;
@@ -407,6 +337,7 @@ View Line:
 	<td title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
 	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
 	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td><?=$rs['upday']?></td>
 	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
 	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
 	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
@@ -416,8 +347,7 @@ View Line:
 	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
 	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td>
 	<td width='8px'><?=$rs['item_cnt']?></td>
-	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:300px;" readonly><?=$rs['memo']?></textarea></td>
-	<td><?=$rs['upday']?></td>
+	<td><textarea id='memo' name='memo' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['memo']?></textarea></td>
 	</TR>
 <?php
 		$i++;
