@@ -304,8 +304,8 @@ View Line:
 </span>
 </FORM>
 
-<table class='floating-thead' style="width:3000px; table-layout:;">
-<thead>
+<table class='floating-thead' style="width:1900px; table-layout:;">
+<thead width='100%'>
 	<tr>
 	<th>NO</th>
 <?php
@@ -313,6 +313,7 @@ View Line:
  echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
  echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
  echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
+ echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
 
 ?>
 	<!-- <th>userid</th>
@@ -329,7 +330,6 @@ View Line:
 	<th>Column</th>
 	<th>Cnt</th>
 	<th>Memo</th>
-	<th>Date</th>
 	</tr>
 </thead>
 <tbody width="100%">
@@ -356,8 +356,9 @@ View Line:
 	<td style='width:2%;'><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
 	<td style='width:2%;'><?=$rs['userid']?> </td>
 	<td title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
-	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td style='width:3%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<td style='width:3%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td><?=$rs['upday']?></td>
 	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
 	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
 	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
@@ -367,8 +368,7 @@ View Line:
 	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
 	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td>
 	<td width='8px'><?=$rs['item_cnt']?></td>
-	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:300px;" readonly><?=$rs['memo']?></textarea></td>
-	<td><?=$rs['upday']?></td>
+	<td><textarea id='memo' name='memo' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['memo']?></textarea></td>
 	</TR>
 <?php
 		$i++;
