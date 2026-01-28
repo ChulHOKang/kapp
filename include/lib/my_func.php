@@ -54,6 +54,75 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 	$shuffled_str = str_shuffle($strT);
 	$auto_char=substr($shuffled_str, 0, 6); // insertD.php, updateD.php, replyD.php
 
+	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
+		// use - program_list)ai.php, kapp_program_list_adm_ai.php
+		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
+				$list	= explode("@", $item);
+				$iftype = explode("|", $iftype);
+				$ifdata = explode("|", $ifdata);
+				$column_all		="";
+				$formula_		="";
+				$poptable_		="";
+				$gita				="";
+		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
+				if(isset($iftype[$j]) ) $typeX	= $iftype[$j];
+				else $typeX = "";
+				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
+				else $dataX = "";
+				$ddd		= $list[$i];
+				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
+						if( !$typeX ) { // 0 or ''
+						} else if( $typeX == "11" ) { // calc
+							$formula = explode(":", $dataX);
+							if( isset($formula[1]) ) $formula_ = $formula[1];
+						} else if( $typeX == "13" ) { // 팝업창
+							$poptable = explode(":", $dataX);
+							if( isset($poptable[1]) ) $poptable_ = $poptable[1];
+						} else {
+							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
+						}
+		}
+		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
+		$pop_fld ="";
+		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
+			if( isset($popdata[$j]) ){
+				$popfld = $popdata[$j];
+				$popfld = explode(":", $popfld);
+				if( isset($popfld[1]) ) $pop_fld = $pop_fld . $popfld[1] . ",";
+				else  $pop_fld = $pop_fld . ",";
+			} else {
+				$pop_fld = $pop_fld . ",";
+			}
+		}
+		$mpop = $popdata[0];
+		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
+		$pop_mvfld = "";
+		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
+			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
+			$fld1 = $mv[0];
+			$fld2 = $mv[1];
+			$mvfld1 = explode(":", $fld1);
+			$mvfld2 = explode(":", $fld2);
+			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
+		}
+			$relationdata = explode("$", $relationdata);
+			$rel_db = $relationdata[0];
+			$reldb = explode(":", $rel_db);
+			if( isset($reldb[1]) ) $relation_db = $reldb[1];
+			else  $relation_db = "";
+			$rel_mvfld = "";
+		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
+			$reldata = $relationdata[$j];
+			$rel = explode("|", $reldata );
+			$fld1 = $rel[0];
+			$sik = $rel[1];
+			$fld2 = $rel[2];
+			$rmvfld1 = explode(":", $fld1);
+			$rmvfld2 = explode(":", $fld2);
+			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
+		}
+	}
 	function TAB_curl_send( $curl_snm, $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		// use: kapp_tabel_create.php , table30m_A.php
 		global $H_ID, $H_EMAIL, $group_code, $group_name, $config, $kapp_iv, $kapp_key, $tkher;
