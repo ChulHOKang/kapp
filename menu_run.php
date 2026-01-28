@@ -348,10 +348,10 @@
             <a href='#' target='run_menu' ><img src='<?=KAPP_URL_T_?>/icon/pcman1.png' style='border-style:;height:20px;'>App Make</a>
             <ul>
                 <li align='left'><a href='<?=KAPP_URL_T_?>/index.php?open_mode=on' target='_top'>C0.Program-Make</a></li>
-                <li align='left'><a href="<?=KAPP_URL_T_?>/kapp_program_list_all.php" target='_top'>C1.Program List</a></li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/kapp_program_list_all.php" target='_self'>C1.Program List</a></li>
                 <li align='left'><a href='<?=KAPP_URL_T_?>/menu/index.php' target='_self' title='Tree list.'>C2. Tree Menu List</a></li>
-                <li align='left'><a href="<?=KAPP_URL_T_?>/menu/board_list3.php" target='_top'>C3.Board List </a></li>
-                <li align='left'><a href="<?=KAPP_URL_T_?>/menu/ulink_list.php" target='_top'>C4.Link List</a>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/menu/board_list3.php" target='_self'>C3.Board List </a></li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/menu/ulink_list.php" target='_self'>C4.Link List</a>
                 </li>
             </ul>
         </li>
