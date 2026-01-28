@@ -1,6 +1,11 @@
   <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( !$H_ID || $H_ID =='' ) {
+		m_("my page login please");
+		echo("<meta http-equiv='refresh' content='0; URL=../'>"); exit;
+	}
+	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	if($H_LEV < 2) {
 		m_("my page login please");
 		echo("<meta http-equiv='refresh' content='0; URL=../index.php'>"); exit;
@@ -150,20 +155,21 @@ body {
 
 <body onLoad="init('<?=$open_mode?>')" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white'> 
 <?php
-	$sys_subtitS = 'Admin App Generator';
+	$sys_subtitS = 'My KAPP';
 	if( isset( $_REQUEST['sys_pg'] ) ) { 
 		$sys_pg	     = $_REQUEST['sys_pg']; 
 		$sys_subtitS = $_REQUEST['sys_subtitS'];
 	} else if( isset($_POST['sys_pg']) ) {
 		$sys_pg	= $_POST['sys_pg']; 
-	} else if( isset($_SESSION['sys_pg']) ) {
-		$sys_pg = $_SESSION['sys_pg'];
-		$sys_subtitS = $_SESSION['sys_subtitS'];
+//	} else if( isset($_SESSION['sys_pg']) ) {
+//		$sys_pg = $_SESSION['sys_pg'];
+//		$sys_subtitS = $_SESSION['sys_subtitS'];
 	} else if( isset($_POST['sys_pgS']) ) {
 		$sys_pg = $_POST['sys_pgS']; 
 		$sys_subtitS = $_POST['sys_subtitS'];
 	} else {
-		$sys_pg	= get_session("sys_pg"); 
+		//$sys_pg	= get_session("sys_pg"); 
+		$sys_pg = '';
 	}
 	if( $sys_pg && $mid ) {
 		$sqlupdate = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg'";
@@ -172,12 +178,13 @@ body {
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
 		$sys_subtitS = $rs['sys_subtit'];
-	} else if( $sys_pg ) {
+	} else if( $sys_pg && $sys_pg!='' ) {
+		m_("sys_pg: $sys_pg");
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
 		$sys_subtitS = $rs['sys_subtit'];
-	} else if( !$sys_pg ) {
+	} else if( !$sys_pg && $sys_pg=='' ) {
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and tit_gubun !='' and sys_level = 'mroot' order by up_day desc";
 		$rt = sql_query( $sql);
 		if( !$rt ) {
