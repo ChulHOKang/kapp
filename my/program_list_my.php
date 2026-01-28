@@ -21,83 +21,18 @@
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
 
-	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
-		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
-				$list	= explode("@", $item);
-				$iftype = explode("|", $iftype);
-				$ifdata = explode("|", $ifdata);
-				$column_all		="";
-				$formula_		="";
-				$poptable_		="";
-				$gita				="";
-		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
-				if(isset($iftype[$j]) ) $typeX	= $iftype[$j];
-				else $typeX = "";
-				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
-				else $dataX = "";
-				$ddd		= $list[$i];
-				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
-				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
-						if( !$typeX ) { // 0 or ''
-						} else if( $typeX == "11" ) { // calc
-							$formula = explode(":", $dataX);
-							$formula_ = $formula[1];
-						} else if( $typeX == "13" ) { // 팝업창
-							$poptable = explode(":", $dataX);
-							$poptable_ = $poptable[1];
-						} else {
-							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
-						}
-		}
-		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
-		$pop_fld ="";
-		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
-			if( isset($popdata[$j]) ){
-				$popfld = $popdata[$j];
-				$popfld = explode(":", $popfld);
-				$pop_fld = $pop_fld . $popfld[1] . ",";
-			} else {
-				$pop_fld = $pop_fld . ",";
-			}
-		}
-		$mpop = $popdata[0];
-		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
-		$pop_mvfld = "";
-		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
-			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
-			$fld1 = $mv[0];
-			$fld2 = $mv[1];
-			$mvfld1 = explode(":", $fld1);
-			$mvfld2 = explode(":", $fld2);
-			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
-		}
-			$relationdata = explode("$", $relationdata);
-			$rel_db = $relationdata[0];
-			$reldb = explode(":", $rel_db);
-			if( isset($reldb[1]) ) $relation_db = $reldb[1];
-			else  $relation_db = "";
-			$rel_mvfld = "";
-		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
-			$reldata = $relationdata[$j];
-			$rel = explode("|", $reldata );
-			$fld1 = $rel[0];
-			$sik = $rel[1];
-			$fld2 = $rel[2];
-			$rmvfld1 = explode(":", $fld1);
-			$rmvfld2 = explode(":", $fld2);
-			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
-		}
-	}
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
+
 <style>
 table { border-collapse: collapse; }
 th { background: #cdefff; height: 27px; }
@@ -199,9 +134,9 @@ $(function () {
 		document.project_search.submit();
 	}
 </script>
-</head>
- <BODY>
- <center>
+
+<BODY>
+<center>
 <?php
 	$limite = 15;
 	$page_num = 10;
@@ -224,8 +159,8 @@ $(function () {
 		$query	="delete from {$tkher['table10_pg_table']} where seqno=$seqno ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
-			my_msg(" $pg_name Program delete failed!");
-		} else my_msg(" Deleted the program $pg_name! ");
+			m_(" $pg_name Program delete failed!");
+		} else m_(" Deleted the program $pg_name! ");
 		$url = "program_list_my.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
    } else if( $mode=='group_name_add'){
@@ -233,12 +168,12 @@ $(function () {
 		$group_name	= $_REQUEST["group_name"];
 		$result	= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' and group_name='$group_name' " );
 		$total		= sql_num_rows( $result );
-		if( $total ) my_msg(" Group name is duplicate. Use a different name! ");
+		if( $total ) m_(" Group name is duplicate. Use a different name! ");
 		else {
 			$query="insert into {$tkher['table10_group_table']} set group_code='$group_code', group_name='$group_name', userid='$H_ID' , memo='program_list_my.php' ";
 			$g = sql_query( $query );
-			if( !$g ) my_msg("Add error");
-			else  my_msg("Group added! ");
+			if( !$g ) m_("Add error");
+			else  m_("Group added! ");
 		}
 			$resultT = sql_query( "SELECT * from {$tkher['table10_pg_table']} where pg_name='$pg_name' " );
 			$total		= sql_num_rows( $resultT );
@@ -248,8 +183,8 @@ $(function () {
 		$project_name	= $_POST["project_name"];
 		$query="update {$tkher['table10_pg_table']} set group_code='$project_code', group_name='$project_name' where seqno='$seqno' ";
 		$g = sql_query( $query );
-		if( !$g ) my_msg("Change Project Error");
-		else  my_msg("Project name changed! ");
+		if( !$g ) m_("Change Project Error");
+		else  m_("Project name changed! ");
 		$group_code = $project_code;
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where group_code='" . $project_code . "' ";
@@ -295,7 +230,7 @@ $(function () {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' and group_code='".$_POST['group_code']."' ";
 		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
-	} else if( isset($data) && $data !== "" ) {
+	} else if( isset($data) && $data !='' ) {
 		$sel   = $_POST['sel'];
 		$param = $_POST['param'];
 		if( !$param ) $param = 'pg_name';
@@ -358,7 +293,7 @@ $(function () {
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
- if( isset($group_name) && $group_name !== "" ){
+ if( isset($group_name) && $group_name !='' ){
 ?>
 							<option value='<?=$group_code?>' selected ><?=$group_name?></option>
 <?php
@@ -413,7 +348,7 @@ $(function () {
 	<input type='hidden' name='param2' value='<?=$param2?>'>
 	<input type='hidden' name='sel2' value='<?=$sel2?>'>
 	<input type='hidden' name='data2' value='<?=$data2?>'>
-<table class='floating-thead' width="100%">
+<table class='floating-thead' width="1900">
 <thead  width="100%">
 	<tr>
 	<th>NO/Run</th>
@@ -471,7 +406,8 @@ $(function () {
 	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
 	<!-- <td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td> -->
 	<td><?=$rs['item_cnt']?></td>
-	<td><?=$rs['memo']?></td>
+	<!-- <td><?=$rs['memo']?></td> -->
+	<td><textarea id='rs_memo' name='rs_memo' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['memo']?></textarea></td>
 	<td><?=$rs['upday']?></td>
 	<!-- <?php
 		if( $mode !== 'Search' && $H_ID==$rs['userid'] ) {

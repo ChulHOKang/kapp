@@ -46,12 +46,12 @@
 ?>
 <html> 
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>App Generator. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 <style>
@@ -142,12 +142,13 @@ body {
 	function run_on(){
 		document.getElementById("mySidenav").style.width = "0";
 	}
-	function init() {  
-	    document.getElementById("mySidenav").style.width = "250px";
+	function init(open_mode) {
+		if( open_mode == 'on') document.getElementById("mySidenav").style.width = "250px";
+	    else document.getElementById("mySidenav").style.width = "0px";
 	}
 </script>
-</head> 
-<body onLoad="init()" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white'> 
+
+<body onLoad="init('<?=$open_mode?>')" oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white'> 
 <?php
 	$sys_subtitS = 'Admin App Generator';
 	if( isset( $_REQUEST['sys_pg'] ) ) { 
@@ -248,7 +249,7 @@ body {
 </body>
 </html>
 <?php
-	if( $_REQUEST['open_mode'] == 'on' ) {
+	if( isset($_REQUEST['open_mode']) && $_REQUEST['open_mode'] == 'on' ) {
 	  echo "<script>document.getElementById('mySidenav').style.width = '250px';</script>";
 	}
 ?>
