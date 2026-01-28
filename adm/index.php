@@ -1,9 +1,14 @@
   <?php
 	include_once('../tkher_start_necessary.php');
-	$H_ID	= get_session("ss_mb_id");	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( $H_ID == '' ) {
+		m_("login please");
+		echo("<meta http-equiv='refresh' content='0; URL=../'>"); exit;
+	}
+	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
 	if( $H_LEV < 8) {
 		m_("admin page");
-		echo("<meta http-equiv='refresh' content='0; URL=/'>"); exit;
+		echo("<meta http-equiv='refresh' content='0; URL=../'>"); exit;
 	}
 
 	date_default_timezone_set("Asia/Seoul");
@@ -165,6 +170,8 @@ $sys_subtitS = 'Admin K-App';
 
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_program_list_adm_ai.php' target='run_menu' title='Program List detail'>5.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>Program List AI</a></li>
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='program_pglist_adm.php' target='run_menu'>8.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Program List B</a></li>
+
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='kapp_table_list_adm.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Table List</a></li>
 
 	<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='../setup/DB_Table_CreateA.php' target='run_menu' title='Setup Table of KAPP System'>a.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Setup Table</a></li>
 
