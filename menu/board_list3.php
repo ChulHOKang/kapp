@@ -17,13 +17,14 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/board_new.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 
 <style>
 table { border-collapse: collapse; }
@@ -79,7 +80,7 @@ th, td { border: 1px solid silver; padding:5px; }
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
-</head>
+
 <?php
 	if( isset($_REQUEST["g_type"]) ) $g_type = $_REQUEST["g_type"];
 	else $g_type ='';
@@ -466,10 +467,10 @@ th, td { border: 1px solid silver; padding:5px; }
 								 <select id="sellist" style="WIDTH: 200px" onChange="sellist_onclick()" name="sellist" size='10'>
 
 	<?php
-		$where_ = "";
-		$sql = "SELECT * from {$tkher['aboard_infor_table']} " . $where_ . " order by in_date desc";
-		$result = sql_query($sql);
-		$line_no = 0;
+		$ls = "SELECT * from {$tkher['aboard_infor_table']} ";
+		$ls = $ls . " WHERE make_id='$H_ID' ";
+		$ls = $ls . " ORDER by in_date desc";
+		$result = sql_query($ls);
 		while($rs = sql_fetch_array($result)) {
 			$rsno =$rs['no'];
 			$home_url =$rs['home_url'];
@@ -506,7 +507,6 @@ th, td { border: 1px solid silver; padding:5px; }
 						 </tr>
 
 	</table>
-	<!-- --------------------------------------------- -->
 	</div>
 	<div id="mypaneltab" class="ddpaneltab"><a href="#"><span style="border-style:;background-color:;color:yellow;">Board Create</span></a></div>
 </div>
@@ -663,7 +663,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			<TH style='color:white;' title="data read level">read</TH>
 			<TH style='color:white;' title="data write level">write</TH>
 			<TH>memo</TH>
-			<TH>exec</TH>
+			<!-- <TH>exec</TH> -->
 		</tr>
  </thead>
 
@@ -702,16 +702,11 @@ th, td { border: 1px solid silver; padding:5px; }
 				$ls = $ls . " ORDER BY in_date desc, name ";
 				$ls = $ls . " $SQL_limit ";
 			}
-			if ( ($result = sql_query( $ls ) )==false )
-			{
-				//printf("Invalid query: %s\n", $ls); //Invalid query: SELECT * from {$tkher['aboard_infor_table']} limit , ORDER BY in_date desc, name sql: SELECT * from {$tkher['aboard_infor_table']} limit , ORDER BY in_date desc, name
-				//echo "sql: " . $ls; 
-				exit;
-				//m_("board_list3 Select Error "); // board_list3 Select Error
+			if ( ($result = sql_query( $ls ) )==false ){
+				//exit;
 				$total_count = 0;
-			} else {
 			}
-	//--------------------------------- end
+
 	$line_no = 0;
 	$line = 0;
 	$i=1;
@@ -789,8 +784,8 @@ th, td { border: 1px solid silver; padding:5px; }
 			  <br>More than </td>
 			<td bgcolor="#FFFFFF" align="center">
 				<textarea name="grant_memo_<?=$line_no?>" class="input01" cols="30" rows="2"><?=$rs['memo']?></textarea></td>
-		<?php
-if( isset($H_ID) && $H_LEV > 1){
+		<!-- <?php
+if( isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
 			<td bgcolor="#FFFFFF" align="center">
 				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
@@ -806,7 +801,7 @@ if( isset($H_ID) && $H_LEV > 1){
 			</td>
 		<?php
 }
-		?>
+		?> -->
 		  </tr>
 		<?php
 			$line_no = $line_no +1; // 배열 변수 용.
