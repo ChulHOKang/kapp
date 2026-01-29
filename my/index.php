@@ -13,24 +13,17 @@
 
 	date_default_timezone_set("Asia/Seoul");
 	$day		= date("Y-m-d H:i:s");
-   /* ------------------------------------------ 최종 사용 프로그램 임다. 중요.
-	  --- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
-	  1. 이것은 나의 미래를 결정한다.
-	  2. 이것은 나의 경쟁력이다.
-	  3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
-	  4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
-	  5. 이것을 아는것은 힘이요, 원동력이다.
-	  --------------------------------------------------
-		tkher_my_control, tkher_main_img
-		$sql = " SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
-		$sql = " SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher' and group_name='main' order by view_no ";
-		/t/tree_menu_guest.php : Guest View Mobile <- /t/menu/tree_menu_updateM2.php 을 copy
-						  : /t/menu/tree_menu_updateM2.php 사용 하지 않음.
-						  /t/my_list_menu.php에서도 call.중요.
-		http://urllinkcoin.com/t/tree_run_menuM_guest.php?num=dao_1612581000&mid=dao 사용자 통합실행용. 중요.
-		tree_run_menu.php -> runf_my_create.php -> tree_run_generator.php -> r1_my.php
-					 최초 r1_my.php : my page에서 실행한다.
-		http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
+   /* ------------------------------------------
+	tkher_my_control, tkher_main_img
+	$sql = " SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
+	$sql = " SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher' and group_name='main' order by view_no ";
+	/t/tree_menu_guest.php : Guest View Mobile <- /t/menu/tree_menu_updateM2.php 을 copy
+					  : /t/menu/tree_menu_updateM2.php 사용 하지 않음.
+					  /t/my_list_menu.php에서도 call.중요.
+	http://urllinkcoin.com/t/tree_run_menuM_guest.php?num=dao_1612581000&mid=dao 사용자 통합실행용. 중요.
+	tree_run_menu.php -> runf_my_create.php -> tree_run_generator.php -> r1_my.php
+				 최초 r1_my.php : my page에서 실행한다.
+	http://urllinkcoin.com/cratree/tree_run_menu.php?mid=dao&num=dao1612683061&jong=B&target_=my_solpa_user_r
    -------------------------------------------------------- */
 	$r = explode("/", $_SERVER['SCRIPT_FILENAME'] ); //SCRIPT_FILENAME: /home1/solpakanurl/public_html/t/index2.php
 	$cnt = count($r);
@@ -217,27 +210,35 @@ body {
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<div style="color:cyan; background-color:black; height:33px; border:none">K-App My Page<br>[ <?=$H_ID?> ]</div>
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='bbs_history_myjob.php' target='run_menu' title='table design'>1.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Job History</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='./point_list_my.php' target='run_menu' title='table design'>2.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
+	
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_member_my.php' target='run_menu' title='table design'>
+	A.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>My Info</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_slide_my.php' target='run_menu' title='Album Slide'>
+	B.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album Slide</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_view_db_my.php' target='run_menu' title='Album List'>
+	C.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album List</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_insert_my.php' target='run_menu' title='Album Insert'>
+	D.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album Insert</a></li>
 
-	<!-- <li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='./board_list_my.php' target='run_menu' title='table design'>3.<img src='<?=KAPP_URL_T_?>/icon/seedX.png' width='15' height='15'>Board List</a></li> -->
-	<li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/board_list3.php' target='run_menu' title='table design'>3.<img src='<?=KAPP_URL_T_?>/icon/seedX.png' width='15' height='15'>Board List</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='bbs_history_myjob.php' target='run_menu' title='table design'>
+	E.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Job History</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='./program_list_my.php' target='run_menu' title='table design'>4.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>Program List</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='./table10i_my.php' target='run_menu'>5.<img src='<?=KAPP_URL_T_?>/icon/Uleaf.png' width='15' height='15'>Table List</a></li>
-	<!-- <li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='../table30m_amy.php' target='run_menu'>6.<img src='<?=KAPP_URL_T_?>/icon/Uleaf.png' width='15' height='15'>Table Design</a></li> -->
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='program_pglist_my.php' target='run_menu'>7.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Program List B</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/index.php' target='run_menu'>8.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>K-Tree</a></li><!-- old:ktree_list_my.php -->
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='treelist2_my.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/berry.png' width='15' height='15'>Link List</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_member_my.php' target='run_menu' title='table design'>A.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>My Info</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_slide_my.php' target='run_menu' title='Album Slide'>B.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album Slide</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_view_db_my.php' target='run_menu' title='Album List'>C.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album List</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_insert_my.php' target='run_menu' title='Album Insert'>D.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album Insert</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='./point_list_my.php' target='run_menu' title='table design'>
+	F.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
+
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/kapp_tree_menu_list.php' target='run_menu'>
+	G.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Tree Menu List</a></li>
+
+	<li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/kapp_board_list.php' target='run_menu' title='table design'>
+	H.<img src='<?=KAPP_URL_T_?>/icon/seedX.png' width='15' height='15'>Board List</a></li>
+
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_ulink_list.php' target='run_menu'>
+	I.<img src='<?=KAPP_URL_T_?>/icon/berry.png' width='15' height='15'>Link List</a></li>
+
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/logoutT.php' target='run_menu' title='table design'>Z.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>LogOut</a></li>
+	
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-	<li style='font-size:9;color:#666666;height:9px;line-height:1'>
-	We call it mining to register in the tree menu.<br><!-- 우리는 트리 메뉴에 등록하는것을 채굴이라 한다 -->
-	Points will be paid in coins in the future.<br><!-- 포인트는 향후에 코인으로 지급될것이다. -->
+	<li style='font-size:9;color:#fff666;height:9px;line-height:1'>
 	If it does not work, <br>please unblock the pop-up window.<!-- 작동하지 않으면 팝업 창을 차단 해제하십시오. -->
 	</li>
 </div>
