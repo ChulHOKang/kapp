@@ -142,9 +142,9 @@ $(function () {
 	if( isset($_REQUEST["memo"]) ) 	$memo= $_REQUEST["memo"];
 	else	$memo			= "";
 	if( isset($_REQUEST["mode_up"]) ) 	$mode_up= $_REQUEST["mode_up"];
+	else if( isset($_POST["mode_up"]) ) $mode_up= $_POST["mode_up"];
 	else	$mode_up			= "";
-	if( isset($_REQUEST["mode_in"]) ) 	$mode_in= $_REQUEST["mode_in"];
-	else	$mode_in			= "";
+
 	if( isset($_REQUEST["sdata"]) ) 	$sdata= $_REQUEST["sdata"];
 	else	$sdata			= "";
 
@@ -298,17 +298,17 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		document.insert_form.project_code.value = gg[1]; 
 	}
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
-		document.coinview_form.link_.value =link_;
-		document.coinview_form.mid.value   =id;
-		document.coinview_form.group.value =group;
-		document.coinview_form.title_.value=title_;
-		document.coinview_form.jong.value  =jong;
-		document.coinview_form.num.value   =num;
-		document.coinview_form.aboard_no.value =aboard_no;
-		document.coinview_form.seqno.value =seqno;
-        document.coinview_form.action='./cratree_coinadd_menu.php';
-		document.coinview_form.target='_blank';
-		document.coinview_form.submit();
+		document.insert_form.link_.value =link_;
+		document.insert_form.mid.value   =id;
+		document.insert_form.group.value =group;
+		document.insert_form.title_.value=title_;
+		document.insert_form.jong.value  =jong;
+		document.insert_form.num.value   =num;
+		document.insert_form.aboard_no.value =aboard_no;
+		document.insert_form.seqno.value =seqno;
+        document.insert_form.action='./cratree_coinadd_menu.php';
+		document.insert_form.target='_blank';
+		document.insert_form.submit();
 	}
 	function contents_del( num, g_name, webnum ) {
 		if( confirm('Are you sure you want to delete? '+num) ) {
@@ -390,9 +390,9 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		document.insert_form.submit();
 	}
 	function Change_line_cnt( $line){
-		document.coinview_form.page.value = 1;
-		document.coinview_form.action='kapp_ulink_list.php';
-		document.coinview_form.submit();
+		document.insert_form.page.value = 1;
+		document.insert_form.action='kapp_ulink_list.php';
+		document.insert_form.submit();
 	}
 	function title_func(fld_code){       
 		document.insert_form.page.value = 1;                
@@ -403,16 +403,16 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 	} 
 	function g_type_func(gtype){
 		alert("gtype: " +gtype);
-		document.coinview_form.g_type.value = gtype;
-		document.coinview_form.page.value = 1;                
-		document.coinview_form.mode.value='type_func';           
-		document.coinview_form.action='kapp_ulink_list.php';
-		document.coinview_form.submit();                         
+		document.insert_form.g_type.value = gtype;
+		document.insert_form.page.value = 1;                
+		document.insert_form.mode.value='type_func';           
+		document.insert_form.action='kapp_ulink_list.php';
+		document.insert_form.submit();                         
 	} 
 	function page_func( $page, $search, $sdata, $g_name, $g_type){
-		document.coinview_form.page.value = $page;
-		document.coinview_form.action='kapp_ulink_list.php';
-		document.coinview_form.submit();
+		document.insert_form.page.value = $page;
+		document.insert_form.action='kapp_ulink_list.php';
+		document.insert_form.submit();
 	}
 //-->
 </script>
@@ -536,7 +536,7 @@ jQuery(document).ready(function ($) {
 				},
 			success: function(data) {
 				alert(data);
-					location.replace(location.href);			//	$("#g_name").val(data);		//console.log(data);
+					location.replace(location.href);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("The data type or URL is incorrect. -- ulink_ajax.php");
@@ -632,24 +632,32 @@ jQuery(document).ready(function ($) {
 	//$page, $search, $sdata, $g_name, $g_type
 ?>
 <form id="insert_form" name='insert_form' method='post' enctype='multipart/form-data' >
-	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
 	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
-	<input type='hidden' id='g_name' name='g_name' value='<?=$g_name?>' > 
+	<input type='hidden' name='g_name' id='g_name' value='<?=$g_name?>' > 
 	<input type='hidden' name='g_user'			value='<?=$gg_user?>' > 
-	<input type='hidden' name='mode_in'		value='' > 
-	<input type='hidden' name='mode_up'		value='' > 
+	<input type='hidden' name='mode_up'		value='<?=$mode_up?>' > 
+
 	<input type='hidden' name='seq_no' id='seq_no'	value='<?=$_REQUEST['seq_no']?>' > 
 	<input type='hidden' name='page'			value='<?=$page?>' > 
 	<input type='hidden' name='mode'			value='<?=$mode?>' > 
+	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
+	<input type='hidden' name='num'				value='' > 
+	<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+	<input type='hidden' name='type_'			value='<?=$type_?>' > 
+	
 	<input type='hidden' name='mode_insert'			value='insert_mode' > 
 	<input type='hidden' name='pg_'				value='<?=$pg_?>' > 
 	<input type='hidden' name='target_'			value='<?=$target_?>' > 
-	<input type='hidden' name='type_'			value='<?=$type_?>' > 
-	<input type='hidden' name='data'			value='<?=$sdata?>' > 
-	<input type='hidden' name='num'				value='' > 
+
 	<input type='hidden' name='webnum'			value='' > 
-	<input type='hidden' id='project_code' name='project_code' value='<?=$project_code?>'>
-	<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+	<input type='hidden' name='project_code' id='project_code' value='<?=$project_code?>'>
+
+	<input type='hidden' name='mid'			value='' > 
+	<input type='hidden' name='link_'		value='' > 
+	<input type='hidden' name='title_'		value='' > 
+	<input type='hidden' name='group'		value='' > 
+
+	<input type='hidden' name='aboard_no'	value='' > 
 
 <div id="mypanel" class="ddpanel">
 <div id="mypanelcontent" class="ddpanelcontent">
@@ -715,7 +723,7 @@ jQuery(document).ready(function ($) {
 
 		</td>
 	</tr>
-	</form>
+	<!-- </form> -->
 </table>
 </div>
 <div id="mypaneltab" class="ddpaneltab" >
@@ -724,18 +732,8 @@ jQuery(document).ready(function ($) {
 </div>
 <link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
 
-<form id="coinview_form" name='coinview_form' method='post' enctype='multipart/form-data' >
-	<input type='hidden' name='mode'		value='' > 
-	<input type='hidden' name='mid'			value='' > 
-	<input type='hidden' name='seqno'		value='' > 
-	<input type='hidden' name='link_'		value='' > 
-	<input type='hidden' name='title_'		value='' > 
-	<input type='hidden' name='group'		value='' > 
-	<input type='hidden' name='type_'			value='<?=$type_?>' > 
-	<input type='hidden' name='g_type'		value='<?=$g_type?>' > 
-	<input type='hidden' name='num'			value='' > 
-	<input type='hidden' name='aboard_no'	value='' > 
-	<input type='hidden' name='page'		value='<?=$page?>' > 
+<!-- <form id="coinview_form" name='coinview_form' method='post' enctype='multipart/form-data' > -->
+
 <table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 	<tr>
 		<td align='left' colspan='9'>
@@ -826,13 +824,19 @@ jQuery(document).ready(function ($) {
 <thead  width='100%'>
 		<tr align='center'>
 			<TH>icon</TH>
-			<TH>Project</TH>
-			<!-- <TH>User</TH> -->
+	<?php
+		echo " <th title='Project Sort click' onclick=title_func('job_group')>Project</th> ";
+		//echo " <th title='User Sort click' onclick=title_func('user_id')>User</th> ";
+		echo " <th title='Project Sort click' onclick=title_func('user_name')>Title</th> ";
+		echo " <th title='url Sort click' onclick=title_func('job_addr')>Link Url</th> ";
+		echo " <th title='type Sort click' onclick=title_func('jong')>type</th> ";
+	?>
+			<!-- <TH>Project</TH>
 			<TH>Title</TH>
 			<TH>Link Url</TH>
-			<!-- <TH>type</TH> -->
+			<TH>type</TH> -->
 			<TH>View</TH>
-			<TH>date</TH>
+			<TH title='date Sort click' onclick="title_func('up_day')">date</TH>
 			<!-- <TH>lev</TH>-->
 			<!-- <TH>management</TH> -->
 		</tr>
@@ -907,7 +911,7 @@ jQuery(document).ready(function ($) {
 			else	$t_color='grace';
 ?>
 				<tr valign="middle" align='left' > 
-				  <td  bgcolor='black' title='<?=$user_id?>' width='30' ><img src='<?=$icon?>' width='30'><?=$gubun?></td>
+				  <td  bgcolor='black' title='<?=$user_id?>' style="width:1%;"><img src='<?=$icon?>' style="width:25px;"></td>
 				  <td  bgcolor='black' style="width:15%;color:<?=$t_color?>;"><?=$sys_group?></td>
 <?php if( $rs['job_name']=='Note') { ?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
@@ -918,9 +922,9 @@ jQuery(document).ready(function ($) {
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr ?></a></td>
 <?php }?>
-				  <!-- <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$i_tit ?></td> -->
-				  <td style="background-color:black;color:<?=$t_color?>;width:30px;" ><?=$rs['view_cnt'] ?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:120px;" ><?=$rs['up_day'] ?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" title="<?=$i_tit ?>"><?=$gubun?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:8px;" ><?=$rs['view_cnt']?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$rs['up_day']?></td>
 				</tr> 
 		<?php
 			}	//-------- Loop
