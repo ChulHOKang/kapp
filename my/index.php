@@ -229,7 +229,7 @@ body {
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/kapp_tree_menu_list.php' target='run_menu'>
 	G.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Tree Menu List</a></li>
 
-	<li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/kapp_board_list.php' target='run_menu' title='table design'>
+	<li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_board_list.php' target='run_menu' title='table design'>
 	H.<img src='<?=KAPP_URL_T_?>/icon/seedX.png' width='15' height='15'>Board List</a></li>
 
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_ulink_list.php' target='run_menu'>
