@@ -218,7 +218,7 @@ body {
 			<img src='<?=KAPP_URL_T_?>/logo/seed.png' style='width:24px;height:22px;'>.Table Relationship</a></li>
 
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
-			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/table10i.php' target='run_menu'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_list.php' target='run_menu'>
 			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.Table List</a></li>
 
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
@@ -234,7 +234,7 @@ body {
 			<img src='<?=KAPP_URL_T_?>/logo/land25.png' style='width:24px;height:22px;'>.App Permissions</a></li>
 
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
-			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list3.php' target='run_menu'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_program_list.php' target='run_menu'><!-- program_list3.php -->
 			<img src='<?=KAPP_URL_T_?>/logo/seedX.png' style='width:24px;height:22px;'>.Program List A</a></li>
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
 			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/program_list_ai.php' target='run_menu'>
