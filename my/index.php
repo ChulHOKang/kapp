@@ -226,7 +226,7 @@ body {
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='./point_list_my.php' target='run_menu' title='table design'>
 	F.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/kapp_tree_menu_list.php' target='run_menu'>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_tree_menu_list.php' target='run_menu'>
 	G.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Tree Menu List</a></li>
 
 	<li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_board_list.php' target='run_menu' title='table design'>
