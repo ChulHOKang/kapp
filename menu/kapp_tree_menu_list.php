@@ -1,7 +1,7 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 	/*
-		index.php : Tree List
+		kapp_tree_menu_list.php : menu/index.php : Tree List
 		- index_create.php - cratreebook_make_create_menu.php : tree menu Create
 		DB: {$tkher['sys_menu_bom_table']}, webeditor, webeditor_comment,
 		     job_link_table, aboard_info, aboard_memo, aboard_admin, menuskin
@@ -12,9 +12,8 @@
 		$H_POINT= $member['mb_point'];
 		$H_EMAIL= $member['mb_email'];
 	} else {
-		$H_LEV  = 0;
-		$H_POINT= 0;
-		$H_EMAIL= '';
+		m_("my page login please");
+		echo("<meta http-equiv='refresh' content='0; URL=../'>"); exit;
 	}
 	$ip     = $_SERVER['REMOTE_ADDR'];
 ?>
@@ -44,23 +43,8 @@
 
 	function new_create(Anum) {
 		if( confirm('Are you sure you want to create? ') ) {
-			location.href='index_create.php';
+			location.href='./index_create.php';
 		}
-	}
-	function tree_func(mid, sys_pg, run_mode ){
-		document.sys_form.mid.value     = mid;
-		document.sys_form.sys_pg.value  = sys_pg;
-		document.sys_form.run_mode.value= "cratree_book_remake";//run_mode;
-		document.sys_form.action='./treebom_remake_all_menu.php';
-		document.sys_form.target  = "_blank";
-		document.sys_form.submit();
-	}
-	function popup_func(mid, sys_pg, run_mode ){
-		document.sys_form.mid.value     = mid;
-		document.sys_form.sys_pg.value  = sys_pg;
-		document.sys_form.run_mode.value= run_mode;
-		document.sys_form.action='./treebom_dropdown_menu_create.php';
-		document.sys_form.submit();
 	}
 	function treeDN_func( mid, sys_pg, run_mode, point ){
 		if( !document.sys_form.Hid.value ) {
@@ -94,19 +78,19 @@
 	}
 	function Change_line_cnt( $line){
 		document.sys_form.page.value = 1;
-		document.sys_form.action='index.php';
+		document.sys_form.action='kapp_tree_menu_list.php';
 		document.sys_form.submit();
 	}
 	function page_func( $page){
 		document.sys_form.page.value = $page;
-		document.sys_form.action='index.php';
+		document.sys_form.action='kapp_tree_menu_list.php';
 		document.sys_form.submit();
 	}
 	function title_func(fld_code){       
 		document.sys_form.page.value = 1;                
 		document.sys_form.fld_code.value= fld_code;           
 		document.sys_form.mode.value='title_func';           
-		document.sys_form.action='index.php';
+		document.sys_form.action='kapp_tree_menu_list.php';
 		document.sys_form.submit();                         
 	} 
 </script>
@@ -246,10 +230,10 @@ common = {
 
 	if( $sdata !='' ) {
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
-		$query = $query . "where sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' ";
+		$query = $query . "where sys_userid='$H_ID' and sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' ";
 	} else {
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
-		$query = $query . "where sys_level='mroot' and sys_subtit != 'main' ";
+		$query = $query . "where sys_userid='$H_ID' and sys_level='mroot' and sys_subtit != 'main' ";
 	}
 	$result = sql_query( $query);
 	$total  = sql_num_rows( $result );
@@ -271,10 +255,10 @@ if( $total > 0 ) {
 	}
 	/*if( $sdata !='' ){
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
-		$query = $query . "where sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' ";
+		$query = $query . "where sys_userid='$H_ID' and sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' ";
 	} else {
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
-		$query = $query . "where sys_level='mroot' and sys_subtit != 'main' ";
+		$query = $query . "where sys_userid='$H_ID' and sys_level='mroot' and sys_subtit != 'main' ";
 	}*/
 	if( $fld_code!='' ) {
 		if( $fld_code == 'view_cnt') $OrderBy = " order by $fld_code desc ";    
@@ -282,6 +266,7 @@ if( $total > 0 ) {
 		else $OrderBy = " order by $fld_code asc ";    
 	}
 	else $OrderBy	= "order by tit_gubun desc, up_day desc, sys_subtit ";
+
 	$query = $query . $OrderBy;
 	$query = $query . $limit;
 	$result = sql_query( $query);
@@ -301,7 +286,7 @@ if( $total > 0 ) {
 
 	<!-- <div class="header"> -->
 <?php
-	$runpage='./index.php';
+	$runpage='./kapp_tree_menu_list.php';
 	$cur='C';
 	include "../menu_run.php";
 	if( $mid) $madeid = $mid;
@@ -331,6 +316,8 @@ View Line:
 	echo " <th title='User Sort click' onclick=title_func('sys_userid')>User</th> ";
 	echo " <th title='Title Sort click' onclick=title_func('sys_subtit')>Title</th> ";
 ?>
+	<!-- <th>User</th>
+	<th>Title</th> -->
 	<th>Pop Run</th>
 	<th title='Tree Menu Source Code Download.' style='color:black;'>Down-Load</th>
 	<th title='Popup Menu Source Code Download.' style='color:black;'>Down-Load</th>
@@ -376,10 +363,9 @@ if( $result ){
 		}
 		$day = substr($line['up_day'], 0 , 10);
 		$subtit = $line['sys_subtit'];
-		$view = number_format($line['view_cnt']);
+		$view = $line['view_cnt'];
 		$job_addr='contents_view_menuD.php?num=' . $num;
-		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr.'&start_click=on';
-		if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
+		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr;
 			echo "
 			<tr>
 				<td align='center'>$ln $iconX</td>
@@ -389,7 +375,17 @@ if( $result ){
 				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td align='center'>$view</td>
-				<td align='center'>$day</td>
+				<td align='center'>$up_day</td>
+			</tr>";
+		/*if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
+			echo "
+			<tr>
+				<td align='center'>$ln $iconX</td>
+				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
+				<td><a href='$run' target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
+				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a></td>
+				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
+				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 			</tr>";
 		} else {
 			echo "
@@ -400,10 +396,9 @@ if( $result ){
 				<td align='center'><a href='$run' target='_blank' style='color:cyan' title='run: $run'>Popup</a></td>
 				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td align='center'>$view</td>
-				<td align='center'>$day</td>
+				<td align='center'> --- </td>
 			</tr>";
-		}
+		}*/
 		$ln--;
 	} // while
 } //if

@@ -82,18 +82,23 @@ th, td { border: 1px solid silver; padding:5px; }
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
 
 <?php
-	if( isset($_REQUEST["g_type"]) ) $g_type = $_REQUEST["g_type"];
-	else $g_type ='';
-	if( isset($_REQUEST["sel_num"]) ) $sel_num= $_REQUEST["sel_num"];
+	if( isset($_POST['g_type']) ) $g_type = $_POST['g_type'];
+	else if( isset($_REQUEST['g_type']) ) $g_type = $_REQUEST['g_type'];
+	else $g_type= '';
+	if( isset($_POST["sel_num"]) ) $sel_num= $_POST["sel_num"];
+	else if( isset($_REQUEST["sel_num"]) ) $sel_num= $_REQUEST["sel_num"];
 	else $sel_num ='';
-	if( isset($_REQUEST["memo"]) ) $memo = $_REQUEST["memo"];
+	if( isset($_POST["memo"]) ) $memo = $_POST["memo"];
+	else if( isset($_REQUEST["memo"]) ) $memo = $_REQUEST["memo"];
 	else $memo ='';
-	if( isset($_REQUEST["mode"]) ) $mode = $_REQUEST["mode"];
+	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
+	else if( isset($_REQUEST["mode"]) ) $mode = $_REQUEST["mode"];
 	else $mode ='';
-	if( isset($_REQUEST["sdata"]) ) $sdata = $_REQUEST["sdata"];
+	if( isset($_POST["sdata"]) ) $sdata = $_POST["sdata"];
+	else if( isset($_REQUEST["sdata"]) ) $sdata = $_REQUEST["sdata"];
 	else $sdata = '';
-	if( isset($_REQUEST['page']) )   $page= $_REQUEST['page'];
-	else if( isset($_POST['page']) ) $page= $_POST['page'];
+	if( isset($_POST['page']) ) $page= $_POST['page'];
+	else if( isset($_REQUEST['page']) )   $page= $_REQUEST['page'];
 	else $page = 1;
 ?>
 <script language='javascript'>
@@ -126,7 +131,6 @@ th, td { border: 1px solid silver; padding:5px; }
 		makeform.board_type_name.value = t;
 		makeform.sellist_index.value   = v;
 	}
-	// 메뉴설명 byte 체크
 	function chkDescription(){
 		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
 	}
@@ -170,40 +174,16 @@ th, td { border: 1px solid silver; padding:5px; }
 		}
 		for ( j=0; j < makeform.sellist.options.length; j++ )	{
 			if ( makeform.sellist.options[j].selected == true ) {
-				/* group의 시작(start) & 끝(end) 그룹이름 변경하기 */
 				var chkname = makeform.sellist.options[j].value
 				var chkObjid = getObjid(chkname)
-				/*
-				if ((chkname == "group") || (chkname == "groupend") ||  (chkObjid == "GSTR") || (chkObjid == "GEND")) {
-					if (document.makeform.mnhide.checked) {
-						alert("그룹메뉴에는 숨기기를 설정할 수 없습니다.")
-						document.makeform.mnhide.checked = false
-					}
-					if ((chkname == "group") ||  (chkObjid == "GSTR"))	{
-						start = j
-						end = grpnum("start", j)
-					}
-					else if ((chkname == "groupend") || (chkObjid == "GEND")) {
-						start = grpnum("end", j)
-						end = j
-					}
-
-					if ((start != null) && (end != null)){
-						frealname = "["+ chgStr +"]"
-						makeform.sellist.options[start].text = "-----" + frealname + " 시작-----"
-						makeform.sellist.options[end].text = "-----" + frealname + " 끝-------"
-					}
-				} else { */
-					//makeform.sellist.options[j].text = frealname + " " + chgStr
 					makeform.sellist.options[j].text = chgStr
 					if (document.makeform.mnhide.checked){
-					  makeform.sellist.options[j].text = makeform.sellist.options[j].text + "<숨기기>"
+					  makeform.sellist.options[j].text = makeform.sellist.options[j].text + "<HIDDEN>"
 						makeform.funchelp.value += getObjid(makeform.sellist.options[j].value) + "!:" + getObjseq(makeform.sellist.options[j].value) + "!:" + getfname(makeform.sellist.options[j].text) + "!:" + document.makeform.mncontents.value + "!#";
 					} else{
 						document.makeform.mnhide.checked = false
 						makeform.funchelp.value += getObjid(makeform.sellist.options[j].value) + "!:" + getObjseq(makeform.sellist.options[j].value) + "!:" + getfname(makeform.sellist.options[j].text) + "!:" + document.makeform.mncontents.value + "!#";
 					}
-				//}
 				isEdited = true
 				return true
 			}
@@ -298,12 +278,12 @@ th, td { border: 1px solid silver; padding:5px; }
 		var strAx = makeform.sellist.options[selind].value
 		var strA  = strAx.split("|");//$rsno|$home_url|$table_name
 		makeform.board_no.value = strA[0]; // $rsno
-		makeform.board_gubun_value.value = strA[1]; // $home_url
+		makeform.board_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
 		var category = "D02"
 		if (selind >= 0 && makeform.sellist.options[selind].text != "")
 		{
-			var grpname = strA[1]; //1:home_url
+			var grpname = strA[1];
 			if (( grpname == "group") || (grpname == "groupend") ||  (getObjid(grpname) == "GSTR") || (getObjid(grpname) == "GEND")) {
 				makeform.chgname.value = chkGroup(makeform.sellist.options[selind].text)
 				document.makeform.mncontents.value = ""
@@ -311,25 +291,22 @@ th, td { border: 1px solid silver; padding:5px; }
 			}
 			else {
 				makeform.chgname.value = getfname( makeform.sellist.options[selind].text )
-				var valname = strA[1]; //1:home_url
+				var valname = strA[1];
 				if (valname.length>0) {
 					var valnameA = valname.split("!:")
 					var strA = ""
 					strA += valnameA[0] + valnameA[1]
 				}
-				if ((valnameA[1] != 0) && (category != "V02")){    //기존의 메뉴일 경우
+				if( (valnameA[1] != 0) && (category != "V02")){ 
 					var chkobjid = eval("document.makeform." + strA + ".value")
 					document.makeform.mncontents.value = eval("document.makeform." + strA + ".value")
 				}
-				//선택된 항목의 이름이 (숨기기)되어있을 경우 checkbox의 V표시
 				var strChgnm = makeform.chgname.value
-				if (strChgnm.substring(strChgnm.indexOf("<")+1, strChgnm.indexOf(">")) == "숨기기"){
+				if( strChgnm.substring( strChgnm.indexOf("<")+1, strChgnm.indexOf(">")) == "HIDDEN"){
 					document.makeform.mnhide.checked = true
 					makeform.chgname.value = strChgnm.substring(0, strChgnm.indexOf("<"))
-				}
-				else{
+				} else{
 					document.makeform.mnhide.checked = false
-
 					makeform.chgname.value = getfname(makeform.sellist.options[selind].text)
 				}
 			}
@@ -348,9 +325,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			document.Board_List_Form.mode.value = "Update_func_run";
 			document.Board_List_Form.no.value = no;
 			document.Board_List_Form.infor.value = no;
-
-			document.Board_List_Form.pageno.value = document.makeform.page.value;
-
+			document.Board_List_Form.page.value = document.makeform.page.value;
 			var sel_r = eval( "document.Board_List_Form.grant_read_"+num+".value");
 			var sel_w = eval( "document.Board_List_Form.grant_write_"+num+".value");
 			var sel_m = eval( "document.Board_List_Form.grant_memo_"+num+".value");
@@ -360,9 +335,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			document.Board_List_Form.xmemo.value  = sel_m;
 			document.Board_List_Form.xskin.value  = sel_s;
 			document.Board_List_Form.xfile_size.value  = eval( "document.Board_List_Form.file_size_"+num+".value");
-
 			document.Board_List_Form.action='query_ok_new.php'; //'board_create_pop_ok.php';
-			//var res = confirm(" Do you want to process bulletin board properties? \n 게시판 속성을 변경하시겠습니까?\n[주의] 변경합니다. ");
 			var res = confirm(" Are you sure you want to change the bulletin board properties? ");
 			if (res) { document.Board_List_Form.submit(); }
 	}
@@ -370,23 +343,30 @@ th, td { border: 1px solid silver; padding:5px; }
 	{
 			makeform.infor.value = no;
 			makeform.no.value = no;
-
-			makeform.action='board_list3_update.php'; // old type set program
+			makeform.action='board_list3_update.php'; 
 			makeform.target='_blank';
 			makeform.submit();
 	}
 	function page_move($page){
 		document.makeform.page.value = $page;
 		document.makeform.action='board_list3.php';
-		document.makeform.line_cnt.value = document.Board_List_Form.line_cntS.value;
+		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
 		document.makeform.submit();
 	}
 	function Change_line_cnt( $line ){
 		document.makeform.page.value = 1;
-		document.makeform.line_cnt.value = $line;
+		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
 		document.makeform.action='board_list3.php';
 		document.makeform.submit();
 	}
+	function title_func(fld_code){       
+		document.makeform.page.value = 1;                
+		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
+		document.makeform.fld_code.value= fld_code;           
+		document.makeform.mode.value='title_func';           
+		document.makeform.action='board_list3.php';
+		document.makeform.submit();                         
+	} 
 //-->
 </script>
 
@@ -395,8 +375,14 @@ th, td { border: 1px solid silver; padding:5px; }
 
 <body>
 <?php
-		$cur='B';
-		include_once( KAPP_PATH_T_ . "/menu_run.php");
+	$cur='B';
+	include_once( KAPP_PATH_T_ . "/menu_run.php");
+
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ) $line_cnt = $_POST['line_cnt'];
+	else if( isset($_REQUEST['line_cnt']) && $_REQUEST['line_cnt']!='' ) $line_cnt = $_REQUEST['line_cnt'];
+	else $line_cnt	= 10;
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
 ?>
 <form name="makeform" method="post" action="query_ok_new.php"><!-- query_ok_new.php <- board_list3_ok.php -->
 			<input type="hidden" name="infor"       value="" >
@@ -414,6 +400,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			<input type='hidden' name='multy_menu_sel' >
 			<input type='hidden' name='page' value="<?=$page?>" >
 			<input type='hidden' name='line_cnt' value='' >
+		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
 
 <?php if( $H_ID && $H_LEV > 1 ) { // 로그인 일때만 그룹관리와 Url link 등록이 가능하도록한다. ?>
 		<!-- --------------------------------------------------------------------- -->
@@ -567,8 +554,6 @@ th, td { border: 1px solid silver; padding:5px; }
 	</tr>
 		<!-- popup end ------------------------------------------------- -->
 <?php
-	if( isset($_POST['line_cnt']) ) $line_cnt = $_POST['line_cnt'];
-	else $line_cnt	= 10;
 	$w = " ";
 	$w1= " ";
 	$w2= " ";
@@ -577,35 +562,26 @@ th, td { border: 1px solid silver; padding:5px; }
 	$start = 0;
 	$last = 0;
 
-	if( isset($_REQUEST['g_type']) ) $g_type = $_REQUEST['g_type'];
-	else $g_type= '';
-
-	if( $g_type =='mylist' && isset($sdata) ) { //	m_("111");
+	if( $g_type =='mylist' && isset($sdata) && $sdata!='' ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		$ls = $ls . " WHERE make_id='$H_ID' and name like '%$sdata%'  $w ";
-		$ls = $ls . " ORDER BY in_date desc, name ";
 	} else if( $g_type =='mylist' ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		$ls = $ls . " WHERE make_id='$H_ID' ";
-		$ls = $ls . " ORDER BY in_date desc, name ";
 	} else if( isset($sdata) ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		$ls = $ls . " WHERE name like '%$sdata%'  $w ";
-		$ls = $ls . " ORDER BY in_date desc, name ";
 	} else if( isset($g_type) ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		if( $g_type =='S'){
-			//$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' ";
 			$ls = $ls . " WHERE movie='5' ";
 		} else if( $g_type =='M') {
 			$ls = $ls . " WHERE movie='3' ";
 		} else if( $g_type =='I') {
 			$ls = $ls . " WHERE movie='4' ";
 		}
-		$ls = $ls . " ORDER BY in_date desc ";
 	} else {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-		$ls = $ls . " ORDER BY in_date desc, name ";
 	}
 	if( ($result = sql_query( $ls ) )==false ){
 		printf("Invalid query: %s\n", $ls);
@@ -613,7 +589,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		$total_count = 0;
 	} else {
 		$total_count = sql_num_rows($result);
-		if( $total_count ) $total_page  = ceil($total_count / $line_cnt);// total page
+		if( $total_count ) $total_page  = ceil($total_count / $line_cnt);
 		else $total_page  =1;
 		if( $page < 2) {
 			$page = 1;
@@ -632,7 +608,7 @@ th, td { border: 1px solid silver; padding:5px; }
 ?>
 <Form name='Board_List_Form' method='post' >
 	<input type='hidden' name='mode' >
-	<input type='hidden' name='pageno' >
+	<input type='hidden' name='page' value=<?=$page?>>
 	<input type='hidden' name='no' >
 	<input type='hidden' name='infor' >
 	<input type='hidden' name='xread' >
@@ -642,7 +618,7 @@ th, td { border: 1px solid silver; padding:5px; }
 	<input type='hidden' name='xfile_size' >
 		<tr>
 			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$P_count?>
-							&nbsp;&nbsp;&nbsp; Page line:<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt(this.options[this.selectedIndex].value);" style='height:20;'>
+							&nbsp;&nbsp;&nbsp; Page line:<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[this.selectedIndex].value);" style='height:20;'>
 								<option value='10'  <?php if( $line_cnt=='10' )  echo " selected " ?> >10</option>
 								<option value='30'  <?php if( $line_cnt=='30' )  echo " selected " ?> >30</option>
 								<option value='50'  <?php if( $line_cnt=='50')   echo " selected" ?>  >50</option>
@@ -654,9 +630,9 @@ th, td { border: 1px solid silver; padding:5px; }
 <thead  width='100%'>
 		<tr style='color:black;' align='center'>
 			<TH>no</TH>
-			<TH style='color:white;'>user</TH>
-			<TH style='color:white;'>info</TH>
-			<TH style='color:white;'>board name</TH>
+			<TH style='color:white;' onclick="title_func('make_id')">user</TH>
+			<TH style='color:white;' onclick="title_func('no')">info</TH>
+			<TH style='color:white;' onclick="title_func('name')">board name</TH>
 			<TH style='color:white;' title='data count'>data</TH>
 			<TH style='color:white;'>file size</TH>
 			<TH style='color:white;'>skin type</TH>
@@ -669,50 +645,21 @@ th, td { border: 1px solid silver; padding:5px; }
 
 <tbody width='100%'>
 <?php
-			if ( $g_type =='mylist' && isset($sdata) ) { 
-				$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-				$ls = $ls . " WHERE make_id='$H_ID' and name like '%$sdata%'  $w ";
-				$ls = $ls . " ORDER BY in_date desc, name ";
-				$ls = $ls . " $SQL_limit ";
-			} else if ( $g_type =='mylist' ) {
-				$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-				$ls = $ls . " WHERE make_id='$H_ID' ";
-				$ls = $ls . " ORDER BY in_date desc, name ";
-				$ls = $ls . " $SQL_limit ";
-			} else if ( isset($sdata) ) {
-				$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-				$ls = $ls . " WHERE name like '%$sdata%'  $w ";
-				$ls = $ls . " ORDER BY in_date desc, name ";
-				$ls = $ls . " $SQL_limit ";
-			} else if ( isset($g_type) ) {
-				$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-				if( $g_type=='S'){
-					//$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' "; // 1:gen, 2:std, 5:daum
-					$ls = $ls . " WHERE movie='5' "; // 1:gen, 2:std, 5:daum
-				} else if( $g_type=='M') {
-					$ls = $ls . " WHERE movie='3' ";
-				} else if( $g_type=='I') {
-					$ls = $ls . " WHERE movie='4' ";
-				}
-				$ls = $ls . " ORDER BY in_date desc ";
-				$ls = $ls . " $SQL_limit ";
+	if( $fld_code!='' ) $OrderBy = " order by $fld_code asc ";    
+	else $OrderBy	= " ORDER BY in_date desc, name ";
+	$ls = $ls . $OrderBy;
+	$ls = $ls . $SQL_limit;
 
-			} else{
-				$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-				$ls = $ls . " ORDER BY in_date desc, name ";
-				$ls = $ls . " $SQL_limit ";
-			}
-			if ( ($result = sql_query( $ls ) )==false ){
-				//exit;
-				$total_count = 0;
-			}
+	if ( ($result = sql_query( $ls ) )==false ){
+		$total_count = 0;
+	}
 
 	$line_no = 0;
-	$line = 0;
+	//$line = 0;
 	$i=1;
 	while ( $rs = sql_fetch_array( $result ) ) {
 		$rsno = $rs['no'];
-		$line = $line_cnt * $page + $i - $line_cnt;  // $line_cnt - 라인 출력 용.
+		//$line = $line_cnt * $page + $i - $line_cnt;  // $line_cnt - 라인 출력 용.
 
 		if ( $rs['grant_view'] == "1" ) $levR='Guest';
 		else if ( $rs['grant_view'] == "2" ) $levR='Member';
@@ -743,7 +690,7 @@ th, td { border: 1px solid silver; padding:5px; }
 ?>
 
 		  <tr>
-				<td style='background-color:#FFFFFF' align='center'><?=$line?></td>
+				<td style='background-color:#FFFFFF' align='center'><?=$i?></td>
 				<td style='background-color:#FFFFFF' align='center'><?=$rs['make_id']?></td>
 			<td style='background-color:#FFFFFF' align='center'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['no']?></a></td>
@@ -784,12 +731,12 @@ th, td { border: 1px solid silver; padding:5px; }
 			  <br>More than </td>
 			<td bgcolor="#FFFFFF" align="center">
 				<textarea name="grant_memo_<?=$line_no?>" class="input01" cols="30" rows="2"><?=$rs['memo']?></textarea></td>
-		<!-- <?php
-if( isset($H_ID) && $rs['make_id']==$H_ID){
+		<?php
+if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
 			<td bgcolor="#FFFFFF" align="center">
 				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
-				<input type='button' value="Set" onClick="Set_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='Set - It makes detailed setting of bulletin board. '>
+				<!-- <input type='button' value="Set" onClick="Set_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='Set - It makes detailed setting of bulletin board. '> -->
 				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '>
 			</td>
 
@@ -801,7 +748,7 @@ if( isset($H_ID) && $rs['make_id']==$H_ID){
 			</td>
 		<?php
 }
-		?> -->
+		?>
 		  </tr>
 		<?php
 			$line_no = $line_no +1; // 배열 변수 용.
@@ -828,11 +775,12 @@ if( isset($H_ID) && $rs['make_id']==$H_ID){
 </html>
 <?php
 function paging($link, $total, $page, $size){
-	global $line;
+	//global $line;
 	$page_num = 10;
 	if( !$total ) { return; }
 	$total_page	= ceil($total/$size);
-	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	if( $page>1 ) $first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	else $first_page = 0;
 	$last_page  = $first_page+($page_num-1);
 	if( $last_page > $total_page) $last_page = $total_page;
 

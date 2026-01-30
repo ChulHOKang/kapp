@@ -16,6 +16,16 @@
    else $mid ='';
    if( isset($_POST['mode']) ) $mode = $_POST['mode'];
    else $mode ='';
+   
+	if( isset($_REQUEST['start_click']) && $_REQUEST['start_click']== 'on' ) {
+		if( isset($_REQUEST['sys_pg']) && $_REQUEST['sys_pg']!='' ) {
+			$sys_pg = $_REQUEST['sys_pg'];
+			$ls = "update sys_level='mroot' and sys_subtit != 'main' ";
+			$ls = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 ";
+			$ls = $ls . "where sys_pg='$sys_pg' and sys_level='mroot' ";
+			$mq = sql_query($ls);
+		}
+   }
    if( $mode == 'SearchPG'){
 		$_SESSION['sys_pg'] = $_POST['sys_pg'];
 		$run_ = "tree_run.php?sys_pg=" . $_POST['sys_pg'] . "&open_mode=on". "&mid=".$mid;
@@ -25,12 +35,12 @@
 ?>
 <html> 
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/_tree_.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,app generator, web app, homepage, php, generator, source code, open source, app tool, soho, html, html5, css3, ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 
@@ -153,7 +163,6 @@ body {
 	function openNav() {
 	  document.getElementById("mySidenav").style.width = "250px";
 	}
-
 	function closeNav() {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
@@ -180,7 +189,6 @@ body {
 		document.click_run.data.value   = sys_menu; 
 		document.click_run.data1.value  = sys_submenu; 
 		document.click_run.target       = 'run_menu'; 
-
 		if( runtype =='update'){
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
 			document.click_run.submit();     
@@ -211,14 +219,9 @@ body {
 				document.click_run.target_.value='run_menu'; 
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
 				document.click_run.submit();  
-			}else if( pg.indexOf( 'https://')>=0 )  { 
+			} else if( pg.indexOf( 'https://')>=0 || pg.indexOf( 'http://')>=0 )  { 
 				document.click_run.target ='_blank';  
 				document.click_run.target_.value='_top'; 
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-				document.click_run.submit();     
-			}else if( pg.indexOf( 'http://')>=0 )  { 
-				document.click_run.target ='_blank'; 
-				document.click_run.target_.value= '_top';
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
 				document.click_run.submit();     
 			} else { 

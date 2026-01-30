@@ -414,7 +414,8 @@
 		echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";
 		exit;
 
-	} else if( $mode == "Update_func_run" ){ // board_list3.php
+	} else if( $mode == "Update_func_my" ){ // board_list3.php
+		$pg  = $_POST['pg'];
 		$grant_read  = $_POST['xread'];
 		$grant_write = $_POST['xwrite'];
 		$grant_memo  = $_POST['xmemo'];
@@ -422,13 +423,30 @@
 		$xno = $_POST['no'];
 		$page = $_POST['pageno'];
 		$xfile_size = $_POST['xfile_size'];
+			$query = "update {$tkher['aboard_infor_table']} set fileup = $xfile_size, movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
+			$mq = sql_query($query);
+			if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
+			else {
+				echo "sql: " . $query; exit;
+			}
+			echo "<meta http-equiv='refresh' content='0; URL=$pg?page=".$page."'>";
+			exit;
+	} else if( $mode == "Update_func_run" ){ // board_list3.php
+		$grant_read  = $_POST['xread'];
+		$grant_write = $_POST['xwrite'];
+		$grant_memo  = $_POST['xmemo'];
+		$skin        = $_POST['xskin'];
+		$xno = $_POST['no'];
+		$page = $_POST['page'];
+		$line_cnt = $_POST['line_cnt'];
+		$xfile_size = $_POST['xfile_size'];
 			$query = "update {$tkher['aboard_infor_table']} set fileup = '$xfile_size', movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
 			$mq = sql_query($query);
 			if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
 			else {
 				echo "sql: " . $query; exit;
 			}
-			echo "<meta http-equiv='refresh' content='0; URL=./board_list3.php?page=".$page."'>";
+			echo "<meta http-equiv='refresh' content='0; URL=./board_list3.php?page=".$page."&line_cnt=".$line_cnt."'>";
 			exit;
 
 	} else if( $mode == "insert_form_image") {
