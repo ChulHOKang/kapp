@@ -790,7 +790,7 @@ jQuery(document).ready(function ($) {
 		if( $sdata )  $g_nameX = "Search : " . $sdata;
 		else if( !$g_name ) $g_nameX = " page:" . $page . ", [count:" .$total. "]";
 		else $g_nameX = "Group: " . $g_name;
-		if( $H_ID ) $g_nameX = $g_nameX . ", level:" . $member['mb_level'] . "," .$member['mb_email'];
+		if( $H_ID && $H_ID!='' && isset($member['mb_email'])) $g_nameX = $g_nameX . ", level:" . $member['mb_level'] . "," .$member['mb_email'];
 ?>
 <table class='floating-thead' width='100%'>
 <thead  width='100%'>

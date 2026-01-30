@@ -111,12 +111,13 @@ $(function () {
 	if( isset($_REQUEST["title_nm"]) ) $title_nm	= $_REQUEST["title_nm"];
 	else $title_nm	= "";
 
-	if( isset($_POST["project_nmS"]) && $_POST["project_nmS"] != '' ) {
+	if( isset($_POST["project_nmS"]) && $_POST["project_nmS"] != '' ) { // none routin - change_g_name_func() 에서 처리
 		$project_nmS	= $_POST["project_nmS"];
 		$aa = explode(':', $_POST["project_nmS"]); 
 		$g_name = $aa[0];
 		$g_num = $aa[1];
 		$project_code = $g_num;
+		$g_name_code = $g_num; // g_name_code - ulink_ajax.php use
 		if( isset($aa[2])) $gg_user = $aa[2];
 		else $gg_user = $H_ID;
 		if( isset($aa[3])) $g_no = $aa[3];
@@ -296,6 +297,8 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		g_no = gg[3];
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.project_code.value = gg[1]; 
+		document.insert_form.g_name_code.value = gg[1]; // ulink_ajax.php use
+		//alert("g_name: "+g_name + ", gg[0]: " + gg[0]);//g_name: Project59:dao_1755421034:dao:4, gg[0]: Project59
 	}
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
 		document.insert_form.link_.value =link_;
@@ -402,7 +405,6 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		document.insert_form.submit();                         
 	} 
 	function g_type_func(gtype){
-		alert("gtype: " +gtype);
 		document.insert_form.g_type.value = gtype;
 		document.insert_form.page.value = 1;                
 		document.insert_form.mode.value='type_func';           
@@ -658,6 +660,12 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='group'		value='' > 
 
 	<input type='hidden' name='aboard_no'	value='' > 
+	<input type='hidden' name='gong_num' value='0'><!-- ulink_ajax.php use -->
+	<input type='hidden' id='g_name_code' name='g_name_code' value='<?=$g_name_code?>'><!-- ulink_ajax.php use -->
+
+	<input type='hidden' name='jong'	value='' > 
+	<input type='hidden' name='seqno'	value='' > <!-- call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) -->
+
 
 <div id="mypanel" class="ddpanel">
 <div id="mypanelcontent" class="ddpanelcontent">
@@ -763,14 +771,12 @@ jQuery(document).ready(function ($) {
 		$ttt = "mylist";
 		$tM = "mylist";
 ?>
-				<tr>
-				<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;
-					<img src='../icon/left_icon.gif'>
-					<!-- <a href="./kapp_ulink_list.php?g_type=<?=$tM?>" target='_self'>&nbsp; -->
-					<a onclick="g_type_func('<?=$tM?>')" target='_self'>&nbsp;
-					<font color='blue'><?=$ttt?></a>
-				</td>
-				</tr>
+		<tr>
+		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;
+			<img src='../icon/left_icon.gif'>
+			<a onclick="g_type_func('mylist')" target='_self'>mylist</a>
+		</td>
+		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
 		<!-- <a href="kapp_ulink_list.php?g_type=P" target='_self'>Program list</a> -->
@@ -831,10 +837,6 @@ jQuery(document).ready(function ($) {
 		echo " <th title='url Sort click' onclick=title_func('job_addr')>Link Url</th> ";
 		echo " <th title='type Sort click' onclick=title_func('jong')>type</th> ";
 	?>
-			<!-- <TH>Project</TH>
-			<TH>Title</TH>
-			<TH>Link Url</TH>
-			<TH>type</TH> -->
 			<TH>View</TH>
 			<TH title='date Sort click' onclick="title_func('up_day')">date</TH>
 			<!-- <TH>lev</TH>-->
@@ -913,7 +915,10 @@ jQuery(document).ready(function ($) {
 				<tr valign="middle" align='left' > 
 				  <td  bgcolor='black' title='<?=$user_id?>' style="width:1%;"><img src='<?=$icon?>' style="width:25px;"></td>
 				  <td  bgcolor='black' style="width:15%;color:<?=$t_color?>;"><?=$sys_group?></td>
-<?php if( $rs['job_name']=='Note') { ?>
+<?php
+	// 여기서 등록한 데이터 'Note', 'U' - 타이틀 클릭시에 수정 할 수 있게 한다. contents_upd()
+	if( $rs['job_name']=='Note') { 
+?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_club_url?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;"><?=$rs_club_url?></a></td>
@@ -946,7 +951,7 @@ $last_page = $first_page+($page_num-1);
 if($last_page > $total_page) $last_page = $total_page;
 $prev = $first_page-1;
 
-if($page > $page_num) 
+if( $page > $page_num) 
 	echo"[<a onclick=\"javascript:page_func($prev, '$search', '$sdata', '$g_name', '$g_type');\" >Prev</a>] ";
 //	echo"[<a href=".$PHP_SELF."?page=".$prev."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Prev</a>] ";
 for( $i = $first_page; $i <= $last_page; $i++){
@@ -956,8 +961,8 @@ for( $i = $first_page; $i <= $last_page; $i++){
 	//else echo"[<a style='font-size:20px;font-weight:bold;' href=".$PHP_SELF."?page=".$i."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >".$i."</a>]";
 }
 $next = $last_page+1;
-if($next <= $total_page) 
-	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', $g_type);\" >Next</a>]";
+if( $next <= $total_page) 
+	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', '$g_type');\" title='page next:$next'>Next</a>]";
 	//echo" [<a href=".$PHP_SELF."?page=".$next."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Next</a>]";
 ?>
 	</td>
