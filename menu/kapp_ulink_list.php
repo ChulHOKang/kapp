@@ -587,30 +587,29 @@ jQuery(document).ready(function ($) {
 			$sdata = $title_nm;
 		}
 		if ( $g_type=='mylist' && isset($sdata) && $sdata != ''  ) {
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
 		} else if ( $g_type=='mylist' ) {
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
 		} else if ( $g_type=='M' ) { 
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and job_group='menu' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and job_group='menu' ";
 		} else if ( $g_type=='T' ) { 
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='T' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='T' ";
 		} else if ( $g_type=='A' ) {
-				//$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='G' or jong='A' or jong='F' ";
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='A' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='A' or jong='G' or jong='F' ";
 		} else if ( $g_type=='U' ) { // Note - U, N
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='U' or jong='N' or jong='D' or jong='B'";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='U' or jong='N' or jong='D' or jong='B'";
 //		} else if ( $g_type=='D' ) { // Note D, B:webeditor content
-//				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='D' or jong='B' ";
+//				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='D' or jong='B' ";
 		} else if ( $g_type=='P' ) {
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='p' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='p' ";
 		} else if ( isset($g_name) && $g_name != '' && isset($sdata) && $sdata != '' ){ 
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
 		} else if ( isset($g_name) && $g_name != '' ) {
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') ";
 		} else if ( isset($sdata) && $sdata != '' ) {
-				$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
 		} else{
-			$ls = "SELECT job_addr from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
+			$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
 		}
 
 		$result = sql_query( $ls );
@@ -726,7 +725,9 @@ jQuery(document).ready(function ($) {
 				<!-- <input type='button'  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?> -->
 <?php		} ?>			
 				<input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" />
-				<!-- <input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'> --><br> User:<?=$H_ID?>
+				<!-- <input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'> -->
+				<br> User:<?=$H_ID?> - If you want to change the registered link data, you can change the data by clicking the Title.
+				<!-- 등록한 링크 자료를 변경하고자 할 때 Title 을 클릭하면 자료를 변경 할 수 있다. -->
 <?php } ?> 
 
 		</td>
@@ -845,7 +846,7 @@ jQuery(document).ready(function ($) {
 </thead>
 <tbody width='100%'>
 		<?php
-		if ( $g_type=='mylist' && isset($sdata) && $sdata != ''  ) {
+		/*if ( $g_type=='mylist' && isset($sdata) && $sdata != ''  ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
 		} else if ( $g_type=='mylist' ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
@@ -870,7 +871,7 @@ jQuery(document).ready(function ($) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
 		} else{
 			$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
-		}
+		}*/
 		
 		if( $fld_code!='' ) $OrderBy = " order by $fld_code, up_day desc, user_name ";    
 		else $OrderBy	= " ORDER BY up_day desc, user_name ";
@@ -892,24 +893,24 @@ jQuery(document).ready(function ($) {
 			$aboard_no  = $rs['aboard_no'];
 			$memo       = $rs['memo'];
 			$lev = $rs['job_level'];
+			$vcnt= number_format($rs['view_cnt']);
 			$url_ = substr($rs_job_addr, 0, 60);
 			$td_bg = '#000000';
 
 			if( $gubun == 'T' )	{
 				$icon='../icon/berry.png'; $gubunT='T-Berry';$t_color='white';	$i_tit='T : Link URL';
 			} else if( $gubun == 'B' or    $gubun == 'D' or $rs['job_group'] == 'DOC' ){ 
-				$icon='../icon/seed.png';  $gubunT='B-Seed';$t_color='cyan';			$i_tit='B, D or DOC : Document';
+				$icon='../icon/seed.png';  $gubunT='B-Seed';$t_color='cyan';			$i_tit='B, D, DOC';
 			} else if( $gubun == 'G' )	{ 
-				$icon='../icon/pizza.png'; $gubunT='D-Pizza';$t_color='cyan';			$i_tit='G : Tree Document : Ebook';
+				$icon='../icon/pizza.png'; $gubunT='G-Pizza';$t_color='cyan';			$i_tit='G : Tree Board';
 			} else if( $gubun == 'P' )	{// Program List
 				$icon='../icon/pcman1.png'; $gubunT='Program';$t_color='cyan';	$i_tit='P : Program';
 			}
 			else if( $gubun=='F' ){ $icon='../icon/land.png'; $gubunT='Land';$t_color='green';$i_tit='Board';}
-			else if( $gubun=='G' ){ $icon='../icon/ship.png'; $gubunT='Ship';$t_color='green';$i_tit='Tree Board';}
-			else if( $gubun=='A' ){ $icon='../icon/ship.png'; $gubunT='A-board';$t_color='yellow'; $i_tit='A: T-ABoard';}
+			else if( $gubun=='A' ){ $icon='../icon/ship.png'; $gubunT='A-board';$t_color='cyan'; $i_tit='A: T-ABoard';}
 			else if( $gubun=='M' ){ $icon='../icon/land.png'; $gubunT='BOM-Main';$t_color='yellow';$i_tit='M: Tree-Main';}
 			else if( $gubun=='N' ){ $icon='../icon/leaf.png'; $gubunT='BOM-Note';$t_color='yellow';$i_tit='N: Tree-Note';}
-			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='white'; $i_tit='U: Link Note';}
+			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='blue'; $i_tit='U: Link Note';}
 			else	$t_color='grace';
 ?>
 				<tr valign="middle" align='left' > 
@@ -928,8 +929,8 @@ jQuery(document).ready(function ($) {
 				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr ?></a></td>
 <?php }?>
 				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" title="<?=$i_tit ?>"><?=$gubun?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:8px;" ><?=$rs['view_cnt']?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:80px;" ><?=$rs['up_day']?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" ><?=$vcnt?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:80px;text-align:center;" ><?=$rs['up_day']?></td>
 				</tr> 
 		<?php
 			}	//-------- Loop
@@ -951,6 +952,7 @@ $last_page = $first_page+($page_num-1);
 if($last_page > $total_page) $last_page = $total_page;
 $prev = $first_page-1;
 
+/*
 if( $page > $page_num) 
 	echo"[<a onclick=\"javascript:page_func($prev, '$search', '$sdata', '$g_name', '$g_type');\" >Prev</a>] ";
 //	echo"[<a href=".$PHP_SELF."?page=".$prev."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Prev</a>] ";
@@ -964,6 +966,16 @@ $next = $last_page+1;
 if( $next <= $total_page) 
 	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', '$g_type');\" title='page next:$next'>Next</a>]";
 	//echo" [<a href=".$PHP_SELF."?page=".$next."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Next</a>]";
+*/
+if( $page > $page_num) 
+	echo"[<a onclick=\"javascript:page_func($prev, '$search', '$sdata', '$g_name', '$g_type');\" >Prev</a>] ";
+for( $i = $first_page; $i <= $last_page; $i++){
+	if( $page == $i) echo" <b>$i</b> "; 
+	else echo"[<input type='button' value='[$i]' style='font-size:20px;font-weight:bold;' onclick=\"javascript:page_func($i, '$search', '$sdata', '$g_name', '$g_type');\" >";
+}
+$next = $last_page+1;
+if( $next <= $total_page) 
+	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', '$g_type');\" title='page next:$next'>Next</a>]";
 ?>
 	</td>
   </tr>
