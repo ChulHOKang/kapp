@@ -368,7 +368,7 @@
 		 <table border=0 cellspacing=0 cellpadding=0 width=600 height=400>
 			<tr>
 			<!-- <td width=173><img src=ssamzie_01.gif></td> -->
-			<td width=351 background=ssamzie_02.gif align=center valign=top><br>
+			<td width='351' background='ssamzie_02.gif' align='center' valign='_self'><br>
          <table cellspacing=0 cellpadding=1 bordercolorlight='#cccccc' bordercolordark='#ffffff' border=1 width=590>
          <tr>
          <!-- <form name='pay' onSubmit='return paychecks()' method='post' >  -->
