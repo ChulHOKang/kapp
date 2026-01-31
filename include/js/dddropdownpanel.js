@@ -3,9 +3,9 @@
 //** March 23rd, 09' v1.01- Arrow images now preloaded
 
 function ddpanel(setting){
-	setting.dir="down" //initial state of panel (up="contracted")
-	if (setting.stateconfig.persiststate && ddpanel.getCookie(setting.ids[0])=="down"){
-		setting.dir="down"
+	setting.dir="up" //initial state of panel (up="contracted") /* - down kan */
+	if (setting.stateconfig.persiststate && ddpanel.getCookie(setting.ids[0])=="up"){ /* - down kan */
+		setting.dir="up"; /* - down kan */
 	}
 	if (setting.dir=="up"){ //if "up", output CSS to hide panel contents
 		document.write('<style type="text/css">\n')
