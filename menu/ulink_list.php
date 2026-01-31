@@ -620,9 +620,9 @@ jQuery(document).ready(function ($) {
 
 
 <div id="mypanel" class="ddpanel">
-<div id="mypanelcontent" class="ddpanelcontent">
-<table border='0' bgcolor='#cccccc' width='100%'>
-<tr>
+	<div id="mypanelcontent" class="ddpanelcontent">
+	<table border='0' bgcolor='#cccccc' width='100%'>
+	<tr>
 		<td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; Project</td>
 		<td bgcolor='#ffffff'>&nbsp; 
 			<select name='sel_g_name' onchange="change_g_name_func(this.value);" title="select Project">
