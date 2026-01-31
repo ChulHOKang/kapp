@@ -23,7 +23,10 @@
 	$payinfo  = '';
 	$paymoney = 0;
 	$memo = '';
-	$paydate = date("Y-m-d");
+	//$paydate = date("Y-m-d");
+	if( isset($_REQUEST['paydate']) ) $paydate = $_REQUEST['paydate'];
+	else if( isset($_POST['paydate']) ) $paydate = $_POST['paydate'];
+	else $paydate = date("Y-m-d");
 	if( !$bmode){  // 입력폼 모드..
    		$bmode = "insert";
    	    $submit_value = "Insert";
