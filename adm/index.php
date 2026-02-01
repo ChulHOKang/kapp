@@ -173,6 +173,9 @@ $sys_subtitS = 'Admin K-App';
 
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='kapp_table_list_adm.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Table List</a></li>
 
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/album_view_db_adm.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Album List</a></li>
+	
+
 	<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='../setup/DB_Table_CreateA.php' target='run_menu' title='Setup Table of KAPP System'>a.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Setup Table</a></li>
 
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
