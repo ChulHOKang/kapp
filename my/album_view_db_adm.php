@@ -39,7 +39,7 @@
 ?>
 			<div class="grid">
 <?php
-				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where userid='$H_ID' order by view_no, no";
+				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where group_name!='main' and group_name!='shop' order by userid, view_no, no";
 				if ( ($result = sql_query( $SQL ) )==false )
 				{
 				  printf("Invalid query: %s ",  $SQL);
@@ -49,15 +49,17 @@
 					while( $row = sql_fetch_array($result)  ) {
 						$num++;
 						$group_name = $H_ID;//$row['group_name'];
+						$userid = $row['userid'];
 						$jpg_file = $row['jpg_file'];
-						$f_path = KAPP_URL_T_ . "/file/" . $H_ID . "/" . $row['jpg_file'];
+						$f_path = KAPP_URL_T_ . "/file/" . $userid . "/" . $row['jpg_file'];
+						//$f_path = KAPP_URL_T_ . "/file/" . $H_ID . "/" . $row['jpg_file'];
 						//$f_path = KAPP_TATH_T_ . "/file/" . $H_ID . "/" . $row['jpg_file'];
 						$jpg_name = $row['jpg_name'];
 						$jpg_memo = $row['jpg_memo'];
 						echo "<div class='element-item $group_name pop_$num pop' data-category='$group_name'>
 								<a href=\"javascript:void(0);\"  >
-								<span class='img'  title='db:$f_path'><img src='$f_path' width='300' height='200' ></span>
-								<span class='subj'>$jpg_name</span>
+								<span class='img' ><img title='$userid, db:$f_path' src='$f_path' width='300' height='200' ></span>
+								<span class='subj' title='$userid, db:$f_path' >$jpg_name</span>
 								<span class='txt'>$jpg_memo</span>
 								</a>
 							  </div>";
@@ -66,7 +68,7 @@
 ?>
 			</div>
 <?php
-		include "./view_db_my.php"; //click and run page
+		include "./view_db_all.php"; //click and run page
 ?>
  <script type="text/javascript">
 	$('.pop').click(function(){
