@@ -17,13 +17,15 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="../logo/logo25a.jpg">
-<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> 
-<meta name='keywords' content='appgenerator, tee menu, app generator, app make, app maker, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> 
-<meta name='description' content='appgenerator, tee menu, app generator, app make, app maker, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 '> 
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
+
 <style>  
 .HeadTitle01AX{display:inline-block;margin:0 1px;height:40px;line-height:0px;padding:0 20px;font-size:22px;background:#d01c27;color:#fff;border-radius:5px;}  
 .HeadTitle01AX a.on{background:#d01c27;color:#000;}  
@@ -128,7 +130,6 @@ function fontf() {
 	}
 </script>
 <link rel='stylesheet' href='../include/css/kancss.css' type='text/css'>
-</head>
 
 <BODY bgproperties='FIXED' bgcolor="#000000" text="#ffffff" leftmargin='0' oncontextmenu='return false' ondragstart="return false" onselectstart="return false" onload="sys_bom.sys_subtit.focus()">
 <?php
@@ -168,7 +169,7 @@ function fontf() {
 			<b><span style="background-color:black;color:<?=$fontcolor?>;">Title</span></b></td>
 		<td style="background-color:black;ime-mode:active;height:30;">  
 			<input type='text' name='sys_subtit' size='30' maxlength='30' style="background-color:black;ime-mode:active;height:30;color:white">
-			&nbsp;&nbsp;&nbsp;<span style='color:yellow;'>System menu</span>&nbsp;
+			&nbsp;&nbsp;&nbsp;<span style='color:yellow;' title='Print at the top.'>System menu</span>&nbsp;
 			<input type='checkbox' id='sys_type' name='sys_type' value='' onclick="sys_type_check()" >
 		</td> 
 	</tr>

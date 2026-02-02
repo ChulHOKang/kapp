@@ -72,15 +72,16 @@
 	}
 ?>
 <html> 
-<head> 
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<head>
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
+
 <body bgcolor='black'> <font color='yellow'>
 
 <script language=javascript> 
@@ -303,12 +304,12 @@ for ( $i=1, $j=0; $i <= 13; $i++, $j++ ) {
 	//} else {
 	//          $sw = 1;
 	//}
-	$root_chk = $root_chk;
-	$record_cnt = $recordcount;		
+	//$root_chk = $root_chk;
+	//$record_cnt = $recordcount;		
 ?>
-   	<input type="hidden" name="root_chk"	value="<?=$root_chk?>">
+   	<!-- <input type="hidden" name="root_chk"	value="<?=$root_chk?>">
    	<input type="hidden" name="record_cnt"  value="<?=$record_cnt?>">
-
+ -->
 </form>
 </body>
 </html>

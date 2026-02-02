@@ -99,6 +99,7 @@
 	}
 	function page_func( $page){
 		document.sys_form.page.value = $page;
+		document.sys_form.target  = "_self";
 		document.sys_form.action='index.php';
 		document.sys_form.submit();
 	}
@@ -109,6 +110,21 @@
 		document.sys_form.action='index.php';
 		document.sys_form.submit();                         
 	} 
+	//$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr
+	function list_click_run_func( $sys_pg, $subtit, $open_mode, $mid, $sys_jong, $num, $job_addr ){
+		document.sys_form.sys_pg.value  = $sys_pg;
+		document.sys_form.subtit.value  = $subtit;
+		document.sys_form.open_mode.value = $open_mode;
+		document.sys_form.mid.value		= $mid;
+		document.sys_form.sys_jong.value = $sys_jong;
+		document.sys_form.num.value = $num;
+		document.sys_form.job_addr.value = $job_addr;
+		document.sys_form.start_click.value = 'on';
+
+		document.sys_form.action='./tree_run.php';
+		document.sys_form.target  = "_blank";
+		document.sys_form.submit();
+	}
 </script>
 
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
@@ -286,18 +302,28 @@ if( $total > 0 ) {
 	$query = $query . $limit;
 	$result = sql_query( $query);
 } else $total = 0;
+
+//( $sys_pg, $subtit, $open_mode, $mid, $sys_jong, $num, $job_addr )
 ?>
 
 <body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
 <center>
 	<FORM method='post' name='sys_form' >
 		<input type='hidden' name='Hid' value='<?=$H_ID?>' > 
-		<input type='hidden' name='mid' value='<?=$mid?>' > 
-		<input type='hidden' name='sys_pg'	 value='<?=$sys_pg?>' > 
 		<input type='hidden' name='run_mode' value='' > 
 		<input type='hidden' name='page' value='<?=$page?>' > 
 		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
 		<input type='hidden' name='mode' value='<?=$mode?>' > 
+
+		<input type='hidden' name='sys_pg'	 value='<?=$sys_pg?>' > 
+		<input type='hidden' name='subtit'	 value='' > 
+		<input type='hidden' name='open_mode' value='' > 
+		<input type='hidden' name='mid' value='<?=$mid?>' > 
+		<input type='hidden' name='sys_jong' value='' > 
+		<input type='hidden' name='num' value='' > 
+		<input type='hidden' name='job_addr' value='' > 
+		<input type='hidden' name='start_click' value='' > 
+
 
 	<!-- <div class="header"> -->
 <?php
@@ -347,7 +373,7 @@ if( $result ){
 		$mid	= $line['sys_userid'];
 		$sys_pg = $line['sys_pg'];
 		$up_day = $line['up_day'];
-		$runM = './' . $mid . '/' . $sys_pg . '_menu.html';
+		$seqno_	= $line['seqno'];	//$runM = './' . $mid . '/' . $sys_pg . '_menu.html';
 		$tit_gubun_ = $line['tit_gubun'];
 		if( $line['tit_gubun']=='G') { // board
 			$sys_jong = 'board';
@@ -360,7 +386,7 @@ if( $result ){
 			$run_mode = 'cratree_book_remake';
 			$iconX="<img src='../icon/_board_.png' width='20' height='15' title='tit_gubun: $tit_gubun_ '>";
 		} else if( $line['tit_gubun']=='T'  ) { // tree
-			$sys_jong = 'link';
+			$sys_jong = 'note'; //$sys_jong = 'link';
 			$bb='#99CCFF';
 			$run_mode = 'cratree_remake';
 			$iconX="<img src='../icon/pizza.png' width='20' height='15' title='tit_gubun: $tit_gubun_ '>";
@@ -370,7 +396,7 @@ if( $result ){
 			$run_mode = 'cratree_remake';
 			$iconX="<img src='../icon/_tree_.png' width='20' height='15' title='M tit_gubun: $tit_gubun_ '>";
 		} else {
-			$sys_jong = 'link';
+			$sys_jong = 'note'; //$sys_jong = 'link';
 			$run_mode = 'cratree_remake';
 			$iconX="<img src='../icon/pizzaX.png' width='20' height='15' title='extra : $tit_gubun_ '>";
 		}
@@ -379,13 +405,21 @@ if( $result ){
 		$view = number_format($line['view_cnt']);
 		$job_addr='contents_view_menuD.php?num=' . $num;
 		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr.'&start_click=on';
+
 		if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
 			echo "
 			<tr>
 				<td align='center'>$ln $iconX</td>
 				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td><a href='$run' target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a></td>
+				<td>
+				<!-- <a href='$run' target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a> -->
+				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."' >".$line['sys_subtit']."</a>
+				
+				</td>
+				<td align='center'>
+				<!-- <a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a> -->
+				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a>
+				</td>
 				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td align='center'>$view</td>
@@ -396,8 +430,14 @@ if( $result ){
 			<tr>
 				<td align='center'>$ln $iconX</td>
 				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td><a href='$run' target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:cyan' title='run: $run'>Popup</a></td>
+				<td>
+				<!-- <a href='$run' target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a> -->
+				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a>
+				</td>
+				<td align='center'>
+				<!-- <a href='$run' target='_blank' style='color:cyan' title='run: $run'>Popup</a> -->
+				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:cyan' title='run: $run'>Popup</a>
+				</td>
 				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td align='center'>$view</td>

@@ -54,7 +54,13 @@
 <script language="javascript">
 <!--
 	function submit_run( pg , target_ , jong, sys_pg, url_T , url_, sys_board_num) {
-				//alert("pg:" + pg + " ---url_: " +url_); // pg:undefined ---url_: https://appgenerator.net
+
+				//alert("pg:" + pg + " ---url_: " +url_);
+				//pg:contents_view_menuD.php?num=dao1639446967 ---url_: https://ailinkapi.com
+				//pg:contents_view_menuD.php?num=dao_1756603979 ---url_: https://ailinkapi.com
+				//pg: ---url_: https://ailinkapi.com
+				// pg:undefined ---url_: https://appgenerator.net
+				//pg: ---url_: https://ailinkapi.com
 				//pg:http:// ---url_: https://appgenerator.net
 			if( pg == 'http://' || pg == 'https://' ) {
 				window.close();

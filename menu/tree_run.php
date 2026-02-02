@@ -12,15 +12,18 @@
 	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
 	else $H_EMAIL = '';
 	connect_count($host_script, $H_ID, 0,$referer);	// log count
-   if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
-   else $mid ='';
-   if( isset($_POST['mode']) ) $mode = $_POST['mode'];
-   else $mode ='';
-   
-	if( isset($_REQUEST['start_click']) && $_REQUEST['start_click']== 'on' ) {
-		if( isset($_REQUEST['sys_pg']) && $_REQUEST['sys_pg']!='' ) {
-			$sys_pg = $_REQUEST['sys_pg'];
-			$ls = "update sys_level='mroot' and sys_subtit != 'main' ";
+
+	//$sys_pg, $subtit, $open_mode, $mid, $sys_jong, $num, $job_addr 
+	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
+	else $mid ='';
+	if( isset($_POST['sys_pg']) ) $sys_pg = $_POST['sys_pg'];
+	else $sys_pg ='';
+
+	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
+	else $mode ='';
+	if( isset($_POST['start_click']) && $_POST['start_click']== 'on' ) {
+		if( isset($_POST['sys_pg']) && $_POST['sys_pg']!='' ) {
+			$sys_pg = $_POST['sys_pg'];
 			$ls = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 ";
 			$ls = $ls . "where sys_pg='$sys_pg' and sys_level='mroot' ";
 			$mq = sql_query($ls);
@@ -169,26 +172,18 @@ body {
 	function About(no) {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
-	function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_, sys_board_num){ 
-		runtype = document.click_run.runtype.value;
-		document.click_run.seqno.value = seqno;
-		document.click_run.sys_board_num.value = sys_board_num;
-		document.click_run.sys_menu.value    =sys_menu;   
-		document.click_run.sys_submenu.value =sys_submenu;   
-		document.click_run.num.value         =num;   
-		document.click_run.pg.value          =pg;   
-		document.click_run.jong.value        =jong;  
+
+	//echo "submit_runB('" . $_POST['sys_pg'] . "', '".$mid."', '" . $sys_jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$_POST['job_addr']."' );";
+	// no use ---- 2026-02-02
+	function submit_runB( sys_pg, mid, sys_jong, sys_pg, kapp_url_t, kapp_url, job_addr){ 
+		pg = job_addr;
+		document.click_run.pg.value=pg;   
+		document.click_run.link_.value=pg;   
+		document.click_run.num.value=pg;   
 		document.click_run.title_.value      =title_;   
-		document.click_run.link_.value       =link_;
-		document.click_run.mid.value         = mid; 
-		document.click_run.sys_pg.value      = sys_pg; 
-		document.click_run.sys_pg_root.value = sys_pg; 
-		document.click_run.mode.value        = 'rowlevel';
-		document.click_run.make_type.value   = 'booktreeupdateM2';
-		document.click_run.m_type.value      = 'booktreeupdateM2';
-		document.click_run.data.value   = sys_menu; 
-		document.click_run.data1.value  = sys_submenu; 
-		document.click_run.target       = 'run_menu'; 
+		alert("submit_runB - pg: "+ pg);
+		//submit_runB - pg: contents_view_menuD.php?num=dao_1756603979
+		runtype = document.click_run.runtype.value;
 		if( runtype =='update'){
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
 			document.click_run.submit();     
@@ -197,7 +192,8 @@ body {
 			document.click_run.submit();     
 		} else if( runtype =='' || runtype=='run'){
 			if( pg == 'http://' || pg == 'https://' )  { 
-				alert("pg: "+pg + ", title_: " + title_);
+				//alert("pg: "+pg + ", title_: " + title_);
+				//pg: http://, title_: C11-3
 				return;
 			}else if( pg.indexOf( 'contents_view_menuD.php')>=0 )  { 
 				document.click_run.target='run_menu';  
@@ -221,12 +217,83 @@ body {
 				document.click_run.submit();  
 			} else if( pg.indexOf( 'https://')>=0 || pg.indexOf( 'http://')>=0 )  { 
 				document.click_run.target ='_blank';  
-				document.click_run.target_.value='_top'; 
+				document.click_run.target_.value='_blank'; 
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
 				document.click_run.submit();     
 			} else { 
 				document.click_run.target ='run_menu'; 
-				document.click_run.target_.value='_self'; 
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();     
+			}
+			document.getElementById("mySidenav").style.width = "0px";
+		} else {
+			alert("--- ERROR");
+			return false;
+		}
+	}
+
+	function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_, sys_board_num){ 
+		runtype = document.click_run.runtype.value;
+		document.click_run.mid.value         = mid; 
+		document.click_run.seqno.value = seqno;
+		document.click_run.sys_board_num.value = sys_board_num;
+		document.click_run.sys_menu.value    =sys_menu;   
+		document.click_run.sys_submenu.value =sys_submenu;   
+		document.click_run.num.value         =num;   
+		document.click_run.pg.value          =pg;   
+		document.click_run.jong.value        =jong;  
+		document.click_run.title_.value      =title_;   
+		document.click_run.link_.value       =link_;
+		document.click_run.sys_pg.value      = sys_pg; 
+		document.click_run.sys_pg_root.value = sys_pg; 
+		document.click_run.mode.value        = 'rowlevel';
+		document.click_run.make_type.value   = 'booktreeupdateM2';
+		document.click_run.m_type.value      = 'booktreeupdateM2';
+		document.click_run.data.value   = sys_menu; 
+		document.click_run.data1.value  = sys_submenu; 
+		document.click_run.target       = 'run_menu'; 
+		//alert("mid: " + mid + ", sys_menu: " + sys_menu);
+		if( runtype =='update'){
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
+			document.click_run.submit();     
+		} else if( runtype =='insert'){
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
+			document.click_run.submit();     
+		} else if( runtype =='' || runtype=='run'){
+			if( pg == 'http://' || pg == 'https://' )  { 
+				//alert("pg: "+pg + ", title_: " + title_); //pg: http://, title_: B12
+				return;
+			}else if( pg.indexOf( 'contents_view_menuD.php')>=0 )  { 
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();  
+			} else if( pg.indexOf( target_ )>=0 )  { 
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= pg; 
+				document.click_run.submit();  
+			}else if( pg.indexOf( 'tkher_program_data_list.php')>=0 )  { 
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();  
+			}else if( pg.indexOf( 'index_bbs.php?infor')>=0 )  {
+				document.click_run.target='run_menu';  
+				document.click_run.target_.value='run_menu'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();  
+			} else if( pg.indexOf( 'https://')>=0 || pg.indexOf( 'http://')>=0 )  { 
+				document.click_run.target ='_blank';  
+				document.click_run.target_.value='_blank'; 
+				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
+				document.click_run.submit();     
+			} else { 
+				//alert("--- mid: " + mid + ", runtype: " + runtype);
+				//return;
+				document.click_run.target ='run_menu'; 
+				document.click_run.target_.value='run_menu'; 
 				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
 				document.click_run.submit();     
 			}
@@ -237,7 +304,7 @@ body {
 		}
 	}   
 
-	function arunA( $id, $mid, $URL_T, runtype ){
+	function arunA( $id, $mid, $URL_T, runtype, $sys_pg ){
 
 		var selectIndex = document.click_run.menu_change.selectedIndex;
 		var	tmpValue = document.click_run.menu_change[selectIndex].value;
@@ -250,21 +317,39 @@ body {
 		document.click_run.make_type.value   ='booktreeupdateM2'; 
 		document.click_run.m_type.value   ='booktreeupdateM2'; 
 		if( runtype=='insert' ){		//alert("Register at the root level. If different, click the location!");
+			document.click_run.mid.value = $mid; 
+			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.mode.value    ='mroot'; 
 			document.click_run.runtype.value = 'insert';
 			document.click_run.target ='run_menu';  
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
 			document.click_run.submit();     
-		} else if( runtype=='update' ){		//alert("Register at the root level. If different, click the location!");// You do not have permission to work.
+		} else if( runtype=='update' ){
+			//alert("Register at the root level. If different, click the location!");// You do not have permission to work.
+			document.click_run.mid.value = $mid; 
+			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.mode.value    ='mroot'; 
 			document.click_run.runtype.value = 'update';
 			document.click_run.target ='run_menu';  
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
 			document.click_run.submit();     
 		} else if( runtype=='run' ){
+			//alert("run mode");
+			document.click_run.mid.value = $mid; 
+			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.runtype.value = 'run';
+			document.click_run.target ='run_menu';
+			document.click_run.action = '<?=KAPP_URL_T_?>/menu/index.php';
+			document.click_run.submit();
+			click_run.menu_change[0].value   = 'list';
+			click_run.menu_change[0].text    = 'Tree list';
+			document.getElementById('click_run'+0).value = 'list';
+			document.getElementById('click_run'+0).innerHTML = 'Tree list'; 
+			document.getElementById("mySidenav").style.width = "0";
 		} else if( runtype=='list' ){
 			document.click_run.target ='run_menu';
+			document.click_run.mid.value = $mid; 
+			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/index.php';
 			document.click_run.submit();
 			click_run.menu_change[0].value   = 'list';
@@ -274,6 +359,8 @@ body {
 			document.getElementById("mySidenav").style.width = "0";
 		} else if( runtype=='design' ){
 			//alert("Register at the root level. If different, click the location!");
+			document.click_run.mid.value = $mid; 
+			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.runtype.value = 'design'; 
 			document.click_run.make_type.value = 'booktreeupdateM2'; 
 			document.click_run.target='run_menu';
@@ -285,6 +372,7 @@ body {
 			document.getElementById('click_run'+0).innerHTML = 'Tree design';
 			document.getElementById("mySidenav").style.width = "0";
 		} else {
+			document.click_run.mid.value = $mid; 
 			document.click_run.runtype.value = 'run'; 
 		}
 	}
@@ -295,7 +383,7 @@ body {
 		document.click_run.sys_pg.value = pg[0];
 		document.click_run.treetype.value = 'B';
 		document.click_run.mode.value='SearchPG';
-		document.click_run.target='_self';
+		document.click_run.target='_top';
 		document.click_run.action='<?=KAPP_URL_T_?>/menu/tree_run.php';
 		document.click_run.submit();
 	    document.getElementById("mySidenav").style.width = "250px";
@@ -304,11 +392,11 @@ body {
 </head> 
 <body oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white; overflow:hidden; margin-bottom: 30px;'> 
 <?php
-if( isset($_REQUEST['sys_subtitS']) ) $sys_subtitS = $_REQUEST['sys_subtitS'];
-else $sys_subtitS = 'App Generator';
+if( isset($_POST['sys_subtitS']) ) $sys_subtitS = $_POST['sys_subtitS'];
+else $sys_subtitS = 'KAPP Generator';
 
-	if( isset( $_REQUEST['sys_pg'] ) ) { 
-		$sys_pg	= $_REQUEST['sys_pg']; 
+	/*if( isset( $_POST['sys_pg'] ) ) { 
+		$sys_pg	= $_POST['sys_pg']; 
 	} else if( isset($_POST['sys_pg']) ) {
 		$sys_pg	= $_POST['sys_pg']; 
 	} else if( isset($_SESSION['sys_pg']) ) {
@@ -317,13 +405,17 @@ else $sys_subtitS = 'App Generator';
 		$sys_pg = $_POST['sys_pgS']; 
 	} else {
 		$sys_pg	= get_session("sys_pg"); 
-	}
+	}*/
 	if( isset($sys_pg) && isset($mid) ) { 
+		//m_("sys_pg: $sys_pg, sys_subtitS: $sys_subtitS"); //sys_pg: dao1625790347, sys_subtitS: KAPP Generator
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
 		$sys_subtitS = $rs['sys_subtit'];
-	} else if( isset($sys_pg) ) {
+	} else {
+		m_("tree_run : error - mid: $mid, sys_pg: $sys_pg"); exit;
+	}
+	/*	if( isset($sys_pg) ) {
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
@@ -335,7 +427,7 @@ else $sys_subtitS = 'App Generator';
 		$gubun  = $rs['tit_gubun'];
 		$sys_pg = $rs['sys_pg'];
 		$sys_subtitS = $rs['sys_subtit'];
-	} 
+	} */
 ?>
 
 <div id="mySidenav" class="sidenav">
@@ -396,7 +488,7 @@ else $sys_subtitS = 'App Generator';
 		$imgtype3	= KAPP_URL_T_ . "/icon/".$skinrs['imgtype3'];
 	}
 	$img_v="<img src='". KAPP_URL_T_ ."/logo/pizza.png' width='15' height='15'>";
-	echo " Constructor:" . $mid . "<br>";
+	echo " Constructor mid:" . $mid . "<br>";
 	echo " <table border='0' >";
 ?>
 	<tr> 
@@ -405,7 +497,7 @@ else $sys_subtitS = 'App Generator';
             <td colspan='2' bgcolor='#33FF33' height='1'></td> 
           </tr> 
           <tr>
-             <td height='15' align='left' title='Ktree List'>
+             <td height='15' align='left' title='mid:<?=$mid?> - List'>
 			 <a href='<?=KAPP_URL_T_?>/menu/index.php?mid=<?=$mid?>' id='<?=$sys_pg?>' target='run_menu' style='color:#33FF33;font-size:15'><?php echo $img_v; ?><strong> Tree-List </strong></a>
 			<SELECT name='sys_pg_sel' onchange="sys_pg_change(this.value);" style="border-style:;background-color:#666666;color:yellow;width:130px; height:25px;" <?php echo" title='Upgrade the program.' "; ?> >
 <?php 
@@ -452,10 +544,10 @@ else $sys_subtitS = 'App Generator';
 <?php if( $H_ID && $H_LEV > 1 ) { ?>
 		<tr>
           <td> 
-		<select id='menu_change' name='menu_change' onchange="arunA('<?=$H_ID?>','<?=$mid?>','<?=KAPP_URL_T_?>', this.value);" style="border-style:;background-color:#666fff;color:yellow;width:130px; height:25px;" title='tree_run' >
+		<select id='menu_change' name='menu_change' onchange="arunA('<?=$H_ID?>','<?=$mid?>','<?=KAPP_URL_T_?>', this.value, '<?=$sys_pg?>');" style="border-style:;background-color:#666fff;color:yellow;width:130px; height:25px;" title='tree_run' >
 			<option value='' >Select job</option>
 			<option value='run'    title='Execute tree item'>Execute</option>
-			<option value='list'   title='tree list'>Tree list</option>
+			<!-- <option value='list'   title='tree list'>Tree list</option> -->
 			<option value='insert' title='add tree item'>Insert job</option>
 			<option value='update' title='change tree item'>Update job</option>
 			<option value='design' title='Tree design change:' >Tree design</option>
@@ -469,7 +561,7 @@ else $sys_subtitS = 'App Generator';
 	</td> 
 	<td style='background-color:<?=$bgcolor?>'> 
 <?php
-	$sql_root = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$make_id' and sys_pg = '$sys_pg' and sys_level <> 'client' order by sys_disno, sys_menu ";
+	$sql_root = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_pg = '$sys_pg' and sys_level <> 'client' order by sys_disno, sys_menu ";
 	$result   = sql_query( $sql_root);
 	$row      = sql_num_rows($result);
 	$intloop  = 0;
@@ -528,38 +620,48 @@ If it does not work, <br>please unblock the pop-up window.
 </div>
 
 <?php
-	if( isset($_REQUEST['sys_jong'])) $sys_jong = $_REQUEST['sys_jong']; 
+	if( isset($_POST['sys_jong'])) $sys_jong = $_POST['sys_jong']; 
 	else if( isset($_POST['sys_jong'])) $sys_jong = $_POST['sys_jong']; 
 	else $sys_jong = '';
-	if( isset($_REQUEST['num']) && $sys_jong=="note" ){ 
-		$src = KAPP_URL_T_ . '/menu/contents_view_menuD.php?num=' . $_REQUEST['num']; 
+	if( isset($_POST['job_addr'])) $job_addr = $_POST['job_addr']; 
+	else if( isset($_POST['job_addr'])) $job_addr = $_POST['job_addr']; 
+	else $job_addr = '';
+
+	if( isset($_POST['num']) && $sys_jong=="note" ){ 
+		$src = KAPP_URL_T_ . '/menu/contents_view_menuD.php?num=' . $_POST['num']; 
 	} else if( $sys_jong == "noteB" ){
-		$src = $_REQUEST['job_addr'];
+		$src = $_POST['job_addr'];
 	} else if( $sys_jong == "board" ){
-		$src = KAPP_URL_T_ . '/menu/index_bbs.php?infor=' . $_REQUEST['board_num'];
+		$src = KAPP_URL_T_ . '/menu/index_bbs.php?infor=' . $_POST['board_num'];
 	} else if( $sys_jong == "link" ){
 		$result  = strpos($rsrsys_link, "tkher_program_data_list");
-		if( $result ) $src = KAPP_URL_T_ . '/' . $_REQUEST['sys_link'];
+		if( $result ) $src = KAPP_URL_T_ . '/' . $_POST['sys_link'];
 		else {
 			$result  = strpos($rsrsys_link, KAPP_HOST_);
 			if( $result){
 				$src = $rsrsys_link;
 			} else {
-				$src = $_REQUEST['job_addr'];
-				echo "<script>submit_run('" . $_REQUEST['sys_pg'] . "', '_blank', '" . $sys_jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$_REQUEST['job_addr']."' );</script>";
+				$src = $_POST['job_addr']; 
+				
+				m_("sys_jong: $sys_jong, ---src: ".$src);
+				//ys_jong: link, ---src: contents_view_menuD.php?num=dao_1612585805
+				//---src: contents_view_menuD.php?num=dao_1756603979
+				//echo "<script>submit_runB('" . $_POST['sys_pg'] . "', '".$mid."', '" . $sys_jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$_POST['job_addr']."' );</script>";
+
+				//echo "onclick=\"javascript:submit_run( $seqno_, '$mid', '$sys_pg', '$rssys_menu', '$rssys_submenu', '$num', '$pg', '$jong', '$title_', '$link_', '". KAPP_URL_ ."', ".$sys_board_num.");\"";
 			}
 		}
 
-	} else if( isset($_REQUEST['job_addr']) ){
-		if( strpos($_REQUEST['job_addr'], "./menu") !== false) {  
-			$src = $_REQUEST['job_addr']; 
+	} else if( isset($_POST['job_addr']) ){
+		if( strpos($_POST['job_addr'], "./menu") !== false) {  
+			$src = $_POST['job_addr']; 
 		} else {  
-			$src = KAPP_URL_T_ . "/menu/".$_REQUEST['job_addr']; 
+			$src = KAPP_URL_T_ . "/menu/".$_POST['job_addr']; 
 		} 
 	} else {
 		$src = $first_link; 
+		m_("2 --- sys_jong: $sys_jong, num: " .$_POST['num'] . " ---src: ".$src);
 	}
-	//m_("src: $src");//src: contents_view_menuD.php?num=dao_1756603979
 ?>
 <div style="background-color:black;">
 <span style="font-size:24px;cursor:pointer;color:cyan;background-color:black;" onclick="openNav()" title='tree menu list'>&#9776; <?=$sys_subtitS?>[view:<?=$view_cnt?>, Constructor:<?=$mid?>]</span>
@@ -571,7 +673,7 @@ If it does not work, <br>please unblock the pop-up window.
 </body>
 </html>
 <?php
-	if( $_REQUEST['open_mode'] == 'on' ) {
+	if( $_POST['open_mode'] == 'on' ) {
 		echo "<script>document.getElementById('mySidenav').style.width = '250px';</script>";
 	}
 
@@ -599,7 +701,7 @@ If it does not work, <br>please unblock the pop-up window.
 			if ( $rssys_link == "http://"  or  $rssys_link == "" ) {
 				$rssys_link = "about:blank";
 			}
-			$mid	= $rs2['sys_userid'];
+			//$mid	= $rs2['sys_userid'];
 			$num	= $rs2['sys_pg'];
 			$jong	= $rs2['tit_gubun'];
 			$title_	= $rs2['sys_subtit'];

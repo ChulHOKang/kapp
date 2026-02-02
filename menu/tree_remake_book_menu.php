@@ -25,6 +25,7 @@
 	$target_   = $_REQUEST['target_'];
 
 	//my_msg("tree_remake_book_menu make_type:$make_type, " );
+	//Fetch menuskin NULL ERROR : , sys_pg:link
 ?>
 <html> 
 <head> 
@@ -116,7 +117,9 @@ a:hover { color:red}
 	$sql2 = "select * from {$tkher['menuskin_table']} where sys_pg = '".$sys_pg."' order by seqno  desc ";
 	$result2 = sql_query($sql2);	
 	$rs2 = sql_fetch_array($result2); 
-	if(!$rs2)	m_(" Fetch menuskin NULL ERROR : $rs, sys_pg:".$sys_pg); // Fetch menuskin NULL ERROR : Array, sys_pg:dao1697839181
+	if(!$rs2)	m_(" Fetch menuskin NULL ERROR : $rs, sys_pg:".$sys_pg);
+	//Fetch menuskin NULL ERROR : , sys_pg:link
+	// Fetch menuskin NULL ERROR : Array, sys_pg:dao1697839181
 ?>
 
 <BODY bgproperties=FIXED bgcolor="#000000" text="#ffffff" leftmargin=0 oncontextmenu="return false" ondragstart="return false" onselectstart="return false" onload="sys_bom.sys_subtit.focus()">
