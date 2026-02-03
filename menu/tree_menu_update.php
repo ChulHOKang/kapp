@@ -107,7 +107,7 @@
 
 <script language=javascript> 
 <!--
-	function up_date(mtype){
+	function up_date( mtype){
 		var ins = window.confirm(" Do you want to change it?"); 
 		if (ins)	{
 			document.sys_bom.m_type.value=mtype; 

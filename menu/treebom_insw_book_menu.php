@@ -54,7 +54,7 @@
 	$sys_rcnt    = $rs['sys_rcnt'];
 	$sys_submenuR = $rs['sys_submenu'];
 	$up_day = date("Y-m-d H:i:s");
-	if( $H_ID !== $mid && $H_LEV < 8 ) {
+	if( $H_ID != $mid && $H_LEV < 8 ) {
 		m_("You do not have permission to work.");
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
@@ -67,11 +67,23 @@
 		//공방자료, j: 0, isys_subtit: 공방자료
 	} else m_("none ---");
  if( isset($_POST[$isys_subtit]) ) {
-	$xsys_pg = $sys_pg_root;
-	if( $mode == 'mroot')
-		 $ret_root_chk = 1;
+	if( $mode == 'mroot') $ret_root_chk = 1;
 	else $ret_root_chk = 0;
 ?>
+
+<script language=javascript> 
+<!-- 
+	function return_in_sert(sys_pg){ // Save after return
+		alert( "sys_pg: " + sys_pg);
+		document.kapp_sys_bom.sys_pg.value=sys_pg; 
+		document.kapp_sys_bom.action="tree_run.php"; 
+		document.kapp_sys_bom.target ='_top';  
+		document.kapp_sys_bom.submit();
+	} 
+-->
+</script>
+
+<form name='kapp_sys_bom' method='post' enctype="multipart/form-data">
 		<table border='1' >
 		<tr>
 			<th> Title </th>
@@ -81,10 +93,11 @@
 	$from_session_url = $_SERVER['HTTP_HOST'];
 	$ins_data=0;
 	$board_num = 0; 
-	for ( $intloop = 0; $intloop < 13; $intloop++ ){
+	FOR( $intloop = 0; $intloop < 13; $intloop++ ){
 		$isys_subtit = "sys_subtit_" . $intloop;
-		$sys_subtit	= $_POST[$isys_subtit];
-		if( strlen($sys_subtit) > 0 ) {
+		if( isset($_POST[$isys_subtit]) && $_POST[$isys_subtit]!='' ) $sys_subtit= $_POST[$isys_subtit];
+		else $sys_subtit= '';
+		if( $sys_subtit !='' ) {
 			$isys_menu	 = "sys_menu_" . $intloop;
 			$isys_submenu= "sys_submenu_" . $intloop;
 			$isys_subtit = "sys_subtit_" . $intloop;
@@ -108,7 +121,6 @@
 			}
 			echo "<tr><td>".$sys_subtit."</td>";
 			echo "<td>".$sys_link."</td></tr>";
-			//$url_ = iconv_substr( $sys_link, 0, 46, "utf-8");
 			if( $sys_jong == "link"){
 				$gubun = 'T';
 			} else if( $sys_jong == "note"){
@@ -120,20 +132,15 @@
 					echo "treebom_insw_book_menu : ERROR sys_jong: ". $sys_jong. ", sqlX: " . $sqlX; exit;
 				}
 			} else if( $sys_jong == "board"){
-				//공방자료, j: 0, isys_subtit: 공방자료
 				$gubun = 'A';
 				$board_title = $sys_subtit;
-				$board_type='5'; // '5':Daum type, '2' :standard
-				//$link_ret = aboard_table_make_menu( $board_title, $sys_pg_root, $board_type, $max_num );
+				$board_type='5'; // '5':Dm type, '2' :standard
 				$sys_link = create_aboard_table_make_menu( $board_title, $sys_pg_root, $board_type, $max_num );
-				//$sys_link = KAPP_URL_T_ . "/menu/" . $link_ret; 
 			} else if( $sys_jong == "photo"){
 				$gubun = 'A';
 				$board_title = $sys_subtit;
 				$board_type='4'; 
-				//$link_ret = aboard_table_make_menu( $board_title, $sys_pg_root, $board_type, $max_num );
 				$sys_link = create_aboard_table_make_menu( $board_title, $sys_pg_root, $board_type, $max_num );
-//				$sys_link = KAPP_URL_T_ . "/menu/" . $link_ret;
 			} else {
 					$gubun = 'T';
 					echo "treebom_insw_book_menu : ERROR : link type - sys_jong: ". $sys_jong;
@@ -163,17 +170,29 @@
 	}
 ?>
 		</table>
+	<input type='hidden' name="mode"		value="" >
+	<input type='hidden' name="sys_pg"		value="<?=$sys_pg?>" >
+	<input type='hidden' name="sys_pg_root"		value="<?=$sys_pg_root?>" >
+	<input type='hidden' name="open_mode"		value="on" >
+	<input type='hidden' name="mid"		value="<?=$mid?>" >
+	<input type='hidden' name="sys_subtitS"		value="<?=$sys_subtit?>" >
+	<input type='hidden' name="num"	value="<?=$max_num?>" >
+	<input type='hidden' name="sys_jong"		value='<?=$sys_jong?>' >
+	<input type='hidden' name="board_num"	value='<?=$board_num?>' >
+	<input type='hidden' name="sys_link"	value='<?=$sys_link?>' >
+</form>
 <?php
 		//sys_menu_bom_insert_curl( $sys_pg_root );
 		sys_menu_bom_curl_send( $sys_pg_root );
 		$run_mode = 'treebom_insw_book';
-        $sys_pg   = $xsys_pg;
+        $sys_pg   = $sys_pg_root;
 			/* ----------------------------------------
 				include "./tree_create_menu.php";	    //소스 생성 막고 바로가기 추가.
 			 ------------------------------------------ */
-			$rungo = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$mid.'&sys_subtitS='.$sys_subtit . "&num=" . $max_num . "&sys_jong=" . $sys_jong . "&board_num=" . $board_num . "&sys_link=" . $sys_link;
+		$rungo = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$mid.'&sys_subtitS='.$sys_subtit . "&num=" . $max_num . "&sys_jong=" . $sys_jong . "&board_num=" . $board_num . "&sys_link=" . $sys_link;
 		
-			echo "<script>window.open('$rungo', '_top', ''); </script>";  
+		echo "<script>window.open('$rungo', '_top', ''); </script>";  
+		//	echo "<script>return_in_sert('$sys_pg'); </script>";  
 			exit;
  } else {
 ?>

@@ -15,9 +15,15 @@
 
 	//$sys_pg, $subtit, $open_mode, $mid, $sys_jong, $num, $job_addr 
 	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
+	else if( isset($_REQUEST['mid']) ) $mid = $_REQUEST['mid'];
 	else $mid ='';
 	if( isset($_POST['sys_pg']) ) $sys_pg = $_POST['sys_pg'];
+	else if( isset($_REQUEST['sys_pg']) ) $sys_pg = $_REQUEST['sys_pg'];
 	else $sys_pg ='';
+
+	if( isset($_POST['open_mode']) ) $open_mode = $_POST['open_mode'];
+	else if( isset($_REQUEST['open_mode']) ) $open_mode = $_REQUEST['open_mode'];
+	else $open_mode ='';
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode ='';
@@ -28,13 +34,13 @@
 			$ls = $ls . "where sys_pg='$sys_pg' and sys_level='mroot' ";
 			$mq = sql_query($ls);
 		}
-   }
-   if( $mode == 'SearchPG'){
+	}
+	if( $mode == 'SearchPG'){
 		$_SESSION['sys_pg'] = $_POST['sys_pg'];
 		$run_ = "tree_run.php?sys_pg=" . $_POST['sys_pg'] . "&open_mode=on". "&mid=".$mid;
 		echo "<script>window.open( '".$run_."' , '_top', ''); </script>";
 		exit;
-   }
+	}
 ?>
 <html> 
 <head>
@@ -392,22 +398,9 @@ body {
 </head> 
 <body oncontextmenu='return false' ondragstart='return false' onselectstart='return false' topmargin='0' style='background-color:white; overflow:hidden; margin-bottom: 30px;'> 
 <?php
-if( isset($_POST['sys_subtitS']) ) $sys_subtitS = $_POST['sys_subtitS'];
-else $sys_subtitS = 'KAPP Generator';
-
-	/*if( isset( $_POST['sys_pg'] ) ) { 
-		$sys_pg	= $_POST['sys_pg']; 
-	} else if( isset($_POST['sys_pg']) ) {
-		$sys_pg	= $_POST['sys_pg']; 
-	} else if( isset($_SESSION['sys_pg']) ) {
-		$sys_pg = $_SESSION['sys_pg'];
-	} else if( isset($_POST['sys_pgS']) ) {
-		$sys_pg = $_POST['sys_pgS']; 
-	} else {
-		$sys_pg	= get_session("sys_pg"); 
-	}*/
+	if( isset($_POST['sys_subtitS']) ) $sys_subtitS = $_POST['sys_subtitS'];
+	else $sys_subtitS = 'KAPP Generator';
 	if( isset($sys_pg) && isset($mid) ) { 
-		//m_("sys_pg: $sys_pg, sys_subtitS: $sys_subtitS"); //sys_pg: dao1625790347, sys_subtitS: KAPP Generator
 		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
 		$rt = sql_query( $sql);
 		$rs	= sql_fetch_array($rt);
@@ -415,19 +408,6 @@ else $sys_subtitS = 'KAPP Generator';
 	} else {
 		m_("tree_run : error - mid: $mid, sys_pg: $sys_pg"); exit;
 	}
-	/*	if( isset($sys_pg) ) {
-		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg' and sys_menu='$sys_pg' and sys_submenu='$sys_pg' ";
-		$rt = sql_query( $sql);
-		$rs	= sql_fetch_array($rt);
-		$sys_subtitS = $rs['sys_subtit'];
-	} else if( !isset($sys_pg) ) {
-		$sql = "SELECT * from {$tkher['sys_menu_bom_table']} where sys_userid='$mid' and tit_gubun !='' and sys_level = 'mroot' order by up_day desc";
-		$rt = sql_query( $sql);
-		$rs	= sql_fetch_array($rt);
-		$gubun  = $rs['tit_gubun'];
-		$sys_pg = $rs['sys_pg'];
-		$sys_subtitS = $rs['sys_subtit'];
-	} */
 ?>
 
 <div id="mySidenav" class="sidenav">
@@ -643,7 +623,7 @@ If it does not work, <br>please unblock the pop-up window.
 			} else {
 				$src = $_POST['job_addr']; 
 				
-				m_("sys_jong: $sys_jong, ---src: ".$src);
+				//m_("sys_jong: $sys_jong, ---src: ".$src);
 				//ys_jong: link, ---src: contents_view_menuD.php?num=dao_1612585805
 				//---src: contents_view_menuD.php?num=dao_1756603979
 				//echo "<script>submit_runB('" . $_POST['sys_pg'] . "', '".$mid."', '" . $sys_jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$_POST['job_addr']."' );</script>";
@@ -660,7 +640,8 @@ If it does not work, <br>please unblock the pop-up window.
 		} 
 	} else {
 		$src = $first_link; 
-		m_("2 --- sys_jong: $sys_jong, num: " .$_POST['num'] . " ---src: ".$src);
+		//m_("2 --- sys_jong: $sys_jong, num: " .$_POST['num'] . " ---src: ".$src);
+		//2 --- sys_jong: , num:  ---src: 
 	}
 ?>
 <div style="background-color:black;">
@@ -673,7 +654,7 @@ If it does not work, <br>please unblock the pop-up window.
 </body>
 </html>
 <?php
-	if( $_POST['open_mode'] == 'on' ) {
+	if( $open_mode == 'on' ) {
 		echo "<script>document.getElementById('mySidenav').style.width = '250px';</script>";
 	}
 
