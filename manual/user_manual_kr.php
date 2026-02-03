@@ -57,7 +57,7 @@ img { width:100%; }
 </ul>
 
 <ul style='font-size:21px;color:yellow;'>
-<p align='center'><b>K-APP</b></p>
+<p align='center'><b>K-APP - Version V1.0</b></p>
 <p style='font-size:21px;'>App Generator 사용 방법</p>
 
 <a href="https://www.youtube.com/watch?v=HstNaNfthyM" target='_blank' style='color:skyblue'>1. 프로그램 생성 및 소스코드 다운로드 방법 동영상.</a><br>

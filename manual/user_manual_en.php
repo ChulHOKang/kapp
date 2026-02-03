@@ -2,7 +2,7 @@
 include_once('../tkher_start_necessary.php');
 		$host	 = getenv("HTTP_HOST");
 		/*
-			소스 정 위치 : /manual/user_manual.php
+			Version V1.0 : /manual/user_manual.php
 		*/
 	$ss_mb_id	= get_session("ss_mb_id");
 	$ss_mb_level= $member['mb_level']; 
@@ -56,7 +56,7 @@ img { width:100%; }
 </ul>
 
 <ul style='font-size:21px;color:yellow;'>
-<p align='center'><b>K-APP</b></p>
+<p align='center'><b>K-APP - Version V1.0</b></p>
 
 <p style='font-size:21px;'>How to Use KAPP</p>
 <a href="https://www.youtube.com/watch?v=HstNaNfthyM" target='_blank' style='color:skyblue'>1. Video on how to create a program and download the source code.</a><br>
