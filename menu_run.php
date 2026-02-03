@@ -259,21 +259,21 @@
                 <li align='left'>
                     <a href="<?=KAPP_URL_T_?>/terms_service_en.html" target='_blank'>2. Service Terms</a>
                 </li>
-                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=1" target='_top'>31. Notice</a></li>
-                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=2" target='_top'>32. News</a></li>
-                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=3" target='_top'>33. Q&A</a></li>
-                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=4" target='_top'>34. Free Board</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=1" target='_self'>31. Notice</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=2" target='_self'>32. News</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=3" target='_self'>33. Q&A</a></li>
+                        <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=4" target='_self'>34. Free Board</a></li>
                 <?php
 	if( $H_ID && $H_LEV > 7) { // 관리자용. 메인 메뉴 설정.
 ?>
                 <li align='left'> <a href='<?=KAPP_URL_T_?>/adm/' target='_blank'
                         <?php echo " title='Admin Page. ' "; ?>> ### Admin ###</a></li>
-                <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/main_img.php' target='_top'
+                <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/main_img.php' target='_self'
                         <?php echo " title='Admin Register the main image. ' "; ?>>B3. Main-Image Insert</a></li>
-                <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/main_image_list.php' target='_top'
+                <li align='left'> <a href='<?=KAPP_URL_T_?>/menu/main_image_list.php' target='_self'
                         <?php echo " title='Admin Main image list. ' "; ?>>B4. Main-Image-List</a></li>
-                <li align='left'><a href="<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php" target='_blank'>B5. Kapp Table List</a> </li>
-                <li align='left'><a href="<?=KAPP_URL_T_?>/curl_server.php" target='_blank'>B6. Shared-Server Reset</a> </li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php" target='_self'>B5. Kapp Table List</a> </li>
+                <li align='left'><a href="<?=KAPP_URL_T_?>/curl_server.php" target='_self'>B6. Shared-Server Reset</a> </li>
 <?php } ?>
             </ul>
         </li>
@@ -325,20 +325,20 @@
                 <li align='left'> <a href='#' target='_self'
                         <?php echo " title='Manage user schedule. ' "; ?>>B2.Schedule</a>
                     <ul>
-                        <li align='left'> <a href="<?=KAPP_URL_T_?>/calendar/" target='_top'
+                        <li align='left'> <a href="<?=KAPP_URL_T_?>/calendar/" target='_self'
                                 <?php echo " title='Manage user schedule.' "; ?>>1.Daily schedule</a></li>
-                        <li align='left'> <a href="<?=KAPP_URL_T_?>/calendar/index_year.php" target='_top'
+                        <li align='left'> <a href="<?=KAPP_URL_T_?>/calendar/index_year.php" target='_self'
                                 <?php echo " title=' Manage annual schedules.' "; ?>>2.Year Schedule</a></li>
                     </ul>
 
                 </li>
                 <li align='left'><a href='<?=KAPP_URL_T_?>/accountbook/' target='_self'
                         <?php echo " title='Manage user accountbook.' "; ?>>B3.Account book</a></li>
-                <li align='left'>
+                <!-- <li align='left'>
                     <div class="SSS">
                         <a href="<?=KAPP_URL_T_?>/chatS" target='_blank' title='Chat consulting '>Chat consulting</a>
                     </div>
-                </li>
+                </li> -->
                 <?php
 		} // if H_ID
 ?>
@@ -478,14 +478,14 @@ if( !$H_ID && $H_ID !=='Guest' ) {
     function logout_func() {
         //document.loginO.Login_Mode.value = "logout";
         document.loginO.target = "_top";
-        document.loginO.action = './logoutT.php';
+        document.loginO.action = '<?=KAPP_URL_T_?>/logoutT.php';
         document.loginO.submit();
     }
 
     function My_Page() {
         gemail = document.form_view.email.value;
         document.form_view.target = '_top';
-        document.form_view.action = './my/';
+        document.form_view.action = '<?=KAPP_URL_T_?>/my/';
         document.form_view.submit();
     }
     -->
@@ -511,13 +511,13 @@ if( !$H_ID && $H_ID !=='Guest' ) {
         });
         $('.Sign_up').on('click', function() {
             document.loginA.Login_Mode.value = "signup";
-            var Upg1_ = "./tkher_register_.php";
+            var Upg1_ = "<?=KAPP_URL_T_?>/tkher_register_.php";
             document.loginA.action = Upg1_;
             document.loginA.submit();
         });
         $('.SIGN_S').on('click', function() {
             document.loginA.Login_Mode.value = "signup";
-            var Upg1_ = "./tkher_register_.php";
+            var Upg1_ = "<?=KAPP_URL_T_?>/tkher_register_.php";
             document.loginA.action = Upg1_;
             document.loginA.submit();
         });
@@ -561,7 +561,7 @@ if( !$H_ID && $H_ID !=='Guest' ) {
         });
         $("body").on("click", ".lnbFooterKANMy a.lnbIcon01KANMy", function() {
             document.form_view.target = '_top';
-            document.form_view.action = './my/';
+            document.form_view.action = '<?=KAPP_URL_T_?>/my/';
             document.form_view.submit();
         });
     });
@@ -575,7 +575,7 @@ if( !$H_ID && $H_ID !=='Guest' ) {
                         document.kakao_form.Login_Mode.value = "Kakao_Login_K";
                         document.kakao_form.userObject.value = JSON.stringify(res);
                         document.kakao_form.authObject.value = JSON.stringify(authObj);
-                        document.kakao_form.action = 'login_checkT.php';
+                        document.kakao_form.action = '<?=KAPP_URL_T_?>/login_checkT.php';
                         document.kakao_form.submit();
                     },
                     fail: function(err) {

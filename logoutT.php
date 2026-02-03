@@ -22,7 +22,7 @@
 		// 자동로그인 해제 end --------------------------------
 
 		if( isset($_REQUEST['run_pg']) ) $link = $_REQUEST['run_pg'];
-		else $link = KAPP_URL_;// "./";
+		else $link = KAPP_URL_T_;// "./";
 		//goto_url($link);
 		//$url="/";
 		echo "<script>window.open( '$link' , '_top', ''); </script>";
