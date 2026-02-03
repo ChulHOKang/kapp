@@ -301,7 +301,7 @@
                 </li>
                 <li align='left'>
                     <div class="SSS">
-                        <a href="<?=KAPP_URL_T_?>/manual/user_manual.php" target='_blank'
+                        <a href="<?=KAPP_URL_T_?>/manual/user_manual_en.php" target='_blank'
                             title='Homepage User Guide'>User's Manual</a>
                     </div>
                 </li>
@@ -313,7 +313,7 @@
                 </li>
                 <li align='left'>
                     <div class="SS">
-                        <a href="<?=KAPP_URL_T_?>/manual/user_manual.php" target='_blank'
+                        <a href="<?=KAPP_URL_T_?>/manual/user_manual_en.php" target='_blank'
                             title='Homepage User Guide'>User's Manual</a>
                     </div>
                 </li>
