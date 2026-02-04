@@ -1,8 +1,9 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-	if($_SESSION['mb_level'] < 8) {
-		m_("approach error. ---mb_level:".$member['mb_level']);
-		echo "<script>window.open( './index.php' , '_self');</script>";
+	if( isset($member['mb_level']) and ($member['mb_level'] < 8) ) {
+		m_("approach error. ");
+		$url = KAPP_URL_T_;
+		echo "<script>window.open( '$url' , '_top');</script>";
 	}
 	/* $upfile	 = '';
 	$upfileX	= '';

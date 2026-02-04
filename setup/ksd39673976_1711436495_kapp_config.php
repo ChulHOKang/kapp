@@ -1,8 +1,9 @@
 <?php 
 	include_once('../tkher_start_necessary.php');
-	if( isset($_SESSION['mb_level']) and ($_SESSION['mb_level'] < 8) ) {
+	if( isset($member['mb_level']) and ($member['mb_level'] < 8) ) {
 		m_("approach error. ---mb_level:".$member['mb_level']);
-		echo "<script>window.open( './index.php' , '_self');</script>";
+		$url = KAPP_URL_T_;
+		echo "<script>window.open( '$url' , '_top');</script>";
 	}
 
 	$menu1TWPer=25;  
