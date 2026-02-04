@@ -427,14 +427,14 @@
 ?>
 		</select>
 <?php
-		if( $H_ID ) {
+		if( isset($H_ID) && $H_ID !='' ) {
 ?>
 				&nbsp; &nbsp;
 				<input type='text' name='g_name' value='<?=$g_name?>' style="border-style:;background-color:white;color:black;height:25;width:120;">
 				<input type=button onclick="javascript:insert_group1_func();" value=' Group-Insert ' style="border-style:;background-color:blue;color:yellow;height:30;width:120;">
 				&nbsp; &nbsp;
 <?php
-				if( $H_LEV > 7 or $H_ID == $userid) {
+				if( $H_LEV > 7 ) {
 ?>
 					<input type='text' name='g_name_update' value='<?=$g_name?>' style="border-style:;background-color:white;color:black;height:25;width:120;" >
 					<input type='button' value='Group-Change' onclick="javascript:update_group2_func();" style="border-style:;background-color:blue;color:yellow;height:25;width:130;" <?php echo "title='Change the category name. ' "; ?> >
