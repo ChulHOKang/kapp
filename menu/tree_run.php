@@ -179,66 +179,6 @@ body {
 	  document.getElementById("mySidenav").style.width = "0";
 	}
 
-	//echo "submit_runB('" . $_POST['sys_pg'] . "', '".$mid."', '" . $sys_jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$_POST['job_addr']."' );";
-	// no use ---- 2026-02-02
-	function submit_runB( sys_pg, mid, sys_jong, sys_pg, kapp_url_t, kapp_url, job_addr){ 
-		pg = job_addr;
-		document.click_run.pg.value=pg;   
-		document.click_run.link_.value=pg;   
-		document.click_run.num.value=pg;   
-		document.click_run.title_.value      =title_;   
-		alert("submit_runB - pg: "+ pg);
-		//submit_runB - pg: contents_view_menuD.php?num=dao_1756603979
-		runtype = document.click_run.runtype.value;
-		if( runtype =='update'){
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
-			document.click_run.submit();     
-		} else if( runtype =='insert'){
-			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
-			document.click_run.submit();     
-		} else if( runtype =='' || runtype=='run'){
-			if( pg == 'http://' || pg == 'https://' )  { 
-				//alert("pg: "+pg + ", title_: " + title_);
-				//pg: http://, title_: C11-3
-				return;
-			}else if( pg.indexOf( 'contents_view_menuD.php')>=0 )  { 
-				document.click_run.target='run_menu';  
-				document.click_run.target_.value='run_menu'; 
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-				document.click_run.submit();  
-			} else if( pg.indexOf( target_ )>=0 )  { 
-				document.click_run.target='run_menu';  
-				document.click_run.target_.value='run_menu'; 
-				document.click_run.action= pg; 
-				document.click_run.submit();  
-			}else if( pg.indexOf( 'tkher_program_data_list.php')>=0 )  { 
-				document.click_run.target='run_menu';  
-				document.click_run.target_.value='run_menu'; 
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-				document.click_run.submit();  
-			}else if( pg.indexOf( 'index_bbs.php?infor')>=0 )  {
-				document.click_run.target='run_menu';  
-				document.click_run.target_.value='run_menu'; 
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-				document.click_run.submit();  
-			} else if( pg.indexOf( 'https://')>=0 || pg.indexOf( 'http://')>=0 )  { 
-				document.click_run.target ='_blank';  
-				document.click_run.target_.value='_blank'; 
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-				document.click_run.submit();     
-			} else { 
-				document.click_run.target ='run_menu'; 
-				document.click_run.target_.value='run_menu'; 
-				document.click_run.action= '<?=KAPP_URL_T_?>/menu/cratree_coinadd_menu.php'; 
-				document.click_run.submit();     
-			}
-			document.getElementById("mySidenav").style.width = "0px";
-		} else {
-			alert("--- ERROR");
-			return false;
-		}
-	}
-
 	function submit_run( seqno, mid, sys_pg, sys_menu, sys_submenu, num, pg, jong, title_, link_, target_, sys_board_num){ 
 		runtype = document.click_run.runtype.value;
 		document.click_run.mid.value         = mid; 
@@ -258,8 +198,8 @@ body {
 		document.click_run.m_type.value      = 'booktreeupdateM2';
 		document.click_run.data.value   = sys_menu; 
 		document.click_run.data1.value  = sys_submenu; 
+
 		document.click_run.target       = 'run_menu'; 
-		//alert("mid: " + mid + ", sys_menu: " + sys_menu);
 		if( runtype =='update'){
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
 			document.click_run.submit();     
@@ -268,7 +208,6 @@ body {
 			document.click_run.submit();     
 		} else if( runtype =='' || runtype=='run'){
 			if( pg == 'http://' || pg == 'https://' )  { 
-				//alert("pg: "+pg + ", title_: " + title_); //pg: http://, title_: B12
 				return;
 			}else if( pg.indexOf( 'contents_view_menuD.php')>=0 )  { 
 				document.click_run.target='run_menu';  
@@ -316,13 +255,13 @@ body {
 		var	tmpValue = document.click_run.menu_change[selectIndex].value;
 		var	tmpText  = document.click_run.menu_change[selectIndex].text;
 		if( selectIndex > 2 && $id !== $mid){
-			alert("You do not have permission to perform this operation. id:" + $id +", mid:"+ $mid);//You do not have permission to work.
+			alert("You do not have permission to perform this operation. id:" + $id +", mid:"+ $mid);
 			document.click_run.menu_change.selectedIndex = 0;
 			return false;
 		}
 		document.click_run.make_type.value   ='booktreeupdateM2'; 
 		document.click_run.m_type.value   ='booktreeupdateM2'; 
-		if( runtype=='insert' ){		//alert("Register at the root level. If different, click the location!");
+		if( runtype=='insert' ){
 			document.click_run.mid.value = $mid; 
 			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.mode.value    ='mroot'; 
@@ -331,7 +270,6 @@ body {
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/treebom_insert2_book_menu.php';
 			document.click_run.submit();     
 		} else if( runtype=='update' ){
-			//alert("Register at the root level. If different, click the location!");// You do not have permission to work.
 			document.click_run.mid.value = $mid; 
 			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.mode.value    ='mroot'; 
@@ -340,7 +278,6 @@ body {
 			document.click_run.action = '<?=KAPP_URL_T_?>/menu/tree_menu_update.php'; 
 			document.click_run.submit();     
 		} else if( runtype=='run' ){
-			//alert("run mode");
 			document.click_run.mid.value = $mid; 
 			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.runtype.value = 'run';
@@ -588,8 +525,6 @@ echo "          </tr>";
 
 <tr>
 <td colspan='2' bgcolor='' height='1' style='font-size:9;color:#666666'>
-We call it mining to register in the tree menu.<br><!-- 우리는 트리 메뉴에 등록하는것을 채굴이라 한다 -->
-Points will be paid in coins in the future.<br><!-- 포인트는 향후에 코인으로 지급될것이다. -->
 If it does not work, <br>please unblock the pop-up window.
 </td>
 </tr>
@@ -622,13 +557,6 @@ If it does not work, <br>please unblock the pop-up window.
 				$src = $rsrsys_link;
 			} else {
 				$src = $_POST['job_addr']; 
-				
-				//m_("sys_jong: $sys_jong, ---src: ".$src);
-				//ys_jong: link, ---src: contents_view_menuD.php?num=dao_1612585805
-				//---src: contents_view_menuD.php?num=dao_1756603979
-				//echo "<script>submit_runB('" . $_POST['sys_pg'] . "', '".$mid."', '" . $sys_jong. "', '". $sys_pg. "', '". KAPP_URL_T_ . "', '" . KAPP_URL_ . "' , '".$_POST['job_addr']."' );</script>";
-
-				//echo "onclick=\"javascript:submit_run( $seqno_, '$mid', '$sys_pg', '$rssys_menu', '$rssys_submenu', '$num', '$pg', '$jong', '$title_', '$link_', '". KAPP_URL_ ."', ".$sys_board_num.");\"";
 			}
 		}
 
@@ -640,8 +568,6 @@ If it does not work, <br>please unblock the pop-up window.
 		} 
 	} else {
 		$src = $first_link; 
-		//m_("2 --- sys_jong: $sys_jong, num: " .$_POST['num'] . " ---src: ".$src);
-		//2 --- sys_jong: , num:  ---src: 
 	}
 ?>
 <div style="background-color:black;">
@@ -718,7 +644,7 @@ If it does not work, <br>please unblock the pop-up window.
 				funcrs($rssys_submenu, $run_target);
 			}
 			$sys_menutit ="";
-		}//loop	/////rs2객체loop
+		}//loop	rs2 loop
 		$last_link = $link_;
 		echo "</div>";
 		$i = $i - 1;

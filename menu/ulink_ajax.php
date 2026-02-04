@@ -19,7 +19,11 @@
 	$mode_insert=$_POST['mode_insert'];  
 	$memo =""; 
 	$memoA =""; 
-	if( $mode_insert == 'insert_mode'){
+	if( $mode_insert == 'view_click'){
+		$seq_no = $_POST['seq_no'];	
+		$sql= " update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno = $seq_no ";
+		sql_query($sql);
+	} else if( $mode_insert == 'insert_mode'){
 		$pw=$_POST['form_psw']; 
 		$job_ = 'Link Note';
 		$create_type = 'Note'; // fix 

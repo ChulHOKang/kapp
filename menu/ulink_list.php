@@ -3,6 +3,11 @@
 	/*  
 		ulink_list.php, ulist.php : table : {$tkher['job_link_table']} 
 		cratree_my_list_menu.php - inc menu_run.php - search call
+		tree_run.php - type - create:M, board, photo:A, note:N, link:T - job_link_table
+		             - sys_menu_bom - note:N, board:A, create:M
+		ulink_list.php - type - U
+		board_list3.php - type - A, 
+		board data - kapp_ap_bbs
 	*/
 	$H_ID	= get_session("ss_mb_id"); 
 	if( $H_ID != "") {
@@ -23,7 +28,6 @@
 	$title_='';
 	$secret_key = "";
 	$link_	= "";
-	//$gg_user = "";
 ?>
 <html> 
 <head>
@@ -117,13 +121,9 @@ $(function () {
 		$g_name = $aa[0];
 		$g_num = $aa[1];
 		$g_name_code = $g_num;
-		//if( isset($aa[2])) $gg_user = $aa[2];
-		//else $gg_user = $H_ID;
 		if( isset($aa[3])) $g_no = $aa[3];
 		else $g_no = "";
 	} else {
-		//if( isset($H_ID) ) $gg_user = $H_ID;
-		//else $gg_user = "";
 		$g_no = "";
 	}
 	
@@ -132,7 +132,6 @@ $(function () {
 		$aa = explode(':', $_REQUEST["g_name"]); 
 		if( isset($aa[0]) ) $g_name = $aa[0];
 		if( isset($aa[1]) ) $g_num = $aa[1];
-		//if( isset($aa[2]) ) $gg_user = $aa[2];
 		if( isset($aa[3]) ) $g_no = $aa[3];
 	}
 
@@ -157,18 +156,13 @@ $(function () {
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 
-		//$limite = 10; 
-		$page_num = 10; 
-		//m_("--- mode: $mode");
-		//if( $mode == 'search_rtn') {
-		//	$sdata = $title_nm;
-		//}
+	$page_num = 10; 
 
 	if( $mode == 'update_link') {
 		$seq_no = $_REQUEST['seq_no'];	
 		$result	= 		$result = sql_query( "select * from {$tkher['job_link_table']} where seqno=$seq_no" );
 		$rs		= sql_fetch_array($result);
-		if( $rs['job_name'] =='Note' ) { // add 2025-03-30
+		if( $rs['job_name'] =='Note' ) { 
 			$sql= " update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno = $seq_no ";
 			sql_query($sql);
 			$title_	= $rs['user_name'];
@@ -179,69 +173,6 @@ $(function () {
 			$memo	= $rs['memo'];
 		}
 	}
-	/*else if($mode == 'insert_url_func_mode') { // 'Save' 버턴 클릭시 - 2025-05-01 no use
-		if ( !$H_ID ) {
-			$url = "ulink_list.php";
-			echo "<script>alert('Member Login IN! Please!'); window.open('$url', '_self', '');</script>";
-		}
-		$job_ = 'Link Note';
-		$create_type = 'Note'; // fix 
-
-		$title_nm		= $_POST['title_nm'];
-		$sys_subtit		= $_POST['title_nm'];
-		$job_url	= KAPP_URL_T_ . "/menu/ulink_list.php";//$_REQUEST['url_nm'];  // url
-		$sys_link	= KAPP_URL_T_ . "/menu/ulink_list.php";
-		$url_nm	= $_POST['url_nm'];  // url
-		$job_label = $_POST['gong_num'];
-		$memo		= $_POST['memo'];
-		$jong	= 'U';	                   //  tree가아닌 개별등록...
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$up_day  = date("Y-m-d-H:i:s");
-		$kapp_url = KAPP_URL_T_;
-		$g_name=$_POST['g_name']; 
-		$g_name_code=$_POST['g_name_code']; 
-
-		$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID', club_url='$url_nm', user_name='$title_nm', job_name='$create_type', job_group='$g_name', job_group_code='$g_name_code', job_addr='$job_url', job_level='$job_label', jong='$jong', memo='$memo', ip='$ip', num='Note', aboard_no='$job_', email='$H_EMAIL', up_day='$up_day' ";
-		$ret = sql_query(  $sqlA ); 
-
-		$kapp_theme0 = '';
-		$kapp_theme1 = '';
-		$kapp_theme = $config['kapp_theme'];
-		$kapp_theme = explode('^', $kapp_theme );
-		$kapp_theme0 = $kapp_theme[0];
-		$kapp_theme1 = $kapp_theme[1];
-		if( $ret ) {
-			if( $kapp_theme0 !='' ) {
-				$kapp_theme0 = $kapp_mainnet;
-				if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day ) ) {
-					if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day );
-				}
-			}
-			m_("job_link_table --- insert ok");
-			//return true;
-		} else {
-			m_("my_func - job_link_table_add error ");
-		}
-	}*/
-	/*
-	if($mode_up == 'Save_encrypted_run') {
-		if ( !$H_ID ) {
-			$url = "ulink_list.php";
-			echo "<script>alert('Member Login IN! Please!'); window.open('/', '_self', '');</script>";
-		}
-		$link_ = $_POST['url_nm'];
-		$title_ = $_POST['title_nm'];
-		$str = $_POST['memo'];
-		$secret_key = $_POST['form_psw'];
-		$memo = Encrypt($str, $secret_key, $link_secret_iv);
-	}
-	else if($mode_up == 'Decryption_run') {
-		$link_ = $_POST['url_nm'];
-		$title_ = $_POST['title_nm'];
-		$encrypted = $_POST['memo'];
-		$secret_key = $_POST['form_psw'];
-		$memo = Decrypt($encrypted, $secret_key, $link_secret_iv);
-	} else */
 	if ( $mode_up == 'update_link_run') {
 		if ( !$H_ID ) {
 			$url = "ulink_list.php";
@@ -258,18 +189,6 @@ $(function () {
 		$title_='';
 		echo "<script>location.href('ulink_list.php?g_name=$g_name');</script>";
 	}
-	/*
-	$menu1TWPer=15;  
-	$menu1AWPer=100 - $menu1TWPer;  
-	$menu2TWPer=10;  
-	$menu2AWPer=50 - $menu2TWPer;  
-	$menu3TWPer=10;  
-	$menu3AWPer=33.3 - $menu3TWPer;  
-	$menu4TWPer=10;  
-	$menu4AWPer=25 - $menu4TWPer;  
-	$Xwidth='90%';  
-	$Xheight='100%';  
-	$Text_height='60px';  */
 ?>
 <script language='javascript'>
 <!--
@@ -298,18 +217,20 @@ $(function () {
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.g_name_code.value = gg[1]; 
 	}
+	//call_pg_select( '$rs_job_addr', '$user_id', '$sys_label', '$sys_name','$gubun','$num','$aboard_no', '$seqno' )
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
-		document.coinview_form.link_.value =link_;
-		document.coinview_form.mid.value   =id;
-		document.coinview_form.group.value =group;
-		document.coinview_form.title_.value=title_;
-		document.coinview_form.jong.value  =jong;
-		document.coinview_form.num.value   =num;
-		document.coinview_form.aboard_no.value =aboard_no;
-		document.coinview_form.seqno.value =seqno;
-        document.coinview_form.action='./cratree_coinadd_menu.php';
-		document.coinview_form.target='_blank';
-		document.coinview_form.submit();
+		document.insert_form.mid.value   =id;
+		document.insert_form.seqno.value =seqno;
+		document.insert_form.link_.value =link_;
+		document.insert_form.title_.value=title_;
+		document.insert_form.group.value =group;
+		document.insert_form.jong.value  =jong;
+		document.insert_form.num.value   =num;
+		document.insert_form.aboard_no.value =aboard_no;
+		document.insert_form.mode.value='ulink_list';
+		document.insert_form.action='./cratree_coinadd_menu.php';
+		document.insert_form.target='_blank';
+		document.insert_form.submit();
 	}
 	function contents_del( num, g_name, webnum ) {
 		if( confirm('Are you sure you want to delete? '+num) ) {
@@ -325,7 +246,7 @@ $(function () {
 		form.seq_no.value=seq_no;
 		form.webnum.value=webnum;
 		form.g_name.value=g_name;
-		form.url_nm.value=job_addr; // url
+		form.url_nm.value=job_addr;
 		form.title_nm.value=title;
 		form.form_psw.value='';
 		form.memo.value=memo;
@@ -341,7 +262,7 @@ $(function () {
 			document.getElementById('Decryption').style.visibility = 'visible';
 			document.getElementById('save_button').style.visibility = 'hidden';
 		}
-		var seq_no= $("#seq_no").val();		//alert( seq_no + ", memo: " + memo);
+		var seq_no= $("#seq_no").val();
 		jQuery(document).ready(function ($) { // click point pay
 				$.ajax({
 					header:{"Content-Type":"application/json"},
@@ -352,7 +273,7 @@ $(function () {
 							"seq_no": seq_no
 						},
 					success: function(data) {
-						//console.log(data);				//alert("OK ---" + seq_no);
+						//console.log(data);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						alert(" error.-- ulink_list, ajax.php");
@@ -384,12 +305,6 @@ $(function () {
 		form.title_nm.value='';
 		document.getElementById("memo").value = "";
 	}
-	/*function insert_url_func() {
-		document.insert_form.mode.value = "insert_url_func_mode";
-		document.insert_form.action='ulink_list.php'; 
-		document.insert_form.target='_self';
-		document.insert_form.submit();
-	}*/
 	function Change_line_cnt( $line){
 		document.insert_form.page.value = 1;
 		document.insert_form.action='ulink_list.php';
@@ -428,9 +343,9 @@ $(function () {
 <script>
 jQuery(document).ready(function ($) {
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
-		//var seq_no = $("#insert_form").seq_no.val();		//alert("Note Create click --- " );
+		//var seq_no = $("#insert_form").seq_no.val();
 	});
-	$('#Save_encrypted').on('click', function() {//alert('버튼 클릭됨');//$('#element').text('새 텍스트 내용');
+	$('#Save_encrypted').on('click', function() {
 		var memo= $("#memo").val();
 		var pws= $("#form_psw").val();
 		if(pws==='') {
@@ -468,7 +383,7 @@ jQuery(document).ready(function ($) {
 		}
 		var memo= $("#memo").val();
 		var pws= $("#form_psw").val();
-		if( pws==='') {
+		if( pws=='') {
 			alert("key none"); return false;
 		}
 		$.ajax({
@@ -481,7 +396,7 @@ jQuery(document).ready(function ($) {
 					"pws": pws
 				},
 			success: function(data) {
-				$("#memo").val(data);				//console.log(data);				//alert(data);
+				$("#memo").val(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("data or URL confirm.-- ulink_list.php");
@@ -544,7 +459,7 @@ jQuery(document).ready(function ($) {
 				},
 			success: function(data) {
 				alert(data);
-					location.replace(location.href);			//	$("#g_name").val(data);		//console.log(data);
+					location.replace(location.href);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("The data type or URL is incorrect. -- ulink_ajax.php");
@@ -568,7 +483,6 @@ jQuery(document).ready(function ($) {
 					"g_name": g_name
 				},
 			success: function(data) {
-					//	$("#g_name").val(data);	//console.log(data);
 					alert(data);
 					location.replace(location.href);
 			},
@@ -595,10 +509,10 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
 	<input type='hidden' name='mode_in'		value='' > 
 	<input type='hidden' name='mode_up'		value='' > 
-	<input type='hidden' name='seq_no' id='seq_no'	value='<?=$_REQUEST['seq_no']?>' > 
+	<input type='hidden' name='seq_no' id='seq_no'	value='' > 
 	<input type='hidden' name='page'			value='<?=$page?>' > 
 	<input type='hidden' name='mode'			value='<?=$mode?>' > 
-	<input type='hidden' name='mode_insert'			value='insert_mode' > 
+	<input type='hidden' name='mode_insert'		value='' > 
 	<input type='hidden' name='pg_'				value='<?=$pg_?>' > 
 	<input type='hidden' name='target_'			value='<?=$target_?>' > 
 	<input type='hidden' name='type_'			value='<?=$type_?>' > 
@@ -617,7 +531,6 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='group'		value='' > 
 	<input type='hidden' name='jong'		value='' > 
 	<input type='hidden' name='aboard_no'	value='' > 
-
 
 <div id="mypanel" class="ddpanel">
 	<div id="mypanelcontent" class="ddpanelcontent">
@@ -663,8 +576,6 @@ jQuery(document).ready(function ($) {
 			<br> &nbsp; Encrypt and save notes. 
 			<br> &nbsp; The encryption key is not stored and should be remembered. 
 			<br> &nbsp; If you forget the key, the memo can not be decrypted.
-			<!--<br> &nbsp; 메모를 암호화하여저장합니다. <br> &nbsp; 암호키는 저장되지않으며 잘기억해두어야합니다. 
-			<br> &nbsp; 키를 잊어버리면 메모는 복호화가 불가능합니다.-->
 		</td>
 	</tr>
 	<tr>
@@ -676,18 +587,13 @@ jQuery(document).ready(function ($) {
 			if ( $mode == 'update_link') { ?>			
 				<input id="upd_save_button" type='button'  onclick="javascript:contents_upd_run();" value='Save Changes' style="background-color:blue;color:yellow;height:25;">
 				<input id="upd_cancle" type='button'  onclick="javascript:Cancle_run();" value='Cancel Change' style="background-color:red;color:yellow;height:25;">
-<?php		} else { ?>			
-				<!-- <input type='button'  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?> -->
 <?php		} ?>			
 				<input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" />
-				<!-- <input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'> -->
 				<br> User:<?=$H_ID?> - If you want to change the registered link data, you can change the data by clicking the Title.
-				<!-- 등록한 링크 자료를 변경하고자 할 때 Title 을 클릭하면 자료를 변경 할 수 있다. -->
 <?php } ?> 
 
 		</td>
 	</tr>
-	<!-- </form> -->
 </table>
 </div>
 <div id="mypaneltab" class="ddpaneltab" >
@@ -698,8 +604,6 @@ jQuery(document).ready(function ($) {
 
 
 <?php
-				//m_("group_type_func g_type: $g_type, g_name: $g_name");
-
 		if ( $g_type=='mylist' && isset($sdata) && $sdata != ""  ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
 		} else if ( $g_type=='mylist' ) {
@@ -707,18 +611,15 @@ jQuery(document).ready(function ($) {
 		} else if ( $g_type=='M' ) { 
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE job_group='menu' ";
 		} else if ( $g_type=='T' ) { 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE jong='T' "; // sysbom menu url link
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE jong='T' "; 
 		} else if ( $g_type=='A' ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE jong='A' or jong='G' or jong='F' ";
 		} else if ( $g_type=='U' ) { // Note - U
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='U' or jong='N' or jong='D' or jong='B'";
-		//} else if ( $g_type=='D' ) { // Note D, B:webeditor content
-		//		$ls = "SELECT * from {$tkher['job_link_table']} WHERE jong='D' or jong='B' ";
 		} else if ( $g_type=='P' ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE jong='p' ";
 		} else if ( $g_type !='' ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE job_group='$g_type' ";
-				//m_(" g_type: $g_type");
 		} else if ( isset($g_name) && $g_name != "" && isset($sdata) && $sdata != "" ){ 
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
 		} else if ( isset($g_name) && $g_name != "" ) {
@@ -749,16 +650,6 @@ jQuery(document).ready(function ($) {
 		if( $H_ID && $H_ID!='' && isset($member['mb_email'])) $g_nameX = $g_nameX . ", level:" . $member['mb_level'] . "," .$member['mb_email'];
 ?>
 
-
-<!-- <form name='coinview_form' method='post' > 
-	<input type='hidden' name='mid'			value='' > 
-	<input type='hidden' name='seqno'		value='' > 
-	<input type='hidden' name='link_'		value='' > 
-	<input type='hidden' name='title_'		value='' > 
-	<input type='hidden' name='group'		value='' > 
-	<input type='hidden' name='jong'		value='' > 
-	<input type='hidden' name='num'			value='' > 
-	<input type='hidden' name='aboard_no'	value='' > -->
 <table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 	<tr>
 		<td align='left' colspan='9'>
@@ -839,7 +730,6 @@ jQuery(document).ready(function ($) {
 ?>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<!-- <a href="ulink_list.php?g_name=<?=$rs['group_name']?>:<?=$rs['userid']?>" target='_top'><?=$rs['group_name']?></a> -->
 		<a onclick="group_type_func('<?=$group_name?>:<?=$userid?>')" target='_self'><?=$rs['group_name']?></a>
 		</td>
 		</tr>
@@ -859,13 +749,6 @@ jQuery(document).ready(function ($) {
 <thead  width='100%'>
 		<tr align='center'>
 			<TH>icon</TH>
-			<!-- <TH>Project</TH>
-			<TH>Title</TH>
-			<TH>Link Url</TH>
-			<TH>type</TH>
-			<TH>View</TH>
-			<TH>date</TH> -->
-
 	<?php
 		echo " <th title='Project Sort click' onclick=title_func('job_group')>Project</th> ";
 		echo " <th title='User Sort click' onclick=title_func('user_id')>User</th> ";
@@ -875,52 +758,10 @@ jQuery(document).ready(function ($) {
 	?>
 			<TH>View</TH>
 			<TH title='date Sort click' onclick="title_func('up_day')">date</TH>
-
-			<!-- <TH>lev</TH>-->
-			<!-- <TH>management</TH> -->
 		</tr>
 </thead>
 <tbody width='100%'>
 		<?php
-			/*if ( $g_type=='mylist' && isset($sdata) && $sdata !="" ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE user_id='$H_ID' and user_name like '%$sdata%'    ";
-			} else if ( $g_type=='mylist' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE user_id='$H_ID'  ";
-			} else if ( $g_type=='P' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE jong='P' ";
-			} else if ( $g_type=='D' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE jong='D' or jong='B' ";
-			} else if ( $g_type=='G' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE jong='G' or jong='A' ";
-			} else if ( $g_type=='T' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE jong='T' ";
-			} else if ( $g_type=='M' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE jong='M' ";
-			} else if ( $g_type=='U' ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE jong='U' ";
-			} else if ( isset($g_name) && $g_name != "" && isset($sdata) && $sdata != "" ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
-			} else if ( isset($g_name) && $g_name != "" ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE (job_name='$g_name' or job_group='$g_name') $w ";
-			} else if ( isset($sdata) && $sdata != "" ) {
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " WHERE user_name like '%$sdata%'    ";
-			} else{
-				$ls = " SELECT * from {$tkher['job_link_table']} ";
-				$ls = $ls . " ";
-			}*/
-		//$ls = $ls . " ORDER BY up_day desc, user_name ";
-		//$ls = $ls . $limit;
 		if( $fld_code!='' ) $OrderBy = " order by $fld_code, up_day desc, user_name ";    
 		else $OrderBy	= " ORDER BY up_day desc, user_name ";
 		$ls = $ls . $OrderBy;
@@ -945,21 +786,14 @@ jQuery(document).ready(function ($) {
 			$day_ = substr($rs['up_day'], 0, 10);
 			$td_bg = '#000000';
 
-			if( $gubun == 'T' )	{
-				$icon='../icon/berry.png'; $gubunT='T-Berry';$t_color='white';	$i_tit='T : Link URL';
-			} else if( $gubun == 'B' or    $gubun == 'D' or $rs['job_group'] == 'DOC' ){ 
-				$icon='../icon/seed.png';  $gubunT='B-Seed';$t_color='cyan';			$i_tit='B, D, DOC';
-			} else if( $gubun == 'G' )	{ 
-				$icon='../icon/pizza.png'; $gubunT='G-Pizza';$t_color='cyan';			$i_tit='G : Tree Board';
-			} else if( $gubun == 'P' )	{// Program List
-				$icon='../icon/pcman1.png'; $gubunT='Program';$t_color='cyan';	$i_tit='P : Program';
-			}
-			else if( $gubun=='F' ){ $icon='../icon/land.png'; $gubunT='Land';$t_color='green';$i_tit='Board';}
+			if( $gubun=='T' )	{$icon='../icon/berry.png';   $gubunT='T-Berry';$t_color='white';	$i_tit='T : Link URL';}
+			else if( $gubun=='B' ){ $icon='../icon/seed.png'; $gubunT='B-Seed';$t_color='cyan';$i_tit='B, D, DOC';}
+			else if( $gubun=='P' ){ $icon='../icon/pcman1.png'; $gubunT='Program';$t_color='cyan';$i_tit='P : Program';}
 			else if( $gubun=='A' ){ $icon='../icon/ship.png'; $gubunT='A-board';$t_color='cyan'; $i_tit='A: T-ABoard';}
 			else if( $gubun=='M' ){ $icon='../icon/land.png'; $gubunT='BOM-Main';$t_color='yellow';$i_tit='M: Tree-Main';}
 			else if( $gubun=='N' ){ $icon='../icon/leaf.png'; $gubunT='BOM-Note';$t_color='yellow';$i_tit='N: Tree-Note';}
 			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='blue'; $i_tit='U: Link Note';}
-			else	$t_color='grace';
+			else { $icon='../icon/pizzaX.png'; $gubunT='none';  $t_color='red'; $i_tit='none: check';}	
 ?>
 				<tr valign="middle" align='left' > 
 				  <td  bgcolor='black' title='<?=$user_id?>' style="width:1%" ><img src='<?=$icon?>' style="width:25px;"></td>
@@ -968,7 +802,7 @@ jQuery(document).ready(function ($) {
 <?php if( $rs['job_name']=='Note') { ?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:500px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_club_url?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;width:500px;"><?=$rs_club_url?></a></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:500px;" title="type:<?=$i_tit ?>"><a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;width:500px;"><?=$rs_job_addr?></a></td>
 <?php } else {?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>

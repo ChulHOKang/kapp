@@ -21,6 +21,8 @@
 	*/
 	//mid, num, pg, jong, title_, link_, target_
 
+	if( isset($_POST['mode'])) $mode= $_POST['mode']; // tree_run.php mode='rowlevel', ulink_list.php mode='ulink_list'
+	else $mode	= '';
 
 	if( isset($_POST['sys_board_num'])) $sys_board_num	= $_POST['sys_board_num'];
 	else $sys_board_num	= '';
@@ -155,10 +157,17 @@
 		$query = "update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno=" . $_POST['seqno'];
 		$ret = sql_query($query);
 	}*/
-	if( isset($_POST['num']) && isset($_POST['title_']) ){
-		$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_pg='" . $_POST['num'] . "' and sys_subtit='" . $_POST['title_'] ."' "; 
+	if( $mode =='rowlevel'){
+		//$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where sys_pg='" . $_POST['num'] . "' and sys_subtit='" . $_POST['title_'] ."' "; 
+		$seqno =$_POST['seqno']; 
+		$query = "update {$tkher['sys_menu_bom_table']} set view_cnt=view_cnt+1 where seqno=$seqno "; 
 		$ret = sql_query($query);
+	} else if( $mode =='ulink_list') {
+		$seqno =$_POST['seqno']; 
+		$sql= " update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno = $seqno ";
+		sql_query($sql);
 	}
+		
 
 		$SQL	= " SELECT * from {$tkher['coin_view_table']} where url='$link_' and makeid='$mid' ";
 		$ret = sql_query($SQL);
