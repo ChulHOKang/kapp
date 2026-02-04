@@ -375,51 +375,51 @@ let email_code = '';
 let phone_code = '';
 
 function record_modify() {
+
     if (!document.makeform.mb_name.value) {
-        alert("이름을 입력해주세요.");
+        alert("name confirm.");
         document.makeform.mb_name.focus();
         return;
     }
     if (!document.makeform.mb_password.value || !document.makeform.mb_password2.value) {
-        alert("비밀번호를 입력해주세요.");
+        alert("password confirm.");
         return;
     } else {
         if (!Validation_password()) { // 비밀번호 유효성 검사
-            alert("비밀번호는 영문자+숫자+특수문자 조합으로 8~25자를 사용해야 합니다.");
+            alert("password alpabet+number+Special characters 8~25.");
             document.makeform.mb_password.focus();
             return;
         }
     }
     if (document.makeform.mb_password.value != document.makeform.mb_password2.value) {
-        alert("비밀번호가 일치하지 않습니다.");
+        alert("password confirm.");
         document.makeform.mb_password2.focus();
         return;
     }
     if (!document.makeform.mb_hp.value) {
-        alert("연락처를 입력해주세요.");
+        alert("phone number enter.");
         document.makeform.mb_hp.focus();
         return;
     } else {
         Tel_number(); // - 문자 제거
     }
     if (!document.makeform.mb_birth.value) {
-        alert("생년월일을 입력해주세요.");
+        alert("Please enter your date of birth.");
         document.makeform.mb_birth.focus();
         return;
     } else {
         Birth_number(); // - 문자 제거
     }
-    /*
-	if (!document.makeform.mb_zip1.value) {
-        alert("우편번호를 입력해주세요.");
+    if (!document.makeform.mb_zip1.value) {
+        alert("Please enter your zip code.");
         document.makeform.mb_zip1.focus();
         return;
     }
     if (!document.makeform.mb_addr1.value) {
-        alert("주소를 입력해주세요.");
+        alert("Please enter your address.");
         document.makeform.mb_addr1.focus();
         return;
-    }*/
+    }
 
     /* document.makeform.mb_password_enc.value = CryptoJS.MD5(document.makeform.mb_password.value);
     document.makeform.mb_password2_enc.value = CryptoJS.MD5(document.makeform.mb_password2.value); */
@@ -451,12 +451,12 @@ function Close() {
     window.open('', '_self').close();
 }
 
-function findAddr() { // 다음 주소 API
+function findAddr() { // daum address API
     new daum.Postcode({
         oncomplete: function(data) {
 
-            var roadAddr = data.roadAddress; // 도로명 주소 변수
-            var jibunAddr = data.jibunAddress; // 지번 주소 변수
+            var roadAddr = data.roadAddress;
+            var jibunAddr = data.jibunAddress;
 
             document.getElementById('member_post').value = data.zonecode;
             if (roadAddr !== '') {
@@ -475,10 +475,6 @@ function Next_input() {
     document.makeform.submit();
 }
 
-/* function tab_pg_list($pg_code) {
-    document.tkher_form.action = 'ksd39673976_1704690698_run.php?pg_code=' + $pg_code;
-    document.tkher_form.submit();
-} */
 </script>
 </head>
 
