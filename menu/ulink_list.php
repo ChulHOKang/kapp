@@ -217,8 +217,9 @@ $(function () {
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.g_name_code.value = gg[1]; 
 	}
-	//call_pg_select( '$rs_job_addr', '$user_id', '$sys_label', '$sys_name','$gubun','$num','$aboard_no', '$seqno' )
-	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
+	//( '$rs_job_addr', '$user_id', '$sys_label', '$sys_name','$gubun','$num','$aboard_no', '$seqno' )
+	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno, cntno, vcnt) {
+		vcntA = document.insert_form["vcnt[" + cntno + "]"].value = vcnt+1;
 		document.insert_form.mid.value   =id;
 		document.insert_form.seqno.value =seqno;
 		document.insert_form.link_.value =link_;
@@ -504,7 +505,7 @@ jQuery(document).ready(function ($) {
 		$cur='B';
 		include_once "../menu_run.php"; 
 ?>
-<form id="insert_form" name='insert_form' method='post' enctype='multipart/form-data' >
+<Form name='insert_form' METHOD='POST' enctype="multipart/form-data" id="insert_form">
 	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
 	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
 	<input type='hidden' name='mode_in'		value='' > 
@@ -761,13 +762,15 @@ jQuery(document).ready(function ($) {
 		</tr>
 </thead>
 <tbody width='100%'>
-		<?php
+<?php
 		if( $fld_code!='' ) $OrderBy = " order by $fld_code, up_day desc, user_name ";    
 		else $OrderBy	= " ORDER BY up_day desc, user_name ";
 		$ls = $ls . $OrderBy;
 		$ls = $ls . $limit;
 		$result = sql_query(  $ls );
+		$cntno = 0;
 		while ( $rs = sql_fetch_array( $result ) ) {
+			$cntno++;
 			$sys_group= $rs['job_group'];
 			$sys_label	= $rs['job_name'];	
 			$sys_name	= $rs['user_name']; //title
@@ -802,14 +805,20 @@ jQuery(document).ready(function ($) {
 <?php if( $rs['job_name']=='Note') { ?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:500px;" title="type:<?=$i_tit ?>"><a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;width:500px;"><?=$rs_job_addr?></a></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:300px;" title="type:<?=$i_tit ?>">
+				  <a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;width:300px;"><?=$rs_job_addr?></a></td>
 <?php } else {?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
-					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:500px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;width:500px;" ><?=$rs_job_addr ?></a></td>
+					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
+
+				  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
+					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>"><?=$rs_job_addr ?></a></td>
 <?php }?>
-				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" ><?=$gubun?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:30px;text-align:center;" ><?=$vcnt?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;"><?=$gubun?></td>
+
+				  <td style="background-color:black;color:yellow;text-align:center;width:3px;" >
+					<input type='text' name="vcnt[<?=$cntno?>]" id='vcnt[<?=$cntno?>]' value='<?=$vcnt?>' style="border:0 solid white;background-color:black;color:yellow;text-align:center;font-size:12px;width:18px;" readonly></td>
+				  
 				  <td style="background-color:black;color:<?=$t_color?>;width:50px;text-align:center;" ><?=$day_?></td>
 				</tr> 
 		<?php
@@ -842,15 +851,6 @@ $next = $last_page+1;
 if( $next <= $total_page) 
 	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', '$g_type');\" title='page next:$next'>Next</a>]";
 
-/*if($page > $page_num) echo"[<a href=".$PHP_SELF."?page=".$prev."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Prev</a>] ";
-for($i = $first_page; $i <= $last_page; $i++)
-{
-	if($page == $i) echo" <b>$i</b> "; 
-	else echo"[<a style='font-size:20px;font-weight:bold;' href=".$PHP_SELF."?page=".$i."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >".$i."</a>]";
-}
-$next = $last_page+1;
-if($next <= $total_page) echo" [<a href=".$PHP_SELF."?page=".$next."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Next</a>]";
-*/
 ?>
 	</td>
   </tr>
