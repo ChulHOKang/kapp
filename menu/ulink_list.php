@@ -757,14 +757,17 @@ jQuery(document).ready(function ($) {
 		echo " <th title='url Sort click' onclick=title_func('job_addr')>Link Url</th> ";
 		echo " <th title='type Sort click' onclick=title_func('jong')>type</th> ";
 	?>
-			<TH>View</TH>
+			<!-- <TH>View</TH> -->
+			<TH title='date Sort click' onclick="title_func('view_cnt')">View</TH>
 			<TH title='date Sort click' onclick="title_func('up_day')">date</TH>
 		</tr>
 </thead>
 <tbody width='100%'>
 <?php
-		if( $fld_code!='' ) $OrderBy = " order by $fld_code, up_day desc, user_name ";    
-		else $OrderBy	= " ORDER BY up_day desc, user_name ";
+		if( $fld_code!='' ) {
+			if( $fld_code == 'view_cnt' ) $OrderBy = " order by $fld_code desc, up_day desc, user_name ";    
+			else  $OrderBy = " order by $fld_code, up_day desc, user_name ";    
+		} else $OrderBy	= " ORDER BY up_day desc, user_name ";
 		$ls = $ls . $OrderBy;
 		$ls = $ls . $limit;
 		$result = sql_query(  $ls );
@@ -814,12 +817,12 @@ jQuery(document).ready(function ($) {
 				  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>"><?=$rs_job_addr ?></a></td>
 <?php }?>
-				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;"><?=$gubun?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:1%;text-align:center;"><?=$gubun?></td>
 
-				  <td style="background-color:black;color:yellow;text-align:center;width:3px;" >
-					<input type='text' name="vcnt[<?=$cntno?>]" id='vcnt[<?=$cntno?>]' value='<?=$vcnt?>' style="border:0 solid white;background-color:black;color:yellow;text-align:center;font-size:12px;width:18px;" readonly></td>
+				  <td style="background-color:black;color:yellow;text-align:center;width:1%;" >
+					<input type='text' name="vcnt[<?=$cntno?>]" id='vcnt[<?=$cntno?>]' value='<?=$vcnt?>' style="border:0 solid white;background-color:black;color:yellow;text-align:center;font-size:12px;width:38px;" readonly></td>
 				  
-				  <td style="background-color:black;color:<?=$t_color?>;width:50px;text-align:center;" ><?=$day_?></td>
+				  <td style="background-color:black;color:<?=$t_color?>;width:6%;text-align:center;" ><?=$day_?></td>
 				</tr> 
 		<?php
 			}	//-------- Loop
