@@ -3,13 +3,7 @@
 	/*
 	indexTT.php - tkher_start_necessary.php
 	index.php - kapp_start_necessary_TT.php
-	  --- 이것을 알아야 하는 이유, 이것을 사용해야 하는 이유 ---
-	  1. 이것은 나의 미래를 결정한다.
-	  2. 이것은 나의 경쟁력이다.
-	  3. 이것은 1시간이면 알수있고, 1주일이면 나도 전문가다
-	  4. 이것은 나의 상상력을 펼치기 위한 필수 조건이다.
-	  5. 이것을 아는것은 힘이요, 원동력이다.
-	  --------------------------------------------------
+	FdNmoIrtH3POENF54xdG, VWoS5AbcHE
 	*/
 ?>
 <html>
@@ -84,13 +78,7 @@
 </script>
 
 <?php
-
-	//$sql = "select * from {$tkher['tkher_main_img_table']} where userid='tkher' ";
-	//$ret = sql_query($sql);
-	//$rs  = sql_fetch_array($ret);
-	//$slide_time = $rs['slide_time'];
-	//if( !$slide_time )
-	$slide_time = $config['kapp_slide_time']; //$slide_time = 6000;
+	$slide_time = $config['kapp_slide_time'];
 	$sql = " SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher' and group_name='main' order by view_no ";
 	$ret       = sql_query($sql);
 	$st_style  = "<style type='text/css'> ";
@@ -98,8 +86,6 @@
 	$i=0;
 	while ( $rs = sql_fetch_array($ret) ) {
 		$i++;
-		//if( $i < 10 ) $k = "0" . $i;
-		//else			$k = $i;
 		$k = $i;
 		$ifile =$rs['jpg_file'];
 		$inm   =$rs['jpg_name'];
@@ -142,11 +128,13 @@
 		echo "<table><tr><td><a id='kakao_ligin' href='javascript:kakao_login(\"".$kapp_kakao_js_apikey."\");'><img src='./icon/kakao.jpg' style='height:38px;' /></a>&nbsp;&nbsp;&nbsp;</td>";
 		echo '<td><div class="g_id_signin" data-type="standard"></div></td>';
 		$n_client_id = $config['kapp_naver_client_id'];
-		$N_reurl = KAPP_URL_T_ . "/login_checkT.php?mode=N_login";
+		$N_reurl = KAPP_URL_T_ . "/login_checkT.php?Login_Mode=N_login"; //?mode=N_login";
         $redirectURI = urlencode( $N_reurl );
-        $state = "kapp"; //"modumoa";
-        $apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".$n_client_id."&redirect_uri=".$redirectURI."&state=".$state;
-        echo "<td><a id='naverIdLogin_loginButton' target='_top' href='".$apiURL."'><img src='./include/img/btnG_naver.png' /></a></td><tr></table>";
+        $state = "kapp";
+
+		$apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".$n_client_id."&redirect_uri=".$redirectURI;
+
+		echo "<td><a id='naverIdLogin_loginButton' target='_top' href='".$apiURL."'><img src='./include/img/btnG_naver.png' /></a></td><tr></table>";
 
 	} else if( get_session("urllink_login_type") == "Google_Login_K") {
         echo "<table><tr><td><button onclick='GoogleLogout()' class=''>Google_LogOut</button></td><tr></table>";

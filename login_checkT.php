@@ -6,11 +6,11 @@
 	  - set_session('urllink_login_type', "appgeneratorsystem");
 	*/
 
-	if( isset($_POST['Login_Mode']) ) $Login_Mode = $_POST['Login_Mode'];
-    else if (isset($_REQUEST['Login_Mode']) ) $Login_Mode = $_REQUEST['Login_Mode'];
+	if (isset($_REQUEST['Login_Mode']) && $_REQUEST['Login_Mode']!='' ) $Login_Mode = $_REQUEST['Login_Mode'];
+	else if( isset($_POST['Login_Mode']) && $_POST['Login_Mode']!='' ) $Login_Mode = $_POST['Login_Mode'];
 	else $Login_Mode = '';
 
-    if( isset($_POST['runpage']) ) $runpage = trim($_POST['runpage']);
+	if( isset($_POST['runpage']) ) $runpage = trim($_POST['runpage']);
 	else $runpage= '';
 
     if( isset($_POST['returnURL']) ) $returnURL = trim($_POST['returnURL']);
@@ -37,23 +37,23 @@ if( $Login_Mode == 'A_login') {
         echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     } 
-    // 차단된 아이디인가?
+    // Is this a blocked ID? 차단된 아이디인가?
     if( $member['mb_intercept_date'] && $member['mb_intercept_date'] <= date("Ymd", KAPP_SERVER_TIME)) {
         $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1year \\2month \\3day", $member['mb_intercept_date']);
         m_('Your ID is prohibited from access. date: '.$date);
         echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     }
-    // 탈퇴한 아이디인가?
+    // Is this a deleted ID? 탈퇴한 아이디인가?
     if( $member['mb_leave_date'] && $member['mb_leave_date'] <= date("Ymd", KAPP_SERVER_TIME)) {
         $date = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1년 \\2월 \\3일", $member['mb_leave_date']);
-        //탈퇴한 아이디이므로 접근하실 수 없습니다. 탈퇴일 : '.$date);
         m_('You can not access it because it is an ID you left. Date of withdrawal: '.$date);
         echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     }
+	// You must verify your email address to log in. 로그인하려면 이메일 인증을 받아야 합니다. 다른 이메일 주소로 변경하고 확인하려면 취소를 클릭하세요.
     if( $config['kapp_use_email_certify'] && !preg_match("/[1-9]/", $member['mb_email_certify'])) {
-        $ckey = md5($member['mb_ip'].$member['mb_datetime']); //로그인하려면 이메일 인증을 받아야 합니다. 다른 이메일 주소로 변경하고 확인하려면 취소를 클릭하세요.
+        $ckey = md5($member['mb_ip'].$member['mb_datetime']); 
        confirm("{$member['mb_email']} You must be authenticated by e-mail to log in.  Please click Cancel to change to another email address and verify. ", KAPP_URL_T_, './tkher_register_email.php?mb_id='.$member['mb_id'].'&ckey='.$ckey);
     } 
     Create_Session('appgeneratorsystem', $member, $remote_addr, $user_agent);
@@ -140,7 +140,7 @@ if( $Login_Mode == 'A_login') {
 	if( $status_code == 200) {
 		$responseData = json_decode($response, true);
 	  	$token = $responseData['access_token'];
-		$header = "Bearer ".$token; // Bearer 다음에 공백 추가
+		$header = "Bearer ".$token;
 		$n_url = "https://openapi.naver.com/v1/nid/me";
 		$is_post = false;
 		$ch = curl_init();
@@ -165,7 +165,9 @@ if( $Login_Mode == 'A_login') {
 			$n_gender = $responseData2['response']['gender'];
 			if( isset($responseData2['response']['age']) ) $n_age = $responseData2['response']['age'];
 			else $n_age = "";
-			$n_birthday = $responseData2['response']['birthday'];
+			if( isset($responseData2['response']['birthday']) && $responseData2['response']['birthday']!='')
+				$n_birthday = $responseData2['response']['birthday'];
+			else $n_birthday = '';
 			if( isset($responseData2['response']['birthyear']) ) $n_birthyear = $responseData2['response']['birthyear'];
 			else $n_birthyear = "";
 
@@ -188,7 +190,6 @@ if( $Login_Mode == 'A_login') {
 		$email0 = $emailA[0];
 		$userid = str_replace( "@", "_", $email0); 
         Record_create_member_naver($userid, $n_email, $n_name, $n_nickname, $n_profile_image, $level, $n_gender, $n_birth, $n_hp, $set_point);
-		//$id = str_replace( "@", "_", $n_email);
         Record_create_point_info($userid, $set_point);
         $member = get_urllink_memberE($n_email);
         connect_count('K-App login : Create Naver_account', $n_email, 1, $referer);
@@ -206,7 +207,8 @@ if( $Login_Mode == 'A_login') {
 	}
    
 } else {
-	m_("---- Error login checkT"); 
+	m_("---- Error login checkT - Error Login_Mode: $Login_Mode"); 
+	//
 	exit;
 }
 
@@ -215,29 +217,7 @@ if( $config['kapp_use_point']) {
     $sql= " update {$tkher['tkher_member_table']} set mb_point = '$sum_point' where mb_id = '{$member['mb_id']}' ";
     sql_query($sql);
 }
-/*
-if( $url) { // url 체크
-    check_url_host($url);
-    $link = urldecode($url);   // (다른 변수들을 넘겨주기 위함)
-    if( preg_match("/\?/", $link)) $split= "&amp;";
-    else     $split= "?";
-
-    foreach( $_POST as $key=>$value) {
-        if( $key != 'mb_id' && $key != 'mb_password' && $key != 'x' && $key != 'y' && $key != 'url') {
-            $link .= "$split$key=$value";
-            $split = "&amp;";
-        }
-    }
-    if( $_POST['runpage']) $link = $_POST['runpage'];
-    else $link = KAPP_URL_T_;
-} else  {
-
-	if( isset($_POST['runpage']) ) $link = $_POST['runpage'];
-    else $link = "./";
-}
-*/
-
-$url = "./"; //$returnURL;
+$url = "./";
 echo "<script>window.open( '$url' , '_top', ''); </script>";
 exit;
 
@@ -300,6 +280,7 @@ function Record_create_point_info($_mb_id, $_set_point) {
 function Record_update_google($_g_email, $_g_fullname, $_g_image) {
     global $tkher;
     global $config;
+	$ip= $_SERVER['REMOTE_ADDR'];
         
 	$query = " UPDATE {$tkher['tkher_member_table']} SET  "; 
 	if(Change_nick_check($_g_email, $_g_fullname)) { // 닉네임이 변경 체크
@@ -311,6 +292,8 @@ function Record_update_google($_g_email, $_g_fullname, $_g_image) {
 	}
 
 	$query = $query . ",mb_datetime= '" . date('Y-m-d H:i:s') . "' ";   
+	$query = $query . ",mb_today_login = '".date('Y-m-d H:i:s')."' "; 
+	$query = $query . ",mb_login_ip = '".$ip."' "; 
 	$query = $query . " where mb_email = '".$_g_email."' ";   
 
 	$ret = sql_query( $query );
@@ -322,6 +305,7 @@ function Record_update_google($_g_email, $_g_fullname, $_g_image) {
 function Record_update_kakao($_k_email, $_k_nickname, $_k_image) {
     global $tkher;
     global $config;
+	$ip= $_SERVER['REMOTE_ADDR'];
         
 	$query = " UPDATE {$tkher['tkher_member_table']} SET  "; 
 	if( Change_nick_check($_k_email, $_k_nickname)) {
@@ -332,6 +316,8 @@ function Record_update_kakao($_k_email, $_k_nickname, $_k_image) {
 		$query = $query . "mb_photo= '" . $_k_image . "' ";   
 	}
 	$query = $query . ",mb_datetime= '" . date('Y-m-d H:i:s') . "' ";   
+	$query = $query . ",mb_today_login = '".date('Y-m-d H:i:s')."' "; 
+	$query = $query . ",mb_login_ip = '".$ip."' "; 
 	$query = $query . " where mb_email = '".$_k_email."' ";   
 	$ret = sql_query( $query );
 	if(!$ret) {
@@ -342,6 +328,7 @@ function Record_update_kakao($_k_email, $_k_nickname, $_k_image) {
 function Record_update_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_hp) {
     global $tkher;
     global $config;
+	$ip= $_SERVER['REMOTE_ADDR'];
         
 	$query = " UPDATE {$tkher['tkher_member_table']} SET  "; 
 	if( Change_nick_check($_n_email, $_n_nickname)) {
@@ -355,10 +342,10 @@ function Record_update_naver($_n_email, $_n_name, $_n_nickname, $_n_image, $_hp)
 		$query = $query . ",mb_photo= '" . $_n_image . "' ";   
 		$query = $query . ",mb_hp= '" . $_hp . "' ";   
 	}
-
 	$query = $query . ",mb_datetime= '" . date('Y-m-d H:i:s') . "' ";   
+	$query = $query . ",mb_today_login = '".date('Y-m-d H:i:s')."' "; 
+	$query = $query . ",mb_login_ip = '".$ip."' "; 
 	$query = $query . " where mb_email = '".$_n_email."' ";   
-
 	$ret = sql_query( $query );
 	if(!$ret) {
 		m_("naver member update error. ---");
