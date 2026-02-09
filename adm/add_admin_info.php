@@ -233,7 +233,7 @@ function Next_input() {
                     <div class='blankA'> </div> -->
                     <div class='blankA'> </div>
                     <div class='viewHeader' style="text-align:center;">
-                        <input type=button value='Submit' onclick="record_modify()" class="Btn_List01A">
+                        <input type=button value='Submit' onclick="record_modify()" class="kapp_btn_bo02">
                         <input type=button value='Enter next' onclick="Next_input()"  class="kapp_btn_bo02">
                     </div>
                 </div>
