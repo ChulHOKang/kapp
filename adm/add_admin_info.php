@@ -1,12 +1,13 @@
 <?php  
     include_once('../tkher_start_necessary.php');
-	// https://ailinkapi.com/kapp/setup/ksd39673976_1711436495_kapp_config.php
+
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
     if( $mode == 'next_input') {
         set_cookie('add_admin_info', 'next', 43200); // 12시간 저장
-        echo "<script>window.open('', '_self').close();</script>";
-        exit;
+        //echo "<script>window.close();</script>";
+        //echo "<script>window.open('', '_self').close();</script>";
+        //exit;
     }
 
 	$menu1TWPer=25;  
@@ -21,350 +22,10 @@
 	$Xheight='100%';  
 	$Text_height='60px';  
 ?>
-<style>
-* {
-    box-sizing: border-box;
-}
+<link rel="stylesheet" href="../include/css/kapp_basic.css" type="text/css">
 
-.header2A {
-    width: 100%;
-    height: 50px;
-    float: left;
-    border: 0px solid red;
-    padding: 0px;
-}
+<!-- <link rel="stylesheet" href="../include/css/kapp_add_admin_infor.css" type="text/css"> -->
 
-.menu1Area {
-    width: 100%;
-    height: auto;
-    float: left;
-    padding: 0px;
-    border: 0px solid #DEDEDE;
-    background-color: #FAFAFA;
-}
-
-.menu2T {
-    padding-top: 3px;
-    width: 25%;
-    height: 30px;
-    float: left;
-    padding: 4px;
-    border: 1px solid #DEDEDE;
-    background-color: #FAFAFA;
-}
-
-.menu2A {
-    width: 25%;
-    height: 30px;
-    float: left;
-    padding: 0px;
-    border: 0px solid #DEDEDE;
-    background-color: #FAFAFA;
-}
-
-.data2A {
-    width: 25%;
-    height: 30px;
-    float: left;
-    padding: 4px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-.input1A {
-    padding: 0px;
-}
-
-.mainA {
-    width: 100%;
-    float: left;
-    padding: 15px;
-    border: 1px solid red;
-}
-
-.menu1T {
-    padding-top: 0px;
-    width: <?=$menu1TWPer?>%;
-    height: 30px;
-    float: left;
-    padding: 6px;
-    border: 1px solid #DEDEDE;
-    background-color: #FAFAFA;
-}
-
-.menu1A {
-    width: <?=$menu1AWPer?>%;
-    height: 30px;
-    float: left;
-    padding: 0px;
-    text-align: left;
-}
-
-.data1A {
-    width: <?=$menu1AWPer?>%;
-    height: 30px;
-    float: left;
-    padding: 6px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-radio1A {
-    width: <?=$menu1AWPer?>%;
-    height: 30px;
-    float: left;
-    padding: 6px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-.ListBox1A {
-    width: <?=$menu1AWPer?>%;
-    height: 30px;
-    float: left;
-    padding: 2px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-.File1A {
-    width: <?=$menu1AWPer?>%;
-    height: 30px;
-    float: left;
-    padding: 2px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-.menu4T {
-    padding-top: 3px;
-    width: 10%;
-    height: 30px;
-    float: left;
-    padding: 4px;
-    border: 1px solid #DEDEDE;
-    background-color: #FAFAFA;
-}
-
-.input4A {
-    width: 15%;
-    height: 30px;
-    float: left;
-    padding: 0px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-.menu4B {
-    width: 15%;
-    height: 30px;
-    float: left;
-    padding: 0px;
-    border: 0px solid #DEDEDE;
-    background-color: #FAFAFA;
-}
-
-.data4A {
-    width: 15%;
-    height: 30px;
-    float: left;
-    padding: 4px;
-    border: 1px solid #DEDEDE;
-    background-color: #FFFFFF;
-}
-
-.main4A {
-    width: 100%;
-    float: left;
-    padding: 15px;
-    border: 1px solid #DEDEDE;
-}
-
-.blankA {
-    border-top: 0px;
-    width: 100%;
-    float: left;
-    height: 1px;
-    padding: 0px;
-    border: 1px solid #FFFFFF;
-    background-color: #FFFFFF;
-}
-
-.blankB {
-    width: 100%;
-    height: 1px;
-    padding: 1px;
-    float: left;
-    border: 1px solid #FFFFFF;
-    background-color: #FFFFFF;
-}
-
-.viewSubjX {
-    margin-top: 1px;
-    width: 100%;
-    height: 35px;
-    line-height: 32px;
-    border-top: 3px solid #d01c27;
-    text-align: center;
-    background: #fafafa;
-    border-bottom: 1px solid #dedede;
-    overflow: hidden;
-    font-size: 18px;
-    color: #69604f;
-}
-
-.viewSubjX2 {
-    width: 100%;
-    height: 35px;
-    line-height: 32px;
-    border-top: 3px solid #d01c27;
-    text-align: center;
-    background: #fafafa;
-    overflow: hidden;
-    font-size: 18px;
-    color: #69604f;
-    margin-bottom: -2px;
-}
-
-.viewSubjX span {
-    font-size: 22px;
-    color: #171512;
-    vertical-align: baseline;
-}
-
-.HeadTitle02AX {
-    display: inline-block;
-    margin: 0 1px;
-    height: 35px;
-    line-height: 35px;
-    padding: 0 20px;
-    font-size: 25px;
-    background: #d01c27;
-    color: #ffffff;
-    border-radius: 5px;
-}
-
-.HeadTitle01AX {
-    display: inline-block;
-    margin: 0 1px;
-    height: 40px;
-    line-height: 0px;
-    padding: 0 20px;
-    font-size: 22px;
-    background: #d01c27;
-    color: #fff;
-    border-radius: 5px;
-}
-
-.HeadTitle01AX a.on {
-    background: #d01c27;
-    color: #fff;
-}
-
-.HeadTitle01A {
-    display: inline-block;
-    margin: 0 1px;
-    height: 35px;
-    line-height: 35px;
-    padding: 0 20px;
-    font-size: 22px;
-    background: #dedcdf;
-    color: #000;
-    border-radius: 5px;
-}
-
-.HeadTitle02A a {
-    display: inline-block;
-    margin: 0 1px;
-    height: 35px;
-    line-height: 35px;
-    padding: 0 20px;
-    font-size: 22px;
-    background: #dedcdf;
-    color: #000;
-    border-radius: 5px;
-}
-
-.HeadTitle01A a {
-    display: inline-block;
-    margin: 0 1px;
-    height: 35px;
-    line-height: 35px;
-    padding: 0 20px;
-    font-size: 22px;
-    background: #dedcdf;
-    color: #000;
-    border-radius: 5px;
-}
-
-.HeadTitle01A a.on {
-    background: #d01c27;
-    color: #fff;
-}
-
-.Btn_List01A {
-    width: auto;
-    height: 33px;
-    display: inline-block;
-    line-height: 33px;
-    text-align: center;
-    color: #fff;
-    font-size: 14px;
-    background: #d01d27;
-    margin-right: 10px;
-}
-
-.Btn_List02A {
-    width: 64px;
-    height: 33px;
-    display: inline-block;
-    line-height: 33px;
-    text-align: center;
-    color: #fff;
-    font-size: 14px;
-    background: #d01d27;
-    margin-right: 10px;
-}
-
-.viewHeader {
-    width: 100%;
-    height: auto;
-    overflow: hidden;
-    position: relative;
-    text-align: left;
-}
-
-.viewHeader span {
-    left: 0;
-    top: 12px;
-    font-size: 14px;
-    color: #686868;
-}
-
-.boardView {
-    width: 1168px;
-    height: auto;
-    overflow: hidden;
-    margin: 0 auto 50px auto;
-}
-
-.boardViewX {
-    width: 99%;
-    height: auto;
-    overflow: hidden;
-    margin: 0 auto 50px auto;
-}
-
-.btn_tab {
-    width: 30%;
-    height: 100%;
-    display: inline-block;
-    text-align: center;
-    color: #fff;
-    font-size: 14px;
-    background: #d01d27;
-}
-</style>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
@@ -471,7 +132,7 @@ function findAddr() { // 다음 주소 API
 
 function Next_input() {
     document.makeform.mode.value = 'next_input'
-    document.makeform.action = 'add_info.php';
+    document.makeform.action = '../add_info.php';
     document.makeform.submit();
 }
 
@@ -573,7 +234,7 @@ function Next_input() {
                     <div class='blankA'> </div>
                     <div class='viewHeader' style="text-align:center;">
                         <input type=button value='Submit' onclick="record_modify()" class="Btn_List01A">
-                        <input type=button value='Enter next' onclick="Next_input()"  class="Btn_List01A">
+                        <input type=button value='Enter next' onclick="Next_input()"  class="kapp_btn_bo02">
                     </div>
                 </div>
             </form>
