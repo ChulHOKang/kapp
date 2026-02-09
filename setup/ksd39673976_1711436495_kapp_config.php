@@ -12,7 +12,7 @@
 	}
 
 	$menu1TWPer=25;  
-	$menu1AWPer=100 - $menu1TWPer;  
+	$menu2AWPer=100 - $menu1TWPer;  
 	$menu2TWPer=10;  
 	$menu2AWPer=50 - $menu2TWPer;  
 	$menu3TWPer=10;  
@@ -34,7 +34,7 @@
     }
 
 ?>
-<link rel="stylesheet" href="./include/css/kapp_basic.css" type="text/css">
+<link rel="stylesheet" href="../include/css/kapp_basic.css" type="text/css">
 
 <script type="text/javascript">
 function Back($pg_code) {
@@ -85,102 +85,102 @@ function Back($pg_code) {
                 <input type='hidden' name='page' value='<?=$page?>' />
                 <div class='menu1T' align='center'><span style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_title
                     </span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_title ' value="<?=$row['kapp_title']?>"
+                <div class='menu2A'><input type='VARCHAR' name='kapp_title ' value="<?=$row['kapp_title']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_title .'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>Shared Server (ex:fation.net)</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_theme' value="<?=$row['kapp_theme']?>"
+                <div class='menu2A'><input type='VARCHAR' name='kapp_theme' value="<?=$row['kapp_theme']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_theme.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_admin</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_admin' value="<?=$row['kapp_admin']?>"
+                <div class='menu2A'><input type='VARCHAR' name='kapp_admin' value="<?=$row['kapp_admin']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_admin.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_admin_email</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_admin_email' value="<?=$row['kapp_admin_email']?>"
+                <div class='menu2A'><input type='VARCHAR' name='kapp_admin_email' value="<?=$row['kapp_admin_email']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_admin_email.'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_admin_email_name</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_admin_email_name'
+                <div class='menu2A'><input type='VARCHAR' name='kapp_admin_email_name'
                         value="<?=$row['kapp_admin_email_name']?>" style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_admin_email_name.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_use_point</span></div>
-                <div class='menu1A'><input type='TINYINT' name='kapp_use_point' value="<?=$row['kapp_use_point']?>"
+                <div class='menu2A'><input type='TINYINT' name='kapp_use_point' value="<?=$row['kapp_use_point']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_use_point.'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_point_term</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_point_term' value="<?=$row['kapp_point_term']?>"
+                <div class='menu2A'><input type='INT' name='kapp_point_term' value="<?=$row['kapp_point_term']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_point_term.'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_login_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_login_point' value="<?=$row['kapp_login_point']?>"
+                <div class='menu2A'><input type='INT' name='kapp_login_point' value="<?=$row['kapp_login_point']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_login_point.'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_read_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_read_point' value="<?=$row['kapp_read_point']?>"
+                <div class='menu2A'><input type='INT' name='kapp_read_point' value="<?=$row['kapp_read_point']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_read_point.'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_write_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_write_point' value="<?=$row['kapp_write_point']?>"
+                <div class='menu2A'><input type='INT' name='kapp_write_point' value="<?=$row['kapp_write_point']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_write_point.'>
                 </div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_comment_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_comment_point' value="<?=$row['kapp_comment_point']?>"
+                <div class='menu2A'><input type='INT' name='kapp_comment_point' value="<?=$row['kapp_comment_point']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_comment_point.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_download_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_download_point'
+                <div class='menu2A'><input type='INT' name='kapp_download_point'
                         value="<?=$row['kapp_download_point']?>" style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_download_point.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_register_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_register_point'
+                <div class='menu2A'><input type='INT' name='kapp_register_point'
                         value="<?=$row['kapp_register_point']?>" style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_register_point.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_recommend_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_recommend_point'
+                <div class='menu2A'><input type='INT' name='kapp_recommend_point'
                         value="<?=$row['kapp_recommend_point']?>" style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_recommend_point.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_memo_send_point</span></div>
-                <div class='menu1A'><input type='INT' name='kapp_memo_send_point'
+                <div class='menu2A'><input type='INT' name='kapp_memo_send_point'
                         value="<?=$row['kapp_memo_send_point']?>" style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_memo_send_point.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_googl_shorturl_apikey</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_googl_shorturl_apikey'
+                <div class='menu2A'><input type='VARCHAR' name='kapp_googl_shorturl_apikey'
                         value='<?=$row['kapp_googl_shorturl_apikey']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_googl_shorturl_apikey.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_kakao_js_apikey</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_kakao_js_apikey'
+                <div class='menu2A'><input type='VARCHAR' name='kapp_kakao_js_apikey'
                         value='<?=$row['kapp_kakao_js_apikey']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_kakao_js_apikey.'></div>
@@ -189,14 +189,14 @@ function Back($pg_code) {
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_naver_client_id</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_naver_client_id'
+                <div class='menu2A'><input type='VARCHAR' name='kapp_naver_client_id'
                         value='<?=$row['kapp_naver_client_id']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_naver_client_id.'></div>
                 <div class='blankA'> </div>
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_naver_client_secret</span></div>
-                <div class='menu1A'><input type='VARCHAR' name='kapp_naver_client_secret'
+                <div class='menu2A'><input type='VARCHAR' name='kapp_naver_client_secret'
                         value='<?=$row['kapp_naver_client_secret']?>'
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_naver_client_secret.'></div>
@@ -241,7 +241,7 @@ function Back($pg_code) {
 ?>
 </body>
 <script>
-Add_Btn('.menu1A');
+Add_Btn('.menu2A');
 
 function Next_input() {
     document.makeform.mode.value = 'next_input'
