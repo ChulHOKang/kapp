@@ -123,6 +123,10 @@ fwrite($fsi,"	$"."Xwidth='100%';  \r\n");
 fwrite($fsi,"	$"."Xheight='100%';  \r\n");
 fwrite($fsi,"	$"."Text_height='60px';  \r\n");
 fwrite($fsi,"?>                                 \r\n");
+
+fwrite($fsi,"  <link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type=\"text/css\" />  \r\n");
+
+/*
 fwrite($fsi,"<style>  \r\n");
 fwrite($fsi,"* {  box-sizing: border-box;}  \r\n");
 fwrite($fsi,".header2A {width:100%;  height:50px;  float: left;  border: 0px solid red;  padding: 0px;}  \r\n");
@@ -162,7 +166,7 @@ fwrite($fsi,".viewHeader{width:100%;height:auto;overflow:hidden;position:relativ
 fwrite($fsi,".viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}  \r\n"); // position:absolute; - 2024-0105
 fwrite($fsi,".boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
 fwrite($fsi,".boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-fwrite($fsi,"</style>  \r\n");
+fwrite($fsi,"</style>  \r\n");*/
 //----------- ok ------
 
 fwrite($fsi,"  <body width=100%>                            \r\n");
@@ -320,7 +324,7 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 					} else if( $typeX == "13" ) { // 팝업창
 							//m_("typeX:$typeX, i:$i");
 							fwrite($fsi,"<?php                                 \r\n");
-							fwrite($fsi,"  $"."fld_session = ".$i.";	// 팝압창의 테이블정보가있는 위치.   \r\n");
+							fwrite($fsi,"  $"."fld_session = ".$i.";	// popup table info.   \r\n");
 							fwrite($fsi,"?>                                 \r\n");
 							fwrite($fsi," <div class='menu1T' align='center'><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fld[2]."</span></div>  \r\n");
 							fwrite($fsi," <div class='menu1A'><input type='text' name='".$fld_enmX."' onclick=\"javascript:popup_callDN('".$if_dataPG."', '".$pop_dataPG."', '".$if_typePG."', '<?=$"."tkher_iurl?>', '$i')\" style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='PopUp Window. Please enter a ".$fld[2]."'></div>  \r\n");
@@ -351,11 +355,11 @@ fwrite($fsi,"		<input type='hidden' name='return_pg_code'	value=''>   \r\n");
 fwrite($fsi,"				<input type='hidden' name='item_array'	value='<?=$"."item_array?>'>   \r\n");
 
 //fwrite($fsi,"		<input type='button' value='submit' onclick=\"program_run_pg('".$i."','".$if_type."')\" class='Btn_List01A'>   \r\n");
-fwrite($fsi,"		<input type='button' value='submit' onclick=\"program_run_pg('".$i."','".$if_typePG."')\" class='Btn_List01A'>   \r\n");
-fwrite($fsi,"		<input type='reset' value='reset' class='Btn_List01A'>   \r\n");
-fwrite($fsi,"		<input type='button' value='Excel_Upload' onclick=\"excel_upload_func('".$tab_enm."','".$tab_hnm."')\" class='Btn_List02A' title='Batch upload of data to excel file'>     \r\n");
+fwrite($fsi,"		<input type='button' value='submit' onclick=\"program_run_pg('".$i."','".$if_typePG."')\" class='kapp_btn_bo02'>   \r\n");
+fwrite($fsi,"		<input type='reset' value='reset' class='kapp_btn_bo02'>   \r\n");
+fwrite($fsi,"		<input type='button' value='Excel_Upload' onclick=\"excel_upload_func('".$tab_enm."','".$tab_hnm."')\" class='kapp_btn_bo02' title='Batch upload of data to excel file'>     \r\n");
 
-fwrite($fsi,"       <input type='button' value='List' onclick=\"javascript:table_data_list();\" class='Btn_List01A'> \r\n"); // 2024-01-05 add
+fwrite($fsi,"       <input type='button' value='List' onclick=\"javascript:table_data_list();\" class='kapp_btn_bo02'> \r\n"); // 2024-01-05 add
 
 fwrite($fsi,"      </form>                    \r\n");
 
@@ -512,13 +516,13 @@ fwrite($fsw,"						}  \r\n");
 	fwrite($fsw,"			$"."relation_data = $"."_SESSION['relation_dataPG'];   \r\n");
 	fwrite($fsw,"			$"."relation_type = $"."_SESSION['relation_typePG'];   \r\n");
 
-	fwrite($fsw,"			if( $"."relation_data !=='' ) {   \r\n");
+	fwrite($fsw,"			if( $"."relation_data !='' ) {   \r\n");
 	fwrite($fsw,"				$"."rdata = explode(\"^\", $"."relation_data);    \r\n");
 	fwrite($fsw,"				$"."rtype = explode(\"^\", $"."relation_type);    \r\n");
 	fwrite($fsw,"				$"."rt = explode(\"@\",    $"."rtype[0]);         \r\n");
 	
 	fwrite($fsw,"				for( $"."i=0; $"."i < count( $"."rdata); $"."i++ ){   \r\n");
-	fwrite($fsw,"					if( isset( $"."rdata[$"."i]) && $"."rdata[$"."i] !=='' && $"."rdata[$"."i] !== 'undefined' ) {   \r\n");
+	fwrite($fsw,"					if( isset( $"."rdata[$"."i]) && $"."rdata[$"."i] !='' && $"."rdata[$"."i] != 'undefined' ) {   \r\n");
 	fwrite($fsw,"						relation_func( $"."rdata[$"."i], '".$pg_code."', $"."rt[$"."i] );   \r\n");
 	fwrite($fsw,"					}   \r\n");
 

@@ -19,37 +19,30 @@
 	$table_item_array = $_POST['item_array'];
 	$tab_enm    = $_POST['tab_enm'];
 
-	/////////////////////////< tree file create >////////////////////////////
 	$mid = $H_ID;
-	//$path = KAPP_PATH_ . "/cratree/";	 //KAPP_PATH_CRATREE_;		// . "../../cratree/";
 	$path = KAPP_PATH_T_ . "/file/"; 
 
 	$pg_code 	= $_POST['pg_code'];
 	$runF1 = "./" . $pg_code . "_run.php";
 	$runF2 = "./" . $pg_code . "_write.php";
 	$runF2R= "./" . $pg_code . "_write_r.php";
-	$runF4 = $pg_code . "_view.php";	//$runF3 = "./" . $pg_code . "_update.php";
+	$runF4 = $pg_code . "_view.php";
 
 	$runfile = $path . $H_ID . "/" . $pg_code . "_run.php";
 	$fsr = fopen("$runfile","w+");
 
 	fwrite($fsr,"<?php \r\n");
-
-
 	fwrite($fsr,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
 	fwrite($fsr,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
 	fwrite($fsr,"       include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");
 	fwrite($fsr,"	} else {    \r\n");
-	fwrite($fsr,"       include './tkher_db_lib.php';		\r\n");	//	call:tkher_config_link.php 
-	fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");// tkher_dbcon.php
+	fwrite($fsr,"       include './tkher_db_lib.php';		\r\n");
+	fwrite($fsr,"		include './tkher_dbcon_Table.php';  \r\n");
 	fwrite($fsr,"	}  \r\n");
-
-//	fwrite($fsr," include './table_paging.php';	\r\n"); // 2023-07-06 tkher_db_lib.php에 pagingA()로 적용함 -- 중요
 	fwrite($fsr,"?> \r\n");
-
 	fwrite($fsr,"<html> \r\n");
-	fwrite($fsr,"<head> \r\n");
 
+	fwrite($fsr,"<head> \r\n");
 	fwrite($fsr,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
 	fwrite($fsr,"<TITLE>KAPP - no code webapp generator, No code app creation Made in ChulHo Kang : solpakan89@gmail.com</TITLE>  \r\n");
 	fwrite($fsr,"<link rel='shortcut icon' href='./logo25a.jpg'> \r\n");
@@ -90,7 +83,11 @@
 	fwrite($fsr,"}); \r\n");
 	fwrite($fsr,"</script> \r\n");
 
+	fwrite($fsr,"<link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_program_data_list.css\" type=\"text/css\" /> \r\n");
+
+
 	//----- style start -----------------------------------
+	/*
 	fwrite($fsr,"<style>  \r\n");
 	fwrite($fsr,"*{ font-family:'Noto Sans KR', 'Malgun Gothic', sans-serif;font-size:14px;color:#666;-webkit-overflow-scrolling: touch;letter-spacing:-1px;-webkit-transition:color .5s, background .5s;transition:color .5s, background .5s;}  \r\n");
 	fwrite($fsr,"html,body,p, input, select, form, label, mark, ul, ul li, ol, ol li, dl, dl dt, dl dd, img, a, table, h1, h2, h3, h4, h5{margin:0;padding:0;}  \r\n");
@@ -138,7 +135,7 @@
 	fwrite($fsr,".paging a.on{font-weight:bold;color:#d01c27;}  \r\n");
 	fwrite($fsr,".paging a.prev{margin-right:20px;}  \r\n");
 	fwrite($fsr,".paging a.next{margin-left:20px;}  \r\n");
-	fwrite($fsr,"</style>  \r\n");
+	fwrite($fsr,"</style>  \r\n");*/
 	//-------------------- style end ---------
 
 	fwrite($fsr," <script type='text/javascript' >                          \r\n");
@@ -271,17 +268,14 @@
 	$list		= explode("@", $item_array);
 	for ( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){ 
 		$ddd			= $list[$i];
-		$item			= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+		$item			= explode("|", $ddd);
 		$fld_enm[$i]	= $item[1];
 		$fld_hnm[$i]	= $item[2];
 		$fld_type[$i]	= $item[3];
 		$fld_len[$i]	= $item[4];
-		if( $i==0 && !$search_fld) $search_fld = $item[1];	 // 검색용 첫필드 디폴트 설정.
+		if( $i==0 && !$search_fld) $search_fld = $item[1];
 	}
 	$item_cnt	= $fld_cnt=$i;
-	//$page		= $_POST[page];
-	//$in_day		= date("Y-m-d H:i");
-
 
 fwrite($fsr,"			if( isset($"."_POST['line_cnt']) && $"."_POST['line_cnt'] !='' ) $"."line_cnt=$"."_POST['line_cnt']; \r\n");
 fwrite($fsr,"			else $"."line_cnt=10;  \r\n");
@@ -293,7 +287,7 @@ fwrite($fsr,"  <body width=100%>                            \r\n");
 fwrite($fsr,"  <center>                                           \r\n");
 fwrite($fsr,"  			<br>                                       \r\n");
 fwrite($fsr,"  			<div style='text-align:center;'>    \r\n");
-fwrite($fsr,"  				<P onclick=\"javascript:home_func('" . $pg_code . "')\" class='HeadTitle03AX'>". $pg_name."</P>   \r\n");
+fwrite($fsr,"  				<P onclick=\"javascript:home_func('" . $pg_code . "')\" class='kapp_btn_bo02'>". $pg_name."</P>   \r\n");
 fwrite($fsr,"  			</div>                   \r\n");
 
 fwrite($fsr,"<?php       \r\n");
@@ -346,7 +340,7 @@ fwrite($fsr,"								<option value='50'  <?php if($"."line_cnt=='50')   echo \" 
 fwrite($fsr,"								<option value='100' <?php if($"."line_cnt=='100') echo \" selected \" ?>  >100</option>     \r\n");
 fwrite($fsr,"							</select>          \r\n");
 fwrite($fsr,"						</span>          \r\n");
-//fwrite($fsr,"					<!-- <input type='button' value='Write' onclick=\"javascript:table_record_write('table_write');\" class='btn_bo02T'> -->  \r\n");
+//fwrite($fsr,"					<!-- <input type='button' value='Write' onclick=\"javascript:table_record_write('table_write');\" class='kapp_btn_bo02'> -->  \r\n");
 fwrite($fsr,"				</div>          \r\n");
 fwrite($fsr,"			</div>           \r\n");
 
@@ -374,8 +368,6 @@ fwrite($fsr,"		<thead>   \r\n");
 fwrite($fsr,"			<tr>   \r\n");
 fwrite($fsr,"				<th style='width:30px; height:100%px;text-align:center;font-weight:bold'>No</th>   \r\n");
  					for( $i=0; $i < $fld_cnt; $i++){ 
-//onclick=\"javascript:home_func('" . $pg_code . "')\"
-//fwrite($fsr,"					<th class='cell03'>".$fld_hnm[$i]."</th>    \r\n");
 fwrite($fsr,"					<th class='cell03' title='Sort ".$fld_hnm[$i]." click' onclick=\"javascript:title_func('" . $fld_enm[$i] . "')\" >".$fld_hnm[$i]."</th>    \r\n");
 
  					} 
@@ -384,12 +376,10 @@ fwrite($fsr,"			</tr>   			\r\n");
 fwrite($fsr,"		</thead>   				\r\n");
 fwrite($fsr,"		<tbody width=100%>   	\r\n");
 
-
 fwrite($fsr,"<?php    \r\n");
 fwrite($fsr,"			$"."SQL		= \"SELECT * from $tab_enm \";  \r\n");
 fwrite($fsr," 			$"."SQL_limit	= \"  limit $"."start , $"."last; \";  \r\n");
 
-//fwrite($fsr,"			$"."OrderBy	= \" order by seqno desc \";    \r\n");
 fwrite($fsr,"			if( $"."mode=='title_func' ) $"."OrderBy = \" order by $"."fld_code \";    \r\n");
 fwrite($fsr,"			else $"."OrderBy	= \" order by seqno desc \";        \r\n");
 
@@ -406,14 +396,9 @@ fwrite($fsr,"				}     \r\n");
 fwrite($fsr,"			}     \r\n");
 
 
-
-
-
 fwrite($fsr,"			$"."SQL = $"."SQL . $"."OrderBy . $"."SQL_limit;    \r\n");
-
 fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL ) )==false )    \r\n");
 fwrite($fsr,"			{    \r\n");
-//fwrite($fsr,"				printf(\"Record 0 : query: %s\n\", $"."SQL);    \r\n");
 fwrite($fsr,"			} else {    \r\n");
 fwrite($fsr,"				if( $"."page > 1 ) $"."no=($"."page -1) * $"."line_cnt;    \r\n");
 fwrite($fsr,"				else $"."no=0;    \r\n");
@@ -452,8 +437,7 @@ fwrite($fsr,"						<select id='c_sel' name='c_sel' onChange='Change_Csel2(this.o
  						$hhh		= $fld_hnm[$i]; 
 fwrite($fsr,"						  <option value='".$fff."'     \r\n");
 fwrite($fsr,"						<?php if($"."search_fld == '".$fff."') echo \" selected \";?> >".$hhh."</option>\";    \r\n");
-//fwrite($fsr,"						else echo \">".$hhh."</option>\";    \r\n");
- 					} 
+ 					} // for
 
 fwrite($fsr,"						</select></td>    \r\n");
 fwrite($fsr,"						<td>    \r\n");
@@ -466,13 +450,12 @@ fwrite($fsr,"						</select>    \r\n");
 fwrite($fsr,"						</td>    \r\n");
 
 fwrite($fsr,"						<td><input type='text' name='search_text' id='search_text'  value='<?=$"."search_text?>' style='height:30;' /></td>    \r\n");
-fwrite($fsr,"						<td><input type='button' value='Search' onclick=\"javascript:search_data();\" class='btn_bo02T'></td>    \r\n");
+fwrite($fsr,"						<td><input type='button' value='Search' onclick=\"javascript:search_data();\" class='kapp_btn_bo02'></td>    \r\n");
 fwrite($fsr,"						<td title='tkher_program_data_listDN'>    \r\n");
-fwrite($fsr,"							<input type='button' value='Write' onclick=\"javascript:table_record_write('table_pg70_write');\" class='btn_bo02T'></td>    \r\n");
+fwrite($fsr,"							<input type='button' value='Write' onclick=\"javascript:table_record_write('table_pg70_write');\" class='kapp_btn_bo02'></td>    \r\n");
 fwrite($fsr,"						<td title='Create and download the data as an Excel file.'>    \r\n");
-fwrite($fsr,"							<input type='button' value='Excel Down' onclick=\"javascript:excel_down();\" class='btn_bo03T'></td>    \r\n");
-//fwrite($fsr,"						<td title='Create and download the program source.'>    \r\n");
-//fwrite($fsr,"							<input type='button' value='Source Down' onclick=\"javascript:tkher_source_create()\" class='btn_bo03T' ></td>    \r\n");
+fwrite($fsr,"							<input type='button' value='Excel Down' onclick=\"javascript:excel_down();\" class='kapp_btn_bo02'></td>    \r\n");
+
 fwrite($fsr,"					</tr>    \r\n");
 fwrite($fsr,"					</table>    \r\n");
 fwrite($fsr,"					</form>    \r\n");
@@ -488,27 +471,26 @@ fclose($fsr);
 include('./include/lib/pclzip.lib.php');
 $zf		= $pg_code . '_run.zip';
 $zff		= "./file/" . $H_ID . "/" . $zf;
-$zipfile	= new PclZip($zff);//압축파일.zip
+$zipfile	= new PclZip($zff);
 
 $data		= array();
 
 $list_run		= $pg_code . "_run.php";
 
-$file_php= "./file/" . $H_ID. "/" . $list_run;		// $Zdir= "../cratree/" . $H_ID;
+$file_php= "./file/" . $H_ID. "/" . $list_run;
 
-$data		= array( $file_php );							//"압축할파일","압축할 디렉토리"
+$data		= array( $file_php );
 
 $create	= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH); 
 echo "<pre>";
-//var_dump($create);
 
 ?> 
 			<h3> Created OK! pg_code:<?php echo $runF1; ?> , Zip File:<?=$zf?> </h3>
 			<h3> <a href='<?=$zff?>' target=_blank>[ Down RUN:<?=$zf?> ]</a> </h3>  
 <?php
-if ( $H_LEV > 0 ){ // 7-> 0 으로 변경. 2020-11-19
+if ( $H_LEV > 0 ){
 ?>
-			<h3> <a href='./file/<?=$H_ID?>/<?=$list_run?>' target=_blank>[ Data_List RUN:<?=$list_run?> ]</a> </h3>  <!-- data list -->
+		<h3> <a href='./file/<?=$H_ID?>/<?=$list_run?>' target=_blank>[ Data_List RUN:<?=$list_run?> ]</a> </h3> 
 <?php } ?>
 <p>To run the downloaded program, </p>
 <p>Download the database table and upload it to the server you want to use.</p>
