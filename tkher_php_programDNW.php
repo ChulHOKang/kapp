@@ -229,7 +229,7 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 		
 		$iftype		= explode("|", $if_typePG);
 		$ifdata		= explode("|", $if_dataPG);
-
+		$func_cnt = 0;
 		for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd		= $list[$i];
 				$typeX	= $iftype[$j];
