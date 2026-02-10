@@ -16,13 +16,14 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Made in Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/appmaker.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 
 <?php
 	$H_LEV			= $member['mb_level'];  
@@ -66,7 +67,7 @@
 					$upfileX = $_FILES["$nm"]["name"]; 
 					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm. "/";
 					$upfile_name = $_FILES["$nm"]["name"];
-					if( isset($upfile_name) && $upfile_name !=='' ) {
+					if( isset($upfile_name) && $upfile_name !='' ) {
 						$upfile_name = str_replace(" ", "", $upfile_name);
 						$upfile_name = $H_ID . "_" . time() ."_" . $upfile_name;
 						$query = $query . $fld[1] ."= '" .$upfile_name. "' ";
@@ -79,7 +80,7 @@
 					}
 				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
-				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME") {
+				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP") {
 						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
 				} ELSE {
 						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . " ";
@@ -95,7 +96,7 @@
 					$upfileX = $_FILES["$nm"]["name"]; 
 					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm. "/";
 					$upfile_name = $_FILES["$nm"]["name"];
-					if( isset($upfile_name) && $upfile_name !=='' ) {
+					if( isset($upfile_name) && $upfile_name !='' ) {
 						$upfile_name = str_replace(" ", "", $upfile_name);
 						$upfile_name = $H_ID . "_" . time() ."_" . $upfile_name;
 						$query = $query . $fld[1] ."= '" .$upfile_name. "', ";
@@ -108,7 +109,7 @@
 
 				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
 						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
-				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME") {
+				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP") {
 						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
 				} ELSE {
 						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . ", ";
@@ -116,18 +117,18 @@
 			}	// $i
 		}	// for
 		$query = $query . " where seqno=$seqno ";
-		$ret = sql_query( $query );
+		$ret = sql_query( $query ) or die ("tkher_program_data_update.php Error sql:" . $query);
 		if( $ret ) {
 			m_(" Change completed! ");
 			if( isset($_POST['up_file']) ) {
 				$up_file = $_POST['up_file'];
-				if( $upfileX !=='' && $up_file && $up_file !=='' ) exec ("rm $up_file");// 첨부화일이 있으면 기존화일을 삭제
+				if( $upfileX !='' && $up_file && $up_file !='' ) exec ("rm $up_file");// 첨부화일이 있으면 기존화일을 삭제
 			} else $up_file = '';
 		} else m_(" Change Error! ");
 	}
 
 	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
-	if ( ($result = sql_query( $SQL ) )==false ){
+	if( ($result = sql_query( $SQL ) )===false ){
 		printf("11111  Invalid query: %s\n", $SQL);
 		exit();
 	} else {
@@ -139,316 +140,14 @@
 		$pg_title		= $tab_hnm;
 	} 
 ?>
-
-<style>
-* {
-  box-sizing: border-box;
-}
-
-.header2A {
-  width: 100%;
-  height:50px;
-  float: left;
-  border: 0px solid red;
-  padding: 0px;
-}
-
-.menu1Area {
-  width: 100%;
-/*  height:60px; */
-  height:auto;
-  float: left;
-  padding: 0px;
-  border: 0px solid #DEDEDE;
-  background-color:#FAFAFA;
-}
-
-.menu2T {
-  padding-top: 3px;
-  width: 25%;
-  height:30px;
-  float: left;
-  padding: 4px;
-  border: 1px solid #DEDEDE;
-  background-color:#FAFAFA;
-}
-.menu2A {
-  width: 25%;
-  height:30px;
-  float: left;
-  padding: 0px;
-  border: 0px solid #DEDEDE;
-  background-color:#FAFAFA;
-}
-.data2A {
-  width: 25%;
-  height:30px;
-  float: left;
-  padding: 4px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-}
-
-.input1A {
-  padding: 0px;
-}
-
-.mainA {
-  width: 100%;
-  float: left;
-  padding: 15px;
-  border: 1px solid red;
-}
-
-.menu1T {
-  padding-top: 0px;
-  width: <?=$menu1TWPer?>%;
-  height:30px;
-  float: left;
-  padding: 6px;
-  border: 1px solid #DEDEDE;
-  background-color:#FAFAFA;
-}
-.menu1A {
-  width: <?=$menu1AWPer?>%;
-  height:30px;
-  float: left;
-  padding: 0px;
-}
-.data1A {
-  width: <?=$menu1AWPer?>%;
-  height:30px;
-  float: left;
-  padding: 6px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-  text-align:left;
-}
-
-.radio1A {
-  width: <?=$menu1AWPer?>%;
-  height:30px;
-  float: left;
-  padding: 6px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-}
-
-.ListBox1A {
-  width: <?=$menu1AWPer?>%;
-  height:30px;
-  float: left;
-  padding: 2px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-}
-
-.File1A {
-  width: <?=$menu1AWPer?>%;
-  height:30px;
-  float: left;
-  padding: 2px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-}
-
-.menu4T {
-  padding-top: 3px;
-  width: 10%;
-  height:30px;
-  float: left;
-  padding: 4px;
-  border: 1px solid #DEDEDE;
-  background-color:#FAFAFA;
-}
-.input4A {
-  width: 15%;
-  height:30px;
-  float: left;
-  padding: 0px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-}
-.menu4B {
-  width: 15%;
-  height:30px;
-  float: left;
-  padding: 0px;
-  border: 0px solid #DEDEDE;
-  background-color:#FAFAFA;
-}
-.data4A {
-  width: 15%;
-  height:30px;
-  float: left;
-  padding: 4px;
-  border: 1px solid #DEDEDE;
-  background-color:#FFFFFF;
-}
-
-.main4A {
-  width: 100%;
-  float: left;
-  padding: 15px;
-  border: 1px solid #DEDEDE;
-}
-
-.blankA {
-	border-top:0px;
-	width: 100%;
-    float: left;
-	height: 1px;
-	padding: 0px;
-	border: 1px solid #FFFFFF;
-	background-color:#FFFFFF;
-}
-
-.blankB {
-  width: 100%;
-  height: 1px;
-  padding: 1px;
-  float: left;
-  border: 1px solid #FFFFFF;
-  background-color:#FFFFFF;
-}
-
-.viewSubjX{
-	margin-top:1px;
-	width:100%;height:35px;
-	line-height:32px;
-	border-top:3px solid #d01c27;
-	text-align:center;
-	background:#fafafa;
-	border-bottom:1px solid #dedede;
-	overflow:hidden;
-	font-size:18px;
-	color:#69604f;
-}
-.viewSubjX span{
-	font-size:22px;color:#171512; vertical-align:baseline; 
-}
-
-.HeadTitle02AX{
-	display:inline-block;
-	margin:0 1px;
-	height:35px;
-	line-height:35px;
-	padding:0 20px;
-	font-size:25px;
-	background:#d01c27;
-	color:#ffffff;
-	border-radius:5px;
-}
-.HeadTitle03AX{
-	display:inline-block;
-	margin:0 1px;
-	height:35px;
-	line-height:35px;
-	padding:0 20px;
-	font-size:25px;
-	background:#d01c27;
-	color:#ffffff;
-	border-radius:5px;
-	text-align:center;
-}
-.HeadTitle01AX{
-	display:inline-block;margin:0 1px;height:40px;line-height:0px;padding:0 20px;
-	font-size:22px;background:#d01c27;color:#fff;border-radius:5px;
-}
-.HeadTitle01AX a.on{
-	background:#d01c27;color:#fff;
-}
-
-.HeadTitle01A{
-	display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;
-	font-size:22px;background:#dedcdf;color:#000;border-radius:5px;
-}
-.HeadTitle02A a{
-	display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;
-	font-size:22px;background:#dedcdf;color:#000;border-radius:5px;
-}
-.HeadTitle01A a{
-	display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;
-	font-size:22px;background:#dedcdf;color:#000;border-radius:5px;
-}
-.HeadTitle01A a.on{
-	background:#d01c27;color:#fff;
-}
-
-.Btn_List01A{
-	width:64px;
-	height:33px;
-	display:inline-block;
-	line-height:33px;
-	text-align:center;
-	color:#fff;
-	font-size:14px;
-	background:#d01d27;
-	margin-right: 10px;
-	}
-.Btn_List02A{
-	width:64px;
-	height:33px;
-	display:inline-block;
-	line-height:33px;
-	text-align:center;
-	color:#fff;
-	font-size:14px;
-	background:#d01d27;
-	margin-right: 10px;
-	}
-.viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}
-.viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}
-
-.boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}
-.boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}
-
-.listTableX{width:100%px;}
-.listTableX th{height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}
-.listTableX td{height:42px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}
-.listTableX .cell02{width:80px;text-align:center;}
-.listTableX .cell03{}
-.listTableX .cate{border-radius:5px;display:block;width:48px;height:23px;line-height:23px;overflow:hidden;margin:0 auto;color:#fff;font-size:12px;font-weight:bold;}
-
-.listTable{width:100%px;text-decoration: none;}
-.listTable th{height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}
-.listTable td{height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}
-.listTable .cell01{width:60px;text-align:center;text-decoration: none;}
-.listTable .cell03{}
-.listTable .cell05{width:70px;text-align:center;}
-.listTable .cell02{width:80px;text-align:center;}
-.listTable .cell04{width:200px;text-align:center;}
-.listTable .cell06{width:50px;text-align:center;}
-.listTable .cate{border-radius:5px;display:block;width:48px;height:23px;line-height:23px;overflow:hidden;margin:0 auto;color:#fff;font-size:12px;font-weight:bold;}
-.listTable .cate.t01{background:#919191;}
-.listTable .cate.t02{background:#086fbf;}
-.listTable .cate.t03{background:#d01c27;}
-.listTable td a span{font-size:14px;color:#69604f;text-decoration: none;}
-.listTable td a .t01{font-size:14px;color:#d01c27;text-decoration: none;}
-
-.btn_bo01{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#494949;font-size:14px;background:#dedcdf;}
-.btn_bo02{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}
-.btn_bo03{width:76px;height:28px;display:inline-block;line-height:28px;text-align:center;color:#fff;font-size:14px;background:#3e3e3e;}
-
-.search_btn{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}
-
-.paging{margin:20px auto 0 auto;width:100%;height:auto;overflow:hidden;text-align:center;}
-.paging a, .paging span, .paging img{display:inline-block;vertical-align:middle;}
-.paging a{color:#979288;font-size:18px;font-weight:bold;}
-.paging span{color:#979288;font-size:18px;font-weight:bold;}
-.paging a:hover{opacity:1;color:#d01c27;}
-.paging a.on{font-weight:bold;color:#d01c27;}
-.paging a.prev{margin-right:20px;}
-.paging a.next{margin-left:20px;}
-</style>
-</head>
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 
 <body bgcolor='#ffffff'>
 <center>
 
 <?php
 $SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
-if( ($result = sql_query( $SQLX ) )==false ) {
+if( ($result = sql_query( $SQLX ) )===false ) {
 		printf("SQLX Invalid query: %s\n", $SQLX);
 		exit();
 } else {
@@ -459,7 +158,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 ?>
 
 <div>
-	<P href="#" class="HeadTitle03AX" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>'><?=$pg_name?></P>
+	<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle02AX" title='pg:<?=$pg_code?>, tab:<?=$tab_enm?> '><?=$pg_name?></P>
 </div>
 			<form name='tkher_form' action='tkher_program_data_update.php' method='post' enctype="multipart/form-data" onsubmit='return check(this)'>
 				<input type="hidden" name='mode'		value='' />
@@ -539,13 +238,13 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 <?php
 		$list= explode("@", $item_array);
 		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
-				if( isset($if_type[$j])  && $if_type[$j] !=='') $typeX	= $if_type[$j];
+				if( isset($if_type[$j])  && $if_type[$j] !='') $typeX	= $if_type[$j];
 				else $typeX	= '';
-				if( isset($if_data[$j]) && $if_data[$j] !=='' ) $dataX	= $if_data[$j];
+				if( isset($if_data[$j]) && $if_data[$j] !='' ) $dataX	= $if_data[$j];
 				else $dataX	= '';
-				if( isset($popdata[$j]) && $popdata[$j] !=='' ) $popX	= $popdata[$j]; 
+				if( isset($popdata[$j]) && $popdata[$j] !='' ) $popX	= $popdata[$j]; 
 				else $popX	= '';
-				if( isset($if_data[$j]) && $if_data[$j] !=='') $if_fld= explode(":", $if_data[$j]);
+				if( isset($if_data[$j]) && $if_data[$j] !='') $if_fld= explode(":", $if_data[$j]);
 				else $if_fld	= '';
 				$ddd		= $list[$i];
 				$fld = explode("|", $ddd);
@@ -626,7 +325,7 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 						echo " <div class='blankA'> </div> ";
 
 				} else if ( $typeX == '9' ) {	// add file
-					if( $row[$fldenm] !== '' ) {
+					if( $row[$fldenm] != '' ) {
 							$upfile = KAPP_PATH_T_ . "/file/" . $tab_mid . "/" . $tab_enm . "/". $row[$fldenm];
 							echo "<input type='hidden' name='up_file' value='$upfile' >"; // delete - use
 							$ifile = explode( ".", $row[$fldenm] );
@@ -728,6 +427,11 @@ if( ($result = sql_query( $SQLX ) )==false ) {
 </body>
 
  <script type="text/javascript">
+	function home_func( pg_code){
+		document.makeform.mode='home_func';
+		document.makeform.action='tkher_program_data_list.php';
+		document.makeform.submit();
+	}
 	function popimage(imagesrc,winwidth,winheight){
 		var look='width='+winwidth+',height='+winheight+','
 		popwin=window.open("","",look)

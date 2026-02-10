@@ -1,8 +1,8 @@
 <?php	
 	include_once('./tkher_start_necessary.php');
 	/*
-		tkher_program_run_r.php : tkher_program_run.php 에서 call - table_item_run50_app_pg50RU.php
-		$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm;;  $H_ID->tab_mid, $pg_code->tab_enm,  로 변경
+		tkher_program_run_r.php : tkher_program_run.php from call - table_item_run50_app_pg50RU.php
+		$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm;;  $H_ID->tab_mid, $pg_code->tab_enm,  to
 		Abnormal approach. pg_code:solpakan89_gmail_1750469450, tab_enm:solpakan89_gmail_1750469450, tab_mid:
 	*/
 	$H_ID = get_session("ss_mb_id"); //echo "h_id: ".$H_ID . "<br>";
@@ -17,16 +17,12 @@
 	else $pg_mid = "";
 	if( isset($_POST['tab_mid']) ) $tab_mid = $_POST['tab_mid'];
 	else $tab_mid = "";
-
-//	if( $mode !== 'table_pg70_write' || $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
 	if( $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
 		m_("Abnormal approach. pg_code:$pg_code, tab_enm:$tab_enm, tab_mid:$tab_mid");
-		//Abnormal approach. pg_code:solpakan_naver_1751974969, tab_enm:solpakan_naver_1751974713, tab_mid:
 		$rungo = "./";
-		//echo "<script>window.open( '$rungo' , '_self', ''); </script>";
 		exit;
 	}
-	if( $H_ID !== '' ) {
+	if( $H_ID != '' ) {
 		$H_LEV = $member['mb_level'];  
 	} else {
 		m_("You need to login.");
@@ -55,7 +51,7 @@
 	for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 			if( isset($iftype[$j]) ) $typeX = $iftype[$j]; 
 			else $typeX = "";
-			$ddd = $list[$i]; // echo "<br>$i: ddd=" . $ddd;
+			$ddd = $list[$i];
 			$fld = explode("|", $ddd); 
 		if( isset($fld[1]) && $fld[1] != "seqno") {
 				$nm = $fld[1]; 
@@ -78,9 +74,9 @@
 						if( $i==0 )	$SQL = $SQL . $nm . " = '" . $aa . "' ";
 						else	    $SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
 					}
-				} else if( $typeX=='9' ) {	// 9:첨부화일 처리
+				} else if( $typeX=='9' ) {
 					$f_path= '';
-					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm; // $pg_code->tab_enm, $H_ID->tab_mid
+					$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm;
 					$f_path1= KAPP_PATH_T_ . "/file/" .  $tab_mid;
 					if( !is_dir($f_path1) ) {
 						if( !@mkdir( $f_path1, 0755 ) ) {
@@ -129,13 +125,13 @@
 	if( $mq2 ) { 
 		$relation_data =get_session("relation_dataPG");
 		$relation_type =get_session("relation_typePG"); 
-		if( $relation_data !=='' ) {
-			$rdata = explode("^", $relation_data); // @ ^
-			$rtype = explode("^", $relation_type); // @ ^
-			$rt = explode("@", $rtype[0]);  //Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^	// '^' -> ':'  Update:fld_1:fld_2:
+		if( $relation_data !='' ) {
+			$rdata = explode("^", $relation_data);
+			$rtype = explode("^", $relation_type);
+			$rt = explode("@", $rtype[0]);
 			for( $i=0; $i < count( $rdata); $i++ ){
-				if( isset( $rdata[$i]) && $rdata[$i] !=="" && $rdata[$i] !=="undefined"){
-					relation_func( $rdata[$i], $pg_code, $rt[$i] ); //relation_func( $rdata[$i], $pg_code, $rtype[$i] ); 
+				if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
+					relation_func( $rdata[$i], $pg_code, $rt[$i] );
 				}
 			}
 		}
@@ -144,53 +140,29 @@
 	} else {
 		m_(" insert ERROR --- mode:$mode, table: " . $tab_enm . ", pg_code: " . $pg_code);	exit;
 	}
-/*
-dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$
-fld_1:fld1|=|fld_1:fld1:VARCHAR$
-fld_7:날짜|=|fld_7:날짜:TIMESTAMP$
-fld_5:fld5|+|fld_5:fld5:INT$
-fld_6:fld6|+|fld_6:fld6:INT^000
-dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT^111
-
-dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$
-fld_1:fld1|=|fld_5:product:VARCHAR$
-fld_7:날짜|=|fld_1:날짜:TIMESTAMP$
-fld_5:fld5|+|fld_6:total_count:INT$
-fld_6:fld6|+|fld_7:tottal_price:BIGINT
-
-Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
-|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^
-|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^
-|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-*/
-
 	function relation_func( $rdata, $pg_code, $rtype ){
 		global $H_ID, $pg_code;
 		$r_data = explode("$", $rdata);
 		$r_tab = $r_data[0];
-		$tab_r = explode(":", $r_tab);		// dao_1537844601:data
-		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
-
-		$r_t = explode(":", $rtype); //Update:fld_1:fld_1:CHAR           // Update:::@@^^^
-
-		if( isset($r_t[0]) ) $r_type = $r_t[0];					// $r_t[0] = 'Update' or 'Insert'
+		$tab_r = explode(":", $r_tab);
+		$r_table = $tab_r[0];
+		$r_t = explode(":", $rtype);
+		if( isset($r_t[0]) ) $r_type = $r_t[0];
 		else $r_type = "";	
-		if( isset($r_t[1]) ) $up_key = $r_t[1];					// $r_t[1] program field ,  Update Key field 
+		if( isset($r_t[1]) ) $up_key = $r_t[1];
 		else $up_key = "";
-		if( isset($r_t[2]) ) $dd_key = $r_t[2];					// $r_t[2] relation table,  Update Key field 
+		if( isset($r_t[2]) ) $dd_key = $r_t[2];
 		else $dd_key = "";
-		if( isset($r_t[3]) ) $ty_key = $r_t[3];					// $r_t[3] relation field key data type CHAR or INT
+		if( isset($r_t[3]) ) $ty_key = $r_t[3];
 		$ty_key = "";
 
-		if( isset($_POST[$up_key]) && $_POST[$up_key] !=='' ) $update_key_data = $_POST[$up_key];
+		if( isset($_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
 		else $update_key_data = "";
-		//--------------------------------------
-			$SQLA = "select seqno from `" . $r_table . "` ";
-			if( $ty_key == "CHAR" ) $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	
-			else if( $ty_key == "INT" ) $SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
-			else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
-		$retA = sql_fetch( $SQLA ); // Update에서 데이터가 없으면 Insert 있으면 Update 처리를 위해 select
-		//---------------------------------------
+		$SQLA = "select seqno from `" . $r_table . "` ";
+		if( $ty_key == "CHAR" ) $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	
+		else if( $ty_key == "INT" ) $SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
+		else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default
+		$retA = sql_fetch( $SQLA ); // data check Update or Insert
 		if( $r_type == 'Update'){
 			$SQLR = "UPDATE " . $r_table . " SET ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
@@ -208,22 +180,21 @@ Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
 				if( $fld_sik == '=' ) {
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . " = '" . $post_enm . "'  ";
 					else		$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
-				} else if( $fld_sik == '+' ) {	 // updte를 의미한다. 보완필요.
+				} else if( $fld_sik == '+' ) {	 // updte
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
 					else		$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
-				} else if( $fld_sik == '-' ) {	   // updte를 의미한다. 보완필요.
+				} else if( $fld_sik == '-' ) {	   // updte
 					if( $i==1 )	$SQLR = $SQLR . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 					else		$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 				}
 			}
 			if( $ty_key == "CHAR" ) $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";	
 			else if( $ty_key == "INT" ) $SQLR = $SQLR . " where " . $dd_key . " = " .$update_key_data. " ";	
-			else $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
+			else $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default.
 
 			if( $retA ) {
 				$ret  = sql_query($SQLR);
-				if( $ret ) { //echo("<script>alert('Relation Save pg70_write_r: relation-Table is $r_table Created.  ');</script>");
-					//m_("r_table: $r_table Update");
+				if( $ret ) {
 				}else{
 					echo "SQLR: " . $SQLR; exit;
 				}
@@ -233,13 +204,13 @@ Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
 				$SQLAR = $SQLAR . "kapp_pg_code= '" . $pg_code . "' , ";
 				for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 					$r_fld		= $r_data[$i];
-					$fld_r		= explode("|", $r_fld);		// fld_1:상품|=|fld_1:상품
+					$fld_r		= explode("|", $r_fld);
 					$fld_r1	= $fld_r[0];
 					$fld_sik	= $fld_r[1];
 					$fld_r2	= $fld_r[2];
-					$fld1		= explode(":", $fld_r1);		// fld_1:상품|=|fld_1:상품
+					$fld1		= explode(":", $fld_r1);
 					$f_enm	= $fld1[0];
-					$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
+					$fld2		= explode(":", $fld_r2);
 					$r_enm	= $fld2[0];
 
 					if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
@@ -258,10 +229,8 @@ Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
 				$SQLAR = $SQLAR . " "; 
 				$ret =sql_query($SQLAR);
 				if( $ret ) { 
-					//m_("--- r_table: $r_table Insert");
 				}else{
 					echo "SQLAR: " . $SQLAR; exit;
-					//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 				}
 			}
 		} else { // insert - relation
@@ -270,13 +239,13 @@ Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
 			$SQLR = $SQLR . "kapp_pg_code= '" . $pg_code . "' , ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
-				$fld_r		= explode("|", $r_fld);		// fld_1:상품|=|fld_1:상품
+				$fld_r		= explode("|", $r_fld);
 				$fld_r1	= $fld_r[0];
 				$fld_sik	= $fld_r[1];
 				$fld_r2	= $fld_r[2];
-				$fld1		= explode(":", $fld_r1);		// fld_1:상품|=|fld_1:상품
+				$fld1		= explode(":", $fld_r1);
 				$f_enm	= $fld1[0];
-				$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
+				$fld2		= explode(":", $fld_r2);
 				$r_enm	= $fld2[0];
 				if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 				else $post_enm = "";
@@ -294,12 +263,9 @@ Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^
 			$SQLR = $SQLR . " ";
 			$ret =sql_query($SQLR);
 			if( $ret ) { 
-				//m_("r_table: $r_table Insert");
 			}else{
 				echo "r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
-				//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 			}
-			
 		}// if
 	}
 ?>

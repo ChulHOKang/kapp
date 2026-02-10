@@ -10,13 +10,12 @@
 		tkher_program_data_list.php : table data list.
 		- call : tkher_program_run.php : data insert program.
 		- call : program_list3.php 
-		- copy : tab_list_pg70.php 을 copy 하여 생성함. 프로그램 테이블 데이터 리스트 이다.
 		https://tkher.com/t/t_login.php?pg_code=dao_1537317833
 	---------------------------------------------------------------------- */
 	include "./table_paging.php";
 
 	$H_ID  = get_session("ss_mb_id"); 
-	if( isset($H_ID) && $H_ID !=='' ) {
+	if( isset($H_ID) && $H_ID !='' ) {
 		$H_LEV = $member['mb_level']; 
 		$H_POINT	= $member['mb_point']; 
 	} else {
@@ -43,7 +42,7 @@
 	$pg_mid= ''; $tab_mid= ''; 
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
-	if( isset($rsPG['item_array']) && $rsPG['item_array'] !==''){
+	if( isset($rsPG['item_array']) && $rsPG['item_array'] !=''){
 		$item_array = $rsPG['item_array'];
 		$if_data = $rsPG['if_data'];
 		$iftype = $rsPG['if_type'];
@@ -106,10 +105,7 @@ $(function () {
 });
 
 </script>
-
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/program_list.css" type="text/css" />
-
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 <script type="text/javascript" >
 <!--
 	function title_func(fld_code){       
@@ -145,7 +141,6 @@ $(function () {
 		document.view_form.pg_code.value=enm;
 		document.view_form.pg_name.value=hnm;
 		document.view_form.action='tkher_program_data_list.php'; 
-		//document.view_form.action='tkher_program_data_list.php?pg_code='+enm; 
 		document.view_form.submit();
 	}
 	function table_record_write(pg_code, grant_write, h_lev){ 
@@ -177,7 +172,7 @@ $(function () {
 			alert('Login Please!'); return false;
 		}
 		if( $coin < 1000 ) {
-			alert('Requires more than 1000 points. Point is low. You must do activities to accumulate points. point:'+ $coin);//UrlLinCoin Point가 부족합니다. point를 축적해야합니다.
+			alert('Requires more than 1000 points. Point is low. You must do activities to accumulate points. point:'+ $coin);
 			document.view_form.action='<?=KAPP_URL_T_?>/manual/user_manual.php';
 			document.view_form.target = '_blank';
 			document.view_form.submit();
@@ -200,11 +195,11 @@ $(function () {
 			var c_sel3 = document.getElementById("c_sel3");
 			i = c_sel3.selectedIndex;
 			c_sel3 = c_sel3.options[i].value;
-			var searchT = document.getElementById("searchT").value;//			searchT = searchT.value;
+			var searchT = document.getElementById("searchT").value;
 			document.view_form.mode.value = 'search';
-			document.view_form.search_fld.value = c_sel; // column
-			document.view_form.search_choice.value = c_sel3; // search type
-			document.view_form.searchT.value = searchT; // search data
+			document.view_form.search_fld.value = c_sel;
+			document.view_form.search_choice.value = c_sel3;
+			document.view_form.searchT.value = searchT;
 			document.view_form.action = 'tkher_program_data_list.php';
 			document.view_form.submit();
 		});
@@ -226,9 +221,7 @@ $(function () {
 								
 						},
 					success: function(data) {
-						//console.log(data);
 						alert("OK change --- " + grant_view);
-						//location.replace(location.href);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
@@ -249,8 +242,6 @@ $(function () {
 				default : old_cd = 0; msg='Guest'; break;
 			}
 			view_form.grant_view.selectedIndex = old_cd;
-			//view_form.grant_view[selectIndex].value   = cd;
-			//view_form.grant_view[selectIndex].text    = msg;
 		}
 	}	
 	function Change_grant_write(cd, grant_write, pg_code){
@@ -268,9 +259,7 @@ $(function () {
 								
 						},
 					success: function(data) {
-						//console.log(data);
 						alert("OK change --- " + grant_write);
-						//location.replace(location.href);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
@@ -347,7 +336,7 @@ $(function () {
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
 	$in_day		= date("Y-m-d H:i");
-	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=="" ){
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!="" ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
 	$page_cnt	= 10;
@@ -425,12 +414,7 @@ $(function () {
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
 
-	if( isset($H_ID) && $H_ID !=='' ) {
-		/*if( isset( $group_code) ){
-			$sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' and group_code='" . $group_code . "' order by upday desc ";
-		} else {
-			 $sql = "SELECT * from {$tkher['table10_pg_table']} where userid='$H_ID' order by upday desc ";
-		}*/
+	if( isset($H_ID) && $H_ID !='' ) {
 		if( $H_LEV > 7) $sql = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
 		else			$sql = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
 		$result = sql_query( $sql );
@@ -497,7 +481,7 @@ if( $H_ID==$pg_mid ) {
 						</select>
 					</span>
 <?php
-}// else echo " user: " . $pg_mid;
+}
 						echo "<br>".$view_msg;
 ?>
 
@@ -555,7 +539,6 @@ if( $H_ID==$pg_mid ) {
 	if( $H_LEV>= $grant_view || $pg_mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
-			//$OrderBy	= " order by seqno desc ";
 			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 			else $OrderBy	= " order by seqno desc ";        
 			if( $mode == "search" ){
@@ -629,10 +612,10 @@ if( $H_ID==$pg_mid ) {
 						<a href="#" class="search_btn">Search</a>
 						<br>
 							<div class="fr">
-							<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="btn_bo02T" title='table_pg70_write'>
+							<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='table_pg70_write'>
 
-						<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="Btn_List03A" title=' Download data as an Excel file'>
-						<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="Btn_List03A" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
+						<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="kapp_btn_bo02" title=' Download data as an Excel file'>
+						<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
 					</form>
 			</div> 
 <?php
