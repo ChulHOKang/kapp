@@ -346,3 +346,36 @@ radio1A {
 	margin-right: 10px;
 }
 
+.viewHeaderT{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;} /* right*/
+.viewHeaderT span{left:0;top:1px;font-size:14px;color:#686868;} /*position:absolute; top:12 */
+.boardViewT{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}
+.boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}
+
+.listTableT{width:100%px;text-decoration: none;}
+.listTableT th{height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}
+.listTableT td{height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}
+.listTableT .cell01{width:60px;text-align:center;text-decoration: none;}
+.listTableT .cell03{text-align:center;text-decoration: none;}
+.listTableT .cell05{width:70px;text-align:center;}
+.listTableT .cell02{width:80px;text-align:center;}
+.listTableT .cell04{width:200px;text-align:center;}
+.listTableT .cell06{width:50px;text-align:center;}
+.listTableT .cate{border-radius:5px;display:block;width:48px;height:23px;line-height:23px;overflow:hidden;margin:0 auto;color:#fff;font-size:12px;font-weight:bold;}
+.listTableT .cate.t01{background:#919191;}
+.listTableT .cate.t02{background:#086fbf;}
+.listTableT .cate.t03{background:#d01c27;}
+.listTableT td a span{font-size:14px;color:#69604f;text-decoration: none;}
+.listTableT td a .t01{font-size:14px;color:#d01c27;text-decoration: none;}
+
+.btn_bo01T{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#494949;font-size:14px;background:#dedcdf;}
+.btn_bo02T{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}
+.btn_bo03T{width:76px;height:28px;display:inline-block;line-height:28px;text-align:center;color:#fff;font-size:14px;background:#3e3e3e;}
+.search_btn{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}
+.paging{margin:20px auto 0 auto;width:100%;height:auto;overflow:hidden;text-align:center;}
+.paging a, .paging span, .paging img{display:inline-block;vertical-align:middle;}
+.paging a{color:#979288;font-size:18px;font-weight:bold;}
+.paging span{color:#979288;font-size:18px;font-weight:bold;}
+.paging a:hover{opacity:1;color:#d01c27;}
+.paging a.on{font-weight:bold;color:#d01c27;}
+.paging a.prev{margin-right:20px;}
+.paging a.next{margin-left:20px;}
