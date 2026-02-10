@@ -5,9 +5,8 @@
 	else $mode = '';
     if( $mode == 'next_input') {
         set_cookie('add_admin_info', 'next', 43200); // 12시간 저장
-        //echo "<script>window.close();</script>";
-        //echo "<script>window.open('', '_self').close();</script>";
-        //exit;
+        echo "<script>window.open('', '_self').close();</script>";
+        exit;
     }
 
 	$menu1TWPer=25;  
@@ -23,8 +22,6 @@
 	$Text_height='60px';  
 ?>
 <link rel="stylesheet" href="../include/css/kapp_basic.css" type="text/css">
-
-<!-- <link rel="stylesheet" href="../include/css/kapp_add_admin_infor.css" type="text/css"> -->
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
