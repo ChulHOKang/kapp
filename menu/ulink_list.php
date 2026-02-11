@@ -64,8 +64,45 @@ th, td { border: 1px solid silver; padding:5px; }
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 <!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
+
 <script>
 $(function () {
+	let timer;
+	
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
+			switch(e.target.innerText){
+				case 'Project' : title_func('job_group'); break;
+				case 'User'    : title_func('user_id'); break;
+				case 'Title'   : title_func('user_name'); break;
+				case 'Link Url': title_func('job_addr'); break;
+				case 'type'    : title_func('jong'); break;
+				case 'View'    : title_func('view_cnt'); break;
+				case 'date'    : title_func('up_day'); break;
+				default        : title_func('up_day'); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
+
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		switch(e.target.innerText){
+			case 'Project' : title_wfunc('job_group'); break;
+			case 'User'    : title_wfunc('user_id'); break;
+			case 'Title'   : title_wfunc('user_name'); break;
+			case 'Link Url': title_wfunc('job_addr'); break;
+			case 'type'    : title_wfunc('jong'); break;
+			case 'View'    : title_wfunc('view_cnt'); break;
+			case 'date'    : title_wfunc('up_day'); break;
+			default        : title_wfunc('up_day'); break;
+		}
+	});
+
+
   $('table.floating-thead').each(function() {
     if( $(this).css('border-collapse') == 'collapse') {
       $(this).css('border-collapse','separate').css('border-spacing',0);
@@ -155,6 +192,8 @@ $(function () {
 	} else  $line_cnt	= 15;
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 
 	$page_num = 10; 
 
@@ -311,13 +350,23 @@ $(function () {
 		document.insert_form.action='ulink_list.php';
 		document.insert_form.submit();
 	}
+	function title_wfunc(fld_code){       
+		document.insert_form.page.value = 1;
+		document.insert_form.fld_code.value= fld_code;
+		document.insert_form.fld_code_asc.value= 'desc';
+		document.insert_form.mode.value='title_wfunc';
+		document.insert_form.action='ulink_list.php';
+		document.insert_form.submit();                         
+	} 
 	function title_func(fld_code){       
 		document.insert_form.page.value = 1;                
 		document.insert_form.fld_code.value= fld_code;           
+		document.insert_form.fld_code_asc.value= 'asc';
 		document.insert_form.mode.value='title_func';           
 		document.insert_form.action='ulink_list.php';
 		document.insert_form.submit();                         
 	} 
+
 	function g_type_func(gtype){
 		document.insert_form.g_type.value = gtype;
 		document.insert_form.page.value = 1;                
@@ -343,6 +392,7 @@ $(function () {
 
 <script>
 jQuery(document).ready(function ($) {
+
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
 		//var seq_no = $("#insert_form").seq_no.val();
 	});
@@ -523,6 +573,7 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='gong_num' value='0'>
 	<input type='hidden' id='g_name_code' name='g_name_code' value='<?=$g_name_code?>'>
 	<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+	<input type='hidden' name='fld_code_asc' value='<?=$fld_code_asc?>' > 
 
 
 	<input type='hidden' name='mid'			value='' > 
@@ -747,26 +798,24 @@ jQuery(document).ready(function ($) {
 		</td>
 	</tr>
 <table class='floating-thead' width='100%'>
-<thead  width='100%'>
+<thead width='100%' id='tit_et'>
 		<tr align='center'>
 			<TH>icon</TH>
 	<?php
-		echo " <th title='Project Sort click' onclick=title_func('job_group')>Project</th> ";
-		echo " <th title='User Sort click' onclick=title_func('user_id')>User</th> ";
-		echo " <th title='Project Sort click' onclick=title_func('user_name')>Title</th> ";
-		echo " <th title='url Sort click' onclick=title_func('job_addr')>Link Url</th> ";
-		echo " <th title='type Sort click' onclick=title_func('jong')>type</th> ";
+		echo " <TH title='Project Sort click or doubleclick'  >Project</th> ";
+		echo " <TH title='User Sort click or doubleclick' >User</th> ";
+		echo " <TH title='Project Sort click or doubleclick' >Title</th> ";
+		echo " <TH title='url Sort click or doubleclick' >Link Url</th> ";
+		echo " <TH title='type Sort click or doubleclick' >type</th> ";
+		echo " <TH title='View Sort click or doubleclick' >View</th> ";
+		echo " <TH title='date Sort click or doubleclick' >date</th> ";
 	?>
-			<!-- <TH>View</TH> -->
-			<TH title='date Sort click' onclick="title_func('view_cnt')">View</TH>
-			<TH title='date Sort click' onclick="title_func('up_day')">date</TH>
 		</tr>
 </thead>
 <tbody width='100%'>
 <?php
 		if( $fld_code!='' ) {
-			if( $fld_code == 'view_cnt' ) $OrderBy = " order by $fld_code desc, up_day desc, user_name ";    
-			else  $OrderBy = " order by $fld_code, up_day desc, user_name ";    
+			$OrderBy = " order by $fld_code $fld_code_asc ";
 		} else $OrderBy	= " ORDER BY up_day desc, user_name ";
 		$ls = $ls . $OrderBy;
 		$ls = $ls . $limit;
