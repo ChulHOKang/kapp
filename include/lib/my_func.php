@@ -72,7 +72,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		if( isset($r_t[3]) ) $ty_key = $r_t[3];					// $r_t[3] relation field key data type CHAR or INT
 		$ty_key = "";
 
-		if( isset($_POST[$up_key]) && $_POST[$up_key] !=='' ) $update_key_data = $_POST[$up_key];
+		if( isset($_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
 		else $update_key_data = "";
 
 		$SQLA = "select seqno from `" . $r_table . "` ";
@@ -115,7 +115,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				if( $ret ) { //echo("<script>alert('Relation Save pg70_write_r: relation-Table is $r_table Created.  ');</script>");
 					//m_("r_table: $r_table Update");
 				}else{
-					echo "SQLR: " . $SQLR; exit;
+					echo "relation table error - SQLR: " . $SQLR; exit;
 				}
 			} else {
 				$SQLAR = "INSERT INTO " . $r_table . " SET ";
@@ -150,7 +150,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				if( $ret ) { 
 					//m_("--- r_table: $r_table Insert");
 				}else{
-					echo "SQLAR: " . $SQLAR; exit;
+					echo "relation table error - SQLAR: " . $SQLAR; exit;
 					//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 				}
 			}
@@ -186,7 +186,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			if( $ret ) { 
 				//m_("r_table: $r_table Insert");
 			}else{
-				echo "r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
+				echo "relation table error - r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
 				//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 			}
 		}// if
@@ -202,7 +202,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				$formula_		="";
 				$poptable_		="";
 				$gita				="";
-		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] !== ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 				if(isset($iftype[$j]) ) $typeX	= $iftype[$j];
 				else $typeX = "";
 				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
@@ -223,7 +223,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		}
 		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
 		$pop_fld ="";
-		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] != ""; $i++, $j++ ){
 			if( isset($popdata[$j]) ){
 				$popfld = $popdata[$j];
 				$popfld = explode(":", $popfld);
@@ -236,7 +236,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$mpop = $popdata[0];
 		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
 		$pop_mvfld = "";
-		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] != ""; $i++, $j++ ){
 			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
 			$fld1 = $mv[0];
 			$fld2 = $mv[1];
@@ -250,7 +250,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			if( isset($reldb[1]) ) $relation_db = $reldb[1];
 			else  $relation_db = "";
 			$rel_mvfld = "";
-		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
+		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] != ""; $i++, $j++ ){
 			$reldata = $relationdata[$j];
 			$rel = explode("|", $reldata );
 			$fld1 = $rel[0];
