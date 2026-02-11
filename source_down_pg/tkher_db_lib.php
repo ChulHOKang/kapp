@@ -309,7 +309,7 @@ function relation_func( $rdata, $pg_code, $rtype ){
 	if( isset($r_t[3]) ) $ty_key = $r_t[3];					// $r_t[3] relation field key data type CHAR or INT
 	$ty_key = "";
 
-	if( isset($_POST[$up_key]) && $_POST[$up_key] !=='' ) $update_key_data = $_POST[$up_key];
+	if( isset($_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
 	else $update_key_data = "";
 
 	$SQLA = "select seqno from `" . $r_table . "` ";
@@ -352,7 +352,7 @@ function relation_func( $rdata, $pg_code, $rtype ){
 			if( $ret ) { //echo("<script>alert('Relation Save pg70_write_r: relation-Table is $r_table Created.  ');</script>");
 				//m_("r_table: $r_table Update");
 			}else{
-				echo "SQLR: " . $SQLR; exit;
+				echo "relation table error - SQLR: " . $SQLR; exit;
 			}
 		} else {
 			$SQLAR = "INSERT INTO " . $r_table . " SET ";
@@ -387,7 +387,7 @@ function relation_func( $rdata, $pg_code, $rtype ){
 			if( $ret ) { 
 				//m_("--- r_table: $r_table Insert");
 			}else{
-				echo "SQLAR: " . $SQLAR; exit;
+				echo "relation table error - SQLAR: " . $SQLAR; exit;
 				//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 			}
 		}
@@ -423,7 +423,7 @@ function relation_func( $rdata, $pg_code, $rtype ){
 		if( $ret ) { 
 			//m_("r_table: $r_table Insert");
 		}else{
-			echo "r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
+			echo "relation table error - r_type: " . $r_type. ", i SQLR: " . $SQLR; exit;
 			//printf('Relation data insert ERROR sqlr:%s', $SQLR); 
 		}
 	}// if
