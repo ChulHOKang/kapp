@@ -11,16 +11,15 @@
 	*/
 ?> 
 <html> 
-<head> 
-
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" > 
-<TITLE>KAPP - Create Apps with No Code. Made in Kang ChulHo</TITLE>  
-<link rel='shortcut icon' href='./logo25a.jpg'> 
-<meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'> 
-<meta name='keywords' content='App Generator, app maker, app, web, homepage, development, asp, javascript, python, raspberry pi, arduino, esp8266, php, java, generator, source code, open source, tkher, tool, soho, html, html5, css3, '> 
-<meta name='description' content='App Generator, app maker, app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 '> 
-<meta name='robots' content='ALL'> 
-</head> 
+<head>
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+<meta name="robots" content="ALL">
+</head>
 <?php                                 
 	$menu1TWPer=15;  
 	$menu1AWPer=100 - $menu1TWPer;  
@@ -33,7 +32,9 @@
 	$Xwidth='100%';  
 	$Xheight='100%';  
 ?>                                 
-<style>  
+<link rel="stylesheet" href="kapp_basic.css" type="text/css" />
+
+<!-- <style>  
 body, td, TEXTAREA { font-size: 12pt}
 INPUT, select { font-size: 12pt; height:21pt}
 a 		{text-decoration:none; color:#000000; }
@@ -82,9 +83,8 @@ radio1A {width:<?=$menu1AWPer?>%;  height:30px;  float: left;  padding: 6px;  bo
 .viewHeader span{position:absolute;left:0;top:12px;font-size:14px;color:#686868;}  
 .boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  
 .boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  
-</style>  
-
-<script language='JavaScript'>   
+</style>   -->
+ <script language='JavaScript'>   
 	function db_recreate_action($pg_code ){   
 		if( !document.form_view.db_name.value ) {
 			alert('Please check the DB Name.');
