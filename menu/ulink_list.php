@@ -68,7 +68,6 @@ th, td { border: 1px solid silver; padding:5px; }
 <script>
 $(function () {
 	let timer;
-	
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
