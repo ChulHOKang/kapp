@@ -285,7 +285,7 @@ fwrite($fsr,"  <body width=100%>                            \r\n");
 fwrite($fsr,"  <center>                                           \r\n");
 fwrite($fsr,"  			<br>                                       \r\n");
 fwrite($fsr,"  			<div style='text-align:center;'>    \r\n");
-fwrite($fsr,"  				<P onclick=\"javascript:home_func('" . $pg_code . "')\" class='kapp_btn_bo02'>". $pg_name."</P>   \r\n");
+fwrite($fsr,"  				<P onclick=\"javascript:home_func('" . $pg_code . "')\" class='HeadTitle03AX'>". $pg_name."</P>   \r\n");
 fwrite($fsr,"  			</div>                   \r\n");
 fwrite($fsr,"<?php       \r\n");
 fwrite($fsr,"			$" . "tab_enm = '" . $tab_enm . "';   \r\n");
