@@ -83,8 +83,8 @@
 	fwrite($fsr,"}); \r\n");
 	fwrite($fsr,"</script> \r\n");
 
-	fwrite($fsr,"<link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_program_data_list.css\" type=\"text/css\" /> \r\n");
-
+	//fwrite($fsr,"<link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_program_data_list.css\" type=\"text/css\" /> \r\n");
+	fwrite($fsr,"<link rel='stylesheet' href='kapp_program_data_list.css' type='text/css' /> \r\n");
 
 	//----- style start -----------------------------------
 	/*
@@ -280,33 +280,26 @@
 fwrite($fsr,"			if( isset($"."_POST['line_cnt']) && $"."_POST['line_cnt'] !='' ) $"."line_cnt=$"."_POST['line_cnt']; \r\n");
 fwrite($fsr,"			else $"."line_cnt=10;  \r\n");
 fwrite($fsr,"			$"."page_num = 10;     \r\n");
-
 fwrite($fsr," ?> \r\n");
-
 fwrite($fsr,"  <body width=100%>                            \r\n");
 fwrite($fsr,"  <center>                                           \r\n");
 fwrite($fsr,"  			<br>                                       \r\n");
 fwrite($fsr,"  			<div style='text-align:center;'>    \r\n");
 fwrite($fsr,"  				<P onclick=\"javascript:home_func('" . $pg_code . "')\" class='kapp_btn_bo02'>". $pg_name."</P>   \r\n");
 fwrite($fsr,"  			</div>                   \r\n");
-
 fwrite($fsr,"<?php       \r\n");
-
 fwrite($fsr,"			$" . "tab_enm = '" . $tab_enm . "';   \r\n");
 fwrite($fsr,"			$" ."SQL1 = \"SELECT * from " . $tab_enm . " \";   \r\n");
 fwrite($fsr,"			if( $" ."mode=='SR' ){   \r\n");
 fwrite($fsr,"				if( $"."search_choice == 'like') $"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";   \r\n");
 fwrite($fsr,"				else		$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '$"."search_text' \";   \r\n");
 fwrite($fsr,"			}   \r\n");
-
 fwrite($fsr,"			if( $"."mode=='title_func' ){      \r\n");
 fwrite($fsr,"				if( $"."search_choice != '' && $"."search_text !='') {   \r\n");
 fwrite($fsr,"					$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";      \r\n");
 fwrite($fsr,"					$"."SQL1 = $"."SQL1 . \" order by $"."fld_code \";      \r\n");
 fwrite($fsr,"				} else $"."SQL1 = $"."SQL1 . \" order by $"."fld_code \";      \r\n");
 fwrite($fsr,"			}      \r\n");
-
-
 
 fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL1 ) )==false ){   \r\n");
 fwrite($fsr,"				m_(\" ERROR : Select $tab_enm  \");   \r\n");
@@ -324,9 +317,7 @@ fwrite($fsr,"				}   \r\n");
 fwrite($fsr,"				$"."last = $"."line_cnt;    \r\n");
 fwrite($fsr,"				if( $"."total_count < $"."last) $"."last = $"."total_count;   \r\n");
 fwrite($fsr,"			}   \r\n");
-
 fwrite($fsr,"?>               \r\n");
-
 fwrite($fsr,"			<div style='width:99%;'>          \r\n");
 fwrite($fsr,"				<div class='viewHeaderT'>          \r\n");
 fwrite($fsr,"						<span>".$pg_name.": $pg_code &nbsp;&nbsp;&nbsp;&nbsp;Total: <strong><"."?=$"."total_count?> &nbsp;&nbsp;&nbsp;&nbsp; Page:<?=$"."page?></strong>          \r\n");
@@ -343,7 +334,6 @@ fwrite($fsr,"						</span>          \r\n");
 //fwrite($fsr,"					<!-- <input type='button' value='Write' onclick=\"javascript:table_record_write('table_write');\" class='kapp_btn_bo02'> -->  \r\n");
 fwrite($fsr,"				</div>          \r\n");
 fwrite($fsr,"			</div>           \r\n");
-
 
 fwrite($fsr,"					<form name='view_form' method='post' enctype='multipart/form-data' >    \r\n");
 fwrite($fsr,"						<input type='hidden' name='mode'		value='<?=$"."mode?>' />    \r\n");
@@ -371,31 +361,24 @@ fwrite($fsr,"				<th style='width:30px; height:100%px;text-align:center;font-wei
 fwrite($fsr,"					<th class='cell03' title='Sort ".$fld_hnm[$i]." click' onclick=\"javascript:title_func('" . $fld_enm[$i] . "')\" >".$fld_hnm[$i]."</th>    \r\n");
 
  					} 
-					
 fwrite($fsr,"			</tr>   			\r\n");
 fwrite($fsr,"		</thead>   				\r\n");
 fwrite($fsr,"		<tbody width=100%>   	\r\n");
-
 fwrite($fsr,"<?php    \r\n");
 fwrite($fsr,"			$"."SQL		= \"SELECT * from $tab_enm \";  \r\n");
 fwrite($fsr," 			$"."SQL_limit	= \"  limit $"."start , $"."last; \";  \r\n");
-
 fwrite($fsr,"			if( $"."mode=='title_func' ) $"."OrderBy = \" order by $"."fld_code \";    \r\n");
 fwrite($fsr,"			else $"."OrderBy	= \" order by seqno desc \";        \r\n");
-
 fwrite($fsr,"			if( $"."mode == \"SR\" ){    \r\n");
 fwrite($fsr,"				if( $"."search_choice == 'like' )	$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";  \r\n");
 fwrite($fsr,"				else							$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '$"."search_text' \";  \r\n");
 fwrite($fsr,"			}     \r\n");
-
 fwrite($fsr,"			else if( $"."mode=='title_func' ) {     \r\n");
 fwrite($fsr,"				if( $"."search_choice != '' && $"."search_text !='') {     \r\n");
 fwrite($fsr,"					if( $"."search_choice == 'like' )	$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";  \r\n");
 fwrite($fsr,"					else					$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '$"."search_text' \";       \r\n");
 fwrite($fsr,"				}     \r\n");
 fwrite($fsr,"			}     \r\n");
-
-
 fwrite($fsr,"			$"."SQL = $"."SQL . $"."OrderBy . $"."SQL_limit;    \r\n");
 fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL ) )==false )    \r\n");
 fwrite($fsr,"			{    \r\n");
@@ -418,7 +401,6 @@ fwrite($fsr,"				<td class=cell03><a href=\"javascript:pg_record_view('<?=$"."ro
 fwrite($fsr,"				<td class=cell03><a href=\"javascript:pg_record_view('<?=$"."row[\"seqno\"]?>');\" ><?=$"."row['".$fff."']?></a></td>     \r\n");
 							}
  						} 
-
 fwrite($fsr,"					</tr>    \r\n");
 fwrite($fsr,"<?php    \r\n");
 fwrite($fsr,"				}	//while    \r\n");
@@ -466,29 +448,22 @@ fwrite($fsr,"?>     \r\n");
 fwrite($fsr,"</body>    \r\n");
 fwrite($fsr,"</html>    \r\n");
 fclose($fsr);
-//-------------------------------------- list end ----------------------
 
 include('./include/lib/pclzip.lib.php');
 $zf		= $pg_code . '_run.zip';
 $zff		= "./file/" . $H_ID . "/" . $zf;
 $zipfile	= new PclZip($zff);
-
 $data		= array();
-
 $list_run		= $pg_code . "_run.php";
-
 $file_php= "./file/" . $H_ID. "/" . $list_run;
-
 $data		= array( $file_php );
-
 $create	= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH); 
 echo "<pre>";
-
 ?> 
 			<h3> Created OK! pg_code:<?php echo $runF1; ?> , Zip File:<?=$zf?> </h3>
 			<h3> <a href='<?=$zff?>' target=_blank>[ Down RUN:<?=$zf?> ]</a> </h3>  
 <?php
-if ( $H_LEV > 0 ){
+if ( $H_LEV > 1 ){
 ?>
 		<h3> <a href='./file/<?=$H_ID?>/<?=$list_run?>' target=_blank>[ Data_List RUN:<?=$list_run?> ]</a> </h3> 
 <?php } ?>

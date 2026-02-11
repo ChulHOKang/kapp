@@ -40,22 +40,19 @@
 	$runF3		= $path . $H_ID . "/" . $pg_code . "_view.php";
 	$fsi			= fopen("$runF3","w+");
 
-fwrite($fsi,"<?php \r\n");
-fwrite($fsi,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
-fwrite($fsi,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
-fwrite($fsi,"			include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");
-fwrite($fsi,"	} else {    \r\n");
-fwrite($fsi,"			include './tkher_db_lib.php';		\r\n");
-fwrite($fsi,"			include './tkher_dbcon_Table.php';  \r\n");
-fwrite($fsi,"		// DB info user server  \r\n");
-fwrite($fsi,"		// tkher_dbcon_create.php - generator.  \r\n");
-fwrite($fsi,"	}  \r\n");
-
-fwrite($fsi,"?> \r\n");
-
-fwrite($fsi,"<html> \r\n");
-
-fwrite($fsi,"<head> \r\n");
+	fwrite($fsi,"<?php \r\n");
+	fwrite($fsi,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+	fwrite($fsi,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+	fwrite($fsi,"			include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");
+	fwrite($fsi,"	} else {    \r\n");
+	fwrite($fsi,"			include './tkher_db_lib.php';		\r\n");
+	fwrite($fsi,"			include './tkher_dbcon_Table.php';  \r\n");
+	fwrite($fsi,"		// DB info user server  \r\n");
+	fwrite($fsi,"		// tkher_dbcon_create.php - generator.  \r\n");
+	fwrite($fsi,"	}  \r\n");
+	fwrite($fsi,"?> \r\n");
+	fwrite($fsi,"<html> \r\n");
+	fwrite($fsi,"<head> \r\n");
 
 	fwrite($fsi,"<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" > \r\n");
 	fwrite($fsi,"<TITLE>KAPP - no code webapp generator, No code app creation Made in ChulHo Kang : solpakan89@gmail.com</TITLE>  \r\n");
@@ -83,7 +80,8 @@ fwrite($fsi,"<head> \r\n");
 	fwrite($fsi,"	$"."Xheight='100%';  \r\n");
 	fwrite($fsi,"?>                                 \r\n");
 
-	fwrite($fsi,"   <link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type=\"text/css\" />  \r\n");
+	//fwrite($fsi,"   <link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type=\"text/css\" />  \r\n");
+	fwrite($fsi,"   <link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \r\n");
 /*
 	fwrite($fsi,"<style>  \r\n");
 	fwrite($fsi,"* {  box-sizing: border-box;}  \r\n");
@@ -186,19 +184,19 @@ fwrite($fsi,"<head> \r\n");
 	fwrite($fsi,"	<P href='#' class='on' title='table code:".$tab_enm." , program name:".$pg_name."'>".$pg_name."</P>   \r\n");
 	fwrite($fsi,"</div>   \r\n");
 
-	fwrite($fsi,"			<form name='form_view' action='' method='post' enctype='multipart/form-data' >						\r\n");
+	fwrite($fsi,"			<form name='form_view' action='' method='post' enctype='multipart/form-data' >				\r\n");
 	fwrite($fsi,"				<input type=hidden name='mode'			value='' />															\r\n");
-	fwrite($fsi,"				<input type=hidden name='tab_enm'	value='<?=$"."tab_enm?>' />									\r\n");
-	fwrite($fsi,"				<input type=hidden name='tab_hnm'	value='<?=$"."tab_hnm?>' />									\r\n");
-	fwrite($fsi,"				<input type=hidden name='seqno'		value='<?=$"."seqno?>' />										\r\n");
+	fwrite($fsi,"				<input type=hidden name='tab_enm'	value='<?=$"."tab_enm?>' />							\r\n");
+	fwrite($fsi,"				<input type=hidden name='tab_hnm'	value='<?=$"."tab_hnm?>' />							\r\n");
+	fwrite($fsi,"				<input type=hidden name='seqno'		value='<?=$"."seqno?>' />							\r\n");
 	fwrite($fsi,"				<input type=hidden name='page'			value='<?=$"."page?>' />										\r\n");
-	fwrite($fsi,"				<input type=hidden name='grant_write' value='<?=$"."grant_write?>' />								\r\n");
-	fwrite($fsi,"				<input type=hidden name='pg_name'	value='".$pg_name."' />									\r\n");
-	fwrite($fsi,"				<input type=hidden name='pg_code'	value='".$pg_code."' />									\r\n");
-	fwrite($fsi,"				<input type=hidden name='line_cnt'		value='<?=$"."line_cnt?>' />									\r\n");
-	fwrite($fsi,"				<input type=hidden name='search_fld'		value='<?=$"."_REQUEST[\"search_fld\"]?>' />			\r\n");
+	fwrite($fsi,"				<input type=hidden name='grant_write' value='<?=$"."grant_write?>' />					\r\n");
+	fwrite($fsi,"				<input type=hidden name='pg_name'	value='".$pg_name."' />								\r\n");
+	fwrite($fsi,"				<input type=hidden name='pg_code'	value='".$pg_code."' />								\r\n");
+	fwrite($fsi,"				<input type=hidden name='line_cnt'		value='<?=$"."line_cnt?>' />					\r\n");
+	fwrite($fsi,"				<input type=hidden name='search_fld'		value='<?=$"."_REQUEST[\"search_fld\"]?>' />	\r\n");
 	fwrite($fsi,"				<input type=hidden name='search_choice'	value='<?=$"."_REQUEST[\"search_choice\"]?>' />		\r\n");
-	fwrite($fsi,"				<input type=hidden name='search_text'	value='<?=$"."_REQUEST[\"search_text\"]?>' />			\r\n");
+	fwrite($fsi,"				<input type=hidden name='search_text'	value='<?=$"."_REQUEST[\"search_text\"]?>' />		\r\n");
 	fwrite($fsi,"			</form>    \r\n");
 
 	fwrite($fsi,"	<div class='boardViewX'>   \r\n");
@@ -282,7 +280,7 @@ fwrite($fsi,"<head> \r\n");
 	fwrite($fsi,"  <div class='data1A'><a href='<?=$"."path?><?=$"."row['".$fldenm."']?>'><img src='./default.gif' border=0>&nbsp;<?=$"."row['".$fldenm."']?> </a></div>    \r\n");
 	fwrite($fsi,"  <div class='blankA'> </div>    \r\n");
 	fwrite($fsi,"<?php        \r\n");
-	fwrite($fsi," }	// 첨부화일    \r\n");
+	fwrite($fsi," }	// addfile    \r\n");
 	fwrite($fsi,"	}        \r\n");
 	fwrite($fsi,"?>        \r\n");
 
@@ -311,30 +309,30 @@ fwrite($fsi,"<head> \r\n");
 	$updfile = $path . $H_ID . "/" . $pg_code . "_update.php";
 	$fsw = fopen("$updfile","w+");
 
-fwrite($fsw,"<?php \r\n");
-fwrite($fsw,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
-fwrite($fsw,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
-fwrite($fsw,"			include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");
-fwrite($fsw,"	} else {    \r\n");
-fwrite($fsw,"			include './tkher_db_lib.php';		\r\n");
-fwrite($fsw,"			include './tkher_dbcon_Table.php';  \r\n");
-fwrite($fsw,"		// DB info - user server  \r\n");
-fwrite($fsw,"		// tkher_dbcon_create.php  generator.  \r\n");
-fwrite($fsw,"	}  \r\n");
+	fwrite($fsw,"<?php \r\n");
+	fwrite($fsw,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
+	fwrite($fsw,"	if( strpos( $"."searchNameA, $"."_SERVER['HTTP_HOST']) == true) {    \r\n");
+	fwrite($fsw,"			include '" . KAPP_PATH_T_ . "/tkher_start_necessary.php';		\r\n");
+	fwrite($fsw,"	} else {    \r\n");
+	fwrite($fsw,"			include './tkher_db_lib.php';		\r\n");
+	fwrite($fsw,"			include './tkher_dbcon_Table.php';  \r\n");
+	fwrite($fsw,"		// DB info - user server  \r\n");
+	fwrite($fsw,"		// tkher_dbcon_create.php  generator.  \r\n");
+	fwrite($fsw,"	}  \r\n");
 
 	fwrite($fsw,"                                \r\n");
 	fwrite($fsw,"	$"."upfile	 = '';  \r\n");
 	fwrite($fsw,"	$"."upfileX	= '';  \r\n");
 
-fwrite($fsw,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
-fwrite($fsw,"			else $"."mode='';  \r\n");
-fwrite($fsw,"			if( isset($"."_POST['seqno']) ) $"."seqno=$"."_POST['seqno']; \r\n");
-fwrite($fsw,"			else if( isset($"."_REQUEST['seqno']) ) $"."seqno=$"."_REQUEST['seqno']; \r\n");
-fwrite($fsw,"			else $"."seqno='';  \r\n");
+	fwrite($fsw,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
+	fwrite($fsw,"			else $"."mode='';  \r\n");
+	fwrite($fsw,"			if( isset($"."_POST['seqno']) ) $"."seqno=$"."_POST['seqno']; \r\n");
+	fwrite($fsw,"			else if( isset($"."_REQUEST['seqno']) ) $"."seqno=$"."_REQUEST['seqno']; \r\n");
+	fwrite($fsw,"			else $"."seqno='';  \r\n");
 
 	fwrite($fsw,"	if( $"."mode == 'record_update' ) {  \r\n");
-
 	fwrite($fsw," 			$"."query			= \" UPDATE ". $tab_enm." SET  \"; \r\n");
+
 		$list				= array();
 		$ddd				= "";
 		$list				= explode("@", $item_array);
@@ -354,22 +352,22 @@ fwrite($fsw,"			else $"."seqno='';  \r\n");
 
 							} else if( $typeX=='9' ) {	// 9:
 
-									fwrite($fsw,"			if( isset($"."_POST['upfile']) ) $"."upfile=$"."_POST['upfile']; \r\n");
-									fwrite($fsw,"			else $"."upfile='';  \r\n");
+								fwrite($fsw,"			if( isset($"."_POST['upfile']) ) $"."upfile=$"."_POST['upfile']; \r\n");
+								fwrite($fsw,"			else $"."upfile='';  \r\n");
 
-									fwrite($fsw," 			$"."upfileX	  = $"."_FILES[\"".$nm."\"][\"name\"];  \r\n");
-									fwrite($fsw," 			$"."fld_enm = $"."_FILES[\"".$nm."\"][\"name\"];   \r\n");
-									fwrite($fsw," 			if ( $"."_FILES[\"".$nm."\"][\"error\"] > 0){								// error check  \r\n");
-									fwrite($fsw,"      			echo \" Return Code: \" . $"."_FILES[\"".$nm."\"][\"error\"] . \"<br>\";   \r\n");
-									fwrite($fsw," 			} else {  \r\n");
-									fwrite($fsw,"          			if ( file_exists( $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"]))       \r\n");
-									fwrite($fsw,"          			{																       \r\n");
-									fwrite($fsw," 	               			move_uploaded_file($"."_FILES[\"".$nm."\"][\"tmp_name\"], $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"] );      \r\n");
-									fwrite($fsw,"           			} else {														  \r\n");
-									fwrite($fsw," 	                			move_uploaded_file($"."_FILES[\"".$nm."\"][\"tmp_name\"], $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"] );      \r\n");
-									fwrite($fsw," 	                			//echo \" Stored in:\" . $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"];	  \r\n");
-									fwrite($fsw,"           			}              \r\n");
-									fwrite($fsw," 			}                  \r\n");
+								fwrite($fsw," 			$"."upfileX	  = $"."_FILES[\"".$nm."\"][\"name\"];  \r\n");
+								fwrite($fsw," 			$"."fld_enm = $"."_FILES[\"".$nm."\"][\"name\"];   \r\n");
+								fwrite($fsw," 			if ( $"."_FILES[\"".$nm."\"][\"error\"] > 0){	// error check  \r\n");
+								fwrite($fsw,"      			echo \" Return Code: \" . $"."_FILES[\"".$nm."\"][\"error\"] . \"<br>\";   \r\n");
+								fwrite($fsw," 			} else {  \r\n");
+								fwrite($fsw,"          		if ( file_exists( $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"]))  \r\n");
+								fwrite($fsw,"          		{	       \r\n");
+								fwrite($fsw," 	               			move_uploaded_file($"."_FILES[\"".$nm."\"][\"tmp_name\"], $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"] );      \r\n");
+								fwrite($fsw,"           			} else {		  \r\n");
+								fwrite($fsw," 	                			move_uploaded_file($"."_FILES[\"".$nm."\"][\"tmp_name\"], $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"] );      \r\n");
+								fwrite($fsw," 	                			//echo \" Stored in:\" . $"."f_path . $"."_FILES[\"".$nm."\"][\"name\"];	  \r\n");
+								fwrite($fsw,"           			}              \r\n");
+								fwrite($fsw," 			}                  \r\n");
 					fwrite($fsw," 			if( $"."upfileX ) $"."query = $"."query . \"".$fld[1]."= '\" . $"."_FILES[\"".$nm."\"][\"name\"] . \"' \";   \r\n");
 
 							} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
@@ -433,7 +431,8 @@ fwrite($fsw,"			else $"."seqno='';  \r\n");
 
 	fwrite($fsw,"?> \r\n");
 //---------- style ---------------------------------------------------------------------------------
-	fwrite($fsw,"   <link rel='stylesheet' href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type='text/css' /> \r\n");
+	//fwrite($fsw,"   <link rel='stylesheet' href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type='text/css' /> \r\n");
+	fwrite($fsw,"   <link rel='stylesheet' href='kapp_basic.css' type='text/css' /> \r\n");
 /*
 fwrite($fsw,"<style>  \r\n");
 fwrite($fsw,"* {  box-sizing: border-box;}  \r\n");
