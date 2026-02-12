@@ -140,6 +140,7 @@ $(function () {
 		document.project_search.fld_code.value= fld_code;
 		document.project_search.fld_code_asc.value= 'desc';
 		document.project_search.mode.value='title_wfunc';
+		document.project_search.target='_self';
 		document.project_search.action='program_list_ai.php';
 		document.project_search.submit();                         
 	} 
@@ -148,6 +149,7 @@ $(function () {
 		document.project_search.fld_code.value= fld_code;           
 		document.project_search.fld_code_asc.value= 'asc';
 		document.project_search.mode.value='title_func';           
+		document.project_search.target='_self';
 		document.project_search.action='program_list_ai.php';
 		document.project_search.submit();                         
 	} 

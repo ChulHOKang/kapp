@@ -130,6 +130,7 @@ $(function () {
 		document.table_list.fld_code.value= fld_code;
 		document.table_list.fld_code_asc.value= 'desc';
 		document.table_list.mode.value='title_wfunc';
+		document.table_list.target='_self';
 		document.table_list.action='kapp_program_list_all.php';
 		document.table_list.submit();                         
 	} 
@@ -138,6 +139,7 @@ $(function () {
 		document.table_list.fld_code.value= fld_code;           
 		document.table_list.fld_code_asc.value= 'asc';
 		document.table_list.mode.value='title_func';           
+		document.table_list.target='_self';
 		document.table_list.action='kapp_program_list_all.php';
 		document.table_list.submit();                         
 	} 

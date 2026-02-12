@@ -61,12 +61,6 @@ th, td { border: 1px solid silver; padding:5px; }
 </style>
 <script src="//code.jquery.com/jquery.min.js"></script>
 
-<!-- 	//echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
-	//echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
-	//echo " <th title='Program Sort click' onclick=title_func('tab_hnm')>Table name</th> ";
-	//echo " <th title='Table Sort click' onclick=title_func('tab_enm')>Table code</th> ";
-	//echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
- -->
 <script>
 $(function () {
 	let timer;
@@ -125,13 +119,13 @@ $(function () {
 	  });
 });
 </script>
-<link rel="stylesheet" href="./include/css/common.css" type="text/css" />
+<!-- <link rel="stylesheet" href="./include/css/common.css" type="text/css" />
 <script type="text/javascript" src="./include/js/ui.js"></script>
 <script type="text/javascript" src="./include/js/common.js"></script>
 <link rel="stylesheet" href="./include/css/kancss.css" type="text/css">
-
+ -->
 <?php
-	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!=='' ){
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
 	$page_num = 10;
@@ -168,7 +162,7 @@ $(function () {
 	if( isset($_POST['data']) && $_POST['data']!='' ) $data = $_POST['data'];
 	else $data	= "";
 
-   if( $H_ID !=='' && $mode == 'Delete_mode' ) {
+   if( $H_ID !='' && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
@@ -242,17 +236,20 @@ $(function () {
 
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-		if(!$page) $page=1;
-		$total_page = intval(($total-1) / $line_cnt)+1;
-		$first = ($page-1)*$line_cnt;
-		$last = $line_cnt;
-		if($total < $last) $last = $total;
-		$limit = " limit $first, $last ";
-		if ($page == "1")
-			$no = $total;
-		else {
-			$no = $total - ($page - 1) * $line_cnt;
-		}
+
+	$total_page = intval(($total-1) / $line_cnt)+1;
+	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
+	else $first =0;
+	$last = $line_cnt;
+	if( $total < $last) $last = $total;
+	$limit = " limit $first, $last ";
+
+	if( $page == 1){
+		$no = $total;
+	} else {
+		if( $page>1) $no = $total - ($page - 1) * $line_cnt;
+		else $no = $total;
+	}
 
 
 	function kapp_table_check( $tab ){
@@ -411,6 +408,7 @@ $(function () {
 		document.table_list.submit();
 	}
 	function run_back( mode, data, page){
+		document.table_list.group_code.value='';
 		document.table_list.mode.value		='';
 		document.table_list.data.value		=data;
 		document.table_list.page.value		=page;
@@ -560,14 +558,14 @@ if( $mode != 'Search') {
     $line=0;
 	$i=1;
 	
-	//if( $mode !== "Search") {
-	//	$ls = $ls . " $limit ";
-	//}
 
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
-	$ls = $ls . $limit;
+	//$ls = $ls . $limit;
+	if( $mode != "Search") { // table 상세 조화가 아님.
+		$ls = $ls . " $limit ";
+	}
 
 	
 	$resultT	= sql_query( $ls );
@@ -583,7 +581,7 @@ if( $mode != 'Search') {
 		<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'>
 		<TD <?=$bcolor?> ><?=$line?></TD>
 <?php
-		if( $mode !== 'Search') {
+		if( $mode != 'Search') {
 ?>
 			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>' ><?=$rs['userid']?></TD>
 			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>' ><?=$rs['group_name']?></TD>
@@ -602,7 +600,7 @@ if( $mode != 'Search') {
 			<TD title='<?=$rs['memo']?>'><?=$rs['memo']?></TD>
 <?php
 				$fld_enm = $rs['fld_enm'];
-				if( $fld_enm !== 'seqno' ){
+				if( $fld_enm != 'seqno' ){
 					$fld_type = $rs['fld_type'];
 					$fld_len		= $rs['fld_len'];
 					if( $fld_type =='INT' )					$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
@@ -621,7 +619,7 @@ if( $mode != 'Search') {
 					else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				}
 		}
-		if( $mode !== 'Search' && isset($H_ID) && $H_ID !=='' ){
+		if( $mode != 'Search' && isset($H_ID) && $H_ID !='' ){
 				echo " <TD align='center' $bcolor><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
 
 				if( $rs['userid'] == $H_ID) echo " <TD align='center' $bcolor><input type='button' name='delete' onclick=\"javascript:delete_table_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."', '".$rs['userid']."', '".$H_ID."');\"  value=' Table Delete ' style='height:24px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Table delete. ". $rs['tab_enm']. ":" . $rs['tab_hnm'] . "  '> ";

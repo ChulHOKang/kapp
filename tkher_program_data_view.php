@@ -137,7 +137,8 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 		m_( "Error $tab_enm , seqno:$seqno" );
 		exit();
 } else {
-		$data_mid = $row['kapp_userid'];
+		if( isset($row['kapp_userid']) ) $data_mid = $row['kapp_userid'];
+		else $data_mid = '';
 ?>
 <?php
 		$cur='B';

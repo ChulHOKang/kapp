@@ -561,7 +561,8 @@ if( $H_ID==$pg_mid ) {
 				while( $row = sql_fetch_array($result)  ) {
 					$no++;
 					$row_seqno = $row['seqno'];
-					$data_mid = $row['kapp_userid'];
+					if( isset($row['kapp_userid']) ) $data_mid = $row['kapp_userid'];
+					else $data_mid = '';//$H_ID;
 ?>
 					<tr>
 						<td style="width:30px; height:100%px;text-align:center">
