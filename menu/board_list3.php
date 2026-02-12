@@ -2,10 +2,15 @@
 	include_once('../tkher_start_necessary.php');
 
 	$H_ID	= get_session("ss_mb_id");
-	if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
-	else $H_EMAIL = '';
-	if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];    //get_session("ss_mb_level");   //"ss_mb_id";
-	else $H_LEV	= 0;
+	if( $H_ID !=''){
+		if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
+		else $H_EMAIL = '';
+		if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
+		else $H_LEV	= 0;
+	} else {
+		$H_EMAIL = '';
+		$H_LEV= 1;
+	}
 
 	connect_count($host_script, $H_ID, 0, $referer);	// log count
 	/*
@@ -27,9 +32,27 @@
 </head>
 
 <style>
-table { border-collapse: collapse; }
-th { background: #666fff; color: white; height: 32px; }
-th, td { border: 1px solid silver; padding:5px; }
+textarea {
+	  width: 200px;
+	  height: 50px;
+	  padding: 0px;
+	  border: 2px solid #ccc;
+	  border-radius: 0px;
+	  background-color: #000000;
+	  font-family: Arial, sans-serif;
+	  font-size: 12px;
+	  color: #fff;
+	  /*resize: vertical;  Allows vertical resizing only */
+	}
+	textarea:focus {
+	  border-color: #007bff; /* Changes border color on focus */
+	  outline: none; /* Removes default outline on focus */
+	}
+
+	table { border-collapse: collapse; }
+	th { background: #666fff; color: white; height: 32px; }
+	th, td { border: 1px solid silver; padding:5px; }
+
 	.container {
 		background-color: skyblue;
 		display :flex;									/* flex, inline-flex */
@@ -41,13 +64,40 @@ th, td { border: 1px solid silver; padding:5px; }
 	}
 	.item {
 		background-color: gold;
-		boarder: 1px solid gray;
+		boarder: 1px solid yellow;
 	}
 </style>
 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
-	$(function () {
+$(function () {
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			switch(e.target.innerText){
+				case 'User'    : title_func('make_id'); break;
+				case 'info'    : title_func('no'); break;
+				case 'board name': title_func('name'); break;
+				case 'Date'    : title_func('in_date'); break;
+				default        : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
+
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+			switch(e.target.innerText){
+				case 'User'    : title_wfunc('make_id'); break;
+				case 'info'    : title_wfunc('no'); break;
+				case 'board name': title_wfunc('name'); break;
+				case 'Date'    : title_wfunc('in_date'); break;
+				default        : title_wfunc(''); break;
+			}
+	});
+
 	  $('table.floating-thead').each(function() {
 		if( $(this).css('border-collapse') == 'collapse') {
 		  $(this).css('border-collapse','separate').css('border-spacing',0);
@@ -74,12 +124,12 @@ th, td { border: 1px solid silver; padding:5px; }
 		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
 		});
 	  });
-	});
+});
 </script>
 
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
+<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script> -->
 
 <?php
 	if( isset($_POST['g_type']) ) $g_type = $_POST['g_type'];
@@ -363,7 +413,16 @@ th, td { border: 1px solid silver; padding:5px; }
 		document.makeform.page.value = 1;                
 		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
 		document.makeform.fld_code.value= fld_code;           
+		document.makeform.fld_code_asc.value= 'asc';
 		document.makeform.mode.value='title_func';           
+		document.makeform.action='board_list3.php';
+		document.makeform.submit();                         
+	} 
+	function title_wfunc(fld_code){       
+		document.makeform.page.value = 1;
+		document.makeform.fld_code.value= fld_code;
+		document.makeform.fld_code_asc.value= 'desc';
+		document.makeform.mode.value='title_wfunc';
 		document.makeform.action='board_list3.php';
 		document.makeform.submit();                         
 	} 
@@ -383,6 +442,8 @@ th, td { border: 1px solid silver; padding:5px; }
 	else $line_cnt	= 10;
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 ?>
 <form name="makeform" method="post" action="query_ok_new.php"><!-- query_ok_new.php <- board_list3_ok.php -->
 			<input type="hidden" name="infor"       value="" >
@@ -401,6 +462,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			<input type='hidden' name='page' value="<?=$page?>" >
 			<input type='hidden' name='line_cnt' value='' >
 		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
 <?php if( $H_ID && $H_LEV > 1 ) { // 로그인 일때만 그룹관리와 Url link 등록이 가능하도록한다. ?>
 		<!-- --------------------------------------------------------------------- -->
@@ -626,41 +688,49 @@ th, td { border: 1px solid silver; padding:5px; }
 							</select>
 							</td>
 		</tr>
-<table class='floating-thead' width='100%'>
-<thead  width='100%'>
-		<tr style='color:black;' align='center'>
+<!-- <table class='floating-thead' width='100%'> -->
+<table class='floating-thead' style="width:100%; table-layout:;">
+<thead id='tit_et' width='100%'>
+		<tr align='center'>
 			<TH>no</TH>
-			<TH style='color:white;' onclick="title_func('make_id')">user</TH>
+			<!-- <TH style='color:white;' onclick="title_func('make_id')">User</TH>
 			<TH style='color:white;' onclick="title_func('no')">info</TH>
-			<TH style='color:white;' onclick="title_func('name')">board name</TH>
-			<TH style='color:white;' title='data count'>data</TH>
-			<TH style='color:white;'>file size</TH>
-			<TH style='color:white;'>skin type</TH>
-			<TH style='color:white;' title="data read level">read</TH>
-			<TH style='color:white;' title="data write level">write</TH>
+			<TH style='color:white;' onclick="title_func('name')">board name</TH> -->
+<?php
+	//echo " <th title='project Sort click' >Project</th> ";
+	echo " <th title='User Sort click or doubleclick' >User</th> ";
+	echo " <th title='info Sort click or doubleclick' >info</th> ";
+	echo " <th title='board name Sort click or doubleclick' >board name</th> ";
+	echo " <th title='Date Sort click or doubleclick' >Date</th> ";
+?>
+			
+			<TH title='data count'>Data</TH>
+			<TH>file size</TH>
+			<TH>skin type</TH>
+			<TH title="data read level">read</TH>
+			<TH title="data write level">write</TH>
 			<TH>memo</TH>
-			<!-- <TH>exec</TH> -->
+			<TH>exec</TH>
 		</tr>
  </thead>
 
-<tbody width='100%'>
+<tbody width='100%' style='background-color:black;color:white;'>
 <?php
-	if( $fld_code!='' ) $OrderBy = " order by $fld_code asc ";    
+	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY in_date desc, name ";
 	$ls = $ls . $OrderBy;
 	$ls = $ls . $SQL_limit;
 
-	if ( ($result = sql_query( $ls ) )==false ){
+	if( ($result = sql_query( $ls ) )==false ){
 		$total_count = 0;
 	}
-
 	$line_no = 0;
-	//$line = 0;
 	$i=1;
-	while ( $rs = sql_fetch_array( $result ) ) {
+	while( $rs = sql_fetch_array( $result ) ) {
 		$rsno = $rs['no'];
-		//$line = $line_cnt * $page + $i - $line_cnt;  // $line_cnt - 라인 출력 용.
-
+		//$dateR = date($rs['in_date'], '%Y-%m-%d'); //$rs['in_date']; //DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
+		$dateR = date('Y-m-d', $rs['in_date']);
+		$in_day			= date("Y-m-d H:i");
 		if ( $rs['grant_view'] == "1" ) $levR='Guest';
 		else if ( $rs['grant_view'] == "2" ) $levR='Member';
 		else if ( $rs['grant_view'] == "3" ) $levR='Only Me';
@@ -690,25 +760,26 @@ th, td { border: 1px solid silver; padding:5px; }
 ?>
 
 		  <tr>
-				<td style='background-color:#FFFFFF' align='center'><?=$i?></td>
-				<td style='background-color:#FFFFFF' align='center'><?=$rs['make_id']?></td>
-			<td style='background-color:#FFFFFF' align='center'>
-				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['no']?></a></td>
-			<td width='10%' bgcolor="#FFFFFF" title='make:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
-				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['name']?></a></td>
-			<td style='background-color:#FFFFFF' align='center'><?=$board_cnt?></td><!-- data record count -->
-			<td style='background-color:#FFFFFF' align='center' title="upload file use and size:<?=$rs['fileup']?>">
-				<input type='text' name='file_size_<?=$line_no?>' value='<?=$rs['fileup']?>' title='upload file size change' size='1'>
+				<td style='color:white;text-align:center;'><?=$i?></td>
+				<td style='color:white;text-align:center;'><?=$rs['make_id']?></td>
+			<td style='color:white;text-align:center;'>
+				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['no']?></a></td>
+			<td  style='color:white;text-align:center;' width='10%' title='make:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
+				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['name']?></a></td>
+			<td style='color:white;text-align:center;'><?=$dateR?></td>
+			<td style='color:white;text-align:center;'><?=$board_cnt?></td><!-- data record count -->
+			<td style='color:white;text-align:center;' title="upload file use and size:<?=$rs['fileup']?>">
+				<input style='background-color:black;color:white;text-align:center;' type='text' name='file_size_<?=$line_no?>' value='<?=$rs['fileup']?>' title='upload file size change' size='1'>
 			</td>
-			<td bgcolor="#FFFFFF" align="center">
-				<select name="skin_type_<?=$line_no?>">
+			<td style='color:white;text-align:center;'>
+				<select name="skin_type_<?=$line_no?>" style='background-color:black;color:white;text-align:center;'>
 					<option value="<?=$rs['movie']?>" selected ><?=$skin_?></option>
 					<option value="5" >Standard Type</option>
 					<option value="3" >Memo Type</option>
 					<option value="4" >Image Type</option>
 			  </select></td>
-			<td bgcolor="#FFFFFF" align="center">
-			<select name="grant_read_<?=$line_no?>">
+			<td style='color:white;text-align:center;'>
+			<select name="grant_read_<?=$line_no?>" style='background-color:black;color:white;text-align:center;'>
 				<option value="<?=$rs['grant_view']?>" selected ><?=$levR?></option>
 				<option value="1" >Guest</option>
 				<option value="2" >Member</option>
@@ -718,8 +789,8 @@ th, td { border: 1px solid silver; padding:5px; }
 			<?php }  ?>
 			  </select>
 			  <br>More than </td>
-			<td bgcolor="#FFFFFF" align="center">
-			<select name="grant_write_<?=$line_no?>">
+			<td style='color:white;text-align:center;'>
+			<select name="grant_write_<?=$line_no?>" style='background-color:black;color:white;text-align:center;'>
 				<option value="<?=$rs['grant_write']?>" selected ><?=$lev?></option>
 				<option value="1" >Guest</option>
 				<option value="2" >Member</option>
@@ -729,12 +800,13 @@ th, td { border: 1px solid silver; padding:5px; }
 			<?php }  ?>
 			  </select>
 			  <br>More than </td>
-			<td bgcolor="#FFFFFF" align="center">
-				<textarea name="grant_memo_<?=$line_no?>" class="input01" cols="30" rows="2"><?=$rs['memo']?></textarea></td>
+			<td style='color:white;text-align:center;'>
+				<textarea name="grant_memo_<?=$line_no?>" style="border-style:;background-color:black;color:yellow;height:40px;width:15%px;"
+				><?=$rs['memo']?></textarea></td>
 		<?php
 if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
-			<td bgcolor="#FFFFFF" align="center">
+			<td style='color:white;text-align:center;'>
 				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
 				<!-- <input type='button' value="Set" onClick="Set_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='Set - It makes detailed setting of bulletin board. '> -->
 				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '>
@@ -743,7 +815,7 @@ if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		<?php
 } else {
 		?>
-			<td bgcolor="#FFFFFF" align="center">
+			<td>
 				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '>
 			</td>
 		<?php

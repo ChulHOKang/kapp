@@ -12,18 +12,18 @@
 	$H_ID	= get_session("ss_mb_id"); 
 	if( $H_ID != "") {
 		if( isset($member['mb_level']) ) $H_LEV =$member['mb_level'];
-		else $H_LEV = 0;
+		else $H_LEV = 1;
 		if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
 		else $H_EMAIL = '';
 	} else {
-		$H_EMAIL	    = ""; 
-		$H_ID				= "Guest"; 
-		$H_LEV			= 1; 
+		$H_EMAIL= ""; 
+		$H_ID= "Guest"; 
+		$H_LEV= 1; 
 	}
 	$up_day = date("Y-m-d H:i:s");
 	$pg_		= 'ulink_list.php';
 	if( isset($_POST['target_']) ) $target_	= $_POST['target_'];
-	else $target_ = 'iframe_url';	//table_main
+	else $target_ = 'iframe_url';
 	$type_ = 'U';
 	$title_='';
 	$secret_key = "";
@@ -171,16 +171,16 @@ $(function () {
 		if( isset($aa[3]) ) $g_no = $aa[3];
 	}
 
-	if( isset($_REQUEST["mode"]) ) 	$mode			= $_REQUEST["mode"];
-	else if( isset($_POST["mode"]) )	$mode			= $_POST["mode"];
+	if( isset($_REQUEST["mode"]) ) 	$mode= $_REQUEST["mode"];
+	else if( isset($_POST["mode"]) )	$mode= $_POST["mode"];
 	else	$mode			= "";
-	if( isset($_REQUEST["memo"]) ) 	$memo			= $_REQUEST["memo"];
+	if( isset($_REQUEST["memo"]) ) 	$memo= $_REQUEST["memo"];
 	else	$memo			= "";
-	if( isset($_REQUEST["mode_up"]) ) 	$mode_up			= $_REQUEST["mode_up"];
+	if( isset($_REQUEST["mode_up"]) ) 	$mode_up= $_REQUEST["mode_up"];
 	else	$mode_up			= "";
-	if( isset($_REQUEST["mode_in"]) ) 	$mode_in			= $_REQUEST["mode_in"];
+	if( isset($_REQUEST["mode_in"]) ) 	$mode_in= $_REQUEST["mode_in"];
 	else	$mode_in			= "";
-	if( isset($_REQUEST["sdata"]) ) 	$sdata			= $_REQUEST["sdata"];
+	if( isset($_REQUEST["sdata"]) ) 	$sdata= $_REQUEST["sdata"];
 	else	$sdata			= "";
 
 	if( isset($_POST["page"]) )	$page= $_POST["page"];

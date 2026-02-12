@@ -380,11 +380,6 @@ View Line:
 <thead id='tit_et' width="100%">
 <tr style='background-color:#499BDA;color:black;text-align:left;'>
 <?php
-	//echo " <th title='type Sort click' onclick=title_func('tit_gubun')>type</th> ";
-	//echo " <th title='User Sort click' onclick=title_func('sys_userid')>User</th> ";
-	//echo " <th title='Title Sort click' onclick=title_func('sys_subtit')>Title</th> ";
-	//echo " <th title='View Sort click' onclick=title_func('view_cnt')>View</th> ";
-	//echo " <th title='Date Sort click' onclick=title_func('up_day')>Date</th> ";
 	echo " <th title='type Sort click or doubleclick' >type</th> ";
 	echo " <th title='User Sort click or doubleclick' >User</th> ";
 	echo " <th title='Title Sort click or doubleclick' >Title</th> ";
@@ -394,8 +389,6 @@ View Line:
 	<th>Pop Run</th>
 	<th title='Tree Menu Source Code Download.' style='color:black;'>Down-Load</th>
 	<th title='Popup Menu Source Code Download.' style='color:black;'>Down-Load</th>
-	<!-- <th title='View count Sort click' style='color:black;text-align:center;' onclick="title_func('view_cnt')">View</th>
-	<th title='Date Sort click' style='color:black;text-align:center;' onclick="title_func('up_day')">Date</th> -->
 </tr>
 </thead>
 <tbody>
@@ -440,7 +433,7 @@ if( $result ){
 		$job_addr='contents_view_menuD.php?num=' . $num;
 		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr.'&start_click=on';
 
-		if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
+		if( isset($H_ID) && $mid == $H_ID || $H_LEV > 7 ) {
 			echo "
 			<tr>
 				<td align='center'>$ln $iconX</td>
