@@ -119,10 +119,6 @@ $(function () {
 	  });
 });
 </script>
-<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script>
-<link rel="stylesheet" href="../include/css/kancss.css" type="text/css"> -->
 
 <?php
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
@@ -190,7 +186,6 @@ $(function () {
 		$url = "kapp_table_list_adm.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
    } else if( $mode == 'Search' && $H_LEV > 7 ) {
-	   m_("$mode, tab_hnmS: $tab_hnmS"); //Search, tab_hnmS: crakan59_gmail_1762740284:성품테이블
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
 			$tab_hnm = $aa[1];
@@ -429,7 +424,6 @@ $(function () {
 
 	}
 	function my_data(){
-		//alert("-- my"); return;
 		document.table_list.mode.value='My_List';
 		document.table_list.action		="kapp_table_list_adm.php";
 		document.table_list.target='_self';
