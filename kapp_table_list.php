@@ -119,11 +119,6 @@ $(function () {
 	  });
 });
 </script>
-<!-- <link rel="stylesheet" href="./include/css/common.css" type="text/css" />
-<script type="text/javascript" src="./include/js/ui.js"></script>
-<script type="text/javascript" src="./include/js/common.js"></script>
-<link rel="stylesheet" href="./include/css/kancss.css" type="text/css">
- -->
 <?php
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
@@ -417,7 +412,6 @@ $(function () {
 		document.table_list.submit();
 	}
 	function page_func( page, data ){
-
 		document.table_list.mode.value		='';
 		document.table_list.data.value		=data;
 		document.table_list.page.value		=page;
@@ -427,7 +421,6 @@ $(function () {
 
 	}
 	function my_data(){
-		//alert("-- my"); return;
 		document.table_list.mode.value='My_List';
 		document.table_list.action		="kapp_table_list.php";
 		document.table_list.target='_self';
@@ -523,12 +516,6 @@ View Line:
 		<TH>no</TH>
 <?php
 if( $mode != 'Search') {
-	//echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
-	//echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
-	//echo " <th title='Program Sort click' onclick=title_func('tab_hnm')>Table name</th> ";
-	//echo " <th title='Table Sort click' onclick=title_func('tab_enm')>Table code</th> ";
-	//echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
-
 	echo " <th title='User Sort click or doubleclick' >User</th> ";
 	echo " <th title='project Sort click or doubleclick' >Project</th> ";
 	echo " <th title='Program Sort click or doubleclick' >Table name</th> ";
@@ -562,7 +549,6 @@ if( $mode != 'Search') {
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
-	//$ls = $ls . $limit;
 	if( $mode != "Search") { // table 상세 조화가 아님.
 		$ls = $ls . " $limit ";
 	}
