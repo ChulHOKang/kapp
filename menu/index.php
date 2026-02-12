@@ -108,6 +108,7 @@
 		document.sys_form.fld_code.value= fld_code;
 		document.sys_form.fld_code_asc.value= 'desc';
 		document.sys_form.mode.value='title_wfunc';
+		document.sys_form.target='_self';
 		document.sys_form.action='index.php';
 		document.sys_form.submit();                         
 	} 
@@ -116,6 +117,7 @@
 		document.sys_form.fld_code.value= fld_code;
 		document.sys_form.fld_code_asc.value= 'asc';
 		document.sys_form.mode.value='title_func';
+		document.sys_form.target='_self';
 		document.sys_form.action='index.php';
 		document.sys_form.submit();
 	} 
@@ -328,9 +330,6 @@ if( $total > 0 ) {
 		$no = $total - ($page - 1) * $line_cnt;
 	}
 	if( $fld_code!='' ) {
-		//if( $fld_code == 'view_cnt') $OrderBy = " order by $fld_code desc ";    
-		//else if ( $fld_code == 'up_day') $OrderBy = " order by $fld_code desc ";    
-		//else $OrderBy = " order by $fld_code asc ";    
 		$OrderBy = " order by $fld_code $fld_code_asc ";
 	} else $OrderBy	= "order by tit_gubun desc, up_day desc, sys_subtit ";
 	$query = $query . $OrderBy;
@@ -380,9 +379,9 @@ View Line:
 <thead id='tit_et' width="100%">
 <tr style='background-color:#499BDA;color:black;text-align:left;'>
 <?php
-	echo " <th title='type Sort click or doubleclick' >type</th> ";
-	echo " <th title='User Sort click or doubleclick' >User</th> ";
-	echo " <th title='Title Sort click or doubleclick' >Title</th> ";
+	echo " <th title='type Sort click or doubleclick' style='color:black;text-align:center;'>type</th> ";
+	echo " <th title='User Sort click or doubleclick' style='color:black;text-align:center;'>User</th> ";
+	echo " <th title='Title Sort click or doubleclick' style='color:black;text-align:center;'>Title</th> ";
 	echo " <th title='View Sort click or doubleclick' style='color:black;text-align:center;'>View</th> ";
 	echo " <th title='Date Sort click or doubleclick' style='color:black;text-align:center;'>Date</th> ";
 ?>

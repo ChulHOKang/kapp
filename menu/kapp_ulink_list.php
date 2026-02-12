@@ -62,32 +62,66 @@ th, td { border: 1px solid silver; padding:5px; }
 <!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
 <script>
 $(function () {
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
+			switch(e.target.innerText){
+				case 'Project' : title_func('job_group'); break;
+				case 'User'    : title_func('user_id'); break;
+				case 'Title'   : title_func('user_name'); break;
+				case 'Link Url': title_func('job_addr'); break;
+				case 'type'    : title_func('jong'); break;
+				case 'View'    : title_func('view_cnt'); break;
+				case 'date'    : title_func('up_day'); break;
+				default        : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
 
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		switch(e.target.innerText){
+			case 'Project' : title_wfunc('job_group'); break;
+			case 'User'    : title_wfunc('user_id'); break;
+			case 'Title'   : title_wfunc('user_name'); break;
+			case 'Link Url': title_wfunc('job_addr'); break;
+			case 'type'    : title_wfunc('jong'); break;
+			case 'View'    : title_wfunc('view_cnt'); break;
+			case 'date'    : title_wfunc('up_day'); break;
+			default        : title_wfunc(''); break;
+		}
+	});
+
+	  $('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+	  $(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	  });
 });
 </script>
 <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
@@ -106,8 +140,6 @@ $(function () {
 	if( isset($_POST["g_type"]) ) $g_type	= $_POST["g_type"];
 	else if( isset($_REQUEST["g_type"]) ) $g_type	= $_REQUEST["g_type"];
 	else $g_type	= "";
-	if( isset($_REQUEST["g_name_old"]) ) $g_name_old	= $_REQUEST["g_name_old"];
-	else $g_name_old	= "";
 	if( isset($_REQUEST["title_nm"]) ) $title_nm	= $_REQUEST["title_nm"];
 	else $title_nm	= "";
 
@@ -145,18 +177,20 @@ $(function () {
 	if( isset($_REQUEST["mode_up"]) ) 	$mode_up= $_REQUEST["mode_up"];
 	else if( isset($_POST["mode_up"]) ) $mode_up= $_POST["mode_up"];
 	else	$mode_up			= "";
-
 	if( isset($_REQUEST["sdata"]) ) 	$sdata= $_REQUEST["sdata"];
 	else	$sdata			= "";
-
 	if( isset($_POST["page"]) )	$page= $_POST["page"];
 	else if( isset($_REQUEST["page"]) )	$page= $_REQUEST["page"];
 	else $page= 1;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 15;
+	
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
+
 	$page_num = 10; 
 
 	if( $mode == 'update_link') {
@@ -212,29 +246,9 @@ $(function () {
 				}
 			}
 			m_("job_link_table --- insert ok");
-			//return true;
 		} else {
 			m_("my_func - job_link_table_add error ");
-			//echo "my_func, job_link_table_add error sql: " .$sqlA; exit;
-			//return false;
 		}
-		/*
-curl : https://fation.net/kapp, Link_Table_curl_send OK : {"message":"https:\/\/fation.net\/kapp, api OK, "}
-curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/modumodu.net\/biog7\/kapp, api OK, "}
-curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/biogplus.iwinv.net\/kapp, api OK, "}
-curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/moado.net\/kapp, api OK, "}
-curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/kapp, api OK, "}
-curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/biogplus\/kapp, api OK, "}
-curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/24c.kr\/kapp, api OK, "}
-curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"https:\/\/fation.net\/kapp, api OK, "}
-
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/modumodu.net\/biog7\/kapp, api OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/biogplus.iwinv.net\/kapp, api OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/moado.net\/kapp, api OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/kapp, api OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"http:\/\/modumodu.net\/biogplus\/kapp, api OK, "}
-		curl : new Link_Table_curl_get_ailinkapp curl OK : {"message":"https:\/\/24c.kr\/kapp, api OK, "}
-		*/
 	}
 	if($mode_up == 'Save_encrypted_run') {
 		if ( !$H_ID ) {
@@ -397,10 +411,21 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 		document.insert_form.action='kapp_ulink_list.php';
 		document.insert_form.submit();
 	}
+	function title_wfunc(fld_code){       
+		document.insert_form.page.value = 1;
+		document.insert_form.fld_code.value= fld_code;
+		document.insert_form.fld_code_asc.value= 'desc';
+		document.insert_form.mode.value='title_wfunc';
+		document.insert_form.target='_self';
+		document.insert_form.action='kapp_ulink_list.php';
+		document.insert_form.submit();                         
+	} 
 	function title_func(fld_code){       
 		document.insert_form.page.value = 1;                
 		document.insert_form.fld_code.value= fld_code;           
+		document.insert_form.fld_code_asc.value= 'asc';
 		document.insert_form.mode.value='title_func';           
+		document.insert_form.target='_self';
 		document.insert_form.action='kapp_ulink_list.php';
 		document.insert_form.submit();                         
 	} 
@@ -422,9 +447,9 @@ curl : https://modumodu.net/biog7/kapp, Link_Table_curl_send OK : {"message":"ht
 <script>
 jQuery(document).ready(function ($) {
 	$('a[href^="#"], .view_click').on('click', function( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID) {
-		//var seq_no = $("#insert_form").seq_no.val();		//alert("Note Create click --- " );
+		//var seq_no = $("#insert_form").seq_no.val();
 	});
-	$('#Save_encrypted').on('click', function() {//alert('버튼 클릭됨');//$('#element').text('새 텍스트 내용');
+	$('#Save_encrypted').on('click', function() {
 		var memo= $("#memo").val();
 		var pws= $("#form_psw").val();
 		if(pws==='') {
@@ -444,7 +469,7 @@ jQuery(document).ready(function ($) {
 					"pws": pws
 				},
 			success: function(data) {
-				$("#memo").val(data);				//console.log(data);				//alert(data);
+				$("#memo").val(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("The data type or URL is incorrect. -- ulink_ajax.php");
@@ -475,7 +500,7 @@ jQuery(document).ready(function ($) {
 					"pws": pws
 				},
 			success: function(data) {
-				$("#memo").val(data);				//console.log(data);				//alert(data);
+				$("#memo").val(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("data or URL confirm.-- kapp_ulink_list.php");
@@ -598,8 +623,6 @@ jQuery(document).ready(function ($) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='A' or jong='G' or jong='F' ";
 		} else if ( $g_type=='U' ) { // Note - U, N
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='U' or jong='N' or jong='D' or jong='B'";
-//		} else if ( $g_type=='D' ) { // Note D, B:webeditor content
-//				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='D' or jong='B' ";
 		} else if ( $g_type=='P' ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='p' ";
 		} else if ( isset($g_name) && $g_name != '' && isset($sdata) && $sdata != '' ){ 
@@ -633,23 +656,20 @@ jQuery(document).ready(function ($) {
 	//$page, $search, $sdata, $g_name, $g_type
 ?>
 <form id="insert_form" name='insert_form' method='post' enctype='multipart/form-data' >
-	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
 	<input type='hidden' name='g_name' id='g_name' value='<?=$g_name?>' > 
 	<input type='hidden' name='g_user'			value='<?=$gg_user?>' > 
 	<input type='hidden' name='mode_up'		value='<?=$mode_up?>' > 
-
-	<input type='hidden' name='seq_no' id='seq_no'	value='<?=$_REQUEST['seq_no']?>' > 
+	<input type='hidden' name='seq_no' id='seq_no'	value='' > 
 	<input type='hidden' name='page'			value='<?=$page?>' > 
 	<input type='hidden' name='mode'			value='<?=$mode?>' > 
 	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
 	<input type='hidden' name='num'				value='' > 
 	<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+	<input type='hidden' name='fld_code_asc' value='<?=$fld_code_asc?>' > 
 	<input type='hidden' name='type_'			value='<?=$type_?>' > 
-	
 	<input type='hidden' name='mode_insert'			value='insert_mode' > 
 	<input type='hidden' name='pg_'				value='<?=$pg_?>' > 
 	<input type='hidden' name='target_'			value='<?=$target_?>' > 
-
 	<input type='hidden' name='webnum'			value='' > 
 	<input type='hidden' name='project_code' id='project_code' value='<?=$project_code?>'>
 
@@ -657,11 +677,9 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='link_'		value='' > 
 	<input type='hidden' name='title_'		value='' > 
 	<input type='hidden' name='group'		value='' > 
-
 	<input type='hidden' name='aboard_no'	value='' > 
 	<input type='hidden' name='gong_num' value='0'><!-- ulink_ajax.php use -->
 	<input type='hidden' id='g_name_code' name='g_name_code' value='<?=$g_name_code?>'><!-- ulink_ajax.php use -->
-
 	<input type='hidden' name='jong'	value='' > 
 	<input type='hidden' name='seqno'	value='' > <!-- call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) -->
 
@@ -780,7 +798,6 @@ jQuery(document).ready(function ($) {
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<!-- <a href="kapp_ulink_list.php?g_type=P" target='_self'>Program list</a> -->
 		<a onclick="g_type_func('P')" target='_self'>Program list</a>
 		</td>
 		</tr>
@@ -828,90 +845,62 @@ jQuery(document).ready(function ($) {
 	</tr>
 
 <table class='floating-thead' width='100%'>
-<thead  width='100%'>
+<thead id='tit_et' width='100%'>
 		<tr align='center'>
 			<TH>icon</TH>
 	<?php
-		echo " <th title='Project Sort click' onclick=title_func('job_group')>Project</th> ";
-		//echo " <th title='User Sort click' onclick=title_func('user_id')>User</th> ";
-		echo " <th title='Project Sort click' onclick=title_func('user_name')>Title</th> ";
-		echo " <th title='url Sort click' onclick=title_func('job_addr')>Link Url</th> ";
-		echo " <th title='type Sort click' onclick=title_func('jong')>type</th> ";
+//		echo " <TH title='User Sort click or doubleclick' >User</th> ";
+		echo " <TH title='Project Sort click or doubleclick'  >Project</th> ";
+		echo " <TH title='Project Sort click or doubleclick' >Title</th> ";
+		echo " <TH title='url Sort click or doubleclick' >Link Url</th> ";
+		echo " <TH title='type Sort click or doubleclick' >type</th> ";
+		echo " <TH title='View Sort click or doubleclick' >View</th> ";
+		echo " <TH title='date Sort click or doubleclick' >date</th> ";
+
 	?>
-			<TH>View</TH>
-			<TH title='date Sort click' onclick="title_func('up_day')">date</TH>
-			<!-- <TH>lev</TH>-->
-			<!-- <TH>management</TH> -->
 		</tr>
 </thead>
-<tbody width='100%'>
-		<?php
-		/*if ( $g_type=='mylist' && isset($sdata) && $sdata != ''  ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
-		} else if ( $g_type=='mylist' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
-		} else if ( $g_type=='M' ) { 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and job_group='menu' ";
-		} else if ( $g_type=='T' ) { 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='T' ";
-		} else if ( $g_type=='A' ) {
-				//$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='G' or jong='A' or jong='F' ";
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='A' ";
-		} else if ( $g_type=='U' ) { // Note - U, N
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='U' or jong='N' or jong='D' or jong='B'";
-//		} else if ( $g_type=='D' ) { // Note D, B:webeditor content
-//				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='D' or jong='B' ";
-		} else if ( $g_type=='P' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='p' ";
-		} else if ( isset($g_name) && $g_name != '' && isset($sdata) && $sdata != '' ){ 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
-		} else if ( isset($g_name) && $g_name != '' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') ";
-		} else if ( isset($sdata) && $sdata != '' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
-		} else{
-			$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
-		}*/
-		
-		if( $fld_code!='' ) $OrderBy = " order by $fld_code, up_day desc, user_name ";    
-		else $OrderBy	= " ORDER BY up_day desc, user_name ";
-		$ls = $ls . $OrderBy;
+<tbody width='1500'>
+	<?php
+	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
+	else $OrderBy	= " ORDER BY up_day desc, user_name ";
+	$ls = $ls . $OrderBy;
 
-		$ls = $ls . $limit;
-		$result = sql_query( $ls );
-		while( $rs = sql_fetch_array( $result ) ) {
-			$sys_group= $rs['job_group'];
-			$sys_label	= $rs['job_name'];	
-			$sys_name	= $rs['user_name']; //title
-			$rs_job_addr	= $rs['job_addr'];
-			$rs_club_url	= $rs['club_url'];
-			$num		= $rs['num'];
-			$user_id	= $rs['user_id'];	
-			$seqno		= $rs['seqno'];
-			$lev		= $rs['job_level'];
-			$gubun		= $rs['jong'];
-			$aboard_no  = $rs['aboard_no'];
-			$memo       = $rs['memo'];
-			$lev = $rs['job_level'];
-			$vcnt= number_format($rs['view_cnt']);
-			$url_ = substr($rs_job_addr, 0, 60);
-			$td_bg = '#000000';
+	$ls = $ls . $limit;
+	$result = sql_query( $ls );
+	while( $rs = sql_fetch_array( $result ) ) {
+		$sys_group= $rs['job_group'];
+		$sys_label	= $rs['job_name'];	
+		$sys_name	= $rs['user_name']; //title
+		$rs_job_addr	= $rs['job_addr'];
+		$rs_club_url	= $rs['club_url'];
+		$num		= $rs['num'];
+		$user_id	= $rs['user_id'];	
+		$seqno		= $rs['seqno'];
+		$lev		= $rs['job_level'];
+		$gubun		= $rs['jong'];
+		$aboard_no  = $rs['aboard_no'];
+		$memo       = $rs['memo'];
+		$lev = $rs['job_level'];
+		$vcnt= number_format($rs['view_cnt']);
+		$url_ = substr($rs_job_addr, 0, 60);
+		$td_bg = '#000000';
 
-			if( $gubun == 'T' )	{
-				$icon='../icon/berry.png'; $gubunT='T-Berry';$t_color='white';	$i_tit='T : Link URL';
-			} else if( $gubun == 'B' or    $gubun == 'D' or $rs['job_group'] == 'DOC' ){ 
-				$icon='../icon/seed.png';  $gubunT='B-Seed';$t_color='cyan';			$i_tit='B, D, DOC';
-			} else if( $gubun == 'G' )	{ 
-				$icon='../icon/pizza.png'; $gubunT='G-Pizza';$t_color='cyan';			$i_tit='G : Tree Board';
-			} else if( $gubun == 'P' )	{// Program List
-				$icon='../icon/pcman1.png'; $gubunT='Program';$t_color='cyan';	$i_tit='P : Program';
-			}
-			else if( $gubun=='F' ){ $icon='../icon/land.png'; $gubunT='Land';$t_color='green';$i_tit='Board';}
-			else if( $gubun=='A' ){ $icon='../icon/ship.png'; $gubunT='A-board';$t_color='cyan'; $i_tit='A: T-ABoard';}
-			else if( $gubun=='M' ){ $icon='../icon/land.png'; $gubunT='BOM-Main';$t_color='yellow';$i_tit='M: Tree-Main';}
-			else if( $gubun=='N' ){ $icon='../icon/leaf.png'; $gubunT='BOM-Note';$t_color='yellow';$i_tit='N: Tree-Note';}
-			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='blue'; $i_tit='U: Link Note';}
-			else	$t_color='grace';
+		if( $gubun == 'T' )	{
+			$icon='../icon/berry.png'; $gubunT='T-Berry';$t_color='white';	$i_tit='T : Link URL';
+		} else if( $gubun == 'B' or    $gubun == 'D' or $rs['job_group'] == 'DOC' ){ 
+			$icon='../icon/seed.png';  $gubunT='B-Seed';$t_color='cyan';			$i_tit='B, D, DOC';
+		} else if( $gubun == 'G' )	{ 
+			$icon='../icon/pizza.png'; $gubunT='G-Pizza';$t_color='cyan';			$i_tit='G : Tree Board';
+		} else if( $gubun == 'P' )	{// Program List
+			$icon='../icon/pcman1.png'; $gubunT='Program';$t_color='cyan';	$i_tit='P : Program';
+		}
+		else if( $gubun=='F' ){ $icon='../icon/land.png'; $gubunT='Land';$t_color='green';$i_tit='Board';}
+		else if( $gubun=='A' ){ $icon='../icon/ship.png'; $gubunT='A-board';$t_color='cyan'; $i_tit='A: T-ABoard';}
+		else if( $gubun=='M' ){ $icon='../icon/land.png'; $gubunT='BOM-Main';$t_color='yellow';$i_tit='M: Tree-Main';}
+		else if( $gubun=='N' ){ $icon='../icon/leaf.png'; $gubunT='BOM-Note';$t_color='yellow';$i_tit='N: Tree-Note';}
+		else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='blue'; $i_tit='U: Link Note';}
+		else	$t_color='grace';
 ?>
 				<tr valign="middle" align='left' > 
 				  <td  bgcolor='black' title='<?=$user_id?>' style="width:1%;"><img src='<?=$icon?>' style="width:25px;"></td>
@@ -920,21 +909,27 @@ jQuery(document).ready(function ($) {
 	// 여기서 등록한 데이터 'Note', 'U' - 타이틀 클릭시에 수정 할 수 있게 한다. contents_upd()
 	if( $rs['job_name']=='Note') { 
 ?>
-				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
-					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_club_url?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;"><?=$rs_club_url?></a></td>
-<?php } else {?>
-				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
-					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:280px;" title="type:<?=$i_tit ?>"><a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr ?></a></td>
-<?php }?>
-				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" title="<?=$i_tit ?>"><?=$gubun?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" ><?=$vcnt?></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:80px;text-align:center;" ><?=$rs['up_day']?></td>
-				</tr> 
-		<?php
-			}	//-------- Loop
-		?>
+	  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
+		<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
+	  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
+	  <!-- <a href='<?=$rs_club_url?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;"><?=$rs_club_url?></a> -->
+	  <?=$rs_club_url?>
+	  </td>
+<?php } else { ?>
+	  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
+		<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
+	  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
+	  <!-- <a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr ?></a> -->
+	  <?=$rs_job_addr?>
+	  </td>
+<?php } ?>
+	  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" title="<?=$i_tit ?>"><?=$gubun?></td>
+	  <td style="background-color:black;color:<?=$t_color?>;width:8px;text-align:center;" ><?=$vcnt?></td>
+	  <td style="background-color:black;color:<?=$t_color?>;width:80px;text-align:center;" ><?=$rs['up_day']?></td>
+	</tr> 
+<?php
+	}//-------- Loop
+?>
 		  </td>
 		</tr>
 		<tr align="center"></tr>
@@ -952,21 +947,6 @@ $last_page = $first_page+($page_num-1);
 if($last_page > $total_page) $last_page = $total_page;
 $prev = $first_page-1;
 
-/*
-if( $page > $page_num) 
-	echo"[<a onclick=\"javascript:page_func($prev, '$search', '$sdata', '$g_name', '$g_type');\" >Prev</a>] ";
-//	echo"[<a href=".$PHP_SELF."?page=".$prev."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Prev</a>] ";
-for( $i = $first_page; $i <= $last_page; $i++){
-	if( $page == $i) echo" <b>$i</b> "; 
-	else echo"[<input type='button' value='[$i]' style='font-size:20px;font-weight:bold;' onclick=\"javascript:page_func($i, '$search', '$sdata', '$g_name', '$g_type');\" >";
-	//else echo"[<a style='font-size:20px;font-weight:bold;' onclick='javascript:page_func($i, $search, $sdata, $g_name, $g_type);' >".$i."</a>]";
-	//else echo"[<a style='font-size:20px;font-weight:bold;' href=".$PHP_SELF."?page=".$i."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >".$i."</a>]";
-}
-$next = $last_page+1;
-if( $next <= $total_page) 
-	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', '$g_type');\" title='page next:$next'>Next</a>]";
-	//echo" [<a href=".$PHP_SELF."?page=".$next."&search=".$search."&sdata=".$sdata."&g_name=".$g_name."&g_type=".$g_type." >Next</a>]";
-*/
 if( $page > $page_num) 
 	echo"[<a onclick=\"javascript:page_func($prev, '$search', '$sdata', '$g_name', '$g_type');\" >Prev</a>] ";
 for( $i = $first_page; $i <= $last_page; $i++){

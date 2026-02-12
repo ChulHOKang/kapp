@@ -87,10 +87,21 @@
 		document.sys_form.action='kapp_tree_menu_list.php';
 		document.sys_form.submit();
 	}
+	function title_wfunc(fld_code){       
+		document.sys_form.page.value = 1;
+		document.sys_form.fld_code.value= fld_code;
+		document.sys_form.fld_code_asc.value= 'desc';
+		document.sys_form.mode.value='title_wfunc';
+		document.sys_form.target='_self';
+		document.sys_form.action='kapp_tree_menu_list.php';
+		document.sys_form.submit();                         
+	} 
 	function title_func(fld_code){       
 		document.sys_form.page.value = 1;                
 		document.sys_form.fld_code.value= fld_code;           
+		document.sys_form.fld_code_asc.value= 'asc';
 		document.sys_form.mode.value='title_func';           
+		document.sys_form.target='_self';
 		document.sys_form.action='kapp_tree_menu_list.php';
 		document.sys_form.submit();                         
 	} 
@@ -116,33 +127,63 @@
 
 <script>
 $(function () {
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
+			switch(e.target.innerText){
+				case 'User'    : title_func('sys_userid'); break;
+				case 'Title'   : title_func('sys_subtit'); break;
+				case 'type'    : title_func('tit_gubun'); break;
+				case 'View'    : title_func('view_cnt'); break;
+				case 'Date'    : title_func('up_day'); break;
+				default        : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
 
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		switch(e.target.innerText){
+				case 'User'    : title_wfunc('sys_userid'); break;
+				case 'Title'   : title_wfunc('sys_subtit'); break;
+				case 'type'    : title_wfunc('tit_gubun'); break;
+				case 'View'    : title_wfunc('view_cnt'); break;
+				case 'Date'    : title_wfunc('up_day'); break;
+				default        : title_wfunc(''); break;
+		}
+	});
 
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	  $('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+
+	  $(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	  });
 });
 </script>
 <script type="text/javascript">
@@ -229,6 +270,9 @@ common = {
 
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
+
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 15;
@@ -242,7 +286,6 @@ common = {
 		$sdata  = $_POST['sdata'];
 		$sdata = '%' . $sdata . '%';
 	}
-
 	if( $sdata !='' ) {
 		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
 		$query = $query . "where sys_userid='$H_ID' and sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' ";
@@ -268,22 +311,12 @@ if( $total > 0 ) {
 	else {
 		$no = $total - ($page - 1) * $line_cnt;
 	}
-	/*if( $sdata !='' ){
-		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
-		$query = $query . "where sys_userid='$H_ID' and sys_subtit like '".$sdata."' and sys_level='mroot' and sys_subtit != 'main' ";
-	} else {
-		$query = "SELECT * from {$tkher['sys_menu_bom_table']} ";
-		$query = $query . "where sys_userid='$H_ID' and sys_level='mroot' and sys_subtit != 'main' ";
-	}*/
 	if( $fld_code!='' ) {
-		if( $fld_code == 'view_cnt') $OrderBy = " order by $fld_code desc ";    
-		else if ( $fld_code == 'up_day') $OrderBy = " order by $fld_code desc ";    
-		else $OrderBy = " order by $fld_code asc ";    
-	}
-	else $OrderBy	= "order by tit_gubun desc, up_day desc, sys_subtit ";
-
+		$OrderBy = " order by $fld_code $fld_code_asc ";
+	} else $OrderBy	= "order by tit_gubun desc, up_day desc, sys_subtit ";
 	$query = $query . $OrderBy;
 	$query = $query . $limit;
+
 	$result = sql_query( $query);
 } else $total = 0;
 ?>
@@ -295,8 +328,8 @@ if( $total > 0 ) {
 		<input type='hidden' name='run_mode' value='' > 
 		<input type='hidden' name='page' value='<?=$page?>' > 
 		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+		<input type='hidden' name='fld_code_asc' value='<?=$fld_code_asc?>' > 
 		<input type='hidden' name='mode' value='<?=$mode?>' > 
-
 		<input type='hidden' name='sys_pg'	 value='<?=$sys_pg?>' > 
 		<input type='hidden' name='subtit'	 value='' > 
 		<input type='hidden' name='open_mode' value='' > 
@@ -305,7 +338,6 @@ if( $total > 0 ) {
 		<input type='hidden' name='num' value='' > 
 		<input type='hidden' name='job_addr' value='' > 
 		<input type='hidden' name='start_click' value='' > 
-	<!-- <div class="header"> -->
 <?php
 	$runpage='./kapp_tree_menu_list.php';
 	$cur='C';
@@ -326,24 +358,20 @@ View Line:
 </p>
 	</form>
 
-<!-- <table class='floating-thead' >
-<thead> -->
 <table class='floating-thead' width="700">
-<thead  width="100%">
+<thead id='tit_et' width="100%">
 
 <tr style='background-color:#499BDA;color:black;text-align:left;'>
-	<th style='text-align:center;' onclick="title_func('tit_gubun')">type</th>
 <?php
-	echo " <th title='User Sort click' onclick=title_func('sys_userid')>User</th> ";
-	echo " <th title='Title Sort click' onclick=title_func('sys_subtit')>Title</th> ";
+	echo " <th title='type Sort click or doubleclick' style='color:black;text-align:center;'>type</th> ";
+	echo " <th title='User Sort click or doubleclick' style='color:black;text-align:center;'>User</th> ";
+	echo " <th title='Title Sort click or doubleclick' style='color:black;text-align:center;'>Title</th> ";
+	echo " <th title='View Sort click or doubleclick' style='color:black;text-align:center;'>View</th> ";
+	echo " <th title='Date Sort click or doubleclick' style='color:black;text-align:center;'>Date</th> ";
 ?>
-	<!-- <th>User</th>
-	<th>Title</th> -->
-	<th>Pop Run</th>
+	<th style='color:black;'>Pop Run</th>
 	<th title='Tree Menu Source Code Download.' style='color:black;'>Down-Load</th>
 	<th title='Popup Menu Source Code Download.' style='color:black;'>Down-Load</th>
-	<th title='View count Sort click' style='color:black;text-align:center;' onclick="title_func('view_cnt')">View</th>
-	<th title='Date Sort click' style='color:black;text-align:center;' onclick="title_func('up_day')">Date</th>
 </tr>
 </thead>
 <tbody>
@@ -389,55 +417,18 @@ if( $result ){
 		$job_addr='contents_view_menuD.php?num=' . $num;
 		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr.'&start_click=on';
 			
-			/*echo "
-			<tr>
-				<td align='center'>$ln $iconX</td>
-				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td><a href='$run' target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a></td>
-				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td align='center'>$view</td>
-				<td align='center'>$up_day</td>
-			</tr>";*/
-			echo "
-			<tr>
-				<td align='center'>$ln $iconX</td>
-				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td>
-				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."' >".$line['sys_subtit']."</a>
-				
-				</td>
-				<td align='center'>
-				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a>
-				</td>
-				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td align='center'>$view</td>
-				<td align='center'>$day</td>
-			</tr>";
-		/*if( isset($H_ID) and $mid == $H_ID or $H_LEV > 7 ) {
-			echo "
-			<tr>
-				<td align='center'>$ln $iconX</td>
-				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td><a href='$run' target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."'>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a></td>
-				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-			</tr>";
-		} else {
-			echo "
-			<tr>
-				<td align='center'>$ln $iconX</td>
-				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td><a href='$run' target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a></td>
-				<td align='center'><a href='$run' target='_blank' style='color:cyan' title='run: $run'>Popup</a></td>
-				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td align='center'> --- </td>
-			</tr>";
-		}*/
+	echo "
+	<tr>
+		<td align='center'>$ln $iconX</td>
+		<td>".$line['sys_userid']."</td>
+		<td><a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."' >".$line['sys_subtit']."</a></td>
+
+		<td align='center'>$view</td>
+		<td align='center'>$day</td>
+		<td align='center'><a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:blue' title='gubun:".$line['tit_gubun']."'>Popup</a></td>
+		<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
+		<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
+	</tr>";
 		$ln--;
 	} // while
 } //if
@@ -469,6 +460,5 @@ if( $result ){
 		<input type='button' value='New Create' onclick="javascript:new_create('ailinkapp');" class='HeadTitle01AX' title='New create Menu Tree' onmouseover='big(this);' onmouseout='small(this);'>      
 		</form>
 <?php } ?>
-<!-- </div> --><!-- end : header -->
 </body>
 </html>

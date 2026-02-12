@@ -52,7 +52,34 @@ th, td { border: 1px solid silver; padding:5px; }
 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
-	$(function () {
+$(function () {
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			switch(e.target.innerText){
+				case 'User'    : title_func('make_id'); break;
+				case 'info'    : title_func('no'); break;
+				case 'board name': title_func('name'); break;
+				case 'Date'    : title_func('in_date'); break;
+				default        : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
+
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+			switch(e.target.innerText){
+				case 'User'    : title_wfunc('make_id'); break;
+				case 'info'    : title_wfunc('no'); break;
+				case 'board name': title_wfunc('name'); break;
+				case 'Date'    : title_wfunc('in_date'); break;
+				default        : title_wfunc(''); break;
+			}
+	});
+
 	  $('table.floating-thead').each(function() {
 		if( $(this).css('border-collapse') == 'collapse') {
 		  $(this).css('border-collapse','separate').css('border-spacing',0);
@@ -79,7 +106,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
 		});
 	  });
-	});
+});
 </script>
 
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
@@ -109,38 +136,17 @@ th, td { border: 1px solid silver; padding:5px; }
 	else $line_cnt	= 10;
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 ?>
 <script language='javascript'>
 <!--
-	/*function init() {		// board create type:
-		for (var k=0 ; k < makeform.fnclist.options.length ; k++) {
-			v=makeform.fnclist.options[k].value;
-		}
-		for (var k=0 ; k < makeform.sellist.options.length ; k++) {
-			var strAx = makeform.sellist.options[k].value
-			var strA  = strAx.split("|")
-			var fid = strA[1];
-			fid = fid.substring( 0, fid.indexOf("!") )
-			if((fid != "GSTR") && (fid != "GEND")) {
-				makeform.sellist.options[k].text = getFuncNameK(fid)+" "+makeform.sellist.options[k].text
-				if (!getFuncMulti(fid)) {
-					makeform.sellist.options[k].text = makeform.sellist.options[k].text.replace(/]/i,"*]")
-					for (var j=0 ; j < makeform.fnclist.options.length ; j++)
-						if (makeform.fnclist.options[j].value.indexOf(fid)>=0) {
-							makeform.fnclist.options[j].disabled=true
-							break;
-						}
-				}
-			}
-		}
-	}*/
 	function fnclist_onclick(v) {
 		var seli = makeform.fnclist.selectedIndex;
 		var t = makeform.fnclist.options[seli].text;
 		makeform.board_type_name.value = t;
 		makeform.sellist_index.value   = v;
 	}
-	// 메뉴설명 byte 체크
 	function chkDescription(){
 		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
 	}
@@ -178,8 +184,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		var chgStr = makeform.chgname.value
 		if (makeform.sellist.selectedIndex < 0) return
 		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0)	{
-			alert('You used a special character.\nPlease re-enter it.');
-			//허용이 안 되는 특수문자를 사용하셨습니다.\n다시 입력하시기 바랍니다.
+			alert('You used a special character.\nPlease re-enter it.');//허용이 안 되는 특수문자를 사용하셨습니다.\n다시 입력하시기 바랍니다.
 			return false;
 		}
 		for ( j=0; j < makeform.sellist.options.length; j++ )	{
@@ -210,15 +215,14 @@ th, td { border: 1px solid silver; padding:5px; }
 			var t = makeform.fnclist.options[seli].text;
 			var v = makeform.fnclist.options[seli].value;
 			makeform.board_type_name.value = t;
-			makeform.sellist_index.value   = v; //t;
+			makeform.sellist_index.value   = v; 
 		}
-	   if ( makeform.aboard_name.value === ""){
+	   if( makeform.aboard_name.value === ""){
 			alert (" Please enter your board name! ");
 			makeform.aboard_name.focus();
 			return;
 		}
-		if( v !=='3' && v !=='4' && v !=='5')
-		{
+		if( v !=='3' && v !=='4' && v !=='5'){
 			alert("board type error v: " + v );
 			return false;
 		}
@@ -253,20 +257,6 @@ th, td { border: 1px solid silver; padding:5px; }
 		document.makeform.action = "query_ok_new.php";
 		makeform.submit();
 	}
-	function getFuncNameK(fid) {
-		switch(fid) {
-			case "TCOM01" : return "[General]"
-			case "GCOM02" : return "[Standard]"
-			case "GCOM03" : return "[Memo]"
-			case "GCOM04" : return "[Image]"
-			case "GCOM05!" : return "[Daum]"
-			case "GCOM06" : return "[New2]"
-			case "GCOM08" : return "[New3]"
-			case "TCOM02" : return "[Line]"
-			case "TCOM03" : return "[QnA]"
-			default : return "[none]"
-		}
-	}
 	function getObjid(str) {
 		return str.substring(0,str.indexOf("!:"))
 	}
@@ -287,8 +277,8 @@ th, td { border: 1px solid silver; padding:5px; }
 	function sellist_onclick() {
 		var selind = makeform.sellist.selectedIndex
 		var strAx = makeform.sellist.options[selind].value
-		var strA  = strAx.split("|");//$rsno|$home_url|$table_name
-		makeform.board_no.value = strA[0]; // $rsno
+		var strA  = strAx.split("|");
+		makeform.board_no.value = strA[0];
 		makeform.board_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
 		var category = "D02"
@@ -320,7 +310,6 @@ th, td { border: 1px solid silver; padding:5px; }
 				}
 				else{
 					document.makeform.mnhide.checked = false
-
 					makeform.chgname.value = getfname(makeform.sellist.options[selind].text)
 				}
 			}
@@ -334,36 +323,31 @@ th, td { border: 1px solid silver; padding:5px; }
 			return false
 		}
 	}
-	function Update_func(no, num)
-	{
-			document.Board_List_Form.mode.value = "Update_func_my";
-			document.Board_List_Form.no.value = no;
-			document.Board_List_Form.infor.value = no;
-
-			document.Board_List_Form.pageno.value = document.makeform.page.value;
-
-			var sel_r = eval( "document.Board_List_Form.grant_read_"+num+".value");
-			var sel_w = eval( "document.Board_List_Form.grant_write_"+num+".value");
-			var sel_m = eval( "document.Board_List_Form.grant_memo_"+num+".value");
-			var sel_s = eval( "document.Board_List_Form.skin_type_"+num+".value");
-			document.Board_List_Form.xread.value  = sel_r;
-			document.Board_List_Form.xwrite.value = sel_w;
-			document.Board_List_Form.xmemo.value  = sel_m;
-			document.Board_List_Form.xskin.value  = sel_s;
-			document.Board_List_Form.pg.value  = "kapp_board_list.php";
-			document.Board_List_Form.xfile_size.value  = eval( "document.Board_List_Form.file_size_"+num+".value");
-
-			document.Board_List_Form.action='query_ok_new.php'; //'board_create_pop_ok.php';
-			var res = confirm(" Are you sure you want to change the bulletin board properties? ");
-			if (res) { document.Board_List_Form.submit(); }
+	function Update_func(no, num){
+		document.Board_List_Form.mode.value = "Update_func_my";
+		document.Board_List_Form.no.value = no;
+		document.Board_List_Form.infor.value = no;
+		document.Board_List_Form.pageno.value = document.makeform.page.value;
+		var sel_r = eval( "document.Board_List_Form.grant_read_"+num+".value");
+		var sel_w = eval( "document.Board_List_Form.grant_write_"+num+".value");
+		var sel_m = eval( "document.Board_List_Form.grant_memo_"+num+".value");
+		var sel_s = eval( "document.Board_List_Form.skin_type_"+num+".value");
+		document.Board_List_Form.xread.value  = sel_r;
+		document.Board_List_Form.xwrite.value = sel_w;
+		document.Board_List_Form.xmemo.value  = sel_m;
+		document.Board_List_Form.xskin.value  = sel_s;
+		document.Board_List_Form.pg.value  = "kapp_board_list.php";
+		document.Board_List_Form.xfile_size.value  = eval( "document.Board_List_Form.file_size_"+num+".value");
+		document.Board_List_Form.action='query_ok_new.php';
+		var res = confirm(" Are you sure you want to change the bulletin board properties? ");
+		if (res) { document.Board_List_Form.submit(); }
 	}
-	function Set_func(no, num)
-	{
-			makeform.infor.value = no;
-			makeform.no.value = no;
-			makeform.action='board_list3_update.php';
-			makeform.target='_blank';
-			makeform.submit();
+	function Set_func(no, num){
+		makeform.infor.value = no;
+		makeform.no.value = no;
+		makeform.action='board_list3_update.php';
+		makeform.target='_blank';
+		makeform.submit();
 	}
 	function page_move($page){
 		document.makeform.page.value = $page;
@@ -381,7 +365,18 @@ th, td { border: 1px solid silver; padding:5px; }
 		document.makeform.page.value = 1;                
 		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
 		document.makeform.fld_code.value= fld_code;           
+		document.makeform.fld_code_asc.value= 'asc';
 		document.makeform.mode.value='title_func';           
+		document.makeform.target='_self';
+		document.makeform.action='kapp_board_list.php';
+		document.makeform.submit();                         
+	} 
+	function title_wfunc(fld_code){       
+		document.makeform.page.value = 1;
+		document.makeform.fld_code.value= fld_code;
+		document.makeform.fld_code_asc.value= 'desc';
+		document.makeform.mode.value='title_wfunc';
+		document.makeform.target='_self';
 		document.makeform.action='kapp_board_list.php';
 		document.makeform.submit();                         
 	} 
@@ -413,6 +408,7 @@ th, td { border: 1px solid silver; padding:5px; }
 			<input type='hidden' name='page' value="<?=$page?>" >
 			<input type='hidden' name='line_cnt' value='' >
 		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+		<input type='hidden' name='fld_code_asc' value='<?=$fld_code_asc?>' > 
 
 		<div id="mypanel" class="ddpanel">
 		<div id="mypanelcontent" class="ddpanelcontent">
@@ -432,7 +428,7 @@ th, td { border: 1px solid silver; padding:5px; }
 									<tr>
 									  <td valign="top" align="left" bgcolor="#f5f5f5">
 										 <select id="fnclist" style="WIDTH: 200px" onChange="fnclist_onclick(this.value)" multiple size="8" name="fnclist">
-											  <option value="5">Standard Type</option> <!-- Daum Type -->
+											  <option value="5">Standard Type</option>
 											  <option value="3">Memo Type</option>
 											  <option value="4">Image Type</option>
 										  </select>
@@ -580,7 +576,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		$ls = $ls . " WHERE make_id='$H_ID' and name like '%$sdata%'  $w ";
 	} else if( isset($g_type) ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
-		if( $g_type =='S'){		//$ls = $ls . " WHERE movie='1' || movie='2' || movie='5' ";
+		if( $g_type =='S'){
 			$ls = $ls . " WHERE make_id='$H_ID' and movie='5' ";
 		} else if( $g_type =='M') {
 			$ls = $ls . " WHERE make_id='$H_ID' and movie='3' ";
@@ -639,31 +635,35 @@ th, td { border: 1px solid silver; padding:5px; }
 							</td>
 		</tr>
 <table class='floating-thead' width='100%'>
-<thead  width='100%'>
+<thead id='tit_et' width='100%'>
 		<tr style='color:black;' align='center'>
 			<TH>no</TH>
-			<TH style='color:white;' onclick="title_func('make_id')">user</TH>
-			<TH style='color:white;' onclick="title_func('no')">info</TH>
-			<TH style='color:white;' onclick="title_func('name')">board name</TH>
+
+<?php
+			echo " <th title='User Sort click or doubleclick' >User</th> ";
+			echo " <th title='info Sort click or doubleclick' >info</th> ";
+			echo " <th title='board name Sort click or doubleclick' >board name</th> ";
+			echo " <th title='Date Sort click or doubleclick' >Date</th> ";
+?>
+
 			<TH style='color:white;' title='data count'>data</TH>
 			<TH style='color:white;'>file size</TH>
 			<TH style='color:white;'>skin type</TH>
 			<TH style='color:white;' title="data read level">read</TH>
 			<TH style='color:white;' title="data write level">write</TH>
 			<TH>memo</TH>
-			<TH onclick="title_func('in_date')">Date</TH>
 			<TH>exec</TH>
 		</tr>
  </thead>
 
 <tbody width='100%'>
 <?php
-	if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
+	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY in_date desc, name ";
 	$ls = $ls . $OrderBy;
 	$ls = $ls . $SQL_limit;
+
 	$line_no = 0;
-	$line = 0;
 	$i=1;
 	$result = sql_query( $ls );
 	while ( $rs = sql_fetch_array( $result ) ) {
@@ -693,6 +693,7 @@ th, td { border: 1px solid silver; padding:5px; }
 		$mq1	= sql_query($query);
 		$board_cnt = sql_num_rows($mq1);
 		$rsno = $rs['no'];
+		$dateR = date('Y-m-d', $rs['in_date']);
 
 ?>
 
@@ -703,6 +704,8 @@ th, td { border: 1px solid silver; padding:5px; }
 				<a href="./index_bbs.php?infor=<?=$rs['no']?>" target='_blank'><?=$rs['no']?></a></td>
 			<td width='10%' bgcolor="#FFFFFF" title='make:<?=$mk_gubun?>, board no:<?=$rs['no']?>:aboard_<?=$rs['table_name']?>'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['name']?></a></td>
+			<td bgcolor="#FFFFFF" align="center"><?=$dateR?></td>
+
 			<td style='background-color:#FFFFFF' align='center'><?=$board_cnt?></td><!-- data record count -->
 			<td style='background-color:#FFFFFF' align='center' title="upload file use and size:<?=$rs['fileup']?>">
 				<input type='text' name='file_size_<?=$line_no?>' value='<?=$rs['fileup']?>' title='upload file size change' size='1'>
@@ -738,14 +741,12 @@ th, td { border: 1px solid silver; padding:5px; }
 			  <br>More than </td>
 			<td bgcolor="#FFFFFF" align="center">
 				<textarea name="grant_memo_<?=$line_no?>" class="input01" cols="30" rows="2"><?=$rs['memo']?></textarea></td>
-			<td bgcolor="#FFFFFF" align="center"><?=date("Y/m/d", $rs['in_date'])?></td>
 		<?php
 if( isset($H_ID) && $H_LEV > 1){
 		?>
 			<td bgcolor="#FFFFFF" align="center">
-				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
-				<!-- <input type='button' value="Set" onClick="Set_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='Set - It makes detailed setting of bulletin board. '> -->
-				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '>
+				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;color:black;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
+				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;color:black;" title=' Run the bulletin board. '>
 			</td>
 
 		<?php
@@ -783,13 +784,10 @@ if( isset($H_ID) && $H_LEV > 1){
 </html>
 <?php
 function paging($link, $total, $page, $size){
-	global $line;
 	$page_num = 10;
 	if( !$total ) { return; }
 	$total_page	= ceil($total/$size);
 	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-	//if($page>1) $first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-	//else $first_page = 0;
 
 	$last_page  = $first_page+($page_num-1);
 	if( $last_page > $total_page) $last_page = $total_page;

@@ -153,28 +153,6 @@ $(function () {
 ?>
 <script language='javascript'>
 <!--
-	/*function init() {		// board create type:
-		for (var k=0 ; k < makeform.fnclist.options.length ; k++) {
-			v=makeform.fnclist.options[k].value;
-		}
-		for (var k=0 ; k < makeform.sellist.options.length ; k++) {
-			var strAx = makeform.sellist.options[k].value
-			var strA  = strAx.split("|")
-			var fid = strA[1];
-			fid = fid.substring( 0, fid.indexOf("!") )
-			if((fid != "GSTR") && (fid != "GEND")) {
-				makeform.sellist.options[k].text = getFuncNameK(fid)+" "+makeform.sellist.options[k].text
-				if (!getFuncMulti(fid)) {
-					makeform.sellist.options[k].text = makeform.sellist.options[k].text.replace(/]/i,"*]")
-					for (var j=0 ; j < makeform.fnclist.options.length ; j++)
-						if (makeform.fnclist.options[j].value.indexOf(fid)>=0) {
-							makeform.fnclist.options[j].disabled=true
-							break;
-						}
-				}
-			}
-		}
-	}*/
 	function fnclist_onclick(v) {
 		var seli = makeform.fnclist.selectedIndex;
 		var t = makeform.fnclist.options[seli].text;
@@ -184,7 +162,7 @@ $(function () {
 	function chkDescription(){
 		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
 	}
-	function Update_title(){ // board name update
+	function Update_title(){
 		var seli = document.makeform.sellist.selectedIndex;
 		if( seli < 0 ) {
 			alert('Please select a bulletin board to change!'); return false;
@@ -415,6 +393,7 @@ $(function () {
 		document.makeform.fld_code.value= fld_code;           
 		document.makeform.fld_code_asc.value= 'asc';
 		document.makeform.mode.value='title_func';           
+		document.makeform.target='_self';
 		document.makeform.action='board_list3.php';
 		document.makeform.submit();                         
 	} 
@@ -423,6 +402,7 @@ $(function () {
 		document.makeform.fld_code.value= fld_code;
 		document.makeform.fld_code_asc.value= 'desc';
 		document.makeform.mode.value='title_wfunc';
+		document.makeform.target='_self';
 		document.makeform.action='board_list3.php';
 		document.makeform.submit();                         
 	} 
@@ -764,9 +744,10 @@ $(function () {
 				<td style='color:white;text-align:center;'><?=$rs['make_id']?></td>
 			<td style='color:white;text-align:center;'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['no']?></a></td>
-			<td  style='color:white;text-align:center;' width='10%' title='make:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
+			<td  style='color:white;text-align:center;' width='10%' title='make gubun:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['name']?></a></td>
 			<td style='color:white;text-align:center;'><?=$dateR?></td>
+
 			<td style='color:white;text-align:center;'><?=$board_cnt?></td><!-- data record count -->
 			<td style='color:white;text-align:center;' title="upload file use and size:<?=$rs['fileup']?>">
 				<input style='background-color:black;color:white;text-align:center;' type='text' name='file_size_<?=$line_no?>' value='<?=$rs['fileup']?>' title='upload file size change' size='1'>
@@ -807,9 +788,8 @@ $(function () {
 if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
 			<td style='color:white;text-align:center;'>
-				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
-				<!-- <input type='button' value="Set" onClick="Set_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;" title='Set - It makes detailed setting of bulletin board. '> -->
-				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '>
+				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;color:black;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
+				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;color:black;" title=' Run the bulletin board. '>
 			</td>
 
 		<?php
@@ -847,7 +827,6 @@ if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 </html>
 <?php
 function paging($link, $total, $page, $size){
-	//global $line;
 	$page_num = 10;
 	if( !$total ) { return; }
 	$total_page	= ceil($total/$size);

@@ -80,7 +80,7 @@ $(function () {
 				case 'type'    : title_func('jong'); break;
 				case 'View'    : title_func('view_cnt'); break;
 				case 'date'    : title_func('up_day'); break;
-				default        : title_func('up_day'); break;
+				default        : title_func(''); break;
 			}
 		}, 250); // 약 300ms 대기 후 실행
 	  
@@ -97,7 +97,7 @@ $(function () {
 			case 'type'    : title_wfunc('jong'); break;
 			case 'View'    : title_wfunc('view_cnt'); break;
 			case 'date'    : title_wfunc('up_day'); break;
-			default        : title_wfunc('up_day'); break;
+			default        : title_wfunc(''); break;
 		}
 	});
 
@@ -354,6 +354,7 @@ $(function () {
 		document.insert_form.fld_code.value= fld_code;
 		document.insert_form.fld_code_asc.value= 'desc';
 		document.insert_form.mode.value='title_wfunc';
+		document.insert_form.target='_self';
 		document.insert_form.action='ulink_list.php';
 		document.insert_form.submit();                         
 	} 
@@ -362,6 +363,7 @@ $(function () {
 		document.insert_form.fld_code.value= fld_code;           
 		document.insert_form.fld_code_asc.value= 'asc';
 		document.insert_form.mode.value='title_func';           
+		document.insert_form.target='_self';
 		document.insert_form.action='ulink_list.php';
 		document.insert_form.submit();                         
 	} 
@@ -415,7 +417,7 @@ jQuery(document).ready(function ($) {
 					"pws": pws
 				},
 			success: function(data) {
-				$("#memo").val(data);				//console.log(data);				//alert(data);
+				$("#memo").val(data);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				alert("The data type or URL is incorrect. -- ulink_ajax.php");
@@ -556,7 +558,6 @@ jQuery(document).ready(function ($) {
 ?>
 <Form name='insert_form' METHOD='POST' enctype="multipart/form-data" id="insert_form">
 	<input type='hidden' name='g_type'			value='<?=$g_type?>' > 
-	<input type='hidden' name='g_name_old'	value='<?=$g_name?>' > 
 	<input type='hidden' name='mode_in'		value='' > 
 	<input type='hidden' name='mode_up'		value='' > 
 	<input type='hidden' name='seq_no' id='seq_no'	value='' > 
@@ -747,7 +748,6 @@ jQuery(document).ready(function ($) {
 		</tr>
 		<tr>
 			<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-			<!-- <a href="ulink_list.php?g_type=P" target='iframe_url'>Program list</a> -->
 			<a onclick="g_type_func('P')" target='_self'>Program list</a>
 			</td>
 		</tr>
