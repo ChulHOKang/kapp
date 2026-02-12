@@ -4,15 +4,16 @@
 	  kapp_program_list.php - program_list3.php copy  : program list A
 	  program_pglist.php : program list B
 	*/
-	$ss_mb_id	= get_session("ss_mb_id");
-	$H_ID	= $ss_mb_id;	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	if( !$ss_mb_id ) {
+	$H_ID	= get_session("ss_mb_id");
+	$ip = $_SERVER['REMOTE_ADDR'];
+	if( $H_ID == '' ) {
 		m_("You need to login. ");
 		$url= KAPP_URL_T_;
 		echo "<script>window.open( '$url' , '_top', ''); </script>";
 		exit;
 	}
-	connect_count($host_script, $H_ID, 0, $referer);	// log count
+	$H_LEV=$member['mb_level'];
+	connect_count($host_script, $H_ID, 0, $referer);
 	$formula_		= "";
 	$poptable_		= "";
 	$column_all		= ""; //my_func
@@ -34,17 +35,10 @@
 	if( isset($_POST['pj_name']) && $_POST['pj_name']!='' ) $pj_name = $_POST['pj_name'];
 	else $pj_name = "";
 
-//	if( isset($_POST['pj_code_check']) )	$pj_code_check = $_POST['pj_code_check'];
-//	else $pj_code_check = "";
-
-/*	if( isset($pj_code) && isset($pj_code_check) ) {
-		if( $pj_code !=  $pj_code_check ) {
-			$pj_code_check = $pj_code;
-		}
-	} else if( isset($pj_code)  ) {
-		$pj_code_check = $pj_code;
-	}*/
-
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 ?>
 <html>
 <head>
@@ -63,33 +57,63 @@ th, td { border: 1px solid silver; padding:5px; }
 </style>
 <link rel="stylesheet" href="./admin.css" type="text/css" />
 <script src="//code.jquery.com/jquery.min.js"></script>
+
 <script>
 $(function () {
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			switch(e.target.innerText){
+				case 'Project' : title_func('group_name'); break;
+				case 'User'    : title_func('userid'); break;
+				case 'Program' : title_func('pg_name'); break;
+				case 'Table'   : title_func('tab_hnm'); break;
+				case 'Date'    : title_func('upday'); break;
+				default        : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
+
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		switch(e.target.innerText){
+				case 'Project' : title_wfunc('group_name'); break;
+				case 'User'    : title_wfunc('userid'); break;
+				case 'Program' : title_wfunc('pg_name'); break;
+				case 'Table'   : title_wfunc('tab_hnm'); break;
+				case 'Date'    : title_wfunc('upday'); break;
+				default        : title_wfunc(''); break;
+		}
+	});
+
+	$('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	});
+	$(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	});
 });
 </script>
 <script type="text/javascript" >
@@ -139,20 +163,11 @@ $(function () {
 		document.tkher_search.mode.value='Project_search';
 		document.tkher_search.pj_code.value=pj;
 		Prj = pj.split(':');
-		//var num = document.getElementById("kproject").selectedIndex;
-		//var arr = document.getElementById("kproject").options;
 		document.tkher_search.pj_code.value= Prj[0];
 		document.tkher_search.pj_name.value= Prj[1];
 		document.tkher_search.action="kapp_program_list.php";
 		document.tkher_search.submit();
 	}
-	function title_func(fld_code){       
-		document.tkher_search.page.value = 1;                
-		document.tkher_search.fld_code.value= fld_code;           
-		document.tkher_search.mode.value='title_func';           
-		document.tkher_search.action='kapp_program_list.php';
-		document.tkher_search.submit();                         
-	} 
 	function Change_line_cnt( $line){
 		document.tkher_search.page.value = 1;
 		document.tkher_search.line_cnt.value = $line;
@@ -163,8 +178,27 @@ $(function () {
 		document.tkher_search.page.value = 1;
 		document.tkher_search.mode.value = 'Program_Search';
 		document.tkher_search.action='kapp_program_list.php';
+		document.tkher_search.target='_self';
 		document.tkher_search.submit();
 	}
+	function title_wfunc(fld_code){       
+		document.tkher_search.page.value = 1;
+		document.tkher_search.fld_code.value= fld_code;
+		document.tkher_search.fld_code_asc.value= 'desc';
+		document.tkher_search.mode.value='title_wfunc';
+		document.tkher_search.target='_self';
+		document.tkher_search.action='kapp_program_list.php';
+		document.tkher_search.submit();                         
+	} 
+	function title_func(fld_code){       
+		document.tkher_search.page.value = 1;                
+		document.tkher_search.fld_code.value= fld_code;           
+		document.tkher_search.fld_code_asc.value= 'asc';
+		document.tkher_search.mode.value='title_func';           
+		document.tkher_search.target='_self';
+		document.tkher_search.action='kapp_program_list.php';
+		document.tkher_search.submit();                         
+	} 
 //-->
 </script>
 
@@ -189,16 +223,10 @@ $(function () {
 	if( isset($_POST['pg_name']) && $_POST['pg_name'] !="" ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
 
-	//if( isset($_POST['mid_nm']) )  $mid_nm = $_POST['mid_nm'];
-	//$mid_nm = "";
-
 	if( isset($_POST['tab_hnm']) )  $tab_hnm = $_POST['tab_hnm'];
 	$tab_hnm = "";
 	if( isset($_POST['tab_enm']) )  $tab_enm = $_POST['tab_enm'];
 	$tab_enm = "";
-	
-	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
-	else $fld_code = '';
 	
 	//m_("pj_code: " . $pj_code . ", mode:" . $mode );
 
@@ -215,7 +243,6 @@ $(function () {
 		}
 		$mode='';
 	}
-	//$limite = 15;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
@@ -229,45 +256,22 @@ $(function () {
 		$lsPJand = " ";
 	}
 
-	/*if( $mode == 'Search' ) {
-			$aa = explode(':', $tab_hnmS);
-			$tab_enm = $aa[0];
-			$tab_hnm = $aa[1];
-		if( !$tab_enm ) {
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where fld_enm='seqno' "; //중요 Table 첫컬럼.
-//			$ls = $ls . " ORDER BY tab_hnm asc, seqno asc ";
-		} else {
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where tab_enm='$tab_enm' and fld_enm='seqno' ";
-			$result = sql_query( $ls );
-			$rs		= sql_fetch_array( $result );
-			$group_code	= $rs['group_code'];
-			$group_name	= $rs['group_name'];
-			$sqltable   = $rs['sqltable'];
-			$ls = " SELECT * from {$tkher['table10_table']} ";
-			$ls = $ls . " where tab_enm='$tab_enm' ";
-		}
-   } else */
 	if( $mode == 'Program_Search' ) {
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param like '%$data%' ";
 			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
 			$ls = $ls . " and userid= '".$H_ID."' ";
-//			$ls = $ls . " ORDER BY upday desc, $param ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param $sel '$data' ";
 			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
 			$ls = $ls . " and userid= '".$H_ID."' ";
-//			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
 	} else if( $mode=='Project_search' ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid= '".$H_ID."'";
 		if( $pj_code !='') $ls = $ls . " and group_code= '".$pj_code."' ";
-//		$ls = $ls . " ORDER BY upday desc ";
 
 	} else if( isset($data) && $data != "" ) {
 		if( $sel == 'like') {
@@ -275,19 +279,16 @@ $(function () {
 			$ls = $ls . " where $param like '%$data%' " ;
 			$ls = $ls . " and userid= '".$H_ID."' ";
 			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
-//			$ls = $ls . " ORDER BY upday desc, $param ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param $sel '$data' ";
 			$ls = $ls . " and userid= '".$H_ID."' ";
 			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
-//			$ls = $ls . " ORDER BY upday desc, $param ";
 		}
    } else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid= '".$H_ID."'";
 		if( isset($pj_code ) && $pj_code!='' ) $ls = $ls . " and group_code= '".$pj_code."'";
-//		$ls = $ls . " ORDER BY upday desc ";
    }
 	$resultT = sql_query( $ls );
 	if( $resultT ) {
@@ -303,12 +304,8 @@ $(function () {
 		} else {
 			$no = $total - ($page - 1) * $line_cnt;
 		}
-		//m_("page: " . $page . ", total: " . $total);
-		//if( $line_cnt > $total ) $page=1;
-
 	} else {
 		$total = 0;
-		//echo "sql: " . $ls; exit;
 	}
 		$cur='B';
 		include_once "./menu_run.php";
@@ -316,7 +313,7 @@ $(function () {
 
 ?>
 <h2 title='pg:kapp_program_list'>Program List (admin:<?=$H_ID?>) - total:<?=$total?></h2>
-		<form name="tkher_search" target="_self" method="post" action="kapp_program_list.php"  >
+	<form name="tkher_search" target="_self" method="post" action="kapp_program_list.php"  >
 			<input type='hidden' name='mode'    value='<?=$mode?>'>
 			<input type='hidden' name='page'    value="<?=$page?>">
 			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
@@ -338,28 +335,14 @@ $(function () {
 	<input type="hidden" name="userid" >
 	<input type='hidden' name='group_name' >
 
-			<!-- <select name="kapp_user" id="kapp_user" onChange="kmember(this.value)" style="background-color:cyan;color:#000;height:24;">
-			<option value="">Select member</option>
-<?php
-			if( strlen($mid) > 0 ) echo "<option value='".$mid."' selected >".$_POST['mid_nm']."</option>";
-$sql ="SELECT * from {$tkher['tkher_member_table']} ";
-$ret = sql_query($sql);
-    for ($i=0; $rs=sql_fetch_array($ret); $i++) {
-?>
-			<option value="<?=$rs['mb_id']?>"><?=$rs['mb_name']?></option>
-<?php } ?>
-			</select>  -->
+	<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
+	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+
 			<SELECT name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
 			<option value="">Select Project</option>
-			<!-- <option value="ETC:ETC" >ETC</option> --><!-- default : 2025-05-08 close -->
 <?php
-//	if( isset($pj_code) ) echo "<option value='".$pj_code."' selected >".$pj_name."</option>";
-
-	//if( isset($H_ID) ) $sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$H_ID."'";
-	//else $sql ="SELECT * from {$tkher['table10_group_table']} ";
 	$sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$H_ID."'";
 	$ret = sql_query($sql);
-    //for( $i=0; $rs=sql_fetch_array($ret); $i++) {		//m_("g cd: " . $rs['group_code'] . ",  pj_code: ". $pj_code);
 	while( $rs=sql_fetch_array($ret) ){
 		$chk='';
 		if( $pj_code == $rs['group_code'] ) $chk = ' selected ';
@@ -376,9 +359,6 @@ $ret = sql_query($sql);
 			</SELECT>
 			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="button" value="Search" onclick='search_func()'>
-			<!-- <input type="submit" value="Search" title="- Search -"> -->
-		<!-- </form> -->
-<!-- <FORM name="table_list" method='POST' enctype="multipart/form-data" > -->
 <span>
 View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
@@ -390,14 +370,23 @@ View Line:
 </span>
 
 <table class='floating-thead' width="100%">
-<thead  width="100%">
+<thead id='tit_et' width="100%">
 	<tr>
 	<th>NO</th>
-	<th>user</th>
+
+<?php
+	echo " <th title='User Sort click or doubleclick' >User</th> ";
+	echo " <th title='project Sort click or doubleclick' >Project</th> ";
+	echo " <th title='Program Sort click or doubleclick' >Program</th> ";
+	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
+	echo " <th title='Date Sort click or doubleclick' >Date</th> ";
+?>
+	
+	<!-- <th>user</th>
 	<th>Project</th>
 	<th>Program</th>
 	<th>Table</th>
-	<th>Date</th>
+	<th>Date</th> -->
 	<th>Management</th>
 	</tr>
 </thead>
@@ -406,7 +395,10 @@ View Line:
 	$line=0;
 	$i=1;
 	
-//	$ls = $ls . " $limit ";
+	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
+	else $OrderBy	= " ORDER BY upday desc ";
+	$ls = $ls . $OrderBy;
+
 	$ls = $ls . $limit;
 	$resultT	= sql_query( $ls );
 	while( $rs = sql_fetch_array( $resultT ) ) {
@@ -452,15 +444,6 @@ View Line:
   <tr>
     <td align="center" bgcolor="f4f4f4">
 <?php
-	/*if( $mode=='Search' ) {
-		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
-		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='DB & Table Source Down' onclick=\"DB_table_create_source('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of ".$tab_hnm."' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='Table Source Down' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Create and download table creation source and data processing program source of ".$tab_hnm."' >&nbsp;&nbsp; ";
-	} else if( $mode == "Program_click") {
-		echo "<input type='button' value='Back Return' onclick=\"javascript:run_backX('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' List of Program'>&nbsp;&nbsp;";
-		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
-	} else { */
 
 		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
 		$last_page = $first_page+($page_num-1);
@@ -476,7 +459,6 @@ View Line:
 		$next = $last_page+1;
 		if($next <= $total_page)
 			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
-	//}
 ?>
 	</td>
   </tr>

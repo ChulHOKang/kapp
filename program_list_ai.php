@@ -50,46 +50,103 @@ textarea {
 	  border-color: #007bff; /* Changes border color on focus */
 	  outline: none; /* Removes default outline on focus */
 	}
-table { border-collapse: collapse; }
-th { background: #cdefff; height: 27px; }
-th, td { border: 1px solid silver; padding:0px; }
+	table { border-collapse: collapse; }
+	th { background: #666fff; color: white; height: 32px; }
+	th, td { border: 1px solid silver; padding:5px; }
+
+	.container {
+		background-color: skyblue;
+		display :flex;									/* flex, inline-flex */
+		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
+		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
+		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
+		height:25px;
+
+	}
+	.item {
+		background-color: gold;
+		boarder: 1px solid gray;
+	}
  -->
 </style>
-
+<!-- // echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+ //echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+ //echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
+ //echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
+ //echo " <th title='date Sort click' onclick=title_func('upday')>Date</th> ";
+ -->
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			switch(e.target.innerText){
+				case 'Project' : title_func('group_name'); break;
+				case 'User'    : title_func('userid'); break;
+				case 'Program' : title_func('pg_name'); break;
+				case 'Table'   : title_func('tab_hnm'); break;
+				case 'Date'    : title_func('upday'); break;
+				default        : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
+
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		switch(e.target.innerText){
+				case 'Project' : title_wfunc('group_name'); break;
+				case 'User'    : title_wfunc('userid'); break;
+				case 'Program' : title_wfunc('pg_name'); break;
+				case 'Table'   : title_wfunc('tab_hnm'); break;
+				case 'Date'    : title_wfunc('upday'); break;
+				default        : title_wfunc(''); break;
+		}
+	});
+
+	  $('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+	  $(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	  });
 });
 </script>
 <script type="text/javascript" >
+	function title_wfunc(fld_code){       
+		document.project_search.page.value = 1;
+		document.project_search.fld_code.value= fld_code;
+		document.project_search.fld_code_asc.value= 'desc';
+		document.project_search.mode.value='title_wfunc';
+		document.project_search.action='program_list_ai.php';
+		document.project_search.submit();                         
+	} 
 	function title_func(fld_code){       
 		document.project_search.page.value = 1;                
 		document.project_search.fld_code.value= fld_code;           
+		document.project_search.fld_code_asc.value= 'asc';
 		document.project_search.mode.value='title_func';           
 		document.project_search.action='program_list_ai.php';
 		document.project_search.submit();                         
@@ -99,7 +156,6 @@ $(function () {
 		nm = document.project_search.group_code.options[index].text;
 		document.project_search.group_name.value=nm;
 		vv = document.project_search.group_code.options[index].value;
-		//document.project_search.group_codeX.value=vv;
 		document.project_search.action ="program_list_ai.php";
 		document.project_search.submit();
 		return;
@@ -147,6 +203,8 @@ $(function () {
 	$page_num = 10;
 	if( isset( $_POST['fld_code']) && $_POST['fld_code']!='' ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 
 	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
 	else $page=1;
@@ -177,41 +235,29 @@ $(function () {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param like '%$data%' and userid='$H_ID' " . $wsel;
-			if( $fld_code!=='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
-			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param $sel '$data' and userid='$H_ID' " . $wsel;
-			if( $fld_code!=='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
-			$ls = $ls . $OrderBy;
 		}
 	} else if( $mode == "Project_Search" ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' " . $wsel;
-		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
 	} else if( isset($data) && $data != '' ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name like '%$data%' and userid='$H_ID' " . $wsel;
-			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc, $param asc";
-			$ls = $ls . $OrderBy;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where pg_name $sel '$data' and userid='$H_ID' " . $wsel;
-			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc, $param asc";
-			$ls = $ls . $OrderBy;
 		}
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' " . $wsel;
-		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-		else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
-		$ls = $ls . $OrderBy;
    }
+	if( $fld_code!=='' ) $OrderBy = " order by $fld_code $fld_code_asc ";
+	else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
+	$ls = $ls . $OrderBy;
+
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
 	$total_page = intval(($total-1) / $line_cnt)+1;
@@ -249,6 +295,7 @@ $(function () {
 			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
 		<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
+		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
 	<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
@@ -289,15 +336,16 @@ View Line:
 <thead  width="100%"> -->
 
 <table class='floating-thead' style="width:1900px; table-layout:;">
-<thead width="100%">
+<thead id='tit_et' width="100%">
 	<tr>
 	<th>NO</th>
 <?php
- echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
- echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
- echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
- echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
- echo " <th title='date Sort click' onclick=title_func('upday')>Date</th> ";
+
+ echo " <th title='User Sort click or doubleclick' >User</th> ";
+ echo " <th title='project Sort click or doubleclick' >Project</th> ";
+ echo " <th title='Program Sort click or doubleclick' >Program</th> ";
+ echo " <th title='Table Sort click or doubleclick' >Table</th> ";
+ echo " <th title='date Sort click or doubleclick' >Date</th> ";
 ?>
 	<th>Column array</th>
 	<th>column type</th>

@@ -60,33 +60,69 @@ th, td { border: 1px solid silver; padding:5px; }
 	}
 </style>
 <script src="//code.jquery.com/jquery.min.js"></script>
+
+<!-- 	//echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+	//echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+	//echo " <th title='Program Sort click' onclick=title_func('tab_hnm')>Table name</th> ";
+	//echo " <th title='Table Sort click' onclick=title_func('tab_enm')>Table code</th> ";
+	//echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
+ -->
 <script>
 $(function () {
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			switch(e.target.innerText){
+				case 'Project'    : title_func('group_name'); break;
+				case 'User'       : title_func('userid'); break;
+				case 'Table name' : title_func('tab_hnm'); break;
+				case 'Table code' : title_func('tab_enm'); break;
+				case 'Date'       : title_func('upday'); break;
+				default           : title_func(''); break;
+			}
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
+
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		switch(e.target.innerText){
+				case 'Project'    : title_wfunc('group_name'); break;
+				case 'User'       : title_wfunc('userid'); break;
+				case 'Table name' : title_wfunc('tab_hnm'); break;
+				case 'Table code' : title_wfunc('tab_enm'); break;
+				case 'Date'       : title_wfunc('upday'); break;
+				default           : title_wfunc(''); break;
+		}
+	});
+
+	  $('table.floating-thead').each(function() {
+			if( $(this).css('border-collapse') == 'collapse') {
+			  $(this).css('border-collapse','separate').css('border-spacing',0);
+			}
+			$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+	  $(window).scroll(function() {
+			var scrollTop = $(window).scrollTop(),
+			  scrollLeft = $(window).scrollLeft();
+			$('table.floating-thead').each(function(i) {
+			  var thead = $(this).find('thead:last'),
+				clone = $(this).find('thead:first'),
+				top = $(this).offset().top,
+				bottom = top + $(this).height() - thead.height();
+			  if( scrollTop < top || scrollTop > bottom ) {
+				clone.hide();
+				return true;
+			  }
+			  if( clone.is('visible') ) return true;
+			  clone.find('th').each(function(i) {
+				$(this).width( thead.find('th').eq(i).width() );
+			  });
+			  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+			});
+	  });
 });
 </script>
 <link rel="stylesheet" href="./include/css/common.css" type="text/css" />
@@ -107,6 +143,9 @@ $(function () {
 
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
+
 	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
 		$group_code = $_POST['group_code'];   
 		$wsel = " and group_code = '$group_code' ";
@@ -163,9 +202,6 @@ $(function () {
 		if( !$tab_enm ) {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " WHERE fld_enm='seqno' and userid='$H_ID'";
-			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc";
-			$ls = $ls . $OrderBy;
 		} else {
 			$result = sql_query( "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' and userid='$H_ID'" );
 			$rs		= sql_fetch_array( $result );
@@ -174,9 +210,6 @@ $(function () {
 			$sqltable   = $rs['sqltable'];
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " where tab_enm='$tab_enm' and userid='$H_ID'";
-			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc";
-			$ls = $ls . $OrderBy;
 		}
    } else if( $mode == 'Table_Search' ) {
 		if( $sel == 'like') {
@@ -184,15 +217,9 @@ $(function () {
 			if( isset($data) && $data !=''  ){
 				$ls = $ls . " where fld_enm='seqno' and $param like '%$data%' and userid='$H_ID'";
 				if( $wsel!='') $ls = $ls . $wsel;
-				if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-				else $OrderBy	= " ORDER BY $param ";
-				$ls = $ls . $OrderBy;
 			} else {
 				$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
 				if( $wsel!='') $ls = $ls . $wsel;
-				if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-				else $OrderBy	= " ORDER BY $param ";
-				$ls = $ls . $OrderBy;
 			}
 		} else {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
@@ -202,24 +229,15 @@ $(function () {
 				$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
 			}
 			if( $wsel!='') $ls = $ls . $wsel;
-			if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " ORDER BY upday desc";
-			$ls = $ls . $OrderBy;
 		}
 	} else if( $mode == 'Search_Project' ) {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		if( $wsel!='') $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' " . $wsel;
 		else $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' ";
-		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-		else $OrderBy= " ORDER BY upday desc ";
-		$ls = $ls . $OrderBy;
    } else {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
 		if( $wsel!='') $ls = $ls . $wsel;
-		if( $fld_code!='' ) $OrderBy = " order by $fld_code ";    
-		else $OrderBy	= " ORDER BY upday desc";
-		$ls = $ls . $OrderBy;
    }
 
 	$resultT	= sql_query( $ls );
@@ -256,10 +274,21 @@ $(function () {
 ?>
 <script type="text/javascript" >
 <!--
+	function title_wfunc(fld_code){       
+		document.table_list.page.value = 1;
+		document.table_list.fld_code.value= fld_code;
+		document.table_list.fld_code_asc.value= 'desc';
+		document.table_list.mode.value='title_wfunc';
+		document.table_list.target='_self';
+		document.table_list.action='kapp_table_list.php';
+		document.table_list.submit();                         
+	} 
 	function title_func(fld_code){       
 		document.table_list.page.value = 1;                
 		document.table_list.fld_code.value= fld_code;           
+		document.table_list.fld_code_asc.value= 'asc';
 		document.table_list.mode.value='title_func';           
+		document.table_list.target='_self';
 		document.table_list.action='kapp_table_list.php';
 		document.table_list.submit();                         
 	} 
@@ -439,6 +468,7 @@ $(function () {
 	<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
 	<input type='hidden' name='group_name' >
 	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
+	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 <?php
 		if( $mode == "Search" ) $T_msg = "[ Table10i, Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
 		else $T_msg = "[ ".$member['mb_id']." ]";
@@ -490,17 +520,22 @@ View Line:
 </span>
 
 <table class='floating-thead' width='100%'>
-<thead  width='100%'>
+<thead id='tit_et' width='100%'>
 	<tr align='center'>
 		<TH>no</TH>
 <?php
 if( $mode != 'Search') {
-	echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
-	echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
-	echo " <th title='Program Sort click' onclick=title_func('tab_hnm')>Table name</th> ";
-	echo " <th title='Table Sort click' onclick=title_func('tab_enm')>Table code</th> ";
-	echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
+	//echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
+	//echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
+	//echo " <th title='Program Sort click' onclick=title_func('tab_hnm')>Table name</th> ";
+	//echo " <th title='Table Sort click' onclick=title_func('tab_enm')>Table code</th> ";
+	//echo " <th title='Date Sort click' onclick=title_func('upday')>Date</th> ";
 
+	echo " <th title='User Sort click or doubleclick' >User</th> ";
+	echo " <th title='project Sort click or doubleclick' >Project</th> ";
+	echo " <th title='Program Sort click or doubleclick' >Table name</th> ";
+	echo " <th title='Table Sort click or doubleclick' >Table code</th> ";
+	echo " <th title='Date Sort click or doubleclick' >Date</th> ";
 ?>
 	<TH>Excel</TH>
 	<TH>Manage</TH>
@@ -524,9 +559,17 @@ if( $mode != 'Search') {
 
     $line=0;
 	$i=1;
-	if( $mode !== "Search") {
-		$ls = $ls . " $limit ";
-	}
+	
+	//if( $mode !== "Search") {
+	//	$ls = $ls . " $limit ";
+	//}
+
+	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
+	else $OrderBy	= " ORDER BY upday desc ";
+	$ls = $ls . $OrderBy;
+	$ls = $ls . $limit;
+
+	
 	$resultT	= sql_query( $ls );
 	while( $rs = sql_fetch_array( $resultT ) ) {
 		$group_code = $rs['group_code'];
