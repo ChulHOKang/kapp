@@ -33,7 +33,7 @@
 <head>
 	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
@@ -129,6 +129,7 @@ $(function () {
 		document.project_search.fld_code.value= fld_code;
 		document.project_search.fld_code_asc.value= 'desc';
 		document.project_search.mode.value='title_wfunc';
+		document.project_search.target='_self';
 		document.project_search.action='kapp_program_list_adm_ai.php';
 		document.project_search.submit();                         
 	} 
@@ -137,6 +138,7 @@ $(function () {
 		document.project_search.fld_code.value= fld_code;           
 		document.project_search.fld_code_asc.value= 'asc';
 		document.project_search.mode.value='title_func';           
+		document.project_search.target='_self';
 		document.project_search.action='kapp_program_list_adm_ai.php';
 		document.project_search.submit();                         
 	} 
