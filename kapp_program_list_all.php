@@ -31,13 +31,6 @@ include_once('./tkher_start_necessary.php');
 	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
-<!-- 
-<style>
-table { border-collapse: collapse; }
-th { background: #cdefff; height: 27px; }
-th, td { border: 1px solid silver; padding:5px; }
-</style>
- -->
 <style>
 textarea {
 	  width: 200px;
@@ -60,9 +53,6 @@ th { background: #cdefff; height: 27px; }
 th, td { border: 1px solid silver; padding:0px; }
 </style>
 
-
-
-<link rel='stylesheet' href='./include/css/kancss.css' type='text/css'>
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
@@ -354,22 +344,22 @@ View Line:
 		else $line=$i;
 		$bgcolor = 'black'; //"#eeeeee";
 		if( $H_ID == $mid) $bcolor ="style='background-color:black;color:yellow;'";//style='background-color:black;color:white;'
-		else $bcolor ="style='background-color:black;color:white;'";
-		$if_data = $rs['if_data'];
-		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
-		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
-		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
+		else $bcolor ="style='background-color:black;color:gray;'";
+		//$if_data = $rs['if_data'];
+		//$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
+		//$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
+		/*if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
 		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
 		else if( !$pop_fld && !$pop_mvfld )	$attr = $gita;
-		else $attr="";
+		else $attr="";*/
   ?> 
 		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' width='900' >
 		<td width='1%' <?=$bcolor?> ><?=$line?></td>
 		<td width='5%' <?=$bcolor?> title=" project code:<?=$group_code?>"><?=$group_name?></td>
 		<td width='3%' <?=$bcolor?> ><?=$rs['userid']?> </td>
-		<td width='15%' <?=$bcolor?> ><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:gray;color:white;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) - Run</a></td> 
+		<td width='15%' style='background-color:000051;' ><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) - Run</a></td> 
 
 		<td width='15%' onclick="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" <?=$bcolor?> ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</td> 
 		<td width='5%' <?=$bcolor?> ><?=$rs['upday']?></td>

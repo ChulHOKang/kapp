@@ -35,6 +35,8 @@
 	
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 	if( $mode == "project_search" ) $group_code = $_POST['group_code'];
 	else if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
 	else $group_code = '';
@@ -75,43 +77,97 @@
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
-  $('table.listTableT').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.listTableT').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
+	let timer;
+	document.getElementById('tit_et').addEventListener('click', function(e) {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			//alert("Tnm: " + e.target.innerText);
+			$hnm = e.target.innerText;
+			$enm = document.getElementById($hnm).value;// document.view_form.$hnm.value;
+			//alert("Enm: " + $enm);
+			title_func($enm);
+			/*switch(e.target.innerText){
+				case 'Project' : title_func('group_name'); break;
+				case 'User'    : title_func('userid'); break;
+				case 'Program' : title_func('pg_name'); break;
+				case 'Table'   : title_func('tab_hnm'); break;
+				case 'Date'    : title_func('upday'); break;
+				default        : title_func(''); break;
+			}*/
+		}, 250); // 약 300ms 대기 후 실행
+	  
+	});
 
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거
+		//alert('더블 클릭되었습니다!');
+		//alert("Tnm: " + e.target.innerText);
+		$hnm = e.target.innerText;
+		$enm = document.getElementById($hnm).value;// document.view_form.$hnm.value;			//alert("Enm: " + $enm);
+		title_wfunc($enm);
+
+		//$hnm = e.target.innerText;
+		//$enm = document.view_form.$hnm.value;
+		//title_wfunc($enm);
+		/*
+		switch(e.target.innerText){
+				case 'Project' : title_wfunc('group_name'); break;
+				case 'User'    : title_wfunc('userid'); break;
+				case 'Program' : title_wfunc('pg_name'); break;
+				case 'Table'   : title_wfunc('tab_hnm'); break;
+				case 'Date'    : title_wfunc('upday'); break;
+				default        : title_wfunc(''); break;
+		}*/
+	});
+
+	  $('table.listTableT').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+	  
+	  $(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.listTableT').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	  });
 });
 
 </script>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 <script type="text/javascript" >
 <!--
+	function title_wfunc(fld_code){       
+		document.view_form.page.value = 1;
+		document.view_form.fld_code.value= fld_code;
+		document.view_form.fld_code_asc.value= 'desc';
+		document.view_form.mode.value='title_wfunc';
+		document.view_form.target='_self';
+		document.view_form.action='tkher_program_data_list.php';
+		document.view_form.submit();                         
+	} 
 	function title_func(fld_code){       
 		document.view_form.page.value = 1;                
 		document.view_form.fld_code.value= fld_code;           
+		document.view_form.fld_code_asc.value= 'asc';
 		document.view_form.mode.value='title_func';           
+		document.view_form.target='_self';
 		document.view_form.action='tkher_program_data_list.php';
 		document.view_form.submit();                         
 	} 
@@ -488,6 +544,7 @@ if( $H_ID==$pg_mid ) {
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
 						<input type="hidden" name='fld_code'		value='<?=$fld_code?>' />
+						<input type="hidden" name='fld_code_asc'	value='<?=$fld_code_asc?>' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
 						<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
 						<input type="hidden" name='tab_hnm'		value='<?=$tab_hnm?>' />
@@ -520,17 +577,22 @@ if( $H_ID==$pg_mid ) {
 						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
 <?php
 				}
+
+//	echo " <th title='project Sort click or doubleclick' >Project</th> ";
+
 ?>
 	<table class='listTableT' width='99%'>
-		<thead>
+		<thead id='tit_et'>
 			<tr>
 				<th style="width:30px; height: 100%px;text-align:center">No</th>
 <?php
-					for( $i=0; $i < $fld_cnt; $i++){
-						$fff = $fld_hnm[$i];
-						$fenm = $fld_enm[$i];
-						echo " <th class='cell03' title='$fenm:$fff Sort click' onclick=\"javascript:title_func('".$fenm."')\">$fff</th> ";
-					}
+		for( $i=0; $i < $fld_cnt; $i++){
+			$fhnm = $fld_hnm[$i];
+			$fenm = $fld_enm[$i];
+			echo " <th title='$fenm:$fhnm Sort click or doubleclick' >$fhnm</th> ";
+			echo "<input type='hidden' id='$fhnm' name='$fhnm' value='$fenm' >";
+			//echo " <th class='cell03' title='$fenm:$fhnm Sort click or doubleclick' onclick=\"javascript:title_func('".$fenm."')\">$fhnm</th> ";
+		}
 ?>
 			</tr>
 		</thead>
@@ -539,8 +601,10 @@ if( $H_ID==$pg_mid ) {
 	if( $H_LEV>= $grant_view || $pg_mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
-			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
-			else $OrderBy	= " order by seqno desc ";        
+			
+//			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
+//			else $OrderBy	= " order by seqno desc ";        
+
 			if( $mode == "search" ){
 				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
 				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
@@ -552,7 +616,13 @@ if( $H_ID==$pg_mid ) {
 				}     
 			}     
 
-			$SQL = $SQL . $OrderBy . $SQL_limit;
+			//$SQL = $SQL . $OrderBy . $SQL_limit;
+	if( $fld_code!='' ) $OrderBy = " ORDER BY $fld_code $fld_code_asc ";    
+	else $OrderBy	= " ORDER BY seqno desc ";
+	$SQL = $SQL . $OrderBy;
+	$SQL = $SQL . $SQL_limit;
+
+//echo "SQL: " . $SQL; exit;
 			if( ($result = sql_query( $SQL ) )==false )	{
 				printf("Record 0 : query: %s\n", $SQL);
 			} else {
@@ -569,14 +639,14 @@ if( $H_ID==$pg_mid ) {
 						 <a href="javascript:pg_record_view('<?=$row_seqno?>', '<?=$data_mid?>');" ><?=$no?></a></td>
 <?php
 						for( $i=0; $i < $fld_cnt; $i++){
-							$fff = $fld_enm[$i];
+							$fenm = $fld_enm[$i];
 							if( $fld_type[$i]=='INT' || $fld_type[$i]=='BIGINT' ){
-								$num = number_format( $row[$fff] );
+								$num = number_format( $row[$fenm] );
 								echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >$num</a></td> ";
 							} else if( $fld_type[$i]=='TEXT' ){
-								echo " <td class='cell04'>$row[$fff]</td> ";
+								echo " <td class='cell04'>$row[$fenm]</td> ";
 							}
-							else echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >".$row[$fff]."</a></td> ";
+							else echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >".$row[$fenm]."</a></td> ";
 						}
 ?>
 					</tr>

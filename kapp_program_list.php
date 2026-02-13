@@ -126,6 +126,7 @@ $(function () {
 			document.tkher_search.pg_code.value	=pg_code;
 			document.tkher_search.pg_name.value	=pg_name;
 			document.tkher_search.action				="kapp_program_list.php";
+			document.tkher_search.target='_self';
 			document.tkher_search.submit();
 		} else {
 			return false;
@@ -166,12 +167,14 @@ $(function () {
 		document.tkher_search.pj_code.value= Prj[0];
 		document.tkher_search.pj_name.value= Prj[1];
 		document.tkher_search.action="kapp_program_list.php";
+		document.tkher_search.target='_self';
 		document.tkher_search.submit();
 	}
 	function Change_line_cnt( $line){
 		document.tkher_search.page.value = 1;
 		document.tkher_search.line_cnt.value = $line;
 		document.tkher_search.action='kapp_program_list.php';
+		document.tkher_search.target='_self';
 		document.tkher_search.submit();
 	}
 	function search_func(){
