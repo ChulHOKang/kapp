@@ -2,22 +2,12 @@
  <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
-
 	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-
-    <link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'><!-- 중요! -->
+    <link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script type='text/javascript'>
     <!--
-    /*
-	function Kakao_Login_func($kapp_kakao_js_apikey) {
-		alert(" Kakao_Login_func --- " + $kapp_kakao_js_apikey);
-        //kakao_login("<?=Decrypt('$kapp_kakao_js_apikey', 'modumoa', '~!@#$%^&*()_+')?>");
-    }*/
-
     function Kout_func() {
-        //document.kakao_form.modeA.value = '';
-        //document.kakao_form.modeG.value = '';
         document.kakao_form.Login_Mode.value = 'chat_logout';
         document.kakao_form.userObject.value = '';
         document.kakao_form.authObject.value = '';
@@ -26,19 +16,15 @@
         document.kakao_form.action = 'index.php';
         document.kakao_form.submit();
     }
-
     function Gout_func() {
-        //document.kakao_form.modeA.value = '';
-        //document.kakao_form.modeG.value = '';
         document.kakao_form.Login_Mode.value = 'chat_logout';
         document.kakao_form.userObject.value = '';
         document.kakao_form.authObject.value = '';
-        document.kakao_form.gemail.value = ''; // google
+        document.kakao_form.g_email.value = ''; // google
         document.kakao_form.gname.value = '';
         document.location.href =" https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=";
-//        document.location.href =" https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + <?=KAPP_URL_T_?>;
     }
-    function kakao_loginX($Kakao_APP_KEY) { // 중요 - Login Button XXX
+    function kakao_loginX($Kakao_APP_KEY) {
         alert("kakao_login 64");
         Kakao.init($Kakao_APP_KEY);
         Kakao.Auth.loginForm({
@@ -126,7 +112,7 @@
 		set_session('ss_mb_id',    $member['mb_id']);
 		set_session('ss_mb_level', $member['mb_level']);
 		set_session('ss_mb_key', md5($member['mb_datetime'] . $_SERVER['REMOTE_ADDR'] . $_SERVER['HTTP_USER_AGENT']));
-	} else if( $Login_Mode == 'appgeneratorsystem' ) {
+	} else if( $Login_Mode == 'KAPP' ) { //appgeneratorsystem 2026-02-13
 	} else if( get_session("urllink_login_type") == "Naver_Login_K") {
 	}
 	if( $member['mb_id']) {
@@ -141,7 +127,7 @@
 		$member['mb_level'] = 1;
 	}
 	if( $is_admin != 'super') {
-		$kapp_possible_ip = trim($config['kapp_possible_ip']); // 접근가능 IP
+		$kapp_possible_ip = trim($config['kapp_possible_ip']); // Accessible IP
 		if( $kapp_possible_ip) {
 			$is_possible_ip = false;
 			$pattern = explode("\n", $kapp_possible_ip);
@@ -154,15 +140,13 @@
 				$is_possible_ip = preg_match($pat, $_SERVER['REMOTE_ADDR']);
 				if( $is_possible_ip) break;
 			}
-			if( !$is_possible_ip) die ("<meta charset=utf-8> Access is not possible."); // 접근이 가능하지 않습니다.
+			if( !$is_possible_ip) die ("<meta charset=utf-8> Access is not possible."); 
 		}
-		// 접근차단 IP
 		$is_intercept_ip = false;
 		$pattern = explode("\n", trim($config['kapp_intercept_ip']));
 		for ($i=0; $i<count($pattern); $i++) {
 			$pattern[$i] = trim($pattern[$i]);
 			if( empty($pattern[$i])) continue;
-
 			$pattern[$i] = str_replace(".", "\.", $pattern[$i]);
 			$pattern[$i] = str_replace("+", "[0-9\.]+", $pattern[$i]);
 			$pat = "/^{$pattern[$i]}$/";
@@ -175,22 +159,19 @@
     function Admin_info_check() {
         global $member;
         global $tkher, $config;
-        /*if( $config['kapp_googl_shorturl_apikey'] == '' || $config['kapp_kakao_js_apikey'] == '' || $config['kapp_naver_client_id'] == ''|| $config['kapp_naver_client_secret'] == '') {
-            Add_Admin_Info();
-        }*/
-            Add_Admin_Info();
+        Add_Admin_Info();
     }
     function Member_info_check() {
         global $member;
         global $tkher;
-        if(!Isset($member['mb_password']) || !Isset($member['mb_name']) || !Isset($member['mb_sex']) || !Isset($member['mb_birth']) || !Isset($member['mb_tel']) || !Isset($member['mb_zip1']) || !Isset($member['mb_addr1'])) { // 비밀번호, 이름, 성별, 생년월일, 연락처, 우편번호, 주소
+        if(!Isset($member['mb_password']) || !Isset($member['mb_name']) || !Isset($member['mb_sex']) || !Isset($member['mb_birth']) || !Isset($member['mb_tel']) || !Isset($member['mb_zip1']) || !Isset($member['mb_addr1'])) {
             Add_Info();
         } else if ($member['mb_password'] == '' || $member['mb_name'] == '' || $member['mb_sex'] == '' || $member['mb_birth'] == '' || $member['mb_tel'] == '' || $member['mb_zip1'] == '' || $member['mb_addr1'] == '') {
             Add_Info();
         }
     }
 
-    function Add_Admin_Info() { // 고객 추가정보(생년월일, 성별, 연락처, 주소) 입력 팝업 호출
+    function Add_Admin_Info() {
 
         echo "<script>
         const f_popup_w = '900';
@@ -205,7 +186,7 @@
             ',height=' + f_popup_h);
         </script>";
     }
-    function Add_Info() { // 고객 추가정보(생년월일, 성별, 연락처, 주소) 입력 팝업 호출
+    function Add_Info() {
 
         echo "<script>
         const f_popup_w = '700';
@@ -218,18 +199,11 @@
             ',height=' + f_popup_h);
         </script>";
     }
-	//$H_ID = $member['mb_id'];
-	//$H_LEV= $member['mb_level'];
-	//$ip   = $_SERVER['REMOTE_ADDR'];
 	$cur="";
     if( $H_ID && $H_LEV > 7 && get_cookie('add_admin_info') != 'next') Admin_info_check();
     if( $H_ID && $H_LEV > 1 && get_cookie('add_info') != 'next') Member_info_check();
 ?>
-
-    <!-- end -->
     <form name='kakao_form' method='post' enctype='multipart/form-data'>
-        <!-- <input type='hidden' name='modeG' value='' />
-        <input type='hidden' name='modeA' value='' /> -->
         <input type='hidden' name='Login_Mode' value='' />
         <input type='hidden' name='gid' value='' />
         <input type='hidden' name='gsite' value='' />
@@ -242,10 +216,6 @@
         <input name="userObject" id="userObject" type="hidden" value='<?=$_POST['userObject']?>' />
         <input name="authObject" id="authObject" type="hidden" value='<?=$_POST['authObject']?>' />
     </form>
-    <!-- <form name='form_menu' method='post' enctype="multipart/form-data">
-        <input type='hidden' name='mode' value=''>
-        <input type='hidden' name='board'>
-    </form> -->
     <ul id='nav'>
         <li <?php if( $cur=='A') echo "class='current'"; ?>>
             <a href="<?=KAPP_URL_?>" target='_blank' title='HOME'><img src='<?=KAPP_URL_T_?>/icon/logo60.png' style='border-style:;height:20px;'></a>
@@ -264,7 +234,7 @@
                         <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=3" target='_self'>33. Q&A</a></li>
                         <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=4" target='_self'>34. Free Board</a></li>
                 <?php
-	if( $H_ID && $H_LEV > 7) { // 관리자용. 메인 메뉴 설정.
+	if( $H_ID && $H_LEV > 7) {
 ?>
                 <li align='left'> <a href='<?=KAPP_URL_T_?>/adm/' target='_blank'
                         <?php echo " title='Admin Page. ' "; ?>> ### Admin ###</a></li>
@@ -334,11 +304,6 @@
                 </li>
                 <li align='left'><a href='<?=KAPP_URL_T_?>/accountbook/' target='_self'
                         <?php echo " title='Manage user accountbook.' "; ?>>B3.Account book</a></li>
-                <!-- <li align='left'>
-                    <div class="SSS">
-                        <a href="<?=KAPP_URL_T_?>/chatS" target='_blank' title='Chat consulting '>Chat consulting</a>
-                    </div>
-                </li> -->
                 <?php
 		} // if H_ID
 ?>
@@ -356,12 +321,6 @@
             </ul>
         </li>
     </ul>
-<!-- 
-    <FORM name="menu_table_list" Method='post'>
-        <input type='hidden' name='pg_name'>
-        <input type='hidden' name='pg_code'>
-        <input type='hidden' name='mode'>
-    </FORM> -->
 
 <?php
 if( !$H_ID && $H_ID !=='Guest' ) {
@@ -426,8 +385,7 @@ if( !$H_ID && $H_ID !=='Guest' ) {
 		} else $log_i = "Guest";
 ?>
 		<div title='Login-Google'>
-			<?=get_session("urllink_login_type")?>:
-			<?=$H_ID?>:<?=$member['mb_email']?>:<?=$member['mb_name']?>:<?=$member['mb_level']?>,
+			<?=get_session("urllink_login_type")?>:		<?=$H_ID?>:<?=$member['mb_email']?>:<?=$member['mb_name']?>:<?=$member['mb_level']?>,
 			Point:<?=number_format($member['mb_point'])?>
 			<br><?=date("Y-m-d H:i:s")?>, <?=$_SERVER['REMOTE_ADDR']?> - <?=$config['kapp_visit']?>
 		</div>
@@ -441,17 +399,14 @@ if( !$H_ID && $H_ID !=='Guest' ) {
     function init() {
         fsearchbox.sdata.focus();
     }
-
     function search_Tree(Search_Mode) {
         sdata = document.fsearchbox.sdata.value;
         if (!sdata) {
             alert(" Search data All!:");
         }
-        //document.fsearchbox.Search_Mode.value = "cratree_my_list_menu";
         document.fsearchbox.action = Search_Mode + "/menu/index.php";
         document.fsearchbox.submit();
     }
-
     function search_run(Search_Mode) {
         sdata = document.fsearchbox.sdata.value;
         if (!sdata) {
@@ -464,24 +419,14 @@ if( !$H_ID && $H_ID !=='Guest' ) {
             fsearchbox.sdata.focus();
             return false;
         }
-        //document.fsearchbox.Search_Mode.value = "";
         document.fsearchbox.action = Search_Mode + "/menu/ulink_list.php";
         document.fsearchbox.submit();
     }
-	/*
-    function run_func(url) {
-        document.form_menu.mode.value = 'run';
-        document.form_menu.action = url;
-        document.form_menu.submit();
-    }*/
-
     function logout_func() {
-        //document.loginO.Login_Mode.value = "logout";
         document.loginO.target = "_top";
         document.loginO.action = '<?=KAPP_URL_T_?>/logoutT.php';
         document.loginO.submit();
     }
-
     function My_Page() {
         gemail = document.form_view.email.value;
         document.form_view.target = '_top';

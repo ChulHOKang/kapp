@@ -30,10 +30,10 @@ if( $Login_Mode == 'A_login') {
         exit;
     } else {
 		$mb_id = $member['mb_id'];
-        connect_count('K-App login : appgeneratorsystem', $mb_email, 1, $referer);
+        connect_count('K-App login : KAPP', $mb_email, 1, $referer);
     }
     if( $member['mb_level'] == 5 && !isset($member['mb_certify'])) {
-        m_('승인 대기중인 아이디입니다.');
+        m_('This ID is pending approval.'); //승인 대기중인 아이디입니다.
         echo("<script>window.open('$returnURL', '_top')</script>");
         exit;
     } 
@@ -56,7 +56,8 @@ if( $Login_Mode == 'A_login') {
         $ckey = md5($member['mb_ip'].$member['mb_datetime']); 
        confirm("{$member['mb_email']} You must be authenticated by e-mail to log in.  Please click Cancel to change to another email address and verify. ", KAPP_URL_T_, './tkher_register_email.php?mb_id='.$member['mb_id'].'&ckey='.$ckey);
     } 
-    Create_Session('appgeneratorsystem', $member, $remote_addr, $user_agent);
+    Create_Session('KAPP', $member, $remote_addr, $user_agent);
+    //Create_Session('appgeneratorsystem', $member, $remote_addr, $user_agent);
 
 } else if( $Login_Mode == 'Google_Login_K') {
 
@@ -195,9 +196,9 @@ if( $Login_Mode == 'A_login') {
         connect_count('K-App login : Create Naver_account', $n_email, 1, $referer);
         Create_Session('Naver_Login_K', $member, $remote_addr, $user_agent);
 
-	} else { // 로그인
+	} else {
         if( $naver_email_check == 'Google' || $naver_email_check == 'Kakao') { // email duplicate
-            m_("이미 등록된 계정입니다.---Naver");
+            m_("This account is already registered.---Naver"); //이미 등록된 계정입니다.
         } else {
             Record_update_naver( $n_email, $n_name, $n_nickname, $n_profile_image, $n_hp);
             $member = get_urllink_memberE($n_email);
