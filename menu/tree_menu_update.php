@@ -19,46 +19,29 @@
 		exit;
 	}
 	$H_LEV=$member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-
 	if( isset($_POST['mode']) ) $mode	= $_POST['mode'];
 	else if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
 	else $mode ='';
-
 	if( isset($_POST['sys_pg_root']) ) $sys_pg_root= $_POST['sys_pg_root'];
 	else if( isset($_REQUEST['sys_pg_root']) )	$sys_pg_root= $_REQUEST['sys_pg_root'];
 	else $sys_pg_root= '';
-
 	if( isset($_POST['data']) ) $data= $_POST['data'];
 	else if( isset($_REQUEST['data']) )	$data= $_REQUEST['data'];
 	else $data= '';
 	if( isset($_POST['data1']) ) $data1= $_POST['data1'];
 	else if( isset($_REQUEST['data1']) )	$data1= $_REQUEST['data1'];
 	else $data1= '';
-
 	if( isset($_POST['mid']) ) $mid	= $_POST['mid'];
 	else if( isset($_REQUEST['mid']) ) $mid	= $_REQUEST['mid'];
 	else $mid='';
-	
 	if( isset($_POST['sys_pg']) ) $sys_pg= $_POST['sys_pg'];
 	else if( isset($_REQUEST['sys_pg']) )	$sys_pg= $_REQUEST['sys_pg'];
 	else $sys_pg= '';
-	//m_("mode: $mode, sys_pg: $sys_pg");
-	//mode: rowlevel, sys_pg: dao_1612585805
-	//mode: mroot, sys_pg: dao_1612585805
-
-	if( $mode == 'mroot' ){
-		/*$sys_pg		= $data;
-		$sys_pg_root= $data;
-		if( $data != $data1 ) {
-			$sys_pg		= $sys_pg_root;	
-			$sys_pg_root= $sys_pg_root;
-		}*/
-	} else {
+	if( $mode != 'mroot' ){
 		if( $sys_pg_root )  {
 			$sys_pg_root= $sys_pg_root;
 			$sys_pg		= $sys_pg_root;
 		} else m_(" ERROR : sys_pg_root:$sys_pg_root, data:$data, data1:$data1, mode:$mode ");
-
 	}
 	if( isset($_POST['first_mode']) ) $first_mode	= $_POST['first_mode'];
 	else $first_mode='';;
@@ -66,14 +49,6 @@
 	else $make_type='';;
 	if( isset($_POST['m_type']) ) $m_type	= $_POST['m_type'];
 	else $m_type='';;
-
-	//m_("mode:$mode, sys_pg: $sys_pg, sys_pg_root:$sys_pg_root, data:$data, data1:$data1");
-	//mode:rowlevel, sys_pg: dao_1612585805, sys_pg_root:dao_1612585805, data:dao_1612585805_r, data1:dao_1612585805_r03
-	//mode: rowlevel, sys_pg: dao_1612585805
-	//mode:mroot, sys_pg: dao_1612585805, sys_pg_root:dao_1612585805, data:dao_1612585805_r03_01, data1:dao_1612585805_r03_01_03
-	//mode:mroot, sys_pg: dao_1612585805_r03_01, sys_pg_root:dao_1612585805_r03_01, data:dao_1612585805_r03_01, data1:dao_1612585805_r03_01_03
-	//mode:mroot, sys_pg: dao_1612585805_r03_01, sys_pg_root:dao_1612585805_r03_01, data:dao_1612585805_r03_01, data1:dao_1612585805_r03_01_03
-
 	if( $sys_pg_root =='link')
 		$sql = "select * from {$tkher['sys_menu_bom_table']} where sys_pg ='$sys_pg' and sys_submenu = '$sys_pg' and sys_level='mroot' order by sys_disno";
 	else
@@ -87,10 +62,8 @@
 	$my_page_run=get_session("my_page_run");	
 	set_session("my_page_run", "");
 	if( $H_ID != $mid ) {
-		echo "<br>sql: " .$sql;
-		//sql: select * from kapp_sys_menu_bom where sys_pg ='dao_1612585805_r03_01' and sys_submenu = 'dao_1612585805_r03_01' and sys_level='mroot' order by sys_disno
-		//sql: select * from kapp_sys_menu_bom where sys_pg ='dao_1612585805_r03_01' and sys_submenu = 'dao_1612585805_r03_01' and sys_level='mroot' order by sys_disno
-		m_("tree_run_update You do not have permission to work. mid:$mid, id:$H_ID");// \\n 작업권한이 없습니다. 
+		echo "<br>mid: " .$mid;
+		m_("tree_run_update You do not have permission to work. mid:$mid, id:$H_ID");
 		exit;
 	}
 ?>
@@ -146,27 +119,20 @@
 	if( isset($_POST['m_level']) ) $m_level	= $_POST['m_level'];
 	else $m_level='';
 	$first = $sys_pg_root."_r";
-
-	if ( $mode != 'rowlevel' ) {
+	if( $mode != 'rowlevel' ) {
 		$sql= " select * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg_root' and (sys_level='mroot' or sys_level='sroot')  order by sys_disno";
-	} else if ( $mode == 'mroot' ) {
+	} else if( $mode == 'mroot' ) {
 		$sql= " select * from {$tkher['sys_menu_bom_table']} where sys_pg='$sys_pg_root' and (sys_level='mroot' or sys_level='sroot')  order by sys_disno";
-	} else if ( $first_mode == 'delete' ) {
+	} else if( $first_mode == 'delete' ) {
 	  m_("delete - sys_pg_root:$sys_pg_root");
-	} else if ( $first_mode == 'root' ) {
+	} else if( $first_mode == 'root' ) {
 		$m_level = "up_root";
 		$sql= " select * from {$tkher['sys_menu_bom_table']} where ( sys_pg = '$sys_pg_root' and (sys_menu = '$first' or (sys_menu = '$data' and sys_menutit='mroot'))) order by sys_disno, sys_pg, sys_menu, sys_submenu ";
 	} else {
 		$sql= " select * from {$tkher['sys_menu_bom_table']} where ( (sys_pg = '$sys_pg_root') and (sys_menu = '$data1')) or ( (sys_pg = '$sys_pg_root') and (sys_submenu = '$data1') ) order by sys_pg, sys_menu, sys_submenu ";
-		//$sql= " select * from {$tkher['sys_menu_bom_table']} where ( (sys_pg = '$sys_pg_root') and (sys_menu = '$data1')) or ( (sys_pg = '$sys_pg_root') and (sys_submenu = '$data1') ) order by sys_disno, sys_pg, sys_menu, sys_submenu ";
 	}
-//m_("mid: $mid, mode: $mode, first_mode: $first_mode");
-//mid: dao, mode: rowlevel, first_mode: 
-//mid: dao, mode: mroot, first_mode: 
-//mode: mroot, first_mode: 
 	$result = sql_query( $sql);
 ?>
-<!-- <body style="background-color:black; margin-top:0; text-align: center;">  -->
 <body bgcolor='black'> <font color='yellow'>
 <form method='post' name='sys_bom' enctype="multipart/form-data">
 	<input type='hidden' name="book_num"		value="" >
@@ -177,7 +143,6 @@
 	<input type='hidden' name="sys_pg"		value="<?=$sys_pg_root?>" >
 	<input type='hidden' name="sys_menu"		value='' >
 	<input type='hidden' name="sys_submenu"	value='' >
-	<!-- <input type='hidden' name="xsys_pg"		value="<?=$sys_pg_root?>" > -->
 	<input type='hidden' name="sys_pg_root"	value="<?=$sys_pg_root?>" > 
 	<input type='hidden' name="data"			value="<?=$data?>" >
 	<input type='hidden' name="data1"			value=<?=$data1?> >
@@ -187,7 +152,6 @@
 	<input type='hidden' name="m_level"		value=<?=$m_level?> >
 	<input type='hidden' name="my_page_run"	value=<?=$my_page_run?> >
 
-<!-- <table border=1 style="background-color:black; margin-top:0; ">  -->
 <table border='1' cellspacing='0' cellpadding='0' style='background-color:black;color:white;' >
 <center><font color=green><h3>Change Link Tree menu <br> Click on the left menu for individual changes</h3></font>
 	<tr style="background-color:black; color:cyan;">
@@ -218,7 +182,6 @@
 		$xmemo		= $rs['sys_memo'];
 		if( $j == 0 ) {
 			$main_level = $rs['sys_level'];
-			//m_("--- $j, main_level: $main_level");
 		}
 ?>
 	<tr valign=middle > 
@@ -231,7 +194,7 @@
 						<input type='hidden' name="book_num_<?=$j?>" value='<?=$rs['book_num']?>' >
 						<input type='hidden' name="type_<?=$j?>" value='<?=$rs['tit_gubun']?>' >
 <?php
-	if ( $mode == 'mroot') {	  
+	if( $mode == 'mroot') {	  
 ?>
 	  <td><input type='text' name="sys_disno_<?=$j?>" size='3' value='<?=$xdisno?>' style="background-color:black;ime-mode:active;height:30;color:yellow" <?php if($j==0) echo 'readonly'; ?> > </td>
 	  <td align='left' size='10'>
@@ -241,7 +204,7 @@
       <td> <input type='text' name="sys_link_<?=$j?>" size='60' maxlength='120' value='<?=$xlink?>' style="background-color:<?php if($j==0) echo 'red'; else echo 'black';?>;ime-mode:active;height:30;color:yellow" <?php if($j==0) echo 'readonly'; ?>> </td>
 <?php
     } else {	  
-	  if ( $j == 0 && $data==$data1) {
+	  if( $j == 0 && $data==$data1) {
 ?>
 	       <td align=center> <input type='text' name="sys_disno_<?=$j?>" size='3' value='<?=$xdisno?>' readonly style="background-color:red;ime-mode:active;height:30;color:yellow;"> </td>
 		  <td align='left' size='10'>
@@ -312,11 +275,7 @@
 		 <input type='button' name='root_dis' onclick="javascript:root_up_date(this.form);" value="Main List" title='Print the main list.' style="border-style:;background-color:blue;color:yellow;height:25;">
 <?php
 	}
-	//$root_chk = $root_chk;
-	//$record_cnt = $recordcount;
 ?>
-   	<!-- <input type="hidden" name="root_chk"	value="<?=$root_chk?>">
-   	<input type="hidden" name="record_cnt"  value="<?=$record_cnt?>"> -->
 </div>
 </form>
 </body></html>

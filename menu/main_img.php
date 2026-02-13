@@ -14,86 +14,75 @@
 
 <?php
 		/*
-		*   main_img.php : 이미지 슬라이드. table:tkher_main_img
-		*   tkher_my_control : 슬라이드 시간 설정. /data/main_scroll_image/
+		*   main_img.php : table:tkher_main_img
+		*   tkher_my_control : /data/main_scroll_image/
 		    main_img_list.php
 		*/
-		$ss_mb_id = get_session("ss_mb_id");	//"ss_mb_id";
+		$ss_mb_id = get_session("ss_mb_id");
 		$H_ID = get_session("ss_mb_id");  
-		$H_LEV = $member['mb_level'];			//get_session("ss_mb_level");   //"ss_mb_id";
-
+		$H_LEV = $member['mb_level'];
 		if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 		else $mode = '';
 		if( isset($_POST['no']) ) $no = $_POST['no'];
 		else $no = '';
 		if( isset($_POST['num']) ) $num = $_POST['num'];
 		else $num = '';
-
 if( $mode == "File_Change") {
 	if( $H_LEV < 8 ) {
-		m_(" You do not have permission.");	// \\n 권한이 없습니다. 
+		m_(" You do not have permission.");
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
-		if( isset($_POST['i']) ) $i = $_POST[i];
-		else $i = 0;
-		$fnm = "file_" . $i;
-		$filenm = $_FILES[$fnm]['name'];
-
-        $f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";	//---------------------------------- 보완 OK.
-		$in_date = time();
-
-		if ( $_FILES["file[$i]"]["error"] > 0){ 
-			echo "Return Code: " . $_FILES["$fnm"]["error"] . "<br>"; 
+	if( isset($_POST['i']) ) $i = $_POST[i];
+	else $i = 0;
+	$fnm = "file_" . $i;
+	$filenm = $_FILES[$fnm]['name'];
+	$f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";
+	$in_date = time();
+	if ( $_FILES["file[$i]"]["error"] > 0){ 
+		echo "Return Code: " . $_FILES["$fnm"]["error"] . "<br>"; 
+	} else { 
+		if ( file_exists( $f_path . $filenm ) ) { 
+			echo $_FILES["file"]["name"] . " I have the same file. Covered. ";
+			move_uploaded_file($_FILES["$fnm"]["tmp_name"], $f_path . $filenm );
 		} else { 
-			if ( file_exists( $f_path . $filenm ) ) 
-			{ 
-				echo $_FILES["file"]["name"] . " I have the same file. Covered. ";	//동일한 파일이 있습니다. 덮었습니다.
-				move_uploaded_file($_FILES["$fnm"]["tmp_name"], $f_path . $filenm );
-			} else { 
-				move_uploaded_file($_FILES["$fnm"]["tmp_name"], $f_path . $filenm );
-			}
+			move_uploaded_file($_FILES["$fnm"]["tmp_name"], $f_path . $filenm );
 		}
-
-		if( $filenm ) {
-
-			$file_ext  = explode(".", $filenm );
-			$file_nm   = strtolower( $file_ext[0]);
-			$file_type = strtolower( $file_ext[1]);
-			$SQL = "update {$tkher['tkher_main_img_table']} set jpg_file='$filenm' where userid='tkher' and no = $no";
-			if ( ($result = sql_query( $SQL ) )==false )
-			{
-			  printf("Invalid query: Whole query: %s\n", $SQL);
-				m_(" Update error occurred.");	// \\n Update 오류가 발생하였습니다. 
-				exit();
-			} else {
-				m_(" The image file has been changed.");	// \\n 이미지화일를 변경 하였습니다. 
-			}
-		}
-}
-
-if( $mode=="Time_Change" ){
-	if( $H_LEV < 8 ) {
-		m_(" You do not have permission.");	// \\n 권한이 없습니다. 
-			$url = "main_img.php";
-			echo "<script>window.open('./', '_self', '');</script>";
 	}
-		
-		$slide_time=$_POST['slide_time'];
-		$SQL = "update {$tkher['tkher_my_control_table']} set slide_time= '$slide_time' where userid='tkher' ";
-		if ( ($result = sql_query( $SQL ) )==false )
-		{
-		  printf("Invalid query: %s \n", $SQL);
-			m_("An error has occurred.");	// \\n Update 오류가 발생하였습니다. 
+	if( $filenm ) {
+
+		$file_ext  = explode(".", $filenm );
+		$file_nm   = strtolower( $file_ext[0]);
+		$file_type = strtolower( $file_ext[1]);
+		$SQL = "update {$tkher['tkher_main_img_table']} set jpg_file='$filenm' where userid='tkher' and no = $no";
+		if( ($result = sql_query( $SQL ) )==false ){
+			m_(" Update error occurred.");
 			exit();
 		} else {
-			m_(" Time changed.");	// \\n Time 변경 하였습니다. 
+			m_(" The image file has been changed.");
 		}
+	}
+}
+if( $mode=="Time_Change" ){
+	if( $H_LEV < 8 ) {
+		m_(" You do not have permission.");
+		$url = "main_img.php";
+		echo "<script>window.open('./', '_self', '');</script>";
+	}
+	$slide_time=$_POST['slide_time'];
+	$SQL = "update {$tkher['tkher_my_control_table']} set slide_time= '$slide_time' where userid='tkher' ";
+	if( ($result = sql_query( $SQL ) )==false ){
+		echo "Invalid query: " . $SQL;
+		m_("An error has occurred.");
+		exit;
+	} else {
+		m_(" Time changed.");
+	}
 }
 if($mode == "Update_func") {
 
 	if( $H_LEV < 8 ) {
-		m_(" You do not have permission.");	// \\n 권한이 없습니다. 
+		m_(" You do not have permission.");
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
@@ -103,77 +92,71 @@ if($mode == "Update_func") {
 		$view_no  = $_POST['view_noA'];
 
 		$SQL = "update {$tkher['tkher_main_img_table']} set jpg_name = '$jpg_name', jpg_memo = '$jpg_memo', view_no = '$view_no' where no = $no";
-		if ( ($result = sql_query( $SQL ) )==false )
-		{
+		if ( ($result = sql_query( $SQL ) )==false ){
 		  printf("Invalid query: %s \n", $SQL);
-			m_("Update error occurred.");	// \\n Update 오류가 발생하였습니다. 
+			m_("Update error occurred.");
 			//exit();
 		} else {
-			m_(" Title, Message, display order changed.");	// \\n Title , Message, display 순서를 변경 하였습니다. 
+			m_(" Title, Message, display order changed.");
 		}
 }
 else if($mode == "Delete_Image") {
 
 	if( $H_LEV < 8 ) {
-		m_(" You do not have permission.");	// \\n 권한이 없습니다. 
+		m_(" You do not have permission.");
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
-		$no = $_POST['no'];
-		$SQL = "delete from {$tkher['tkher_main_img_table']} where no = $no ";
-		if ( ($result = sql_query( $SQL ) )==false ){
-			printf("Invalid query: %s \n", $SQL); 
-			//Invalid query: delete from tkher_main_img where no = 100 - 2_78281.jpg, App Generator<br>Program Generator<br>Source Code DownLoad
-			m_("A delete error occurred.");	// \\n delete 오류가 발생하였습니다. 
-			exit();
-		} else {
-			m_(" Deleted.");	// \\n 삭제 하였습니다. 
-		}
+	$no = $_REQUEST[no];
+	$SQL = "delete from tkher_main_img where no = $no ";
+	if ( ($result = sql_query( $SQL ) )==false ){
+	  printf("Invalid query: %s \n", $SQL);
+		m_("A delete error occurred.");
+		exit();
+	} else {
+		m_(" Deleted.");
+	}
 }
 else if($mode == "Insert_func") {
 
 	if( $H_LEV < 8 ) {
-		m_(" You do not have permission.");	// \\n 권한이 없습니다. 
+		m_(" You do not have permission.");
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
-	}
+	} else {
         $jpg_name = $_POST['jpg_name'];
         $jpg_memo = $_POST['jpg_memo'];
 		$cd = 'main';		//$jpg[0];	
 		$nm = 'main';		//$jpg[1];
-        $f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";	//---------------------------------- 보완 OK.
+        $f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";
 		$in_date = time();
-
 		$file_ = $_FILES["file"]["name"];
 		if ( $_FILES["file"]["error"] > 0){ 
 			echo "Return Code: " . $_FILES["file"]["error"] . "<br>"; 
 		} else { 
-				if ( file_exists( $f_path . $_FILES["file"]["name"])) 
-				{ 
-						echo $_FILES["file"]["name"] . " I have the same file.";	// 동일한 파일을 덭었습니다. 
-						move_uploaded_file($_FILES["file"]["tmp_name"], $f_path . $_FILES["file"]["name"] );
-						$SQL = "INSERT INTO {$tkher['tkher_main_img_table']} SET jpg_name='$jpg_name', jpg_file='$file_', jpg_memo='$jpg_memo', group_code='$cd', group_name='$nm', view_no='99', userid='tkher'  ";
-						if ( ($result = sql_query( $SQL ) )==false )
-						{
-							printf("Invalid query: %s \n", $SQL);
-							m_("Registration error occurred.");	// \\n 등록 오류가 발생하였습니다. 
-							//exit();
-						} else {
-							m_(" Registered.");	// \\n 등록 하였습니다. 
-						}
-				} else {														// 동일한 파일이 없다면
-						move_uploaded_file($_FILES["file"]["tmp_name"], $f_path . $_FILES["file"]["name"] );
-						$SQL = "INSERT INTO {$tkher['tkher_main_img_table']} SET jpg_name='$jpg_name', jpg_file='$file_', jpg_memo='$jpg_memo', group_code='$cd', group_name='$nm', view_no='99', userid='tkher'  ";
-						if ( ($result = sql_query( $SQL ) )==false )
-						{
-						  printf("Invalid query: %s \n", $SQL);
-							m_("Registration error occurred.");	// \\n 등록 오류가 발생하였습니다. 
-							//exit();
-						} else {
-							m_(" Registered.");	// \\n 등록 하였습니다. 
-						}
+			if ( file_exists( $f_path . $_FILES["file"]["name"])) { 
+				echo $_FILES["file"]["name"] . " I have the same file.";
+				move_uploaded_file($_FILES["file"]["tmp_name"], $f_path . $_FILES["file"]["name"] );
+				$SQL = "INSERT INTO {$tkher['tkher_main_img_table']} SET jpg_name='$jpg_name', jpg_file='$file_', jpg_memo='$jpg_memo', group_code='$cd', group_name='$nm', view_no='99', userid='tkher'  ";
+				if ( ($result = sql_query( $SQL ) )==false )
+				{
+					printf("Invalid query: %s \n", $SQL);
+					m_("Registration error occurred.");	
+					//exit();
+				} else {
+					m_(" Registered.");
 				}
+			} else {
+				move_uploaded_file($_FILES["file"]["tmp_name"], $f_path . $_FILES["file"]["name"] );
+				$SQL = "INSERT INTO {$tkher['tkher_main_img_table']} SET jpg_name='$jpg_name', jpg_file='$file_', jpg_memo='$jpg_memo', group_code='$cd', group_name='$nm', view_no='99', userid='tkher'  ";
+				if ( ($result = sql_query( $SQL ) )==false ){
+					m_("Registration error occurred.");
+				} else {
+					m_(" Registered.");
+				}
+			}
 		}
+	} //8
 
 }
 
@@ -191,12 +174,12 @@ else if($mode == "Insert_func") {
 
 	function check(x){
 		if(x.jpg_name.value==''){
-			alert('Please enter a title.');	//타이틀을 입력 하세요.
+			alert('Please enter a title.');
 			x.jpg_name.focus();
 			return false;
 		}
 		else if(x.temp_name.value==''){
-			alert('Please enter a file.');	//화일을 입력 하세요.
+			alert('Please enter a file.');
 			x.temp_name.focus();
 			return false;
 		}
@@ -211,7 +194,7 @@ else if($mode == "Insert_func") {
 			alert('not eligible ' + lev);
 			return false;
 		}
-		yn = confirm('Are you sure you want to delete the image?');	// \n 이미지을 삭제 하시겠습니까?
+		yn = confirm('Are you sure you want to delete the image?');
 		if ( yn == true ) {
 			document.form2.mode.value='Delete_Image';
 			document.form2.no.value	= no;
@@ -270,7 +253,7 @@ else if($mode == "Insert_func") {
 	$tot = sql_num_rows( $result );
 	if( !$tot ){
 		$slide_time=6000;
-		$SQL = "INSERT {$tkher['tkher_my_control_table']} SET userid='tkher', slide_time=$slide_time ";
+		$SQL = "INSERT {$tkher['tkher_my_control_table']} SET userid='tkher', slide_time='$slide_time' ";
 		sql_query( $SQL );
 	} else {
 		$row = sql_fetch_array( $result );
@@ -284,7 +267,7 @@ else if($mode == "Insert_func") {
 		include_once( KAPP_PATH_T_ . "/menu_run.php"); 
 		?>
 <h2>Main Slide Image Management</h2>
-<!-- --------------------------------------------------------------------- -->
+
 <div id="mypanel" class="ddpanel">
 	<div id="mypanelcontent" class="ddpanelcontent">
 		<table border=0 bgcolor='#666666' width=100%>
@@ -362,7 +345,7 @@ else if($mode == "Insert_func") {
 					<textarea id='jpg_memo' name='jpg_memo[$i]' style='border-style:;background-color:cyan;color:black;height:60;width:350;' >".$row['jpg_memo']."</textarea>
 						<br><label for='file'>Filename:</label>
 					<input type='file' name='file_$i' id='file'><br>
-					<input type='button' value='File_Change' onclick=\"javascript:upload_func($no, '$i')\" title='Change the file.'>
+					<input type='button' value='File_Change' onclick=\"javascript:upload_func('$no', '$i')\" title='Change the file.'>
 				</td>
 				";
 
@@ -370,15 +353,14 @@ else if($mode == "Insert_func") {
 				<td align='center'><input type='text' name='view_no[$i]' value='".$row['view_no']."' size=2 title='Output Order.'>&nbsp;
 				</td>
 				<td align='center'>
-					<input type=button value='Update' onclick=\"javascript:update_func($no, '$i');\" style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Change the title.'><br><br>
-					<input type=button value='Delete_Image' onclick=\"javascript:del_check($no, '$i', '$H_LEV' )\" style='height:22px;background-color:red;color:white;border:1 solid black' title='Delete the image.'>
+					<input type=button value='Update' onclick=\"javascript:update_func('$no', '$i');\" style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Change the title.'><br><br>
+					<input type=button value='Delete_Image' onclick=\"javascript:del_check('$no', '$i', '$H_LEV' )\" style='height:22px;background-color:red;color:white;border:1 solid black' title='Delete the image.'>
 				</td>
 			</tr>
 			";
 
 			$i++;
 		} //while
-
 	}
 ?>
 </form>

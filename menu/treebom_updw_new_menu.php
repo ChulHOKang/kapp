@@ -39,9 +39,10 @@
 		exit;
 	}
 	$sys_subtit_ = "sys_subtit_0";
-	$sys_subtit	= $_REQUEST[$sys_subtit_];
-	if( isset($sys_subtit) ) {
-  ?>
+	if( isset($_REQUEST[$sys_subtit_]) && $_REQUEST[$sys_subtit_]!='' ) $sys_subtit	= $_REQUEST[$sys_subtit_];
+	else $sys_subtit= '';
+if( $sys_subtit!='' ) {
+?>
 <html>
 <form name='kapp_sys_bom' method='post' enctype="multipart/form-data">
 		<table border=1 >
@@ -74,7 +75,7 @@
 				$sys_memo	= $_POST[$sys_memo];
 				$typex	    = $_POST[$typex];
 				$sys_subtit_old	= $_POST[$sys_subtit_old];
-                if ( $sys_link == "" ) {
+                if( $sys_link == "" ) {
                      $sys_link = "http://";
                 }
 				echo "<tr><td>".$sys_subtit."</td>";
@@ -110,28 +111,15 @@
 	<input type='hidden' name="board_num"	value='<?=$board_num?>' >
 	<input type='hidden' name="sys_link"	value='<?=$sys_link?>' >
 <?php
-			$sys_userid_0 = "sys_userid_0";
-			$mid	= $_POST[$sys_userid_0];
- 			$rungo = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$mid.'&sys_subtitS='.$sys_subtit . "&num=" . $max_num . "&sys_jong=" . $sys_jong . "&board_num=" . $board_num . "&sys_link=" . $sys_link;
-			//echo "<script>return_in_sert(); </script>";  
-			echo "<script>window.open('$rungo', '_top', ''); </script>";
+		$sys_userid_0 = "sys_userid_0";
+		$mid	= $_POST[$sys_userid_0];
+		$rungo = KAPP_URL_T_ . '/menu/tree_run.php?sys_pg=' . $sys_pg.'&open_mode=on&mid='.$mid.'&sys_subtitS='.$sys_subtit . "&num=" . $max_num . "&sys_jong=" . $sys_jong . "&board_num=" . $board_num . "&sys_link=" . $sys_link;
+		echo "<script>window.open('$rungo', '_top', ''); </script>";
 	} else {
 ?> 
 		<p><center> update error. </center> 
 			<input type='button' value='return' onclick='history.back()'>
 <?php
     } // if( isset($sys_subtit) )
-//https://www.bizinfo.go.kr/sii/siia/selectSIIA200View.do?hashCode=&rowsSel=&rows=&cpage=&cat=&schPblancDiv=&schJrsdCodeTy=&schWntyAt=&schAreaDetailCodes=&schEndAt=&orderGb=&sort=&preKeywords=&condition=&condition1=&keyword=
 ?> 
-
-<script language=javascript> 
-<!-- 
-	function return_in_sert(){ // Save after return
-		document.kapp_sys_bom.target ='_blank';  
-		document.kapp_sys_bom.action="tree_run.php"; 
-		document.kapp_sys_bom.submit();
-		//location.replace(location.href);
-	} 
--->
-</script>
 </html>

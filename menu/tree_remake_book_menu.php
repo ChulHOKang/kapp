@@ -3,38 +3,28 @@
 	/*
 	- tree_remake_book_menu.php : ReDesign Job,  Tree Note Remake Source
 	- run : tree_remakew_book_menu.php
-			트리메뉴 재생성 시작 페이지:tree_remakew_book call
-	- mid : 
 	*/
 	$H_ID	= get_session("ss_mb_id");
-	if( $H_ID && $H_ID !=='' ){
-		$H_LEV=$member['mb_level']; 
-	} else {
-		exit;
-	}
 	$ip = $_SERVER['REMOTE_ADDR'];
-
-	if (!$H_ID) {
-		my_msg(" Please login. ");
-		$rungo = "./";
+	if( $H_ID=='' ) {
+		m_(" Please login. ");
+		$rungo = "../";
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
-	}
-
-	$make_type = $_POST['make_type'];
-	$target_   = $_REQUEST['target_'];
-
-	//my_msg("tree_remake_book_menu make_type:$make_type, " );
-	//Fetch menuskin NULL ERROR : , sys_pg:link
+	} else $H_LEV=$member['mb_level']; 
+	if( isset($_POST['make_type']) && $_POST['make_type']!='' ) $make_type = $_POST['make_type'];
+	else $make_type = '';
+	if( isset($_REQUEST['target_']) ) $target_= $_REQUEST['target_'];
+	else $target_= '';
 ?>
 <html> 
-<head> 
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Beginner PG-Upgrade AppGeneratorSystem. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="./logo/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<head>
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 
@@ -48,12 +38,9 @@ a:hover { color:red}
 <!--
 	function sendform( type ){ 
 		var f = document.sys_bom;
-		//alert( "tree_remake_book_menu - make_type: " + f.make_type.value); //tree_remake_book_menu - make_type: booktreeupdateM2
-
-		if (f.sys_pg.value.length==0){ alert("Menu Code Insert Please! "); f.sys_pg.focus(); }
-		else if (f.sys_subtit.value.length==0){ alert(" Please enter a title "); f.sys_subtit.focus(); }
-		else
-		{
+		if( f.sys_pg.value.length==0){ alert("Menu Code Insert Please! "); f.sys_pg.focus(); }
+		else if( f.sys_subtit.value.length==0){ alert(" Please enter a title "); f.sys_subtit.focus(); }
+		else {
 			document.sys_bom.action="tree_remakew_book_menu.php";   
 			document.sys_bom.submit();
 		}
@@ -64,40 +51,31 @@ a:hover { color:red}
 	function AXcolor() {
 		window.open("./fontcolor.html","","alwaysLowered=no,resizable=no,width=260,height=440,left=50,top=50,dependent=yes,z-lock=yes");
 	} 
-
 	function img() {
 		window.open("./img.php","","alwaysLowered=no,resizable=no,width=500,height=500,left=50,top=50,dependent=yes,z-lock=no");
 	}
 	function img_add() {
 		window.open("./img2.php","","alwaysLowered=no,resizable=yes,width=800,height=400,left=50,top=50,dependent=yes,z-lock=no");
 	}
-	function Xcolor() {
-	}
-	function fontf() {
-	}
-	function fonts() {
+	function photoControl(fz){   
+		var obj = document.getElementsByName("liTitle");
+		for( i = 0; i < obj.length; i++ ){
+			obj[i].style.color = document.sys_bom.fontcolor.value;
+			obj[i].style.fontSize = fz; 
+			if(i==0) obj[i].innerText = "Preview ";
+			if(i==1) obj[i].innerText = "Preview \n View \n Sample";
+		}
 	}
 -->
 </script>
 
-<script>
- function photoControl(fz){   
-  var obj = document.getElementsByName("liTitle");
-  for( i = 0; i < obj.length; i++ ){
-	obj[i].style.color = document.sys_bom.fontcolor.value;
-	obj[i].style.fontSize = fz; 
-	if(i==0) obj[i].innerText = "Preview ";
-	if(i==1) obj[i].innerText = "Preview \n View \n Sample";
-  }//for
- }
-</script>
-
-</head>
 <?php	
-	//$sys_pg = $_REQUEST['sys_pg'];
-	//if( !$sys_pg ) $sys_pg = $_POST['pg'];
-	$sys_pg = $_POST['sys_pg'];
-	if( !$sys_pg ) m_("ERROR - tree_remake_book_menu sys_pg:" . $sys_pg);
+	if( isset($_POST['sys_pg']) && $_POST['sys_pg']!='' ) $sys_pg = $_POST['sys_pg'];
+	else $sys_pg = '';
+	if( !$sys_pg ) {
+		m_("ERROR - tree_remake_book_menu sys_pg:" . $sys_pg);
+		exit;
+	}
 	if( isset($_POST['book_num']) ) $book_num = $_POST['book_num'];
 	else if(isset($_REQUEST['book_num']) ) $book_num = $_REQUEST['book_num'];
 	else $book_num = '';
@@ -106,20 +84,17 @@ a:hover { color:red}
 	$rs = sql_fetch_array($result);
 	$mid = $rs['sys_userid'];
 	if( !$rs ) {
-		if( $H_ID !== $mid and $H_LEV < 8 ) {
-			my_msg(" You do not have permission ");
-			//$rungo = $sys_pg . "_r1.htm";
+		if( $H_ID != $mid and $H_LEV < 8 ) {
+			m_(" You do not have permission ");	//$rungo = $sys_pg . "_r1.htm";
 			echo "<script>history.back(); histroy.go(-1); </script>";
 			exit;
 		}
 	}
-	$first_linkurl = 'contents_view_menuD.php?num=' . $rs['book_num'];//667
+	$first_linkurl = 'contents_view_menuD.php?num=' . $rs['book_num'];
 	$sql2 = "select * from {$tkher['menuskin_table']} where sys_pg = '".$sys_pg."' order by seqno  desc ";
 	$result2 = sql_query($sql2);	
 	$rs2 = sql_fetch_array($result2); 
 	if(!$rs2)	m_(" Fetch menuskin NULL ERROR : $rs, sys_pg:".$sys_pg);
-	//Fetch menuskin NULL ERROR : , sys_pg:link
-	// Fetch menuskin NULL ERROR : Array, sys_pg:dao1697839181
 ?>
 
 <BODY bgproperties=FIXED bgcolor="#000000" text="#ffffff" leftmargin=0 oncontextmenu="return false" ondragstart="return false" onselectstart="return false" onload="sys_bom.sys_subtit.focus()">
@@ -271,9 +246,9 @@ else $t_lev= 'Open';
 						<img name="img2" align='middle' src="<?=KAPP_URL_T_?>/icon/<?php echo $rs2['imgtype2']?>">
 						<img name="img3" align='middle' src="<?=KAPP_URL_T_?>/icon/<?php echo $rs2['imgtype3']?>">
 <?php
-	if ( $H_ID == 'admin' || $H_LEV > 7) { 
+	if( $H_LEV > 7) { 
 ?>
-						<input type="button" value="추가" onclick="javascript:img_add();" style="border-style:groove;">
+		<!-- <input type="button" value="추가" onclick="javascript:img_add();" style="border-style:groove;"> -->
 <?php
 	}	
 ?>
