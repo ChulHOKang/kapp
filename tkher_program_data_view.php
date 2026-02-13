@@ -15,6 +15,9 @@
 <meta name="robots" content="ALL">
 </head>
 <?php
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_POST['page']) )  $page = $_POST['page'];
+	else $page='';
 	if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
 	else if( isset($_POST['pg_code']) )  $pg_code = $_POST['pg_code'];
 	else $pg_code='';

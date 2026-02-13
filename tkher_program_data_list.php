@@ -190,6 +190,7 @@ $(function () {
 		document.view_form.seqno.value=seqno;
 		document.view_form.data_mid.value=data_mid;
 		document.view_form.action='tkher_program_data_view.php'; 
+		document.view_form.target="_blank";
 		document.view_form.submit();
 	}
     function table_record_view(enm,hnm)
