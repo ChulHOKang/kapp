@@ -18,7 +18,7 @@
 	$up_day = date("Y-m-d H:i:s");
 	$pg_		= 'kapp_ulink_list.php';
 	if( isset($_POST['target_']) ) $target_	= $_POST['target_'];
-	else $target_ = 'iframe_url';	//table_main
+	else $target_ = 'iframe_url';
 	$type_ = 'U';
 	$title_='';
 	$secret_key = "";
@@ -38,10 +38,8 @@
 
 <style>
 table { border-collapse: collapse; }
-/*th { background: #cdefff; height: 32px; } */
 th { background: #666fff; color: white; height: 32px; }
 th, td { border: 1px solid silver; padding:5px; }
-
 	.container {
 		background-color: skyblue;
 		display :flex;									/* flex, inline-flex */
@@ -66,7 +64,7 @@ $(function () {
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
+			//alert(e.target.innerText + ' one click');
 			switch(e.target.innerText){
 				case 'Project' : title_func('job_group'); break;
 				case 'User'    : title_func('user_id'); break;
@@ -77,13 +75,13 @@ $(function () {
 				case 'date'    : title_func('up_day'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
+		}, 250); // 250ms after
 	  
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer); // Remove last click timer 마지막 클릭 타이머를 제거
+		//alert('Double clicked!');
 		switch(e.target.innerText){
 			case 'Project' : title_wfunc('job_group'); break;
 			case 'User'    : title_wfunc('user_id'); break;
@@ -124,9 +122,9 @@ $(function () {
 	  });
 });
 </script>
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
+<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script>
+<script type="text/javascript" src="../include/js/common.js"></script> -->
 
 <link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
@@ -143,13 +141,13 @@ $(function () {
 	if( isset($_REQUEST["title_nm"]) ) $title_nm	= $_REQUEST["title_nm"];
 	else $title_nm	= "";
 
-	if( isset($_POST["project_nmS"]) && $_POST["project_nmS"] != '' ) { // none routin - change_g_name_func() 에서 처리
+	if( isset($_POST["project_nmS"]) && $_POST["project_nmS"] != '' ) { 
 		$project_nmS	= $_POST["project_nmS"];
 		$aa = explode(':', $_POST["project_nmS"]); 
 		$g_name = $aa[0];
 		$g_num = $aa[1];
 		$project_code = $g_num;
-		$g_name_code = $g_num; // g_name_code - ulink_ajax.php use
+		$g_name_code = $g_num; // ulink_ajax.php use
 		if( isset($aa[2])) $gg_user = $aa[2];
 		else $gg_user = $H_ID;
 		if( isset($aa[3])) $g_no = $aa[3];
@@ -197,32 +195,32 @@ $(function () {
 		$seq_no = $_REQUEST['seq_no'];	
 		$result	= 		$result = sql_query( "select * from {$tkher['job_link_table']} where seqno=$seq_no" );
 		$rs		= sql_fetch_array($result);
-		if( $rs['job_name'] =='Note' ) { // add 2025-03-30
+		if( $rs['job_name'] =='Note' ) {
 			$sql= " update {$tkher['job_link_table']} set view_cnt=view_cnt+1 where seqno = $seq_no ";
 			sql_query($sql);
 			$title_	= $rs['user_name'];
 			$link_	= $rs['job_addr'];
-			$g_name	= $rs['job_name'];	// =job_group
+			$g_name	= $rs['job_name'];
 			$lev	= $rs['job_level'];
 			$jong	= $rs['jong'];
 			$memo	= $rs['memo'];
 		}
 	}
-	else if($mode == 'insert_url_func_mode') { // 'Save' 버턴 클릭시 - 2025-05-01 no use
+	else if($mode == 'insert_url_func_mode') { 
 		if ( !$H_ID ) {
 			$url = "kapp_ulink_list.php";
 			echo "<script>alert('Member Login IN! Please!'); window.open('$url', '_self', '');</script>";
 		}
 		$job_ = 'Link Note';
-		$create_type = 'Note'; // fix 
+		$create_type = 'Note';
 
 		$title_nm		= $_POST['title_nm'];
 		$sys_subtit		= $_POST['title_nm'];
-		$job_url	= KAPP_URL_T_ . "/my/kapp_ulink_list.php";//$_REQUEST['url_nm'];  // url
+		$job_url	= KAPP_URL_T_ . "/my/kapp_ulink_list.php";
 		$sys_link	= KAPP_URL_T_ . "/my/kapp_ulink_list.php";
-		$url_nm	= $_POST['url_nm'];  // url
+		$url_nm	= $_POST['url_nm'];
 		$memo		= $_POST['memo'];
-		$jong	= 'U';	                   //  tree가아닌 개별등록...
+		$jong	= 'U';	                   //  link list note
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$up_day  = date("Y-m-d-H:i:s");
 		$kapp_url = KAPP_URL_T_;
@@ -312,7 +310,6 @@ $(function () {
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.project_code.value = gg[1]; 
 		document.insert_form.g_name_code.value = gg[1]; // ulink_ajax.php use
-		//alert("g_name: "+g_name + ", gg[0]: " + gg[0]);//g_name: Project59:dao_1755421034:dao:4, gg[0]: Project59
 	}
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
 		document.insert_form.link_.value =link_;
@@ -336,12 +333,12 @@ $(function () {
 			insert_form.submit();
 		}
 	}
-	function contents_upd( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID ) { // title click run
+	function contents_upd( seq_no, g_name, webnum, job_addr, memo, title, mid, H_ID ) {
 		form = document.insert_form;
 		form.seq_no.value=seq_no;
 		form.webnum.value=webnum;
 		form.g_name.value=g_name;
-		form.url_nm.value=job_addr; // url
+		form.url_nm.value=job_addr;
 		form.title_nm.value=title;
 		form.form_psw.value='';
 		form.memo.value=memo;
@@ -357,8 +354,8 @@ $(function () {
 			document.getElementById('Decryption').style.visibility = 'visible';
 			document.getElementById('save_button').style.visibility = 'hidden';
 		}
-		var seq_no= $("#seq_no").val();		//alert( seq_no + ", memo: " + memo);
-		jQuery(document).ready(function ($) { // click point pay
+		var seq_no= $("#seq_no").val();
+		jQuery(document).ready(function ($) {
 				$.ajax({
 					header:{"Content-Type":"application/json"},
 					method: "post",
@@ -368,7 +365,7 @@ $(function () {
 							"seq_no": seq_no
 						},
 					success: function(data) {
-						//console.log(data);				//alert("OK ---" + seq_no);
+						//console.log(data);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
 						alert(" error.-- ulink_list, ajax.php");
@@ -433,6 +430,7 @@ $(function () {
 		document.insert_form.g_type.value = gtype;
 		document.insert_form.page.value = 1;                
 		document.insert_form.mode.value='type_func';           
+		document.insert_form.target='_self';           
 		document.insert_form.action='kapp_ulink_list.php';
 		document.insert_form.submit();                         
 	} 
@@ -611,26 +609,12 @@ jQuery(document).ready(function ($) {
 		if( $mode == 'search_rtn') {
 			$sdata = $title_nm;
 		}
-		if ( $g_type=='mylist' && isset($sdata) && $sdata != ''  ) {
+		if( isset($sdata) && $sdata != ''  ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
-		} else if ( $g_type=='mylist' ) {
+		} else if ( $g_type=='mylist' ) { 
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
-		} else if ( $g_type=='M' ) { 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and job_group='menu' ";
-		} else if ( $g_type=='T' ) { 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='T' ";
-		} else if ( $g_type=='A' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='A' or jong='G' or jong='F' ";
-		} else if ( $g_type=='U' ) { // Note - U, N
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='U' or jong='N' or jong='D' or jong='B'";
-		} else if ( $g_type=='P' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='p' ";
-		} else if ( isset($g_name) && $g_name != '' && isset($sdata) && $sdata != '' ){ 
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') and user_name like '%$sdata%'   ";
-		} else if ( isset($g_name) && $g_name != '' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and (job_name='$g_name' or job_group='$g_name') ";
-		} else if ( isset($sdata) && $sdata != '' ) {
-				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";
+		} else if ( $g_type!='' ) { 
+				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and jong='".$g_type."' ";
 		} else{
 			$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' ";
 		}
@@ -652,8 +636,6 @@ jQuery(document).ready(function ($) {
 		else if( !$g_name ) $g_nameX = " page:" . $page . ", [count:" .$total. "]";
 		else $g_nameX = "Group: " . $g_name;
 		$g_nameX = $g_nameX . ", level:" . $H_LEV . "," .$H_EMAIL;
-
-	//$page, $search, $sdata, $g_name, $g_type
 ?>
 <form id="insert_form" name='insert_form' method='post' enctype='multipart/form-data' >
 	<input type='hidden' name='g_name' id='g_name' value='<?=$g_name?>' > 
@@ -759,8 +741,6 @@ jQuery(document).ready(function ($) {
 </div>
 <link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
 
-<!-- <form id="coinview_form" name='coinview_form' method='post' enctype='multipart/form-data' > -->
-
 <table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 	<tr>
 		<td align='left' colspan='9'>
@@ -793,38 +773,38 @@ jQuery(document).ready(function ($) {
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;
 			<img src='../icon/left_icon.gif'>
-			<a onclick="g_type_func('mylist')" target='_self'>mylist</a>
+			<a onclick="g_type_func('mylist')">mylist</a>
 		</td>
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<a onclick="g_type_func('P')" target='_self'>Program list</a>
+		<a onclick="g_type_func('P')">Program list</a>
 		</td>
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<a onclick="g_type_func('U')" target='_self'>Note list</a>
+		<a onclick="g_type_func('U')">Note list</a>
 		</td>
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<a onclick="g_type_func('A')" target='_self'>Board list</a><!-- G -->
+		<a onclick="g_type_func('A')">Board list</a><!-- G -->
 		</td>
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<a onclick="g_type_func('T')" target='_self'>Link list</a>
+		<a onclick="g_type_func('T')">Link list</a>
 		</td>
 		</tr>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
-		<a onclick="g_type_func('M')" target='_self'>Menu list</a>
+		<a onclick="g_type_func('M')">Menu list</a>
 		</td>
 		</tr>
 <?php
 	$result = sql_query( $sql );
 	$j=0;
-	while ( $rs = sql_fetch_array( $result )  ) { 
+	while( $rs = sql_fetch_array( $result )  ) { 
 ?>
 		<tr>
 		<td width='130' height='24' background='../icon/admin_submenu.gif'>&nbsp;<img src='../icon/left_icon.gif'>
