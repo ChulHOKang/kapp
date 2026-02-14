@@ -301,7 +301,6 @@ body {
 			document.getElementById('click_run'+0).innerHTML = 'Tree list'; 
 			document.getElementById("mySidenav").style.width = "0";
 		} else if( runtype=='design' ){
-			//alert("Register at the root level. If different, click the location!");
 			document.click_run.mid.value = $mid; 
 			document.click_run.sys_pg.value = $sys_pg; 
 			document.click_run.runtype.value = 'design'; 
@@ -464,7 +463,6 @@ body {
 		<select id='menu_change' name='menu_change' onchange="arunA('<?=$H_ID?>','<?=$mid?>','<?=KAPP_URL_T_?>', this.value, '<?=$sys_pg?>');" style="border-style:;background-color:#666fff;color:yellow;width:130px; height:25px;" title='tree_run' >
 			<option value='' >Select job</option>
 			<option value='run'    title='Execute tree item'>Execute</option>
-			<!-- <option value='list'   title='tree list'>Tree list</option> -->
 			<option value='insert' title='add tree item'>Insert job</option>
 			<option value='update' title='change tree item'>Update job</option>
 			<option value='design' title='Tree design change:' >Tree design</option>

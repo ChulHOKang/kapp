@@ -19,17 +19,21 @@
 <meta name="robots" content="ALL">
 
 <?php
-	$ss_mb_id	= get_session("ss_mb_id");
-	if( !isset( $ss_mb_id ) || $ss_mb_id == '' ) {
-		m_(" Error NULL - ss_mb_id: " .$ss_mb_id );
-		echo "<script>history.back(-1);</script>"; exit;
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID	= get_session("ss_mb_id");
+	if( !isset( $H_ID ) || $H_ID == '' ) {
+		$H_LEV	= 1;  
+		$H_ID	= 'Guest';  
+		$H_NICK	= 'Guest';  
+		$H_EMAIL= '';
+	} else {
+		$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
+		$H_NAME = $member['mb_name'];
+		$H_NICK = $member['mb_nick'];
+		$H_EMAIL= $member['mb_email'];
 	}
-	$H_ID	= $ss_mb_id;	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$H_NAME = $member['mb_name'];
-	$H_NICK = $member['mb_nick'];
-	$H_EMAIL= $member['mb_email'];
 
-	//include "./infor.php";
+	include "./infor.php";
 
 	if( isset($_POST['search_choice'])) $search_choice=$_POST["search_choice"]; 
 	else $search_choice ='';
@@ -37,12 +41,9 @@
 	else $search_text ='';
 	if( isset($_POST['update_pass'])) $update_pass  =$_POST['update_pass']; 
 	else $update_pass ='';
-	
-	$in_date			= time();
-
+	$in_date= time();
 	if( isset($_POST['infor'])) $infor   = $_POST['infor'];
 	else $infor ='';
-	
 	if( isset($_POST['mode'])) $mode= $_POST['mode'];
 	else $mode ='';
 	if( isset($_POST['page'])) $page =$_POST['page']; 
@@ -68,28 +69,26 @@
 	if( isset($_POST['no'])) $no= $_POST['no'];
 	else $no ='';
 
-	/*
+	
 	switch( $mf_infor[47] ){ // 47:grant_write
 		case '0': break;
-		case '1': 	
+		case '1': break;
+		case '2':
 			if( !$H_ID || $H_LEV < 2 ) { 
-				m_("You do not have permission to write. id:" . $H_ID .", lev:". $H_LEV); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-		case '2': 
-			if( $H_ID != $mf_infor[53] ) { 
-				m_("You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
+				m_("null You do not have permission to write."); 
+				echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
+			} else break;
 		case '3': 
+			if( $H_ID != $mf_infor[53] ) { 
+				m_("user You do not have permission to write."); 
+				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
+			} else break;
+		case '8': 
 			if( $H_LEV < 8 ) { 
-				m_("You do not have permission to write."); 
-				echo "<script>history.back(-1);</script>"; exit;
-			}
-			else break;
-	}*/
+				m_("manager You do not have permission to write."); 
+				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
+			} else break;
+	}
 
 	if( $mode == "ADD_create_board_list3" || $mode == "ADD_create_board_list_my" || $mode == "ADD_create_board_list_adm" || $mode == "board_list3m"){
 
@@ -411,8 +410,8 @@
 			$sql = "update {$tkher['sys_menu_bom_table']} set sys_subtit='$chgname' where sys_userid='$H_ID' and book_num='$board_nm' "; //dao1764303785
 			sql_query( $sql );
 		}
-		echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";
-		exit;
+		//echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";	exit;
+		echo "<script>window.open('board_list3.php?page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
 
 	} else if( $mode == "Update_func_my" ){ // board_list3.php
 		$pg  = $_POST['pg'];
@@ -429,8 +428,8 @@
 			else {
 				echo "sql: " . $query; exit;
 			}
-			echo "<meta http-equiv='refresh' content='0; URL=$pg?page=".$page."'>";
-			exit;
+		//echo "<meta http-equiv='refresh' content='0; URL=$pg?page=".$page."'>";exit;
+		echo "<script>window.open('$pg&page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
 	} else if( $mode == "Update_func_run" ){ // board_list3.php
 		$grant_read  = $_POST['xread'];
 		$grant_write = $_POST['xwrite'];
@@ -446,8 +445,8 @@
 			else {
 				echo "sql: " . $query; exit;
 			}
-			echo "<meta http-equiv='refresh' content='0; URL=./board_list3.php?page=".$page."&line_cnt=".$line_cnt."'>";
-			exit;
+		//echo "<meta http-equiv='refresh' content='0; URL=./board_list3.php?page=".$page."&line_cnt=".$line_cnt."'>";exit;
+		echo "<script>window.open('board_list3.php?page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
 
 	} else if( $mode == "insert_form_image") {
 		include "./infor.php";
@@ -525,7 +524,9 @@
 		} else {
 			echo "Error sql: " . $queryA; exit;
 		}
-		echo "<meta http-equiv='refresh' content=0;url='list1.php?infor=$infor'>";
+		//echo "<meta http-equiv='refresh' content=0;url='list1.php?infor=$infor'>";
+		//echo "<script>top.location.reload();</script>";	exit;
+		echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
 		exit;
 
 	} else if( $mode == "memo_insert_form_") {	// board_list_memo.php : call. 
@@ -604,11 +605,13 @@
 		} else {
 			echo "Error sql: " . $queryA; exit;
 		}
-		echo "<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>";
-		exit;
+		//echo "<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>";exit;
+		echo "<script>window.open('index_bbs.php?infor=".$infor."','_top','')</script>";exit;
+		
 
 	} else {
 		m_("query_ok_new - Mode Error , mode:$mode, infor:$infor");
-		echo("<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>"); 
+		//echo("<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>"); 
+		echo "<script>window.open('index_bbs.php?infor=".$infor."','_top','')</script>";exit;
 	}
 ?>

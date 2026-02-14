@@ -1,34 +1,33 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 
-	$ss_mb_id= get_session("ss_mb_id");
-	$H_ID= $ss_mb_id;	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$from_session_id = $H_ID;
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID= get_session("ss_mb_id");
+	if( $H_ID != ''){
+		$H_LEV	= $member['mb_level'];
+	} else {
+		$H_LEV	= 1;
+		$H_ID = 'Guest';
+	}
 
 	include "./paging.php";
 	include "./infor.php";
-	include "./memo_cnt.php"; //memo_count($board,$no)
+	include "./memo_cnt.php";
 
 	$mid = $mf_infor[53];
-
 	if( isset($_POST['view_line'])) $view_line =$_POST['view_line']; 
 	else $view_line =2;
 	if( isset($_POST['view_count'])) $view_count =$_POST['view_count']; 
 	else $view_count =10;
 	if( isset($_POST['tot_cnt'])) $tot_cnt =$_POST['tot_cnt']; 
 	else $tot_cnt = 20;
-
-	//$img_line = $view_count; //10; // Number of lines to print on one line : image only.
 	$limite = $tot_cnt;
-
-	//m_("limite: " . $limite . ", view_line: " . $view_line . ", view_count: " . $view_count);
-	//limite: 100, view_line: 2, view_count: 10
-
 	if( isset($_POST['page'])) $page =$_POST['page']; 
 	else $page =1;
 
-	$board_name =$mf_infor[2];	//m_("mid:$mid, board_name:$board_name"); //mid:dao, board_name:tkher126
-	
+	$board_name =$mf_infor[2];
+	$grant_write = $mf_infor[47];
+	$bbs_lev= $mf_infor[47];	// 47:grant_write
 	if( isset($_POST['search_choice'])) $search_choice=$_POST["search_choice"]; 
 	else $search_choice ='';
 	if( isset($_POST['search_text'])) $search_choice=$_POST["search_text"]; 
@@ -40,8 +39,6 @@
 	} else {
 		$query="SELECT * from aboard_" . $mf_infor[2] . " order by target desc , step";
 	}
-	//$size = $mf_infor[16];
-
 	$page_num = 10; 
 	$mq =sql_query($query);
 	if( $mq ) {
@@ -55,9 +52,7 @@
 	}
 	$now = time();	
 ?>
-<!-- 44:top_html -->
-<?=$mf_infor[44]?>
-
+<?=$mf_infor[44]?><!-- 44:top_html -->
 <script>
 	function openpage(url){
 		newwin=window.open(url,"new","width=190,height=20,scrollbars=no");
@@ -86,7 +81,7 @@
 		}
 	}
 	function view_detail(lev, list_no,infor,page,search_text,del_admin ){
-			view_lev = document.list_form.view_lev.value; //alert(" view_lev : " + view_lev);
+			view_lev = document.list_form.view_lev.value;
 		if( view_lev < 2 || lev > 1 ){
 			document.list_form.no.value      =list_no;
 			document.list_form.list_no.value =list_no;
@@ -100,7 +95,6 @@
 			return false;
 		}
 	}
-	//function page_move($page){
 	function Xpage_move($page, $line, $count, $tot_cnt){
 		document.list_form.view_line.value = $line;
 		document.list_form.view_count.value = $count;
@@ -114,8 +108,8 @@
 		document.list_form.action='list1.php';
 		document.list_form.submit();
 	}
-	function Change_view_count( $count, $page, $line ){ //this.options[selectedIndex].value
-		document.list_form.page.value = 1;//$page;
+	function Change_view_count( $count, $page, $line ){
+		document.list_form.page.value = 1;
 		document.list_form.view_line.value = $line;
 		document.list_form.view_count.value = $count;
 		var $tot_cnt = $line * $count;
@@ -123,7 +117,7 @@
 		document.list_form.action='list1.php';
 		document.list_form.submit();
 	}
-	function Change_view_line( $line, $page, $count ){ //this.options[selectedIndex].value
+	function Change_view_line( $line, $page, $count ){
 
 		var Index = list_form.view_lineS.selectedIndex;
 		lineA = list_form.view_lineS[Index].value;
@@ -136,17 +130,27 @@
 		document.list_form.action='list1.php';
 		document.list_form.submit();
 	}
+	function board_write( infor, user_lev, page, grant_write ){
+		if( user_lev < grant_write ) {
+			alert('Please! you login lev:' +user_lev + ", grant_write: " + grant_write);
+			return false;
+		}
+		document.list_form.infor.value=infor;
+		document.list_form.action='insert1.php';
+		document.list_form.submit();
+	}
 </script>
 
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/board_new.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/default.css" type="text/css" />
 <body>
 <center>
@@ -202,26 +206,23 @@
 </form>
 					
 					</table>
-  					<table width='100%' <?=$mf_infor[11]?>>
-		<form name='while_form' method='post'>
-					<tr>
-					<td>
-<?php //관리자 아이콘표시
-if( isset($_REQUEST['del_admin']) ) $del_admin = $_REQUEST['del_admin'];
-else $del_admin = '';
-$tab = $mf_infor[2];// title=tab:$tab
-if( !$del_admin ){
-	echo "<a href=\"javascript:admin_func('$H_LEV', '" . $infor . "')\" title='tab:$tab')>Insert</a>"; //<img src='$mf_infor[41]' border=0>
-}
+					<table width='100%' <?=$mf_infor[11]?>>
+<form name='while_form' method='post'>
+		<tr>
+		<td>
+<?php
+	if( isset($_REQUEST['del_admin']) ) $del_admin = $_REQUEST['del_admin']; // admin icon
+	else $del_admin = '';
+	$tab = $mf_infor[2];
 ?>
-						</td>
-						</td>
-    						<tr>
-      						<td width="100%" height="1" align="center" colspan="<?=$view_count?>"></td>
-    						</tr>    						
-    						<tr>
-      						<td width="100%" height="1" bgcolor="#c0c0c0" align="center" colspan="<?=$view_count?>"></td>
-    						</tr>
+		</td>
+		</td>
+			<tr>
+			<td width="100%" height="1" align="center" colspan="<?=$view_count?>"></td>
+			</tr>    						
+			<tr>
+			<td width="100%" height="1" bgcolor="#c0c0c0" align="center" colspan="<?=$view_count?>"></td>
+			</tr>
 <?php 
 $cnt=0;	$j=0; $dep=""; $file=""; $new=""; $memo_cnt="";
 $ls = "SELECT * from aboard_" . $mf_infor[2] . " where subject like '%$search_text%' order by target desc , step";
@@ -231,22 +232,12 @@ $mq = sql_query( $ls );
 while( $mf = sql_fetch_row( $mq ) ){
 	if( !$cnt ){ $cnt=1; }
 	$j++;
-	//$date = strftime("%m/%d", $mf[4]);
-	//글자르기//	$mf[3]=Shorten_String($mf[3],"45","...");
-	//$mf[3] = iconv_substr($mf[3], 0, 45, 'utf-8');// . "...";
-	//답변들여쓰기
 	for( $i=0;$i<$mf[6];$i++){ $dep = $dep . "&nbsp;&nbsp;"; }
-	//메모글 카운트
-	if( $mf_infor[5]){ $memo_cnt =memo_count($mf_infor[2],$mf[0]);} // memo_cnt.php
-	//파일이미지 삽입
-	//include "./inc/file_image.php";
-	//new 이미지삽입
-	$today =$now - $mf[7]; // 4 -7
+	if( $mf_infor[5]){ $memo_cnt =memo_count($mf_infor[2],$mf[0]);}
+	$today =$now - $mf[7];
 	if( $today <= 86400){ $new="<img src='$mf_infor[38]' border=0>";}
-	//검색어 표시
 	if( $search_text){ $mf[3] = preg_replace("($search_text)","<font color=blue>\\1</font>",$mf[3]); }
-	//$msg_=iconv_substr($mf[9], 0, 20, 'utf-8');// . "..."; // author	//Shorten_String( $mf[9],"20","...");	// author
-	$msg_=$mf[9];// . "..."; // author	//Shorten_String( $mf[9],"20","...");	// author
+	$msg_=$mf[9];
 ?>
       		<td width="8%" height="20" align="center" bgcolor="<?=$mf_infor[14]?>" title='<?=$msg_?>'>
 			<img onclick="view_detail('<?=$H_LEV?>','<?=$mf[0]?>','<?=$infor?>','<?=$page?>','<?=$search_text?>','<?=$del_admin?>');" src="../file/<?=$mid?>/aboard_<?=$board_name?>/<?=$mf[12]?>" border='0' width='50' height='50'  
@@ -257,12 +248,12 @@ while( $mf = sql_fetch_row( $mq ) ){
 				$j = 0;
 				echo "</tr><tr>";
 			}
-	if( $cnt == $limite){ break; } //$size
+	if( $cnt == $limite){ break; }
 	$cnt++; $dep="";$file="";$new="";$memo_cnt="";
-} // while
+}
 ?>
-							<input type='hidden' name='del_admin' value='1'>
-							<input type='hidden' name='infor' value='<?=$infor?>'>
+			<input type='hidden' name='del_admin' value='1'>
+			<input type='hidden' name='infor' value='<?=$infor?>'>
 		</form>
 						<tr>
 							<td height="1" bgcolor="#ffffff" align="center" colspan="<?=$view_count?>"></td>
@@ -274,10 +265,10 @@ while( $mf = sql_fetch_row( $mq ) ){
 								<table border="0" cellpadding="0" cellspacing="0" width="100%" height="1">
 								<tr>
 										<td width="60%">
-		<?php
-			$link = "list1.php?infor=$infor&search_choice=$search_choice&search_text=$search_text&del_admin=$del_admin";
-			paging($link, $total, $page, $limite, $page_num, $view_line, $view_count);
-		?>
+<?php
+	$link = "list1.php?infor=$infor&search_choice=$search_choice&search_text=$search_text&del_admin=$del_admin";
+	paging($link, $total, $page, $limite, $page_num, $view_line, $view_count);
+?>
 										</td>
 										<td width="40%" align="right">
 										<table border="0" cellpadding="0" cellspacing="0" width="200" id="AutoNumber2">
@@ -286,7 +277,6 @@ while( $mf = sql_fetch_row( $mq ) ){
 											<select size="1" name="search_choice" >
 											<option value='1'>subject</option>
 											<option value='2'>context</option>
-											<!--<option value='3'>name</option>-->
 											</select>
 											</td>
 											<td width="30%">
@@ -306,7 +296,7 @@ while( $mf = sql_fetch_row( $mq ) ){
 						<tr>
 						<td  align=right height="30" colspan="<?=$view_count?>">
 <?php
-	if( $H_LEV > 7 or $mf_infor[53] == $H_ID ){ //34: e_list.gif, 41: e_admin.gif, 53: solpakan_naver
+	if( $H_LEV > 7 or $mf_infor[53] == $H_ID ){
 ?>
         <a href='update.php?no=<?=$infor?>' target='_blank'>
         <img src='<?=KAPP_URL_T_?>/icon/<?=$mf_infor[41]?>' width='30' border='0' target='_blank'></a>
@@ -317,14 +307,12 @@ while( $mf = sql_fetch_row( $mq ) ){
 							<a href='list1.php?infor=<?=$infor?>'><img src='<?=KAPP_URL_T_?>/icon/<?=$mf_infor[34]?>' border='0' title="list" ></a>
 							<?php } ?>
 						<?php if($H_ID == $mid || $mf_array['grant_write'] == 1 || $mf_array['grant_write'] < $H_LEV) { ?>
-							<a href='insert1.php?infor=<?=$infor?>'><img src='<?=KAPP_URL_T_?>/icon/<?=$mf_infor[30]?>' border='0' title="write" ></a></td>
+							<a href="javascript:board_write('<?=$infor?>','<?=$H_LEV?>','<?=$page?>','<?=$grant_write?>');" ><img src='<?=KAPP_URL_T_?>/icon/<?=$mf_infor[30]?>' border='0' title="write" ></a>
+							</td>
 						<?php } ?>      							
 						</tr>
   					</table>
         	<!-- End of Paging Table --> 
-    					</td>
-  					</tr>  
-				</table>
-<?php
-//echo "<br> 45: " . $mf_infor[45];
-?>
+				</td>
+			</tr>  
+		</table>

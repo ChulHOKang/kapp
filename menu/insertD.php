@@ -24,22 +24,22 @@
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID = get_session("ss_mb_id");
-	if( $H_ID && $H_ID !=='') {
+	if( $H_ID && $H_ID !='') {
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		if( $grant_write > 1 ){
-			echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
-			exit;
-		} else {
+		//if( $grant_write > 1 ){
+		//	echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
+		//	exit;
+		//} else {
 			$H_NICK	= 'Guest';
 			$H_NAME = 'Guest';
 			$H_LEV	= 1;
 			$H_ID	= 'Guest';  
 			$H_EMAIL= ''; 
-		}
+		//}
 	}
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
@@ -50,17 +50,33 @@
 	else $menu_mode = '';
 	$in_day = date("Y-m-d H:i");
 	$grant_write=$mf_array['grant_write'];
-		/*
-		switch( $mf_infor[47] ){ // 47=grant_write
-			case '0': break;			// error
-			case '1': 					// guest
-			case '2': //member
-			case '3': // only my
-		} */
-		if( $grant_write > 1 && $H_LEV < $grant_write ) { 
-			m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV . ", write: " . $grant_write); 
-			echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
-		}
+		
+	switch( $mf_infor[47] ){ // 47=grant_write
+		case '0': break;
+		case '1': break;
+		case '2':
+			if( !$H_ID || $H_LEV < 2 ) { 
+				m_("null You do not have permission to write."); 
+				echo "<script>window.open('listD.php?infor=".$infor."','_top','')</script>";exit;
+			}
+			else break;
+		case '3': 
+			if( $H_ID != $mf_infor[53] ) { 
+				m_("user You do not have permission to write."); 
+				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+			}
+			else break;
+		case '8': 
+			if( $H_LEV < 8 ) { 
+				m_("manager You do not have permission to write."); 
+				echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";exit;
+			}
+			else break;
+	}
+	//if( $grant_write > 1 && $H_LEV < $grant_write ) { 
+	//	m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV . ", write: " . $grant_write); 
+	//	echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
+	//}
 	$amember_name	= $H_NICK;
 	$amember_id		= $H_ID;
 	$mf_47 = $mf_infor[47];
@@ -307,7 +323,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 		/* var contents = document.getElementById("EditCtrl").value; */
 		fileup = x.fileup_yn.value;
 		ff= x.fileA.value;
-		if( fileup > 0 && ff !== "" ){
+		if( fileup > 0 && ff != "" ){
 			ff= x.fileA.value;
 			if (x.fileA.value != ""){
 				input = document.getElementById('fileA');

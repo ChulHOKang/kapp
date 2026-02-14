@@ -6,12 +6,11 @@
 		if( isset($member['mb_email']) ) $H_EMAIL = $member['mb_email'];
 		else $H_EMAIL = '';
 		if( isset($member['mb_level']) ) $H_LEV = $member['mb_level'];
-		else $H_LEV	= 0;
+		else $H_LEV	= 1;
 	} else {
 		$H_EMAIL = '';
 		$H_LEV= 1;
 	}
-
 	connect_count($host_script, $H_ID, 0, $referer);	// log count
 	/*
 		board_list3.php : table-{$tkher['aboard_infor_table']}
@@ -42,7 +41,6 @@ textarea {
 	  font-family: Arial, sans-serif;
 	  font-size: 12px;
 	  color: #fff;
-	  /*resize: vertical;  Allows vertical resizing only */
 	}
 	textarea:focus {
 	  border-color: #007bff; /* Changes border color on focus */
@@ -126,38 +124,16 @@ $(function () {
 	  });
 });
 </script>
-
-<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script> -->
-
-<?php
-	if( isset($_POST['g_type']) ) $g_type = $_POST['g_type'];
-	else if( isset($_REQUEST['g_type']) ) $g_type = $_REQUEST['g_type'];
-	else $g_type= '';
-	if( isset($_POST["sel_num"]) ) $sel_num= $_POST["sel_num"];
-	else if( isset($_REQUEST["sel_num"]) ) $sel_num= $_REQUEST["sel_num"];
-	else $sel_num ='';
-	if( isset($_POST["memo"]) ) $memo = $_POST["memo"];
-	else if( isset($_REQUEST["memo"]) ) $memo = $_REQUEST["memo"];
-	else $memo ='';
-	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
-	else if( isset($_REQUEST["mode"]) ) $mode = $_REQUEST["mode"];
-	else $mode ='';
-	if( isset($_POST["sdata"]) ) $sdata = $_POST["sdata"];
-	else if( isset($_REQUEST["sdata"]) ) $sdata = $_REQUEST["sdata"];
-	else $sdata = '';
-	if( isset($_POST['page']) ) $page= $_POST['page'];
-	else if( isset($_REQUEST['page']) )   $page= $_REQUEST['page'];
-	else $page = 1;
-?>
 <script language='javascript'>
 <!--
 	function fnclist_onclick(v) {
-		var seli = makeform.fnclist.selectedIndex;
-		var t = makeform.fnclist.options[seli].text;
-		makeform.board_type_name.value = t;
-		makeform.sellist_index.value   = v;
+		var seli = document.makeform.fnclist.selectedIndex;
+		var t = document.makeform.fnclist.options[seli].text;
+		document.makeform.board_type_name.value = t;
+		document.makeform.sellist_index.value   = v;
+		//document.makeform.mode.value ='';
+		//document.makeform.action='board_list3.php';
+		//document.makeform.submit();
 	}
 	function chkDescription(){
 		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
@@ -197,7 +173,6 @@ $(function () {
 		if (makeform.sellist.selectedIndex < 0) return
 		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0)	{
 			alert('You used a special character.\nPlease re-enter it.');
-			//허용이 안 되는 특수문자를 사용하셨습니다.\n다시 입력하시기 바랍니다.
 			return false;
 		}
 		for ( j=0; j < makeform.sellist.options.length; j++ )	{
@@ -221,13 +196,13 @@ $(function () {
 
 		var seli = makeform.fnclist.selectedIndex;
 		if( seli < 0 ){
-			alert("Select Board Type! board type seli: " + seli );//board type seli: 0
+			alert("Select Board Type! board type seli: " + seli );
 			return false;
 		} else {
 			var t = makeform.fnclist.options[seli].text;
 			var v = makeform.fnclist.options[seli].value;
 			makeform.board_type_name.value = t;
-			makeform.sellist_index.value   = v; //t;
+			makeform.sellist_index.value   = v;
 		}
 	   if ( makeform.aboard_name.value === ""){
 			alert (" Please enter your board name! ");
@@ -250,14 +225,14 @@ $(function () {
 		} else {
 			var chgStr = makeform.aboard_name.value;
 			if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0){
-				alert('You used a special character that is not allowed. '); //허용이 안 되는 특수문자를 사용하셨습니다.
+				alert('You used a special character that is not allowed. ');
 				return ;
 			}
 			sellist_i = makeform.sellist.options.length;
 			for (i=0;i<makeform.sellist.options.length; i++){
 				bnm = makeform.sellist.options[i].text;
 				if ( chgStr == bnm ){
-					alert("It is an existing name. "+"\n"+ " Please change your name."); //이미 존재하는 이름입니다.
+					alert("It is an existing name. "+"\n"+ " Please change your name."); 
 					makeform.aboard_name.focus();
 					return false;
 				}
@@ -269,20 +244,6 @@ $(function () {
 		document.makeform.mode.value = "ADD_create_board_list3";
 		document.makeform.action = "query_ok_new.php";
 		makeform.submit();
-	}
-	function getFuncNameK(fid) {
-		switch(fid) {
-			case "TCOM01" : return "[General]"
-			case "GCOM02" : return "[Standard]"
-			case "GCOM03" : return "[Memo]"
-			case "GCOM04" : return "[Image]"
-			case "GCOM05!" : return "[Daum]"
-			case "GCOM06" : return "[New2]"
-			case "GCOM08" : return "[New3]"
-			case "TCOM02" : return "[Line]"
-			case "TCOM03" : return "[QnA]"
-			default : return "[none]"
-		}
 	}
 	function getObjid(str) {
 		return str.substring(0,str.indexOf("!:"))
@@ -304,7 +265,7 @@ $(function () {
 	function sellist_onclick() {
 		var selind = makeform.sellist.selectedIndex
 		var strAx = makeform.sellist.options[selind].value
-		var strA  = strAx.split("|");//$rsno|$home_url|$table_name
+		var strA  = strAx.split("|");
 		makeform.board_no.value = strA[0]; // $rsno
 		makeform.board_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
@@ -417,6 +378,25 @@ $(function () {
 	$cur='B';
 	include_once( KAPP_PATH_T_ . "/menu_run.php");
 
+	if( isset($_POST['g_type']) ) $g_type = $_POST['g_type'];
+	else if( isset($_REQUEST['g_type']) ) $g_type = $_REQUEST['g_type'];
+	else $g_type= '';
+	if( isset($_POST["sel_num"]) ) $sel_num= $_POST["sel_num"];
+	else if( isset($_REQUEST["sel_num"]) ) $sel_num= $_REQUEST["sel_num"];
+	else $sel_num ='';
+	if( isset($_POST["memo"]) ) $memo = $_POST["memo"];
+	else if( isset($_REQUEST["memo"]) ) $memo = $_REQUEST["memo"];
+	else $memo ='';
+	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
+	else if( isset($_REQUEST["mode"]) ) $mode = $_REQUEST["mode"];
+	else $mode ='';
+	if( isset($_POST["sdata"]) ) $sdata = $_POST["sdata"];
+	else if( isset($_REQUEST["sdata"]) ) $sdata = $_REQUEST["sdata"];
+	else $sdata = '';
+	if( isset($_POST['page']) ) $page= $_POST['page'];
+	else if( isset($_REQUEST['page']) )   $page= $_REQUEST['page'];
+	else $page = 1;
+
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ) $line_cnt = $_POST['line_cnt'];
 	else if( isset($_REQUEST['line_cnt']) && $_REQUEST['line_cnt']!='' ) $line_cnt = $_REQUEST['line_cnt'];
 	else $line_cnt	= 10;
@@ -425,7 +405,7 @@ $(function () {
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
 	else $fld_code_asc = '';
 ?>
-<form name="makeform" method="post" action="query_ok_new.php"><!-- query_ok_new.php <- board_list3_ok.php -->
+<form name="makeform" method="post" action="query_ok_new.php">
 			<input type="hidden" name="infor"       value="" >
 			<input type="hidden" name="no" 	        value="" >
 			<input type="hidden" name="new_insert" 	value="" >
@@ -435,7 +415,7 @@ $(function () {
 			<input type="hidden" name="mode" 		value="">
 			<input type='hidden' name='board_type_name'    value=''>
 			<input type='hidden' name='board_gubun_value'  value=''>
-			<input type='hidden' name='sellist_index' >    <!-- selectedIndex -->
+			<input type='hidden' name='sellist_index' >
 			<input type='hidden' name='board_no' value=''>
 			<input type='hidden' name='board_nm' value=''>
 			<input type='hidden' name='multy_menu_sel' >
@@ -444,11 +424,9 @@ $(function () {
 		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
 		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
-<?php if( $H_ID && $H_LEV > 1 ) { // 로그인 일때만 그룹관리와 Url link 등록이 가능하도록한다. ?>
-		<!-- --------------------------------------------------------------------- -->
+<?php if( $H_ID && $H_LEV > 1 ) { ?>
 		<div id="mypanel" class="ddpanel">
 		<div id="mypanelcontent" class="ddpanelcontent">
-		<!-- --------------------------------------------------------------------- -->
 			<table border='0' bgcolor='#cccccc' width='100%'>
 				<tr>
 				   <td width="72%" valign="top" align="center">
@@ -465,7 +443,7 @@ $(function () {
 									<tr>
 									  <td valign="top" align="left" bgcolor="#f5f5f5">
 										 <select id="fnclist" style="WIDTH: 200px" onChange="fnclist_onclick(this.value)" multiple size="8" name="fnclist">
-											  <option value="5">Standard Type</option> <!-- Daum Type -->
+											  <option value="5">Standard Type</option>
 											  <option value="3">Memo Type</option>
 											  <option value="4">Image Type</option>
 										  </select>
@@ -488,7 +466,7 @@ $(function () {
 								</td>
 								<td valign="top" align="right" width="220">
 									<table cellspacing="0" cellpadding="0" width="200" border="0">
-									  <tr><!-- 666666 -->
+									  <tr>
 										<td style='background-color:#000000;color:yellow;height:30px;text-align:center;'>Board List</td></tr>
 									  <tr>
 										 <td valign="top">
@@ -594,7 +572,6 @@ $(function () {
 		</script>
 		</td>
 	</tr>
-		<!-- popup end ------------------------------------------------- -->
 <?php
 	$w = " ";
 	$w1= " ";
@@ -610,10 +587,10 @@ $(function () {
 	} else if( $g_type =='mylist' ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		$ls = $ls . " WHERE make_id='$H_ID' ";
-	} else if( isset($sdata) ) {
+	} else if( $sdata!='' ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		$ls = $ls . " WHERE name like '%$sdata%'  $w ";
-	} else if( isset($g_type) ) {
+	} else if( $g_type!='' ) {
 		$ls = " SELECT * from {$tkher['aboard_infor_table']} ";
 		if( $g_type =='S'){
 			$ls = $ls . " WHERE movie='5' ";
@@ -660,24 +637,19 @@ $(function () {
 	<input type='hidden' name='xfile_size' >
 		<tr>
 			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$P_count?>
-							&nbsp;&nbsp;&nbsp; Page line:<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[this.selectedIndex].value);" style='height:20;'>
-								<option value='10'  <?php if( $line_cnt=='10' )  echo " selected " ?> >10</option>
-								<option value='30'  <?php if( $line_cnt=='30' )  echo " selected " ?> >30</option>
-								<option value='50'  <?php if( $line_cnt=='50')   echo " selected" ?>  >50</option>
-								<option value='100' <?php if( $line_cnt=='100')  echo " selected" ?>  >100</option>
-							</select>
-							</td>
+			&nbsp;&nbsp;&nbsp; Page line:<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[this.selectedIndex].value);" style='height:20;'>
+				<option value='10'  <?php if( $line_cnt=='10' )  echo " selected " ?> >10</option>
+				<option value='30'  <?php if( $line_cnt=='30' )  echo " selected " ?> >30</option>
+				<option value='50'  <?php if( $line_cnt=='50')   echo " selected" ?>  >50</option>
+				<option value='100' <?php if( $line_cnt=='100')  echo " selected" ?>  >100</option>
+			</select>
+			</td>
 		</tr>
-<!-- <table class='floating-thead' width='100%'> -->
 <table class='floating-thead' style="width:100%; table-layout:;">
 <thead id='tit_et' width='100%'>
 		<tr align='center'>
 			<TH>no</TH>
-			<!-- <TH style='color:white;' onclick="title_func('make_id')">User</TH>
-			<TH style='color:white;' onclick="title_func('no')">info</TH>
-			<TH style='color:white;' onclick="title_func('name')">board name</TH> -->
 <?php
-	//echo " <th title='project Sort click' >Project</th> ";
 	echo " <th title='User Sort click or doubleclick' >User</th> ";
 	echo " <th title='info Sort click or doubleclick' >info</th> ";
 	echo " <th title='board name Sort click or doubleclick' >board name</th> ";
@@ -708,9 +680,7 @@ $(function () {
 	$i=1;
 	while( $rs = sql_fetch_array( $result ) ) {
 		$rsno = $rs['no'];
-		//$dateR = date($rs['in_date'], '%Y-%m-%d'); //$rs['in_date']; //DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i:%s')
 		$dateR = date('Y-m-d', $rs['in_date']);
-		$in_day			= date("Y-m-d H:i");
 		if ( $rs['grant_view'] == "1" ) $levR='Guest';
 		else if ( $rs['grant_view'] == "2" ) $levR='Member';
 		else if ( $rs['grant_view'] == "3" ) $levR='Only Me';
@@ -831,7 +801,7 @@ function paging($link, $total, $page, $size){
 	if( !$total ) { return; }
 	$total_page	= ceil($total/$size);
 	if( $page>1 ) $first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-	else $first_page = 0;
+	else $first_page = 1;
 	$last_page  = $first_page+($page_num-1);
 	if( $last_page > $total_page) $last_page = $total_page;
 
@@ -856,7 +826,7 @@ function paging($link, $total, $page, $size){
 	if( $last_page < $total_page){
 		$next_page=$last_page+1;
 		echo("<a href='javascript:page_move($next_page)'>[Next]</a><span>&nbsp;</span>");
-	}else {
+	} else {
 		//echo("<img src=./include/img/btn/btn_next.png width=30 title='Btn Next Page'>");
 		//echo("<span>[Next].</span>");
 	}

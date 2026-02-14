@@ -29,34 +29,25 @@
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		if( $grant_read > 1 ){
-			//echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
-			//exit;
-		} else {
-			$H_NICK	= 'Guest';
-			$H_NAME = 'Guest';
-			$H_LEV	= 1;
-			$H_ID	= 'Guest';  
-			$H_EMAIL= ''; 
-		}
+		$H_NICK	= 'Guest';
+		$H_NAME = 'Guest';
+		$H_LEV	= 1;
+		$H_ID	= 'Guest';  
+		$H_EMAIL= ''; 
 	}
 
 	if( isset($_REQUEST['mode'])) $mode = $_REQUEST['mode'];
 	else if( isset($_POST['mode'])) $mode = $_POST['mode'];
 	else $mode = '';
-
 	if( isset($_REQUEST['search_text'])) $search_text = $_REQUEST['search_text'];
 	else $search_text = '';
-
 	if( isset($_REQUEST['page'])) $page = $_REQUEST['page'];
 	else if( isset($_POST['page'])) $page = $_POST['page'];
 	else $page = 1;
-	
 	if( isset($_REQUEST['target_'])) $target_ = $_REQUEST['target_'];
 	else if( isset($_POST['target_'])) $target_ = $_POST['target_'];
 	else $target_='_top';
-
-	if( isset($_REQUEST['menu_mode'])) $menu_mode =$_REQUEST['menu_mode']; // off: menu bar none display
+	if( isset($_REQUEST['menu_mode'])) $menu_mode =$_REQUEST['menu_mode'];
 	else $menu_mode = '';
 ?>
 <html>
@@ -68,7 +59,6 @@
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
-
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 	$(function () {
@@ -104,20 +94,13 @@
 </script>
 
 <script>
-	function Change_line_cnt( $line ){ //this.options[selectedIndex].value
+	function Change_line_cnt( $line ){
 		document.view_form.page.value = 1;
 		document.view_form.line_cnt.value = $line;
 		document.view_form.action='listD.php';
 		document.view_form.submit();
 	}
 </script>
- <!-- <link rel="stylesheet" href="../include/css/Oboard.css" type="text/css" /> -->
- <!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" /> -->
- <!-- <link rel='stylesheet' href='../include/css/kancss.css' type='text/css'> --><!-- menu_run에 선언 중요! -->
-
-<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script> -->
 
 </head>
 <body>
@@ -128,17 +111,15 @@
 ?>
 			<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <?php  } ?>
-<!-- <div class="wrapper">
-	<div class="container"> -->
 <?php
 	$tit			= $mf_infor[1];
 	$bbs_lev		= $mf_infor[47];	// 47:grant_write
 
 	if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
 	else if( isset($_POST['line_cnt']) ) $line_cnt = $_POST['line_cnt'];
-	else if( isset($mf_infor[16]) ) $line_cnt = $mf_infor[16]; // $line_cnt; //  page line cnt
+	else if( isset($mf_infor[16]) ) $line_cnt = $mf_infor[16];
 	else $line_cnt = 15;
-	$page_cnt	= 10;					// $my_rs[page_num];		#[1] [2] [3] 갯수
+	$page_cnt	= 10;
 ?>
 		
 		<div id="write_page" class="mainProject">
@@ -146,16 +127,13 @@
 				<a href="./listD.php?infor=<?=$infor?>&menu_mode=<?=$menu_mode?>" class="on" title="infor:<?=$infor?>, table:aboard_<?=$mf_infor[2]?>"><?=$tit?></a>
 			</div>
 <?php
-		//$tt			= time();
-		$today		= time() - 60*60*24*7;  // 최근게시물 : 7일전  // $reg_date	= date("Y-m-d H:i:s");  //
-//		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where step=0 and re=0 order by target desc ";
+		$today		= time() - 60*60*24*7;
 		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " order by target desc ";
 		$result		= sql_query( $SQL );
-		$total_count= sql_num_rows($result);	// new data select
-//		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where in_date>$today and step=0 and re=0 order by target desc ";
+		$total_count= sql_num_rows($result);
 		$SQL			= "SELECT * from aboard_" . $mf_infor[2] . " where in_date>$today order by target desc ";
 		$result		= sql_query( $SQL );
-		$total_new = sql_num_rows($result);	// new data select
+		$total_new = sql_num_rows($result);
 ?>
 			<div class="boardView">
 				<div class="boardNorBox">
@@ -167,12 +145,6 @@
 					<div class="fl">
 						<tr>
 							<td align=left>
-								<!-- <script type="text/javascript" src="../include/js/dropdowncontent.js"></script>
-								<p align="left" style="margin-top: 0px">
-									<a href="#" id="contentlink" rel="subcontent2">
-									<font color=#000ccc size=4> ▤ <font color=green size=2><b>Board List[▼]</b></font>
-									</a><?php if($H_ID) echo "id:$H_ID, user_lev:$H_LEV"; ?>
-								</p> -->
 
 			<script type="text/javascript" src="../include/js/dropdowncontent.js"></script>
 			<p align="left" style="margin-top: 0px">
@@ -192,7 +164,7 @@
 							if( ($result = sql_query( $sql ) )==false ){
 								m_("listD 2 Select Error ");
 							}
-						} else {	// 비회원 no login guest에게 보여질 게시판 목록.
+						} else {
 							$sql = "SELECT * from {$tkher['aboard_infor_table']} order by in_date desc limit 0,10";
 							if( ($result = sql_query( $sql ) )==false ){
 								m_("listD 3 Select Error ");
@@ -222,17 +194,16 @@
 ?>
 							</TABLE>
 									<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
-						</DIV><!-- subcontent2 -->
+						</DIV>
 
-								<script type="text/javascript"><!-- 800 - 200 -->
+								<script type="text/javascript">
 									dropdowncontent.init("searchlink", "left-bottom", 200, "mouseover")
 									dropdowncontent.init("contentlink", "right-bottom", 200, "click")
 								</script>
 							</td>
 						</tr>
-					</div><!-- fi -->
-
-					<div><!--  class="fl" fr -->
+					</div>
+					<div>
 						<span>Total: <strong><?=$total_count?></strong> , Latest: <strong><?=$total_new?></strong>
 							&nbsp;, line : <select id='line_cntS' name='line_cntS' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
 							<?php
@@ -258,26 +229,24 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 
 		$SQL1		= "SELECT * from aboard_" . $mf_infor[2];
 		$SQL_w		= ' '; //" where step=0 and re=0 ";
-		//$where_= " and subject like '%$search_text%' ";
 		$where_= " where subject like '%$search_text%' ";
 		$orderby		= " order by target desc , step ";
 		if( $mode=='SR' )	$SQL1 = $SQL1 . $SQL_w . $where_ . $orderby;
 		else				$SQL1 = $SQL1 . $SQL_w . $orderby;
 		if( ($result = sql_query( $SQL1 ) )==false ) {
-			//printf("Invalid query: %s\n", $SQL1);	m_(" no found data Select Error ");
 			$total_count = 0;
 		} else {
 			$total_count = sql_num_rows($result);
-			if( $total_count) $total_page  = ceil($total_count / $line_cnt);			// 전체 페이지 계산
+			if( $total_count) $total_page  = ceil($total_count / $line_cnt);
 			else $total_page  =1;
 
 			if( $page < 1) {
-				$page  = 1;										// 페이지가 없으면 첫 페이지 (1 페이지)
+				$page  = 1;	
 				$start = 0;
 			} else {
-				$start = ($page - 1) * $line_cnt;					// 시작 열을 구함
+				$start = ($page - 1) * $line_cnt;
 			}
-			$last = $line_cnt;										// 뽑아올 게시물 [끝]
+			$last = $line_cnt;
 			if( $total_count < $last) $last = $total_count;
 		}
 ?>
@@ -311,15 +280,14 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 
 <?php
 		$SQL			= "SELECT * from aboard_" . $mf_infor[2];
-		$SQL_w			= ' '; //" where step=0 and re=0 ";// reply no print : 댓글을 제외한다. List에서는 제외 detail에만 Print.
+		$SQL_w			= ' '; //" where step=0 and re=0 ";
 		$where_= " where subject like '%$search_text%' ";
 		$SQL_orderby	= " order by target desc, step limit " . $start. ", " . $last;
-//		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . $where. " and subject like '%$search_text%' ";
 		if( $mode=='SR' )	$SQL = $SQL . $SQL_w . $where;
 		else $SQL = $SQL . $SQL_w;
 		$SQL = $SQL . $SQL_orderby;
 		if( ($result = sql_query( $SQL ) )==false ) {
-			printf("Record 0 \n"); //printf("Record 0 : query: %s\n", $SQL);
+			printf("Record 0 \n");
 		} else {
 			$no_A=0;
 			$today=0;
@@ -327,12 +295,11 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 				$no_A++;
 				$dt  = date("Y-m-d H:i", $row['in_date']);
 				$now = time();
-				$today = $now - $row['in_date'];//m_("day :".$today); // 60 x 24 x 60 = 1200 x 24 = 28800 x 7 = 201600 = 7일.
+				$today = $now - $row['in_date'];
 				$new="";
-				if( $today > 201600){  //if($today > 86400){  //60*60*24*7;  // 최근게시물 : 7일전
+				if( $today > 201600){
 					$ck = 'big';
 				} else {
-					//$new="<img src='".$mf_infor[38]."' border='0'>"; // 38:./icon/new.gif
 					$new="<img src='../icon/new.gif' border='0'>"; // 38:./icon/new.gif
 					$ck = 'low';
 				}
@@ -342,7 +309,6 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 					<td class="cell01" title='today:<?=$today?>:<?=$infor38?>:<?=$ck?>'><?=$row['no']?></td>
 					<td class="cell02">
 <?php
-						//m_("5 : " . $mf_infor[5]);
 						$dep=""; $memo_cnt=""; $file="";
 						$memo_ = $mf_infor[5];
 						for( $i=0; $i<$row['re']; $i++){
@@ -356,7 +322,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 						if( $row['file_name'] ){
 							echo "<img src='../icon/subject.gif' title='Attached file'>";
 						}
-						if( $H_ID == $row['id']) $security_my = '1';	//본인의 글일때
+						if( $H_ID == $row['id']) $security_my = '1';
 						else $security_my = '';
 						$msg_ = iconv_substr( $row['context'], 0, 80, 'utf-8') . "...";
 
@@ -364,7 +330,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 						$ret  = sql_query( $SQLB );
 						$step_= sql_num_rows( $ret);
 						if( $step_==1 ) $step_=0;
-						else if( $step_>1) $step_ = $step_ - 1; //https://ailinkapi.com/kapp/menu/list_reply.gif
+						else if( $step_>1) $step_ = $step_ - 1;
 ?>
 					</td>
 <?php
@@ -447,28 +413,6 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 				document.view_form.submit();
 			}
 		}
-		/*else if( grant_view < 2 ) { //  1: guest
-			document.view_form.list_no.value = no;
-			document.view_form.security.value =grant_view;
-			document.view_form.action ='detailD.php?infor='+infor+'&list_no='+no;
-			document.view_form.submit();
-		} else if( grant_view == '2' ) { // member
-			if( id.length > 2 ) {
-				document.view_form.list_no.value = no;
-				document.view_form.security.value =grant_view;
-				document.view_form.action ='detailD.php?infor='+infor+'&list_no='+no;
-				document.view_form.submit();
-			} else {
-				alert("member only! view"); return false;
-			}
-		} else {
-			document.view_form.security.value=security;
-			infor = document.view_form.infor.value;
-			old_no= document.view_form.list_no.value;
-			document.view_form.old_no.value=old_no;
-			url = "password_.php?infor="+infor + "&list_no=" +no+ "&page=" +page+ "&call_pg=detailD.php";
-			window.open(url,"newP","width=600,height=300,scrollbars=no");
-		}*/
 	}
 
 	function search_data(menu_mode){
@@ -477,15 +421,8 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 		document.c_sel2.submit();
 	}
 	function board_write( infor, user_lev, page, grant_write ){
-		//alert("grant_write: " + grant_write);
-		//if( user_lev < 2 ) {
 		if( user_lev < grant_write ) {
 			alert('Please! you login lev:' +user_lev );
-			return false;
-		}
-		lev = document.view_form.bbs_lev.value;
-		if( lev != 0 && lev > user_lev ) {
-			alert(' You do not have permission to write. lev:'+lev+','+user_lev );
 			return false;
 		}
 		document.view_form.mode.value='bbs_writeTT';

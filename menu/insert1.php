@@ -2,18 +2,23 @@
 	include_once('../tkher_start_necessary.php');
 	include "./infor.php";
 
+	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
 	else {
 		$infor = '';
 		m_("Error infor: $infor - insert1.php "); exit;
 	}
-	$ss_mb_id= get_session("ss_mb_id");
-	$H_ID= $ss_mb_id;	$H_LEV	= $member['mb_level'];  $ip = $_SERVER['REMOTE_ADDR'];
-	$from_session_id = $H_ID;
-	$H_NAME	= $member['mb_name'];
-	$cranim_id  = $H_ID;
-	$cranim_lev = $H_LEV;
+	$H_ID= get_session("ss_mb_id");
+	if( $H_ID !=''){
+		$H_LEV	= $member['mb_level'];
+		$H_NAME	= $member['mb_name'];
+	} else {
+		$H_ID='Guest';
+		$H_NAME	= 'Guest';
+		$H_LEV	= 1;
+	}
+	//1Mb Only uploaded below. file size:1.1949167251586914, upfile:1
 ?>
 <html>
 <head>
@@ -30,26 +35,25 @@
 </head>
 <SCRIPT src="<?=KAPP_URL_T_?>/include/js/contents_resize.js" type=text/javascript></SCRIPT>
 
-<!-- <script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script> -->
 <?php
 	switch( $mf_infor[47] ){
 		case '0': break;
-		case '1':
+		case '1': break;
+		case '2':
 			if( !$H_ID || $H_LEV < 2 ) { 
 				m_("null You do not have permission to write."); 
-				//echo "<script>history.back(-1);</script>"; exit;
-				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
+				echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
+				//echo "<script>top.location.reload();</script>";	exit;
 			}
 			else break;
-		case '2': 
+		case '3': 
 			if( $H_ID != $mf_infor[53] ) { 
 				m_("user You do not have permission to write."); 
 				//echo "<script>history.back(-1);</script>"; exit;
 				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
 			}
 			else break;
-		case '3': 
+		case '8': 
 			if( $H_LEV < 8 ) { 
 				m_("manager You do not have permission to write."); 
 				//echo "<script>history.back(-1);</script>"; exit;
@@ -58,19 +62,9 @@
 			else break;
 	}
 
-$amember_name	= $H_NAME;
-$amember_id		= $H_ID; //$amember_email	= $HTTP_SESSION_VARS["H_EMAIL"];
-$mf_47=$mf_infor[47];
-/*
-if ( ($mf_infor[47] > $H_LEV) and ($mf_infor[47] != '4')) {
-	echo "<script>alert('You do not have write permission. mf47:'+$mf_47); history.go(-1);</script>";
-	exit;
-}
-else if( !$H_LEV and ($mf_infor[47] != '4')) {
-	echo "<script>alert('You do not have write permission. mf47:'+$mf_47); history.go(-1);</script>";
-	exit;
-}
-*/
+	$amember_name	= $H_NAME;
+	$amember_id		= $H_ID;
+	$mf_47=$mf_infor[47];
 ?>
 
 <script language="JavaScript"> 
@@ -125,7 +119,6 @@ else if( !$H_LEV and ($mf_infor[47] != '4')) {
 				return false;
 			}
 		}
-		document.insert_form.mode.value='insert_form'; 
 		if(document.insert_form.name.value==''){
 			alert('Please enter your name. ');
 			document.insert_form.name.focus();
