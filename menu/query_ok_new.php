@@ -141,14 +141,14 @@
 		if( $mq1 ) {
 			$day = date("Y-m-d H:i:s");
 			$link_name= KAPP_URL_T_ . '/menu/index_bbs.php?infor='.$board_num;
-			$home_url = KAPP_URL_T_; //"GCOM05!"; // 의미가 없다.
-			$name     = $_POST['aboard_name'];	// 게시판 명 
-			$fileup 		= 1;
-			$grant_view	    = 1;	//0:all, 1:member, 2:운영자 3:system manager
-			$grant_write	= 2;	//0:all, 1:member, 2:운영자 3:system manager
-			$xlev			= $H_LEV; // "2";	// no use.
+			$home_url = KAPP_URL_T_;
+			$name     = $_POST['aboard_name'];
+			$fileup 		= 3;
+			$grant_view	    = 1;
+			$grant_write	= 2;
+			$xlev			= $H_LEV;
 			$memo			= "board_list3 - create - query_ok_new $day ";
-			$job_link_type = 'A';	// A=aboard index_bbs.php 에서 구분하여 처리한다.
+			$job_link_type = 'A';
 			$table_width	= "800";
 			$list_size		= 20;
 			$memo_gubun	    = 1;
@@ -192,7 +192,7 @@
 			$bottom_html		= "";
 			$title_color		= "#FFFFFF";
 			$title_text_color	= "#000000";
-			$security			= "0";	// 비밀글 사용:1, 비밀글 사용안함:0
+			$security			= "0";
 			$total_record       = 0;
 			$session_club_url   = KAPP_URL_;
 
@@ -216,8 +216,8 @@
 
 			$mq2 = sql_query( $query );  
 			if( $mq2 ){
-				$f_path1	= KAPP_PATH_T_ . "/file/" . $H_ID;    //$mf_infor[53];
-				$f_path2	= $f_path1 . "/aboard_". $table_name; //$mf_infor[2];
+				$f_path1	= KAPP_PATH_T_ . "/file/" . $H_ID;
+				$f_path2	= $f_path1 . "/aboard_". $table_name;
 				if ( !is_dir($f_path1) ) {
 					if ( !@mkdir( $f_path1, 0755 ) ) {
 						echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
@@ -233,11 +233,9 @@
 					}
 				}
 			} else {
-				//echo "A sql: " . $query;
 				exit;
 			}
 			$up_day  = date("Y-m-d-H:i:s",time());
-			/////////////    job_link_table    ///////////////////////////////////////////////////
 			$job_group = 'aboard';
 			$jong      = 'A';
 			if( $mq1 and $mq2 ){
@@ -245,15 +243,12 @@
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_name, 'aboard@query_ok_new', $name, $table_name, $table_name);
 				echo "<script>alert( 'name:" . $name . " : " . $table_name . ", infor: " .$board_num ."- The bulletin board has been created.');</script>";
 			}
-			//echo("<meta http-equiv='refresh' content=0;url='board_list3.php?infor=$board_num&page=$page'>");
-			//exit;
 			echo "<script>history.back(-1);</script>"; exit;
 		} else {
 			m_(" Table Create ERROR --------");
 			echo "create sql: " . $query; exit;
 		}
-	} else if( $mode=='memo_insert'){ //call:list1_detail.php : comment , reply.php .
-
+	} else if( $mode=='memo_insert'){
 		$context    = $_POST['context'];
 		if( isset($_POST['list_no'])) $list_no = $_POST['list_no'];
 		else $list_no ='';
@@ -285,7 +280,7 @@
 		if( $mn){
 			while( $rs =sql_fetch_array($mq) ){
 				if( $rs['file_name'] != ""){
-					$del_file = "../file/" . $mf_infor[53] . "/aboard_" . $mf_infor[2] . "/" . $rs['file_name']; // 53['make_id'] = 8['imember']
+					$del_file = "../file/" . $mf_infor[53] . "/aboard_" . $mf_infor[2] . "/" . $rs['file_name'];
 					exec ("rm $del_file");
 				}
 			}
@@ -311,14 +306,14 @@
 		$cnt        = 0;
 		if( strlen( $upfile_name) > 0 ){
 			$file_ext		= $_POST['file_ext'];
-			if ( $upfile_size >  $upload_file_size_limit ) {		// my_func. 3*1000000
-				m_( $upload_file_size_limit . "$upfile_size Mb low $upload_file_size_limit, Only uploaded below"); // 이하만 업로드 가능합니다 
+			if ( $upfile_size >  $upload_file_size_limit ) {
+				m_( $upload_file_size_limit . "$upfile_size Mb low $upload_file_size_limit, Only uploaded below");
 				echo "<script>history.go(-1);</script>";
 				exit;
 			}
 			$upfile_name	= $_FILES["file"]["name"];
 			$upfile_name	= str_replace(" ", "", $upfile_name);
-			$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53]; // 53['make_id'] = 8['imember']
+			$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
 			$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];
 			if ( !is_dir($f_path1) ) {
 				if ( !@mkdir( $f_path1, 0755 ) ) {
@@ -344,7 +339,7 @@
 		if( isset($_POST['password']) ) $pass = $_POST['password'];
 		else $pass = '';
 		if( isset($_POST['security']) ) $security = $_POST['security'];
-		else $security = '';
+		else $security = '0';
 
 		$re   = $re+1;
 		$step = $step+1;
@@ -392,12 +387,11 @@
 		sql_query( $sql );
 		echo "<meta http-equiv='refresh' content=0;url='board_list_memo.php?infor=$infor'>";
 		exit;
-	} else if( $mode == "Update_nm_change" ){ // board_list3.php Change : board name 
+	} else if( $mode == "Update_nm_change" ){
 		$chgname  = $_POST['chgname'];
-		$board_no = $_POST['board_no']; // table no - infor
-		$board_nm = $_POST['board_nm']; // table_name
-		$home_url = $_POST['board_gubun_value']; // board_gubun_value create tree - GCOM05!
-
+		$board_no = $_POST['board_no'];
+		$board_nm = $_POST['board_nm'];
+		$home_url = $_POST['board_gubun_value'];
 		if( isset($_POST['page'])) $page=$_POST['page']; 
 		else $page ='';
 		$link_ = KAPP_URL_T_ . "/menu/index_bbs.php?infor=" . $board_no;
@@ -405,15 +399,12 @@
 		$mq=sql_query($query);
 		$sqlA = "update {$tkher['job_link_table']} set user_name='$chgname', job_name='$chgname' , job_addr='$link_', jong='A' where user_id='$H_ID' and aboard_no='$board_nm' ";
 		sql_query( $sqlA );
-
-		if( $home_url == 'GCOM05!' ){ // tree create board - GCOM05!
-			$sql = "update {$tkher['sys_menu_bom_table']} set sys_subtit='$chgname' where sys_userid='$H_ID' and book_num='$board_nm' "; //dao1764303785
+		if( $home_url == 'GCOM05!' ){
+			$sql = "update {$tkher['sys_menu_bom_table']} set sys_subtit='$chgname' where sys_userid='$H_ID' and book_num='$board_nm' "; 
 			sql_query( $sql );
 		}
-		//echo "<meta http-equiv='refresh' content='0; URL=board_list3.php?page=".$page."'>";	exit;
 		echo "<script>window.open('board_list3.php?page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
-
-	} else if( $mode == "Update_func_my" ){ // board_list3.php
+	} else if( $mode == "Update_func_my" ){
 		$pg  = $_POST['pg'];
 		$grant_read  = $_POST['xread'];
 		$grant_write = $_POST['xwrite'];
@@ -422,15 +413,14 @@
 		$xno = $_POST['no'];
 		$page = $_POST['pageno'];
 		$xfile_size = $_POST['xfile_size'];
-			$query = "update {$tkher['aboard_infor_table']} set fileup = $xfile_size, movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
-			$mq = sql_query($query);
-			if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
-			else {
-				echo "sql: " . $query; exit;
-			}
-		//echo "<meta http-equiv='refresh' content='0; URL=$pg?page=".$page."'>";exit;
+		$query = "update {$tkher['aboard_infor_table']} set fileup = $xfile_size, movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
+		$mq = sql_query($query);
+		if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
+		else {
+			echo "sql: " . $query; exit;
+		}
 		echo "<script>window.open('$pg&page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
-	} else if( $mode == "Update_func_run" ){ // board_list3.php
+	} else if( $mode == "Update_func_run" ){
 		$grant_read  = $_POST['xread'];
 		$grant_write = $_POST['xwrite'];
 		$grant_memo  = $_POST['xmemo'];
@@ -439,13 +429,12 @@
 		$page = $_POST['page'];
 		$line_cnt = $_POST['line_cnt'];
 		$xfile_size = $_POST['xfile_size'];
-			$query = "update {$tkher['aboard_infor_table']} set fileup = '$xfile_size', movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
-			$mq = sql_query($query);
-			if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
-			else {
-				echo "sql: " . $query; exit;
-			}
-		//echo "<meta http-equiv='refresh' content='0; URL=./board_list3.php?page=".$page."&line_cnt=".$line_cnt."'>";exit;
+		$query = "update {$tkher['aboard_infor_table']} set fileup = '$xfile_size', movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
+		$mq = sql_query($query);
+		if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
+		else {
+			echo "sql: " . $query; exit;
+		}
 		echo "<script>window.open('board_list3.php?page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
 
 	} else if( $mode == "insert_form_image") {
@@ -516,7 +505,7 @@
 		target = $target,
 		step = 0,
 		re = 0,
-		security = '' ";
+		security = '0' ";
 
 		$mqA = sql_query( $query );
 		if( $mqA ){
@@ -524,12 +513,10 @@
 		} else {
 			echo "Error sql: " . $queryA; exit;
 		}
-		//echo "<meta http-equiv='refresh' content=0;url='list1.php?infor=$infor'>";
-		//echo "<script>top.location.reload();</script>";	exit;
 		echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
 		exit;
 
-	} else if( $mode == "memo_insert_form_") {	// board_list_memo.php : call. 
+	} else if( $mode == "memo_insert_form_") {
 		include "./infor.php";
 		$upload_file_size_limit = $mf_infor[3]*1000000;
 		if( strlen( $_FILES["file"]["name"] ) > 0 ){
@@ -544,13 +531,13 @@
 		$f_path2	= "";
 		if ( $upfile_name && strlen($_POST['file_ext']) > 3) {
 			$file_ext		= $_POST['file_ext'];
-			if ( $upfile_size >  $upload_file_size_limit ) {		// my_func. 3*1000000
+			if ( $upfile_size >  $upload_file_size_limit ) {
 				m_("  Only $upload_file_size_limit Mb or less can be uploaded ");
 				echo "<script>history.go(-1);</script>";
 				exit;
 			}
 			$upfile_name	= str_replace(" ", "", $upfile_name);
-			$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53]; // 53['makeid'] = 8['imember']
+			$f_path1	= KAPP_PATH_T_ . "/file/" . $mf_infor[53];
 			$f_path2	= $f_path1 . "/aboard_".$mf_infor[2];
 			if ( !is_dir($f_path1) ) {
 				if ( !@mkdir( $f_path1, 0755 ) ) {
@@ -564,11 +551,11 @@
 					echo "<script>history.go(-1); </script>";exit;
 				}
 			}
-			$upfile2 = $H_ID . "_" . time() . $file_ext; //$ext_name;
+			$upfile2 = $H_ID . "_" . time() . $file_ext;
 			move_uploaded_file( $_FILES["file"]["tmp_name"], $f_path2 . "/" . $upfile2 );
 		}
 		$cnt=0;		$step=0;		$re=0;
-		$query  ="select max(no) as no from aboard_". $mf_infor[2]; //$infor;
+		$query  ="select max(no) as no from aboard_". $mf_infor[2];
 		$mq     =sql_query($query);
 		$target =sql_num_rows( $mq );
 		if( !$target ) $target=1;
@@ -597,21 +584,16 @@
 		target = $target,
 		step = 0,
 		re = 0,
-		security = '' ";
-
+		security = '0' ";
 		$mqA = sql_query( $query );
 		if( $mqA ){
 			//m_(" OK! insert board: aboard_" . $mf_infor[2] );
 		} else {
 			echo "Error sql: " . $queryA; exit;
 		}
-		//echo "<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>";exit;
 		echo "<script>window.open('index_bbs.php?infor=".$infor."','_top','')</script>";exit;
-		
-
 	} else {
 		m_("query_ok_new - Mode Error , mode:$mode, infor:$infor");
-		//echo("<meta http-equiv='refresh' content=0;url='index_bbs.php?infor=$infor'>"); 
 		echo "<script>window.open('index_bbs.php?infor=".$infor."','_top','')</script>";exit;
 	}
 ?>

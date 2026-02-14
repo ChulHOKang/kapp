@@ -228,7 +228,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 <?php
 
 		$SQL1		= "SELECT * from aboard_" . $mf_infor[2];
-		$SQL_w		= ' '; //" where step=0 and re=0 ";
+		$SQL_w		= ' ';
 		$where_= " where subject like '%$search_text%' ";
 		$orderby		= " order by target desc , step ";
 		if( $mode=='SR' )	$SQL1 = $SQL1 . $SQL_w . $where_ . $orderby;
@@ -300,7 +300,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 				if( $today > 201600){
 					$ck = 'big';
 				} else {
-					$new="<img src='../icon/new.gif' border='0'>"; // 38:./icon/new.gif
+					$new="<img src='../icon/new.gif' border='0'>"; 
 					$ck = 'low';
 				}
 				$infor38 = $mf_infor[38];
@@ -364,7 +364,6 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 					</tbody>
 				</table>
 				</form>
-
 				<div class="boardNorBox mt10">
 					<div class="fl">
 						<form name='c_sel2' action='listD.php' method='post' enctype="multipart/form-data" >
@@ -377,15 +376,13 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 							<table>
 								<tr>
 								<td align='left'><input type="text" name='search_text' /></td>
-								<!-- <td align=left><div class="sr"><a href="javascript:void(0)" class="btn_bo02">Search</a></div></td> -->
 								<td align='left'><div class="sr"><a href="javascript:search_data('<?=$menu_mode?>')" class="btn_bo02">Search</a></div></td>
 								<td align='right'><div class="fr">
 								<a href="javascript:board_write('<?=$infor?>','<?=$H_LEV?>','<?=$page?>','<?=$grant_write?>');" class="btn_bo02">Write</a></div></td>
 								</tr>
 							</table>
 						</form>
-					</div><!-- 검색버턴과 write 버턴. -->
-
+					</div>
 <?php
 					paging("listD.php?infor=$infor&search_text=$search_text&menu_mode=$menu_mode",$total_count,$page,$line_cnt,$page_cnt);
 ?>
@@ -396,15 +393,13 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 <script type="text/javascript" >
 
 	function board_view(infor, grant_view, no, page, security_my, id, menu_mode){
-		//alert("id:" +id + ", len: " + id.length + ", grant_view:" + grant_view);
-		//if( id.length > 2 ){ alert("------ id:" +id); }
-		if( security_my == '1' ) { // my => security_my = 1
+		if( security_my == '1' ) {
 				document.view_form.list_no.value = no;
 				document.view_form.security.value =grant_view;
 				document.view_form.action ='detailD.php?infor='+infor+'&list_no='+no+'&menu_mode='+menu_mode;
 				document.view_form.submit();
-		} else if( security_my == '' ) { //  1: guest
-			if( grant_view > 2 ){ // 2: member
+		} else if( security_my == '' ) { 
+			if( grant_view > 2 ){ 
 				alert("my only! view"); return false;
 			} else {
 				document.view_form.list_no.value = no;

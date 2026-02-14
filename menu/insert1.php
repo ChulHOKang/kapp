@@ -18,7 +18,6 @@
 		$H_NAME	= 'Guest';
 		$H_LEV	= 1;
 	}
-	//1Mb Only uploaded below. file size:1.1949167251586914, upfile:1
 ?>
 <html>
 <head>
@@ -30,11 +29,9 @@
 <meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
 <meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
 <meta name="robots" content="ALL">
-<!-- <link rel="stylesheet" href="./css/Oboard.css" type="text/css"> -->
 <link rel="stylesheet" href="../include/css/default.css" type="text/css" />
 </head>
 <SCRIPT src="<?=KAPP_URL_T_?>/include/js/contents_resize.js" type=text/javascript></SCRIPT>
-
 <?php
 	switch( $mf_infor[47] ){
 		case '0': break;
@@ -43,25 +40,21 @@
 			if( !$H_ID || $H_LEV < 2 ) { 
 				m_("null You do not have permission to write."); 
 				echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
-				//echo "<script>top.location.reload();</script>";	exit;
 			}
 			else break;
 		case '3': 
 			if( $H_ID != $mf_infor[53] ) { 
 				m_("user You do not have permission to write."); 
-				//echo "<script>history.back(-1);</script>"; exit;
 				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
 			}
 			else break;
 		case '8': 
 			if( $H_LEV < 8 ) { 
 				m_("manager You do not have permission to write."); 
-				//echo "<script>history.back(-1);</script>"; exit;
 				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
 			}
 			else break;
 	}
-
 	$amember_name	= $H_NAME;
 	$amember_id		= $H_ID;
 	$mf_47=$mf_infor[47];
@@ -93,7 +86,6 @@
 				return false;
 			}
 		}
-		//else{return true;}
 	}
 	function textarea_size(value) {
 		if (value == 0) {
@@ -108,9 +100,7 @@
 		document.insert_form.action="list1.php";
 		document.insert_form.submit();
 	}
-	// security:비밀글, upfile: 첨부화일.
 	function insert_funcK(security, upfile, id) {
-	//	alert('insert_funcK ------------ security:'+security +' ,upfile:'+ upfile);
 		if( !id ) {
 			var p1 = document.insert_form.password.value;
 			if( !p1 ){
@@ -135,7 +125,6 @@
 			return false;
 		}
 		if( security > 0){
-			//alert('2 --- security:'+security);
 			var se_ = document.insert_form.security1.value;
 			if(se_=="use"){
 				p = document.insert_form.security.value;
@@ -145,25 +134,19 @@
 					return false;
 				}
 			}
-		} else {
-			//alert('1 --- security:'+security);
 		}
 
 		if( upfile > 0 ){
 			var form = document.insert_form;
 			ff= form.file.value;
-			if (form.file.value != ""){
-				
-					input = document.getElementById('file');
+			if( form.file.value != ""){
+				input = document.getElementById('file');
 				var file_sz = input.files[0].size;
-				//file_sz = document.querySelector('input[type=file]').files[0].size; //OK
-				//alert('2 - file_sz:'+ file_sz);
-					file_sz = file_sz / 1024 / 1024;
-					if( file_sz > upfile ) {
-						alert( upfile +"Mb Only uploaded below. file size:" + file_sz + ', upfile:' + upfile );//Mb Only uploaded below. file size:22.114242553710938
-						return false;
-					}
-
+				file_sz = file_sz / 1024 / 1024;
+				if( file_sz > upfile ) {
+					alert( upfile +"Mb Only uploaded below. file size:" + file_sz + ', upfile:' + upfile );
+					return false;
+				}
 				idx_path = form.file.value.lastIndexOf("."); 
 				if ( idx_path < 0 ) {
 					idx_colon = form.file.value.lastIndexOf(".");
@@ -172,21 +155,16 @@
 					temp = form.file.value.substring(idx_path);
 				}
 					temp = temp.toLowerCase();
-
-				//alert(' temp:'+temp);	return false;	// temp:.html
 				if( temp != ".jpg" && temp != ".gif" &&temp != ".png" &&temp != ".zip" && temp != ".csv" && temp != ".xls" && temp != ".hwp" && temp != ".pdf" && temp != ".txt" && temp != ".pem" && temp != ".ppk" && temp != ".alz" && temp != ".rar" &&temp != "pptx" && temp != "xlsx" && temp != ".mp3" && temp != ".mp4" && temp != ".avi"){
 					alert(" jpg,gif,png,zip,csv,xls,hwp,pdf,txt,pem,ppk,alz,rar,pptx,xlsx,mp3,mp4,avi Please format!");
 					return;
 				}
 				form.file_ext.value=temp;
 			}
-		} else {
 		}
-
 		document.insert_form.mode.value='insert_form_image'; 
 		document.insert_form.action='query_ok_new.php';
 		document.insert_form.submit();
-		
 	}
 
 	function previewFile(upfile) { 
@@ -195,11 +173,10 @@
 			var file_sz = input.files[0].size;
 			file_sz = file_sz / 1024 / 1024;
 			if( file_sz > upfile ) {
-				alert( upfile +"Mb Only uploaded below. file size:" + file_sz + ', upfile:' + upfile );//Mb Only uploaded below. file size:22.114242553710938
-				//return false;
+				alert( upfile +"Mb Only uploaded below. file size:" + file_sz + ', upfile:' + upfile );
 			}
 			var form = document.insert_form;
-			idx_path = form.file.value.lastIndexOf("."); //alert('idx_path:' + idx_path);//13
+			idx_path = form.file.value.lastIndexOf(".");
 				 temp = form.file.value.substring(idx_path);
 				 temp = temp.toLowerCase();
 
@@ -251,11 +228,10 @@
 					</tr>
 				 </table>
 
-				<table><!-- <?=$mf_infor[10]?> -->
+				<table>
 					<tr><td>
 					<br>
-				  <table width='100%' ><!-- <?=$mf_infor[24]?> bgcolor="WhiteSmoke" -->
-
+				  <table width='100%' >
 <FORM name='insert_form' action='query_ok_new.php' method='post' enctype="multipart/form-data" >
 		<input type='hidden' name='mode' value=''>
 		<input type='hidden' name='insert' value='1'>
@@ -263,7 +239,6 @@
 		<input type='hidden' name='infor' value='<?=$infor?>' > 
 		<input type='hidden' name='file_ext' value=''>
 		<input type='hidden' name='fileup_yn' value='<?=$mf_infor[3]?>'>
-
 					<tr><td colspan=2 width="100%" height="1" bgcolor="#ffffff" background="../icon/dot.gif"></td></tr>
 					<tr>
 					  <td width="15%" bgcolor="<?=$mf_infor[25]?>">
@@ -313,7 +288,7 @@
   </td></tr>
 </table>
   
-  </form>
+</form>
 
     </td>
   </tr>
@@ -321,5 +296,5 @@
 </td>
   </tr>
 </table>
-<?=$mf_infor[45]?>
+<!-- <?=$mf_infor[45]?> -->
 </html>

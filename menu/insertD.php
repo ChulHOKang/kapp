@@ -30,16 +30,11 @@
 		$H_NICK	= $member['mb_nick'];  
 		$H_EMAIL = get_session("ss_mb_email"); 
 	} else {
-		//if( $grant_write > 1 ){
-		//	echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
-		//	exit;
-		//} else {
-			$H_NICK	= 'Guest';
-			$H_NAME = 'Guest';
-			$H_LEV	= 1;
-			$H_ID	= 'Guest';  
-			$H_EMAIL= ''; 
-		//}
+		$H_NICK	= 'Guest';
+		$H_NAME = 'Guest';
+		$H_LEV	= 1;
+		$H_ID	= 'Guest';  
+		$H_EMAIL= ''; 
 	}
 
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
@@ -73,10 +68,6 @@
 			}
 			else break;
 	}
-	//if( $grant_write > 1 && $H_LEV < $grant_write ) { 
-	//	m_("You do not have permission to write. " . $H_ID . ", " . $H_LEV . ", write: " . $grant_write); 
-	//	echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
-	//}
 	$amember_name	= $H_NICK;
 	$amember_id		= $H_ID;
 	$mf_47 = $mf_infor[47];
@@ -121,15 +112,6 @@
 		else {$return = false;}
 	  return $return;
 	}
-	/*
-	 function back_go(infor,list_no, page) {
- 		x = document.tx_editor_form;
-		x.infor.value=infor;
-		x.list_no.value=list_no;
-		x.page.value=page;
-		x.action=x.previous.value;
-		x.submit();
-	}*/
 </script>
 
 </head>
@@ -152,7 +134,7 @@
 		<input type="hidden" name='name'		value='<?=$H_NICK?>' />
 		<input type='hidden' name='security_'   value='1'>
 		<input type='hidden' name='security_yn' value='<?=$mf_infor[51]?>'>
-		<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'><!-- upload file size -->
+		<input type='hidden' name='fileup_yn'   value='<?=$mf_infor[3]?>'>
 		<input type='hidden' name='html_yn'     value='<?=$mf_infor[7]?>'>
 		<input type='hidden' name='tab_enm'     value='aboard_<?=$mf_infor[2]?>'>
 		<input type='hidden' name='tab_hnm'     value='<?=$mf_infor[1]?>'>
@@ -241,15 +223,15 @@ if( $H_ID && $H_ID == 'Guest' ){
 
 <script type="text/javascript">
 	var config = {
-		txHost: '<?=KAPP_URL_T_?>', /* */
-		txPath: '<?=KAPP_URL_T_?>', /* */
-		txService: 'kapp', /* sample */
-		txProject: 'kapp', /* sample */
-		initializedId: "", /* In most cases, an empty string */
-		wrapper: "tx_trex_container", /* layer name (edit container) */
-		form: 'tx_editor_form'+"", /* Form name */
-		txIconPath: "images/icon/editor/", /* image dir */
-		txDecoPath: "images/deco/contents/", /*The image directory used in the body of the text is modified to an absolute path when used in a service so that it can be distributed as completed content.*/
+		txHost: '<?=KAPP_URL_T_?>',
+		txPath: '<?=KAPP_URL_T_?>',
+		txService: 'kapp',
+		txProject: 'kapp',
+		initializedId: "",
+		wrapper: "tx_trex_container",
+		form: 'tx_editor_form'+"",
+		txIconPath: "images/icon/editor/", 
+		txDecoPath: "images/deco/contents/",
 		canvas: {
 			styles: {
 				color: "#123456", /* basic font color */
@@ -271,7 +253,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 			}
 		},
 		size: {
-			contentWidth: 1500 /* If there is a width of the specified body area, set it to 700 1500 */
+			contentWidth: 1500
 		}
 	};
 
@@ -320,7 +302,6 @@ if( $H_ID && $H_ID == 'Guest' ){
 			return false;
 		}
 		var nm = x.nameA.value;
-		/* var contents = document.getElementById("EditCtrl").value; */
 		fileup = x.fileup_yn.value;
 		ff= x.fileA.value;
 		if( fileup > 0 && ff != "" ){
@@ -363,7 +344,6 @@ if( $H_ID && $H_ID == 'Guest' ){
 	 * @returns {Boolean} true if all data is valid
 	 */
 	function validForm(editor) {
-		/* Place your validation logic here sample : validate that content exists */
 		var validator = new Trex.Validator();
 		var content = editor.getContent();
 		if (!validator.exists(content)) {
@@ -385,8 +365,6 @@ if( $H_ID && $H_ID == 'Guest' ){
         var i, input;
         var form = editor.getForm();
         var content = editor.getContent();
-
-        /* The part where the body content creates a field and assigns a value */
         var textarea = document.createElement('textarea');
         textarea.name = 'content';
         textarea.value = content;
@@ -406,7 +384,6 @@ if( $H_ID && $H_ID == 'Guest' ){
 	}
 
 function youTubeImplant() {
-
     var popUrl = "./youtube.html";
     var popOption = "./youtube.html";
     window.open(popUrl, "", popOption);
