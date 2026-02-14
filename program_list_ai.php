@@ -2,12 +2,12 @@
 	include_once('./tkher_start_necessary.php');
 	$H_ID	= get_session("ss_mb_id"); $ip = $_SERVER['REMOTE_ADDR'];
 	if( !$H_ID ) {
-			m_("login page.  lev= $H_LEV");
-			echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
-			exit;
+		m_("login page.");
+		echo "<script>top.location.reload();</script>";	exit;
+	} else{
+		if( isset($member['mb_level'])) $H_LEV = $member['mb_level'];
+		else $H_LEV = 1;
 	}
-	if( isset($member['mb_level'])) $H_LEV = $member['mb_level'];
-	else $H_LEV = 1;
 	$formula_		= "";
 	$poptable_		= "";
 	$column_all		= "";

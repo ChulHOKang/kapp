@@ -13,12 +13,12 @@
 	$H_ID	= get_session("ss_mb_id");
 	if( $H_ID == '' ) {
 		m_("login please");
-		echo("<meta http-equiv='refresh' content='0; URL=./'>"); exit;
+		echo "<script>top.location.reload();</script>";	exit;
 	}
 	$H_LEV=$member['mb_level'];
 	if( $H_LEV < 2) {
 		m_("login please");
-		echo("<meta http-equiv='refresh' content='0; URL=./'>"); exit;
+		echo "<script>top.location.reload();</script>";	exit;
 	}
 
 	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
