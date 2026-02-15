@@ -81,43 +81,18 @@ $(function () {
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			//alert("Tnm: " + e.target.innerText);
 			$hnm = e.target.innerText;
 			$enm = document.getElementById($hnm).value;// document.view_form.$hnm.value;
-			//alert("Enm: " + $enm);
 			title_func($enm);
-			/*switch(e.target.innerText){
-				case 'Project' : title_func('group_name'); break;
-				case 'User'    : title_func('userid'); break;
-				case 'Program' : title_func('pg_name'); break;
-				case 'Table'   : title_func('tab_hnm'); break;
-				case 'Date'    : title_func('upday'); break;
-				default        : title_func(''); break;
-			}*/
-		}, 250); // 약 300ms 대기 후 실행
+		}, 250); // Executes after waiting about 250ms - 약 250ms 대기 후 실행
 	  
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
-		//alert("Tnm: " + e.target.innerText);
+		clearTimeout(timer); // Remove last click timer - 마지막 클릭 타이머를 제거
 		$hnm = e.target.innerText;
-		$enm = document.getElementById($hnm).value;// document.view_form.$hnm.value;			//alert("Enm: " + $enm);
+		$enm = document.getElementById($hnm).value;
 		title_wfunc($enm);
-
-		//$hnm = e.target.innerText;
-		//$enm = document.view_form.$hnm.value;
-		//title_wfunc($enm);
-		/*
-		switch(e.target.innerText){
-				case 'Project' : title_wfunc('group_name'); break;
-				case 'User'    : title_wfunc('userid'); break;
-				case 'Program' : title_wfunc('pg_name'); break;
-				case 'Table'   : title_wfunc('tab_hnm'); break;
-				case 'Date'    : title_wfunc('upday'); break;
-				default        : title_wfunc(''); break;
-		}*/
 	});
 
 	  $('table.listTableT').each(function() {
@@ -252,11 +227,11 @@ $(function () {
 			var c_sel3 = document.getElementById("c_sel3");
 			i = c_sel3.selectedIndex;
 			c_sel3 = c_sel3.options[i].value;
-			var searchT = document.getElementById("searchT").value;
+			//var searchT = document.getElementById("searchT").value;
 			document.view_form.mode.value = 'search';
 			document.view_form.search_fld.value = c_sel;
 			document.view_form.search_choice.value = c_sel3;
-			document.view_form.searchT.value = searchT;
+			//document.view_form.searchT.value = searchT;
 			document.view_form.action = 'tkher_program_data_list.php';
 			document.view_form.submit();
 		});
@@ -359,10 +334,6 @@ $(function () {
 	$cur='B';
 	include "./menu_run.php";
 
-	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
-	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
-	else  $searchT = "";
-
 	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld']; // c_sel
 	else if( isset($_POST['search_fld']) ) $search_fld= $_POST['search_fld'];
 	else  $search_fld = "";
@@ -370,6 +341,10 @@ $(function () {
 	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice']; // c_sel3
 	else if( isset($_POST['search_choice']) ) $search_choice= $_POST['search_choice'];
 	else  $search_choice = "";
+
+	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT']; // search data
+	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
+	else  $searchT = "";
 
 	$fld_enm= array();
 	$fld_hnm= array();
@@ -407,6 +382,7 @@ $(function () {
 	$view_msg ='';
 	if( $H_LEV >= $grant_view || $pg_mid == $H_ID ) {
 			$SQL1 = "SELECT * from `$tab_enm` ";
+			/*
 			if( $mode=='search' ){
 				if( $search_choice == "like")		$SQL1 = $SQL1 . " where `$search_fld` $search_choice '%$searchT%' ";
 				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
@@ -416,7 +392,12 @@ $(function () {
 					$SQL1 = $SQL1 . " where $search_fld $search_choice '%$search_text%' ";      
 					$SQL1 = $SQL1 . " order by $fld_code ";      
 				} else $SQL1 = $SQL1 . " order by $fld_code ";      
-			}      
+			} */     
+
+			if( $search_choice != '' && $searchT !='') {   
+				if( $search_choice == "like")		$SQL1 = $SQL1 . " where `$search_fld` $search_choice '%$searchT%' ";
+				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
+			} 
 
 			if( ($result = sql_query( $SQL1 ) )==false ){
 				printf("Invalid query: %s\n", $SQL1);
@@ -606,24 +587,32 @@ if( $H_ID==$pg_mid ) {
 //			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
 //			else $OrderBy	= " order by seqno desc ";        
 
+			/*if( $mode == "search" ){
+				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
+				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
+			} else if( $mode=='title_func' ) {     
+				if( $search_choice != '' && $searchT !='') {     
+					if( $search_choice == 'like' )	$SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";  
+					else					$SQL = $SQL . " where $search_fld $search_choice '$searchT' ";       
+				}     
+			}  */
+
 			if( $mode == "search" ){
 				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
 				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
-			} 
-			else if( $mode=='title_func' ) {     
-				if( $search_choice != '' && $search_text !='') {     
-					if( $search_choice == 'like' )	$SQL = $SQL . " where $search_fld $search_choice '%$search_text%' ";  
-					else					$SQL = $SQL . " where $search_fld $search_choice '$search_text' ";       
+			} else {     
+				if( $search_choice != '' && $searchT !='') {     
+					if( $search_choice == 'like' )	$SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";  
+					else					$SQL = $SQL . " where $search_fld $search_choice '$searchT' ";       
 				}     
-			}     
+			}
 
 			//$SQL = $SQL . $OrderBy . $SQL_limit;
-	if( $fld_code!='' ) $OrderBy = " ORDER BY $fld_code $fld_code_asc ";    
-	else $OrderBy	= " ORDER BY seqno desc ";
-	$SQL = $SQL . $OrderBy;
-	$SQL = $SQL . $SQL_limit;
+			if( $fld_code!='' ) $OrderBy = " ORDER BY $fld_code $fld_code_asc ";    
+			else $OrderBy	= " ORDER BY seqno desc ";
+			$SQL = $SQL . $OrderBy;
+			$SQL = $SQL . $SQL_limit;
 
-//echo "SQL: " . $SQL; exit;
 			if( ($result = sql_query( $SQL ) )==false )	{
 				printf("Record 0 : query: %s\n", $SQL);
 			} else {

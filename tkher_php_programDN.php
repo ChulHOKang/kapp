@@ -55,20 +55,39 @@
 	fwrite($fsr,"<script src=\"//code.jquery.com/jquery.min.js\"></script> \r\n");
 	fwrite($fsr,"<script> \r\n");
 	fwrite($fsr,"$"."(function () { \r\n");
+
+	fwrite($fsr,"	let timer; \r\n");
+	fwrite($fsr,"	document.getElementById('tit_et').addEventListener('click', function(e) { \r\n");
+	fwrite($fsr,"		clearTimeout(timer); \r\n");
+	fwrite($fsr,"		timer = setTimeout(() => { \r\n");
+	fwrite($fsr,"			Fhnm = e.target.innerText; \r\n");
+	fwrite($fsr,"			Fenm = document.getElementById(Fhnm).value;         \r\n");
+	fwrite($fsr,"			title_func(Fenm); \r\n");
+	fwrite($fsr,"		}, 250); // Executes after waiting about 250ms - 약 250ms 대기 후 실행 \r\n");
+	fwrite($fsr,"	}); \r\n");
+
+	fwrite($fsr,"	document.getElementById('tit_et').addEventListener('dblclick', function(e) { \r\n");
+	fwrite($fsr,"		clearTimeout(timer); // Remove last click timer - 마지막 클릭 타이머를 제거 \r\n");
+	fwrite($fsr,"		Fhnm = e.target.innerText; \r\n");
+	fwrite($fsr,"		Fenm = document.getElementById(Fhnm).value; \r\n");
+	fwrite($fsr,"		title_wfunc(Fenm); \r\n");
+	fwrite($fsr,"	}); \r\n");
+
+
 	fwrite($fsr,"  $"."('table.listTableT').each(function() { \r\n");
-	fwrite($fsr,"    if( $(this).css('border-collapse') == 'collapse') { \r\n");
-	fwrite($fsr,"      $(this).css('border-collapse','separate').css('border-spacing',0); \r\n");
+	fwrite($fsr,"    if( $"."(this).css('border-collapse') == 'collapse') { \r\n");
+	fwrite($fsr,"      $"."(this).css('border-collapse','separate').css('border-spacing',0); \r\n");
 	fwrite($fsr,"    } \r\n");
-	fwrite($fsr,"    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') ); \r\n");
+	fwrite($fsr,"    $"."(this).prepend( $"."(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') ); \r\n");
 	fwrite($fsr,"  }); \r\n");
 	fwrite($fsr,"  $"."(window).scroll(function() { \r\n");
 	fwrite($fsr,"    var scrollTop = $(window).scrollTop(), \r\n");
 	fwrite($fsr,"      scrollLeft = $(window).scrollLeft(); \r\n");
 	fwrite($fsr,"    $"."('table.listTableT').each(function(i) { \r\n");
-	fwrite($fsr,"      var thead = $(this).find('thead:last'), \r\n");
-	fwrite($fsr,"        clone = $(this).find('thead:first'), \r\n");
-	fwrite($fsr,"        top = $(this).offset().top, \r\n");
-	fwrite($fsr,"        bottom = top + $(this).height() - thead.height(); \r\n");
+	fwrite($fsr,"      var thead = $"."(this).find('thead:last'), \r\n");
+	fwrite($fsr,"        clone = $"."(this).find('thead:first'), \r\n");
+	fwrite($fsr,"        top = $"."(this).offset().top, \r\n");
+	fwrite($fsr,"        bottom = top + $"."(this).height() - thead.height(); \r\n");
 	fwrite($fsr,"      if( scrollTop < top || scrollTop > bottom ) { \r\n");
 	fwrite($fsr,"        clone.hide(); \r\n");
 	fwrite($fsr,"        return true; \r\n");
@@ -86,66 +105,27 @@
 	//fwrite($fsr,"<link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_program_data_list.css\" type=\"text/css\" /> \r\n");
 	fwrite($fsr,"<link rel='stylesheet' href='kapp_program_data_list.css' type='text/css' /> \r\n");
 
-	//----- style start -----------------------------------
-	/*
-	fwrite($fsr,"<style>  \r\n");
-	fwrite($fsr,"*{ font-family:'Noto Sans KR', 'Malgun Gothic', sans-serif;font-size:14px;color:#666;-webkit-overflow-scrolling: touch;letter-spacing:-1px;-webkit-transition:color .5s, background .5s;transition:color .5s, background .5s;}  \r\n");
-	fwrite($fsr,"html,body,p, input, select, form, label, mark, ul, ul li, ol, ol li, dl, dl dt, dl dd, img, a, table, h1, h2, h3, h4, h5{margin:0;padding:0;}  \r\n");
-	fwrite($fsr,"img{ border:0; }  \r\n");
-	fwrite($fsr,"ul, ol{ list-style:none; }  \r\n");
-	fwrite($fsr,"a{color:#555;text-decoration:none; }  \r\n");
-	fwrite($fsr,"a:hover{text-decoration:none; }  \r\n");
-	fwrite($fsr,"table{border:0;border-collapse:collapse;table-layout:fixed;}  \r\n");
-	fwrite($fsr,".HeadTitle03AX{  \r\n");
-	fwrite($fsr,"	display:inline-block;  \r\n");
-	fwrite($fsr,"	margin:0 1px;  \r\n");
-	fwrite($fsr,"	height:35px;  \r\n");
-	fwrite($fsr,"	line-height:35px;  \r\n");
-	fwrite($fsr,"	padding:0 20px;  \r\n");
-	fwrite($fsr,"	font-size:25px;  \r\n");
-	fwrite($fsr,"	background:#d01c27;  \r\n");
-	fwrite($fsr,"	color:#ffffff;  \r\n");
-	fwrite($fsr,"	border-radius:5px;  \r\n");
-	fwrite($fsr,"}  \r\n");
-	fwrite($fsr,".btn_bo02T{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}  \r\n");
-	fwrite($fsr,".btn_bo03T{width:84px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}  \r\n");
-	
-	fwrite($fsr,".viewHeaderT{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}  \r\n"); // text-align:right;
-	fwrite($fsr,".viewHeaderT span{left:0;top:12px;font-size:14px;color:#686868;}  \r\n"); // position:absolute; 제거
-	fwrite($fsr,".boardViewT{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-	fwrite($fsr,".boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-	fwrite($fsr,".listTableT{width:100%px;text-decoration: none;}  \r\n");
-	fwrite($fsr,".listTableT th{word-break:break-all;height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}  \r\n");
-	fwrite($fsr,".listTableT td{word-break:break-all;height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}  \r\n");
-	fwrite($fsr,".listTableT td a span{font-size:14px;color:#69604f;}  \r\n");
-	fwrite($fsr,".listTableT td a .t01{font-size:14px;color:#d01c27;}  \r\n");
-	fwrite($fsr,".listTableT span{font-size:18px;color:#171512; vertical-align:baseline; }  \r\n");
-	fwrite($fsr,".listTableT .cell01{width:60px;text-align:center;text-decoration: none;}  \r\n");
-	fwrite($fsr,".listTableT .cell03{font-size:18px;text-align:center;text-decoration: none;font-weight:bold;}  \r\n");
-	fwrite($fsr,".listTableT .cell03X{}  \r\n");
-	fwrite($fsr,".listTableT .cell05{width:70px;text-align:center;}  \r\n");
-	fwrite($fsr,".listTableT .cell02{width:80px;text-align:center;}  \r\n");
-	fwrite($fsr,".listTableT .cell04{width:200px;text-align:center;}  \r\n");
-	fwrite($fsr,".listTableT .cell06{width:50px;text-align:center;}  \r\n");
-	fwrite($fsr,".paging{margin:20px auto 0 auto;width:100%;height:auto;overflow:hidden;text-align:center;}  \r\n");
-	fwrite($fsr,".paging a, .paging span, .paging img{display:inline-block;vertical-align:middle;}  \r\n");
-	fwrite($fsr,".paging a{color:#979288;font-size:18px;font-weight:bold;}  \r\n");
-	fwrite($fsr,".paging span{color:#979288;font-size:18px;font-weight:bold;}  \r\n");
-	fwrite($fsr,".paging a:hover{opacity:1;color:#d01c27;}  \r\n");
-	fwrite($fsr,".paging a.on{font-weight:bold;color:#d01c27;}  \r\n");
-	fwrite($fsr,".paging a.prev{margin-right:20px;}  \r\n");
-	fwrite($fsr,".paging a.next{margin-left:20px;}  \r\n");
-	fwrite($fsr,"</style>  \r\n");*/
-	//-------------------- style end ---------
 
 	fwrite($fsr," <script type='text/javascript' >                          \r\n");
 	
-	fwrite($fsr,"	function title_func(fld_code){                       \r\n");
+	fwrite($fsr,"	function title_wfunc(fld_code){                       \r\n");
 	fwrite($fsr,"		document.view_form.page.value = 1;                \r\n");
-	fwrite($fsr,"		document.view_form.fld_code.value= fld_code;           \r\n");
-	fwrite($fsr,"		document.view_form.mode.value='title_func';           \r\n");
-	fwrite($fsr,"		document.view_form.action='".$runF1."';                \r\n");
-	fwrite($fsr,"		document.view_form.submit();                         \r\n");
+	fwrite($fsr,"		document.view_form.fld_code.value= fld_code;      \r\n");
+	fwrite($fsr,"		document.view_form.fld_code_asc.value= 'desc';    \r\n");
+	fwrite($fsr,"		document.view_form.mode.value='title_wfunc';      \r\n");
+	fwrite($fsr,"		document.view_form.target='_self';                \r\n");
+	fwrite($fsr,"		document.view_form.action='".$runF1."';           \r\n");
+	fwrite($fsr,"		document.view_form.submit();                      \r\n");
+	fwrite($fsr,"	} \r\n");
+
+	fwrite($fsr,"	function title_func(fld_code){                        \r\n");
+	fwrite($fsr,"		document.view_form.page.value = 1;                \r\n");
+	fwrite($fsr,"		document.view_form.fld_code.value= fld_code;      \r\n");
+	fwrite($fsr,"		document.view_form.fld_code_asc.value= 'asc';     \r\n");
+	fwrite($fsr,"		document.view_form.mode.value='title_func';       \r\n");
+	fwrite($fsr,"		document.view_form.target='_self';                \r\n");
+	fwrite($fsr,"		document.view_form.action='".$runF1."';           \r\n");
+	fwrite($fsr,"		document.view_form.submit();                      \r\n");
 	fwrite($fsr,"	} \r\n");
 
 	fwrite($fsr,"	function home_func($"."pg_code){                       \r\n");
@@ -190,7 +170,7 @@
 	fwrite($fsr,"		document.view_form.action='".$runF1."'; \r\n");
 	fwrite($fsr,"		document.view_form.submit(); \r\n");
 	fwrite($fsr,"	} \r\n");
-	fwrite($fsr,"function Change_line_cnt($"."line){ \r\n");
+	fwrite($fsr,"	function Change_line_cnt($"."line){ \r\n");
 	fwrite($fsr,"		document.view_form.page.value = 1; \r\n");
 	fwrite($fsr,"		document.view_form.line_cnt.value = $"."line; \r\n");
 	fwrite($fsr,"		document.view_form.action='".$runF1."'; \r\n");
@@ -216,21 +196,19 @@
 
 	fwrite($fsr,"			if( isset($"."_POST['page']) ) $"."page=$"."_POST['page'];  \r\n");
 	fwrite($fsr,"			else $"."page=1;   \r\n");
-
 	fwrite($fsr,"			if( isset($"."_POST['mode']) ) $"."mode=$"."_POST['mode']; \r\n");
 	fwrite($fsr,"			else $"."mode='';  \r\n");
 	fwrite($fsr,"			if( isset($"."_POST['fld_code']) ) $"."fld_code=$"."_POST['fld_code']; \r\n");
 	fwrite($fsr,"			else $"."fld_code='';  \r\n");
+	fwrite($fsr,"			if( isset($"."_POST['fld_code_asc']) ) $"."fld_code_asc=$"."_POST['fld_code_asc']; \r\n");
+	fwrite($fsr,"			else $"."fld_code_asc='';  \r\n");
 
 	fwrite($fsr,"			if( isset($"."_POST['c_sel']) ) $"."c_sel=$"."_POST['c_sel']; \r\n");
 	fwrite($fsr,"			else $"."c_sel='';  \r\n");
-
 	fwrite($fsr,"			if( isset($"."_POST['c_sel3']) ) $"."c_sel3=$"."_POST['c_sel3']; \r\n");
 	fwrite($fsr,"			else $"."c_sel3='';  \r\n");
-
 	fwrite($fsr,"			if( isset($"."_POST['search_fld']) ) $"."search_fld=$"."_POST['search_fld']; \r\n");
 	fwrite($fsr,"			else $"."search_fld='';  \r\n");
-
 	fwrite($fsr,"			if( isset($"."_POST['search_text']) ) $"."search_text=$"."_POST['search_text']; \r\n");
 	fwrite($fsr,"			else $"."search_text='';  \r\n");
 
@@ -290,16 +268,20 @@ fwrite($fsr,"  			</div>                   \r\n");
 fwrite($fsr,"<?php       \r\n");
 fwrite($fsr,"			$" . "tab_enm = '" . $tab_enm . "';   \r\n");
 fwrite($fsr,"			$" ."SQL1 = \"SELECT * from " . $tab_enm . " \";   \r\n");
+
 fwrite($fsr,"			if( $" ."mode=='SR' ){   \r\n");
 fwrite($fsr,"				if( $"."search_choice == 'like') $"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";   \r\n");
 fwrite($fsr,"				else		$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '$"."search_text' \";   \r\n");
-fwrite($fsr,"			}   \r\n");
-fwrite($fsr,"			if( $"."mode=='title_func' ){      \r\n");
+fwrite($fsr,"			} else {   \r\n");
 fwrite($fsr,"				if( $"."search_choice != '' && $"."search_text !='') {   \r\n");
-fwrite($fsr,"					$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";      \r\n");
-fwrite($fsr,"					$"."SQL1 = $"."SQL1 . \" order by $"."fld_code \";      \r\n");
-fwrite($fsr,"				} else $"."SQL1 = $"."SQL1 . \" order by $"."fld_code \";      \r\n");
+fwrite($fsr,"					if( $"."search_choice == 'like' )	$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";    \r\n");
+fwrite($fsr,"					else					$"."SQL1 = $"."SQL1 . \" where $"."search_fld $"."search_choice '$"."search_text' \";            \r\n");
+fwrite($fsr,"				}      \r\n");
 fwrite($fsr,"			}      \r\n");
+
+
+
+
 
 fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL1 ) )==false ){   \r\n");
 fwrite($fsr,"				m_(\" ERROR : Select $tab_enm  \");   \r\n");
@@ -308,11 +290,11 @@ fwrite($fsr,"			} else {   \r\n");
 fwrite($fsr,"				$"."total_count = sql_num_rows($"."result);   \r\n");
 fwrite($fsr,"				if( $"."total_count ) $"."total_page  = ceil($"."total_count / $"."line_cnt);    \r\n");
 fwrite($fsr,"				else $"."total_page  =1;   \r\n");
-fwrite($fsr,"				if ($"."page < 2) {   \r\n");
+fwrite($fsr,"				if ($"."page > 1) {   \r\n");
+fwrite($fsr,"					$"."start = ($"."page - 1) * $"."line_cnt;    \r\n");
+fwrite($fsr,"				} else {   \r\n");
 fwrite($fsr,"					$"."page = 1;    \r\n");
 fwrite($fsr,"					$"."start = 0;   \r\n");
-fwrite($fsr,"				} else {   \r\n");
-fwrite($fsr,"					$"."start = ($"."page - 1) * $"."line_cnt;    \r\n");
 fwrite($fsr,"				}   \r\n");
 fwrite($fsr,"				$"."last = $"."line_cnt;    \r\n");
 fwrite($fsr,"				if( $"."total_count < $"."last) $"."last = $"."total_count;   \r\n");
@@ -337,7 +319,8 @@ fwrite($fsr,"			</div>           \r\n");
 
 fwrite($fsr,"					<form name='view_form' method='post' enctype='multipart/form-data' >    \r\n");
 fwrite($fsr,"						<input type='hidden' name='mode'		value='<?=$"."mode?>' />    \r\n");
-fwrite($fsr,"						<input type='hidden' name='fld_code'		value='<?=$"."fld_code?>' />    \r\n");
+fwrite($fsr,"						<input type='hidden' name='fld_code'	value='<?=$"."fld_code?>' />    \r\n");
+fwrite($fsr,"						<input type='hidden' name='fld_code_asc' value='<?=$"."fld_code_asc?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='seqno'		value='' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='page'		value='<?=$"."page?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='tab_enm'		value='<?=$"."tab_enm?>' />    \r\n");
@@ -346,43 +329,34 @@ fwrite($fsr,"						<input type='hidden' name='item_array'	value='<?=$"."item_arr
 fwrite($fsr,"						<input type='hidden' name='table_item_array'	value='".$table_item_array."'>    \r\n");
 fwrite($fsr,"						<input type='hidden' name='item_cnt'	value='<?=$"."item_cnt?>'>    \r\n");
 fwrite($fsr,"						<input type='hidden' name='list_no'		value='' />    \r\n");
-fwrite($fsr,"						<input type='hidden' name='c_sel'		value='<?=$"."c_sel?>' />    \r\n");
-fwrite($fsr,"						<input type='hidden' name='c_sel3'		value='<?=$"."c_sel3?>' />    \r\n");
+
 fwrite($fsr,"						<input type='hidden' name='pg_code'		value='<?=$"."pg_code?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='search_fld'	value='<?=$"."search_fld?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='search_choice' value='<?=$"."search_choice?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='line_cnt'	value='<?=$"."line_cnt?>' />    \r\n");
 
 fwrite($fsr,"	<table class='listTableT' width=99%>   \r\n");
-fwrite($fsr,"		<thead>   \r\n");
+fwrite($fsr,"		<thead id='tit_et'>   \r\n");
 fwrite($fsr,"			<tr>   \r\n");
 fwrite($fsr,"				<th style='width:30px; height:100%px;text-align:center;font-weight:bold'>No</th>   \r\n");
  					for( $i=0; $i < $fld_cnt; $i++){ 
-fwrite($fsr,"					<th class='cell03' title='Sort ".$fld_hnm[$i]." click' onclick=\"javascript:title_func('" . $fld_enm[$i] . "')\" >".$fld_hnm[$i]."</th>    \r\n");
-
+fwrite($fsr,"				<th title='Sort ".$fld_hnm[$i]." click or double click' >".$fld_hnm[$i]."</th>    \r\n");
+fwrite($fsr,"			    <input type='hidden' id='".$fld_hnm[$i]."' name='".$fld_hnm[$i]."' value='".$fld_enm[$i]."' >; \r\n");
  					} 
 fwrite($fsr,"			</tr>   			\r\n");
 fwrite($fsr,"		</thead>   				\r\n");
 fwrite($fsr,"		<tbody width=100%>   	\r\n");
 fwrite($fsr,"<?php    \r\n");
-fwrite($fsr,"			$"."SQL		= \"SELECT * from $tab_enm \";  \r\n");
+
 fwrite($fsr," 			$"."SQL_limit	= \"  limit $"."start , $"."last; \";  \r\n");
-fwrite($fsr,"			if( $"."mode=='title_func' ) $"."OrderBy = \" order by $"."fld_code \";    \r\n");
-fwrite($fsr,"			else $"."OrderBy	= \" order by seqno desc \";        \r\n");
-fwrite($fsr,"			if( $"."mode == \"SR\" ){    \r\n");
-fwrite($fsr,"				if( $"."search_choice == 'like' )	$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";  \r\n");
-fwrite($fsr,"				else							$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '$"."search_text' \";  \r\n");
-fwrite($fsr,"			}     \r\n");
-fwrite($fsr,"			else if( $"."mode=='title_func' ) {     \r\n");
-fwrite($fsr,"				if( $"."search_choice != '' && $"."search_text !='') {     \r\n");
-fwrite($fsr,"					if( $"."search_choice == 'like' )	$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '%$"."search_text%' \";  \r\n");
-fwrite($fsr,"					else					$"."SQL = $"."SQL . \" where $"."search_fld $"."search_choice '$"."search_text' \";       \r\n");
-fwrite($fsr,"				}     \r\n");
-fwrite($fsr,"			}     \r\n");
-fwrite($fsr,"			$"."SQL = $"."SQL . $"."OrderBy . $"."SQL_limit;    \r\n");
-fwrite($fsr,"			if ( ($"."result = sql_query( $"."SQL ) )==false )    \r\n");
+fwrite($fsr,"			if( $"."fld_code!='' ) $"."OrderBy = \" ORDER BY $"."fld_code $"."fld_code_asc \";         \r\n");
+fwrite($fsr,"			else $"."OrderBy	= \" ORDER BY seqno desc \";     \r\n");
+fwrite($fsr,"			$"."SQL1 = $"."SQL1 . $"."OrderBy;       \r\n");
+fwrite($fsr,"			$"."SQL1 = $"."SQL1 . $"."SQL_limit;     \r\n");
+
+fwrite($fsr,"			if( ($"."result = sql_query( $"."SQL1 ) )!=false )    \r\n");
 fwrite($fsr,"			{    \r\n");
-fwrite($fsr,"			} else {    \r\n");
+//fwrite($fsr,"			} else {    \r\n");
 fwrite($fsr,"				if( $"."page > 1 ) $"."no=($"."page -1) * $"."line_cnt;    \r\n");
 fwrite($fsr,"				else $"."no=0;    \r\n");
 fwrite($fsr,"				while( $"."row = sql_fetch_array($"."result)  ) {    \r\n");
@@ -440,7 +414,7 @@ fwrite($fsr,"							<input type='button' value='Excel Down' onclick=\"javascript
 
 fwrite($fsr,"					</tr>    \r\n");
 fwrite($fsr,"					</table>    \r\n");
-fwrite($fsr,"					</form>    \r\n");
+fwrite($fsr,"			</form>    \r\n");
 fwrite($fsr,"			</div>     \r\n");
 fwrite($fsr,"<?php    \r\n");
 fwrite($fsr,"			pagingA(\"".$pg_code."_run.php\",$"."total_count,$"."page,$"."line_cnt );      \r\n");
