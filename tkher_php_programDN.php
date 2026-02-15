@@ -341,7 +341,7 @@ fwrite($fsr,"			<tr>   \r\n");
 fwrite($fsr,"				<th style='width:30px; height:100%px;text-align:center;font-weight:bold'>No</th>   \r\n");
  					for( $i=0; $i < $fld_cnt; $i++){ 
 fwrite($fsr,"				<th title='Sort ".$fld_hnm[$i]." click or double click' >".$fld_hnm[$i]."</th>    \r\n");
-fwrite($fsr,"			    <input type='hidden' id='".$fld_hnm[$i]."' name='".$fld_hnm[$i]."' value='".$fld_enm[$i]."' >; \r\n");
+fwrite($fsr,"			    <input type='hidden' id='".$fld_hnm[$i]."' name='".$fld_hnm[$i]."' value='".$fld_enm[$i]."' > \r\n");
  					} 
 fwrite($fsr,"			</tr>   			\r\n");
 fwrite($fsr,"		</thead>   				\r\n");
