@@ -72,12 +72,11 @@ function submit_check(mm,dd) {
 		document.schedule_modify.submit();
 	}
 	function delete_func(cnt, no, uptime) {
-		resp = confirm('Are you sure you want to delete?');//  \n 삭제하시겠습니까?
+		resp = confirm('Are you sure you want to delete?');
 		if(resp) {
-			form = document.schedule_modify;
-			form.mode.value="delete_func"; 
-			form.uptime.value=uptime; 
-			form.no.value=no;
+			document.schedule_modify.mode.value="delete_func"; 
+			document.schedule_modify.uptime.value=uptime; 
+			document.schedule_modify.no.value=no;
 			document.schedule_modify.action = 'p_my_cal_schedule_year.php'; 
 			document.schedule_modify.submit();
 		} else {
@@ -141,7 +140,7 @@ function submit_check(mm,dd) {
 
 	if( isset($_POST['xcnt']) ) $xcnt= $_POST['xcnt'];
 	else if( isset($_REQUEST['xcnt']) ) $xcnt= $_REQUEST['xcnt'];
-	else $xcnt='';
+	else $xcnt=1;
 	if( isset($_POST['_y']) ) $_y= $_POST['_y'];
 	else if( isset($_REQUEST['_y']) ) $_y= $_REQUEST['_y'];
 	else $_y='';
@@ -251,7 +250,7 @@ function submit_check(mm,dd) {
 		<td><!--  \n 메모를 변경합니다.  -->
 		<input type='button' name='Change' <?php echo "title=' Change the note.' "; ?>  onClick="update_func('<?=$cnt?>','<?=$rsseqno?>','<?=$rsuptime?>','<?=$year?>','<?=$rsmonth?>','<?=$rsday?>','<?=$rslmonth?>','<?=$rslday?>','<?=$rsuselunar?>')"  value='Change' style="border-style:;background-color:blue;color:white;height:25;">
 		</td>
-		<td><input type='button' value='Delete' width='50' class='form' onclick="delete_func('<?=$cnt?>','<?=$rseqno?>','<?=$rsuptime?>');" style="height:18;" <?php echo " title='Delete the note.' "; ?> ></td></tr><!--  \n 메모를 삭제합니다. -->
+		<td><input type='button' value='Delete' width='50' class='form' onclick="delete_func(<?=$cnt?>,<?=$rsseqno?>,'<?=$rsuptime?>');" style="height:18;" <?php echo " title='Delete the note.' "; ?> ></td></tr><!--  \n 메모를 삭제합니다. -->
 <?php
 			$cnt++;
 	}
@@ -312,7 +311,7 @@ function submit_check(mm,dd) {
 		$no = $_POST['no'];
 		$sms = $_POST['sms'];
 		$uptime = $_POST['uptime'];
-		$xxcnt=$xcnt-1;
+		//$xxcnt = $xcnt-1;
 		$day=$click_day;
 		$year		= $_POST['year'];
 		$month	= $_POST['month'];

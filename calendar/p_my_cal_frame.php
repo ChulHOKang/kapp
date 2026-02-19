@@ -114,15 +114,16 @@ function scehdule_check(year,month,day) {
 		$week = date("w",$my_date);
 		$result = sql_query("select * from kapp_my_schedule where year='$year' and month='$month' and day='$day' and id='$H_ID'" );
 		$num = sql_num_rows($result );  //09.06.27 kan
-		if($i=='1' && $week != '0') echo "<tr>";
-		if($week == '0') echo "<tr>";
-		if($i=='1') {
+		if($i==1 && $week != '0') echo "<tr>";
+		if($week == 0) echo "<tr>";
+		if($i==1) {
 			for ($j=1;$j<=$week;$j++) {
 				echo "<td>&nbsp;</td>";
 			}
 		}
 			list($_ymd,$_info,$s,$f,$n) = $lunar = xtolunar($year,$month,$i); 
 			list($_y,$_m,$_d,$_l,$_t,$_a,$_e) = $_info; // 음력 날짜 
+
 ?>
 		<td align=right bgcolor='#efefff'><a href="javascript:scehdule_check1('<?=$year?>','<?=$month?>','<?=$i?>');">
 		<?php
