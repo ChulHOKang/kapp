@@ -1510,18 +1510,24 @@
 		$tt = x_terms($y,$m,$m2-$m);
 		$dt = $z2 - $z;
 	}
-
-	//echo " $nd, $tt[1], $nd2, $tt[3], $tt[5] "; // debug
-	//if($nd<=$tt[1] && !$notminus[$y.$nd]) $m--;
+	$k = sizeof($tt);//k:4
+	//echo "<br>k:$k, tt0:$tt[0], tt1:$tt[1],tt2:$tt[2],tt3:$tt[3], nd2:$nd2";//k:4, tt0:105, tt1:120,tt2:204,tt3:219, nd2:217
+	//echo "<br>k:$k, nd:$nd, tt1:$tt[1], nd2:$nd2"; //, $tt[5] "; // debug
+	//nd:119, tt1:120, nd2:217
+	//nd:217, tt1:219, nd2:319
+	//if( isset($tt[1]) && $nd<=$tt[1] && isset($notminus[$y.$nd]) && !$notminus[$y.$nd]) $m--;
+	//if($k==4) $m--; // 2026-02-19 line add
 	if( isset($tt[1]) && $nd <= $tt[1]) {
 		if( isset($notminus[$y.$nd]) &&  !$notminus[$y.$nd]) $m--;
-	} else {  // patch san2@2011.04.11
+		else if($k==4) $m--; // 2026-02-19 line add
+	}
+	else {  // patch san2@2011.04.11
 		$k = sizeof($tt) - 1; // 1 or 3 or 5 but this case 3 or 5
 		if( isset($tt[$k]) && isset($notleap[$y.$nd]) && $nd2-1<$tt[$k] && $k==3 && !$notleap[$y.$nd])
 		{ $leap = 1; $m--; }
 		else if( isset($dominus[$y.$nd]) && $dominus[$y.$nd]) $m--;
 		# else do not minus
-	}
+	} 
 
 	if($m < 1) { $m += 12; $y--; } //date('Y',$utime-3456000)
 
