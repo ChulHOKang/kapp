@@ -173,10 +173,12 @@ $sys_subtitS = 'Admin K-App';
 
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='kapp_table_list_adm.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Table List</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/album_view_db_adm.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Album List</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/album_view_db_adm.php' target='run_menu'>9.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Album All List</a></li>
 	
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_image_list.php' target='run_menu'>a.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Main Album List</a></li>
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_img.php' target='run_menu'>a.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Main Album Insert</a></li>
 
-	<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='../setup/DB_Table_CreateA.php' target='run_menu' title='Setup Table of KAPP System'>a.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Setup Table</a></li>
+	<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php' target='run_menu' title='Setup Table of KAPP System'>a.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Setup Table</a></li>
 
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<li style='font-size:11;color:#fff;height:9px;line-height:1'><?=$config['kapp_visit']?><br>
