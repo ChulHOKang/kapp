@@ -2,7 +2,8 @@
 		/*
 		*   album_view_db_my.php, album_view_db.php, main_image_list.php, main_image_list.php 에서 콜.
 		*/
-				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where group_name!='main' or group_name!='shop' order by userid, view_no, no";
+//				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where group_name!='main' or group_name!='shop' order by userid, view_no, no";
+				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where group_name!='main' and group_name!='shop' order by userid, view_no, no";
 				if ( ($result = sql_query( $SQL ) )==false )
 				{
 				  printf("Invalid query: %s ", $SQL);

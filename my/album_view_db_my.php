@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/common.css" type="text/css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/ui.js"></script>
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
-<link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'>  <!-- 중요! menu_run.php 막으면 필요함.-->
+<link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'>
 
 <body>
 <?php
@@ -27,19 +27,15 @@
 		if( isset($member['mb_level']) ) $H_LEV	= $member['mb_level'];
 		else $H_LEV =''; 
 
-		if( isset($_POST['mode']) ) $mode = $_POST['mode']; //m_("mode: " . $mode);
+		if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 		else $mode ='';
 ?>
 <center>
 		<div class="mainProjectX" id="mainProjectX">
-			<h2 <?php echo "title='Get and print a database file'"; ?> >TKHER ALBUM MY</h2><!--  \n 데이터베이스 화일을 가져와 출력한다. -->
-<?php 
-		$cur='B';
-//		include "../menu_run.php"; 
-?>
+			<h2 <?php echo "title='Get and print a database file'"; ?> >ALBUM of MY</h2>
 			<div class="grid">
 <?php
-				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where userid='$H_ID' order by view_no, no";
+				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where group_code!='main' and group_name!='shop' and userid='$H_ID' order by view_no, no";
 				if ( ($result = sql_query( $SQL ) )==false )
 				{
 				  printf("Invalid query: %s ",  $SQL);
@@ -48,10 +44,9 @@
 					$num=0;
 					while( $row = sql_fetch_array($result)  ) {
 						$num++;
-						$group_name = $H_ID;//$row['group_name'];
+						$group_name = $H_ID;
 						$jpg_file = $row['jpg_file'];
 						$f_path = KAPP_URL_T_ . "/file/" . $H_ID . "/" . $row['jpg_file'];
-						//$f_path = KAPP_TATH_T_ . "/file/" . $H_ID . "/" . $row['jpg_file'];
 						$jpg_name = $row['jpg_name'];
 						$jpg_memo = $row['jpg_memo'];
 						echo "<div class='element-item $group_name pop_$num pop' data-category='$group_name'>
@@ -66,7 +61,7 @@
 ?>
 			</div>
 <?php
-		include "./view_db_my.php"; //click and run page
+		include "./view_db_my.php";
 ?>
  <script type="text/javascript">
 	$('.pop').click(function(){
