@@ -3,14 +3,14 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 
 <?php
 		/*
@@ -246,7 +246,7 @@ else if($mode == "Insert_func") {
 </script>
 <link rel="stylesheet" type="text/css" href="<?=KAPP_URL_T_?>/include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/dddropdownpanel.js"></script>
-</head>
+
 <?php
 	$SQL = "SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
 	$result = sql_query( $SQL );
@@ -266,36 +266,36 @@ else if($mode == "Insert_func") {
 		$cur='C';
 		include_once( KAPP_PATH_T_ . "/menu_run.php"); 
 		?>
-<h2>Main Slide Image Management</h2>
+<h style='font-size:25px;height:27px;'>[Main Slide Image Management]</h>
 
+			<form name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
 <div id="mypanel" class="ddpanel">
 	<div id="mypanelcontent" class="ddpanelcontent">
-		<table border=0 bgcolor='#666666' width=100%>
-			<form name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
+		<table style="border-style:;background-color:#666666;color:black;color:white;height:30;width:100;width:100%;">
 				<input type='hidden' name='mode'	 value=''>
-					<tr style="border-style:;background-color:cyan;color:black;height:25;width:300;" >
-					<td align=right><font color=black>&nbsp; Slide Time:</td>
+					<tr>
+					<td style="color:white;text-align:right;">Slide Time: </td>
 					<td>
 							<input type="text" name="slide_time" style='border:1 black solid;height:25;width:50' value='<?=$slide_time?>' title='1 second -1000'>
 							&nbsp;<input type='button' value='Time_Change' onClick='javascript:time_func(this)' style="border-style:;background-color:blue;color:yellow;height:30;width:100;"> 
 					</td>
-					<tr style="border-style:;background-color:cyan;color:black;height:25;width:300;" >
-						<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp;Image</td>
-						<td><input type="file" name="file" size="50" style='border:1 black solid;'></td>
 					</tr>
-					<tr style="border-style:;background-color:cyan;color:black; " >
-						<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp;Title</td>
+					<tr>
+						<td style="color:white;text-align:right;">Image: </td>
+						<td style="color:white;text-align:left;"><input type="file" name="file" size="50" style='border:1 black solid;color:white;'></td>
+					</tr>
+					<tr>
+						<td style="color:white;text-align:right;">Title: </td>
 						<td><input type=text name='jpg_name' value='' style="border-style:;background-color:white;color:black;height:30;width:300;"></td>
 					</tr>
-					<tr style="border-style:;background-color:cyan;color:black;height:60;width:600;">
-						<td bgcolor='#f4f4f4' height=30 width=120 align=right><font color=black>&nbsp; Memo</td>
+					<tr>
+						<td style="color:white;text-align:right;">Memo: </td>
 						<td>
 							<textarea id='jpg_memo' name='jpg_memo' style="border-style:;background-color:white;color:black;height:60;width:600;" ></textarea>
-							
 						</td>
 					</tr>
-					<tr style="border-style:;background-color:cyan;color:black;height:30;width:300;" >
-						<td colspan=2 align='center'>&nbsp;<input type='button'  onclick='insert_func()' value=' Insert ' style="border-style:;background-color:blue;color:yellow;height:30;width:100;"></td>
+					<tr>
+						<td style="text-align:right;">&nbsp;<input type='button'  onclick='insert_func()' value=' Insert ' style="border-style:;background-color:blue;color:yellow;height:30;width:100;text-align:center;"></td>
 					</tr>
 		</form>
 		</table>

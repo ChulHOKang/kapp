@@ -2,7 +2,8 @@
 		/*
 		*   main_image_list.php 에서 콜.
 		*/
-				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} order by view_no, no";
+				//$SQL = " SELECT * from {$tkher['tkher_main_img_table']} order by view_no, no";
+				$SQL = " SELECT * from {$tkher['tkher_main_img_table']} where group_code='main' order by view_no, no";
 				if( ($result = sql_query( $SQL ) )==false ){
 				  printf("Invalid query: %s ", $SQL);
 				  exit();
