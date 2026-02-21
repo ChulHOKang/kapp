@@ -62,6 +62,12 @@ th, td { border: 1px solid silver; padding:5px; }
 		boarder: 1px solid gray;
 	}
 </style>
+<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
+<script type="text/javascript" src="../include/js/ui.js"></script>
+<script type="text/javascript" src="../include/js/common.js"></script>
+ -->
+<link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
+<script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 <!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
 
@@ -130,12 +136,6 @@ $(function () {
   });
 });
 </script>
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script>
-
-<link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
-<script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
 
 <?php
 		$g_name = "";
@@ -461,6 +461,8 @@ jQuery(document).ready(function ($) {
 	});
 
     $("#insert_form").submit(function (event) {
+		var mode_insert= $("#mode_insert").val();
+		alert("mode_insert: "+mode_insert);
 		var g_name= $("#g_name").val();
 		var g_name_code= $("#g_name_code").val();
 		var tit= $("#title_nm").val();
@@ -468,12 +470,12 @@ jQuery(document).ready(function ($) {
 		var memo= $("#memo").val();
 		var password= $("#form_psw").val();
 		var encrypted_check= $("#encrypted_check").val();
-		if( g_name_code=="" || tit == "" || memo == "" ) {
+		if( g_name_code=="" || tit == "" ) {
 			alert("project or title or memo confirm");
 			return false
 		}
 		event.preventDefault();
-        $("#progress").html('Inserting <i class="fa fa-spinner fa-spin" aria-hidden="true"></i></span>');
+        //$("#progress").html('Inserting <i class="fa fa-spinner fa-spin" aria-hidden="true"></i></span>');
             var formData = new FormData($(this)[0]);
             $.ajax({
                 url: 'ulink_ajax.php',
@@ -490,7 +492,7 @@ jQuery(document).ready(function ($) {
 					location.replace(location.href);
                 },
                 error: function(){
-					//alert("error in ajax form submission");
+					alert("error in ajax form submission");
 				}
         });
 		//location.reload();
@@ -563,7 +565,7 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='seq_no' id='seq_no'	value='' > 
 	<input type='hidden' name='page'			value='<?=$page?>' > 
 	<input type='hidden' name='mode'			value='<?=$mode?>' > 
-	<input type='hidden' name='mode_insert'		value='' > 
+	<input type='hidden' name='mode_insert'		value='insert_mode' id='mode_insert'> 
 	<input type='hidden' name='pg_'				value='<?=$pg_?>' > 
 	<input type='hidden' name='target_'			value='<?=$target_?>' > 
 	<input type='hidden' name='type_'			value='<?=$type_?>' > 
@@ -790,10 +792,10 @@ jQuery(document).ready(function ($) {
 			</TABLE>
 		<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
 		</DIV>
-		<script type="text/javascript">
+		<!-- <script type="text/javascript">
 			dropdowncontent.init("searchlink", "left-bottom", 800, "mouseover")
 			dropdowncontent.init("contentlink", "right-bottom", 800, "click")
-		</script>
+		</script> -->
 		</td>
 	</tr>
 <table class='floating-thead' width='100%'>
@@ -846,7 +848,7 @@ jQuery(document).ready(function ($) {
 			else if( $gubun=='A' ){ $icon='../icon/ship.png'; $gubunT='A-board';$t_color='cyan'; $i_tit='A: T-ABoard';}
 			else if( $gubun=='M' ){ $icon='../icon/land.png'; $gubunT='BOM-Main';$t_color='yellow';$i_tit='M: Tree-Main';}
 			else if( $gubun=='N' ){ $icon='../icon/leaf.png'; $gubunT='BOM-Note';$t_color='yellow';$i_tit='N: Tree-Note';}
-			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='blue'; $i_tit='U: Link Note';}
+			else if( $gubun=='U' ){ $icon='../icon/seed.png'; $gubunT='U-Leaf';  $t_color='white'; $i_tit='U: Link Note';}
 			else { $icon='../icon/pizzaX.png'; $gubunT='none';  $t_color='red'; $i_tit='none: check';}	
 ?>
 				<tr valign="middle" align='left' > 
@@ -857,7 +859,7 @@ jQuery(document).ready(function ($) {
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
 				  <td style="background-color:black;color:<?=$t_color?>;width:300px;" title="type:<?=$i_tit ?>">
-				  <a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;width:300px;"><?=$rs_job_addr?></a></td>
+					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>"><?=$rs_job_addr ?></a></td>
 <?php } else {?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>

@@ -35,15 +35,15 @@
 		$url_nm	= $_POST['url_nm']; 
 		$job_label = $_POST['gong_num'];
 		$memo		= $_POST['memo'];
-		$jong	= 'U';	                   //  tree가아닌 개별등록...
+		$jong	= 'U';
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$up_day  = date("Y-m-d-H:i:s");
 		$kapp_url = KAPP_URL_T_;
 		$g_name=$_POST['g_name']; 
 		$g_name_code=$_POST['g_name_code']; 
 
-		$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID', club_url='$url_nm', user_name='$title_nm', job_name='$create_type', job_group='$g_name', job_group_code='$g_name_code', job_addr='$job_url', job_level='$job_label', jong='$jong', memo='$memo', ip='$ip', num='Note', aboard_no='$job_', email='$H_EMAIL', up_day='$up_day' ";
-		$ret = sql_query(  $sqlA ); 
+		$sqlA = "insert into {$tkher['job_link_table']} set user_id='$H_ID', club_url='$job_url', user_name='$title_nm', job_name='$create_type', job_group='$g_name', job_group_code='$g_name_code', job_addr='$url_nm', job_level='$job_label', jong='$jong', memo='$memo', ip='$ip', num='Note', aboard_no='$job_', email='$H_EMAIL', up_day='$up_day' ";
+		$ret = sql_query($sqlA ); 
 
 		$kapp_theme0 = '';
 		$kapp_theme1 = '';
@@ -57,8 +57,9 @@
 				if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day ) ) {
 					if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day );
 				}
-			}		//m_("job_link_table --- insert ok");
-		}
+			}
+			echo "insert ok";
+		} else echo "job_link_table --- insert ERROR";
 	} else if( $mode_insert == 'Encryption_data'){
 		$memo =$_POST['memo']; 
 		$pws    =$_POST['pws']; 
