@@ -461,8 +461,6 @@ jQuery(document).ready(function ($) {
 	});
 
     $("#insert_form").submit(function (event) {
-		var mode_insert= $("#mode_insert").val();
-		alert("mode_insert: "+mode_insert);
 		var g_name= $("#g_name").val();
 		var g_name_code= $("#g_name_code").val();
 		var tit= $("#title_nm").val();
