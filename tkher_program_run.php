@@ -111,16 +111,16 @@
 <?php
 		$kkk="off";
 		$list = array();
+		$kkk0 = array();
+		$kkk1 = array();
+		$kkk2 = array();
+		$kkk3 = array();
+		$kkk5 = 1;  //func seq number
 		$ddd = "";
-		$qqq = "";
+
 		$iftypeX = "";
 		$ifdataX = "";
 		$item_array = "";
-		$kkk0 = "document.makeform.fld_1.value";
-		$kkk1 = "document.makeform.fld_1.value";
-		$kkk2 = "document.makeform.fld_2.value";
-		$kkk3 = "+";
-		$kkk5 = 1;  //func seq number
 		$item_array = $rsPG['item_array'];
 		$iftypeX	= $rsPG['if_type'];
 		$ifdataX	= $rsPG['if_data'];
@@ -128,17 +128,17 @@
 		$ifdata		= explode("|", $ifdataX);
 		$popdata	= explode("^", $pop_dataPG);
 		if( isset($item_array) ) $list = explode("@", $item_array);
-		else  $list = "";
+		else  $list = '';
 		for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
-				if( isset($iftype[$j]) ) $typeX	= $iftype[$j];
-				else $typeX	= "";
-				if( isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
-				else $dataX	= "";
+				if( isset($iftype[$j]) && $iftype[$j]!='' ) $typeX	= $iftype[$j];
+				else $typeX	= '';
+				if( isset($ifdata[$j]) && $ifdata[$j]!='' ) $dataX	= $ifdata[$j];
+				else $dataX	= '';
 				if( isset($popdata[$j]) ) $popX	= $popdata[$j];
-				else $popX	= "";
-				if( isset($dataX) ) $if_fld = explode(":", $dataX);
-				else $if_fld = "";
+				else $popX	= '';
+				if( isset($dataX) && $dataX!='' ) $if_fld = explode(":", $dataX);
+				else $if_fld = '';
 				if( isset($ddd) ) $fld = explode("|", $ddd);
 				else $fld="";
 			if( $fld[1] != "seqno") { 
@@ -202,14 +202,18 @@
 							$f2 = $ff[2];
 							$f3 = $ff[3];
 							$f4 = $ff[4];
-							$kkk0 = "document.makeform." . $f0 . ".value";
-							$kkk1 = "document.makeform." . $f2 . ".value";
-							$kkk2 = "document.makeform." . $f4 . ".value";
-							$kkk3 = $f3;
-							$kkk5++; // = $func_cnt;
+							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
+							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
+							
+							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
+							else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
+							
+							$kkk3[$kkk5] = $f3;
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
+							//echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
+							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='FUNC_$kkk5()' title='FUNC_$kkk5()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
 							echo " <div class='blankA'> </div> ";
+							$kkk5++; // = $func_cnt;
 						} else {
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='number' name='$fld[1]' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
@@ -357,14 +361,23 @@
 		document.makeform.submit();
 	}
 
-<?php
-	if( $kkk !="off") {
-?>
-	function <?=$kkk?>FUNC<?=$kkk5?>() {
-		v1 = (<?=$kkk1?>*1) <?=$kkk3?> (<?=$kkk2?>*1);
-		<?=$kkk0?> = v1;
-	}
-<?php } ?>
-
 //-->
 </script>
+
+<?php
+	if( $kkk !="off") {
+		for( $fi=1, $fj=1; $fi<$kkk5; $fi++, $fj++){
+			$k0=$kkk0[$fj];
+			$k1=$kkk1[$fj];
+			$k2=$kkk2[$fj];
+			$k3=$kkk3[$fj];
+
+			echo "<script>";
+			echo "function FUNC_".$fj."() {  ";
+			echo "	v1 = ( ".$k1." * 1 ) ".$k3." ( ".$k2 ." * 1 );";
+			echo $k0 . " = v1; ";
+			echo "} ";
+			echo "</script>";
+		}
+	}
+?>
