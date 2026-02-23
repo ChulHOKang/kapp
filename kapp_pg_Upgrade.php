@@ -683,7 +683,7 @@
 				if( st[3]=='INT' || st[3]=='FLOAT' || st[3]=='DOUBLE' || st[3]=='TINYINT' || st[3]=='SMALLINT' || st[3]=='MEDIUMINT' || st[3]=='BIGINT' || st[3]=='DECIMAL' ){
 					document.makeform["if_type[" + selind + "]"].value = r;
 					document.makeform.target          = '_self';
-					document.makeform.action          = 'table_formulaM.php';
+					document.makeform.action          = 'kapp_formula.php'; //table_formulaM.php
 					document.makeform.mode.value      = 'run13';
 					document.makeform.mode_call.value = 'kapp_pg_Upgrade';
 					document.makeform.submit();
@@ -1110,7 +1110,7 @@
   <span class="checkmark"></span>
 </label>
 <br><!-- 예를들면 수량과 단가를 입력하면 금액을 계산하는 컬럼입니다. -->
-<label class="container" <?php echo "title='table_formulaM.php \n This column is calculated and output when data is registered.\n For example, if you enter quantity and unit price,\n it is a column that calculates the amount.' "; ?>>
+<label class="container" <?php echo "title='kapp_formula.php \n This column is calculated and output when data is registered.\n For example, if you enter quantity and unit price,\n it is a column that calculates the amount.' "; ?>>
   <input type="radio" name="ifcheck" onclick="ifcheck_onclickA(11,5)" <?php if( $fld_sel_type=='11') echo " checked "; ?> >Formula <font color='blue'>[Setup]</font>
   <span class="checkmark"></span>
 </label>
