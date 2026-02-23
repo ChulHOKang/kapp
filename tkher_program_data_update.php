@@ -185,13 +185,14 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		$rsPG		= sql_fetch_array($resultPG);
 		$list	= array();
 		$ddd = "";
-		$qqq = "";
+
 		$kkk="off";
-		$kkk0 = "document.makeform.fld_1.value";
-		$kkk1 = "document.makeform.fld_1.value";
-		$kkk2 = "document.makeform.fld_2.value";
-		$kkk3 = "+";
+		$kkk0 = array(); //"document.makeform.fld_1.value";
+		$kkk1 = array(); //"document.makeform.fld_1.value";
+		$kkk2 = array(); //"document.makeform.fld_2.value";
+		$kkk3 = array(); //"+";
 		$kkk5 = 1; //func seq number
+
 		$pg_name	= $rsPG['pg_name'];
 		$tab_enm	= $rsPG['tab_enm'];
 		$tab_hnm	= $rsPG['tab_hnm'];
@@ -304,14 +305,25 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 							$f2 = $ff[2];
 							$f3 = $ff[3];
 							$f4 = $ff[4];
-							$kkk0 = "document.makeform." . $f0 . ".value";
+							
+							/*$kkk0 = "document.makeform." . $f0 . ".value";
 							$kkk1 = "document.makeform." . $f2 . ".value";
 							$kkk2 = "document.makeform." . $f4 . ".value";
-							$kkk3 = $f3;
-							$kkk5++; // = $func_cnt;
+							$kkk3 = $f3;*/
+
+							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
+							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
+							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
+							else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
+							$kkk3[$kkk5] = $f3;
 
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
+							
+							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='FUNC_$kkk5()' title='FUNC_$kkk5()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
+							//echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
+
+							$kkk5++; // = $func_cnt;
+
 						} else {
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type=number name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
@@ -460,14 +472,25 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		window.open("popup_call.php?fld_session="+i,"","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
 		return true;  
 	}
+</script>
+
 
 <?php
-	if($kkk != "off") {
-?>
-	function <?=$kkk?>FUNC<?=$kkk5?>() {
-		v1 = (<?=$kkk1?>*1) <?=$kkk3?> (<?=$kkk2?>*1);
-		<?=$kkk0?> = v1;
+	if( $kkk !="off") {
+		for( $fi=1, $fj=1; $fi<$kkk5; $fi++, $fj++){
+			$k0=$kkk0[$fj];
+			$k1=$kkk1[$fj];
+			$k2=$kkk2[$fj];
+			$k3=$kkk3[$fj];
+
+			echo "<script>";
+			echo "function FUNC_".$fj."() {  ";
+			echo "	v1 = ( ".$k1." * 1 ) ".$k3." ( ".$k2 ." * 1 );";
+			echo $k0 . " = v1; ";
+			echo "} ";
+			echo "</script>";
+		}
 	}
-<?php } ?>
-</script>
+?>
+
 </html>

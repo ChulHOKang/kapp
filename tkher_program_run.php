@@ -141,8 +141,7 @@
 				else $if_fld = '';
 				if( isset($ddd) ) $fld = explode("|", $ddd);
 				else $fld="";
-			if( $fld[1] != "seqno") { 
-				$fld_enm= $fld[1];
+			if( isset($fld[1]) && $fld[1] != "seqno") { 
 				$fld_enmX= $fld[1];
 				if( $fld[3] == "TEXT" ) {
 					echo " <div class='menu1Area' ><p>$fld[2]</p><textarea name='$fld[1]' placeholder='Please enter your $fld[2]!' style='width:$Xwidth;height:$Text_height;'></textarea></div>";
@@ -202,13 +201,13 @@
 							$f2 = $ff[2];
 							$f3 = $ff[3];
 							$f4 = $ff[4];
+							
 							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
 							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
-							
 							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
 							else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
-							
 							$kkk3[$kkk5] = $f3;
+
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							//echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
 							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='FUNC_$kkk5()' title='FUNC_$kkk5()' value='' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
