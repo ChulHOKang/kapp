@@ -105,48 +105,6 @@ fwrite($fsi,"?>                                 \r\n");
 fwrite($fsi,"  <link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \r\n");
 //fwrite($fsi,"  <link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type=\"text/css\" />  \r\n");
 
-/*
-fwrite($fsi,"<style>  \r\n");
-fwrite($fsi,"* {  box-sizing: border-box;}  \r\n");
-fwrite($fsi,".header2A {width:100%;  height:50px;  float: left;  border: 0px solid red;  padding: 0px;}  \r\n");
-//fwrite($fsi,".menu1Area{width:100%;  height:60px;  float: left;  padding: 0px;  border: 0px solid #DEDEDE;  background-color:#FAFAFA;}  \r\n");
-fwrite($fsi,".menu1Area{width:100%; height:auto; float: left;  padding: 0px;  border: 0px solid #DEDEDE;  background-color:#FAFAFA;}  \r\n");
-fwrite($fsi,".menu2T{padding-top:3px; width:25%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FAFAFA;}  \r\n");
-fwrite($fsi,".menu2A {width:25%; height:30px; float:left; padding:0px; border:0px solid #DEDEDE; background-color:#FAFAFA;} \r\n");
-fwrite($fsi,".data2A {width:25%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".input1A { padding:0px;}  \r\n");
-fwrite($fsi,".mainA {width:100%;  float: left; padding:15px; border:1px solid red;}  \r\n");
-fwrite($fsi,".menu1T {padding-top:0px; width:<?=$"."menu1TWPer?>%; height:30px; float:left; padding:6px; border:1px solid #DEDEDE;background-color:#FAFAFA;}  \r\n");
-fwrite($fsi,".menu1A {width:<?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 0px;}  \r\n");
-fwrite($fsi,".data1A {width:<?=$"."menu1AWPer?>%; height:30px; float:left;padding:6px;border:1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,"radio1A {width:<?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 6px;  border: 1px solid #DEDEDE;background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".ListBox1A {width: <?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 2px;  border: 1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-
-fwrite($fsi,".File1A {  width: <?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 2px;  border: 1px solid #DEDEDE;background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".menu4T {padding-top:3px; width:10%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE;background-color:#FAFAFA;}  \r\n");
-fwrite($fsi,".input4A {width:15%;  height:30px;  float:left;  padding:0px; border:1px solid #DEDEDE;  background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".menu4B {width: 15%; height:30px; float:left; padding:0px; border:0px solid #DEDEDE;  background-color:#FAFAFA;}  \r\n");
-fwrite($fsi,".data4A {width:15%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".main4A {width:100%;  float: left;  padding: 15px;  border: 1px solid #DEDEDE;}  \r\n");
-fwrite($fsi,".blankA {border-top:0px;	width: 100%;    float: left;	height: 1px;	padding: 0px;	border: 1px solid #FFFFFF;background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".blankB {width:100%;  height: 1px;  padding: 1px;  float: left;  border: 1px solid #FFFFFF;  background-color:#FFFFFF;}  \r\n");
-fwrite($fsi,".viewSubjX{margin-top:1px;	width:100%;height:35px;	line-height:32px;border-top:3px solid #d01c27;	text-align:center;background:#fafafa;border-bottom:1px solid #dedede;overflow:hidden;font-size:18px;color:#69604f;}  \r\n");
-fwrite($fsi,".viewSubjX span{font-size:22px;color:#171512; vertical-align:baseline; }  \r\n");
-fwrite($fsi,".HeadTitle02AX{display:inline-block;	margin:0 1px;	height:35px;	line-height:35px;	padding:0 20px;	font-size:25px;	background:#d01c27;	color:#ffffff;	border-radius:5px;}  \r\n");
-fwrite($fsi,".HeadTitle01AX{display:inline-block;margin:0 1px;height:40px;line-height:0px;padding:0 20px;font-size:22px;background:#d01c27;color:#fff;border-radius:5px;}  \r\n");
-fwrite($fsi,".HeadTitle01AX a.on{background:#d01c27;color:#fff;}  \r\n");
-fwrite($fsi,".HeadTitle01A{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  \r\n");
-fwrite($fsi,".HeadTitle02A a{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  \r\n");
-fwrite($fsi,".HeadTitle01A a{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;	font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  \r\n");
-fwrite($fsi,".HeadTitle01A a.on{background:#d01c27;color:#fff;}  \r\n");
-fwrite($fsi,".Btn_List01A{width:64px;height:33px;display:inline-block;line-height:33px;	text-align:center;color:#fff;font-size:14px;background:#d01d27;	margin-right: 10px;	}  \r\n");
-fwrite($fsi,".Btn_List02A{width:99px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  \r\n");
-fwrite($fsi,".viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;}  \r\n"); // 2024-0105
-fwrite($fsi,".viewHeader span{left:0;top:12px;font-size:14px;color:#686868;}  \r\n"); // position:absolute; - 2024-0105
-fwrite($fsi,".boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-fwrite($fsi,".boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-fwrite($fsi,"</style>  \r\n");*/
-
 fwrite($fsi,"  <body width=100%>                            \r\n");
 fwrite($fsi,"  <center>                                           \r\n");
 fwrite($fsi,"                                 \r\n");
@@ -182,7 +140,6 @@ fwrite($fsi,"	else $"."line_cnt = 10;	    \r\n");
 fwrite($fsi,"?>                                 \r\n");
 
 fwrite($fsi,"          <span title='pg:".$pg_code."'>K-App:".$pg_code."&nbsp;&nbsp;&nbsp;<?=$"."in_day?></span> \r\n");
-//2024-01-05 fwrite($fsi,"          <input type='button' value='List' onclick=\"javascript:table_data_list();\" class='Btn_List01A'> \r\n");
 fwrite($fsi,"		</div>   \r\n");
 fwrite($fsi,"		<div class='viewSubjX'><span title='(".$pg_code.":".$tab_hnm.")'>".$pg_name."</span> </div>   \r\n");
 fwrite($fsi,"		<div class='blankA'> </div>   \r\n");
@@ -190,35 +147,19 @@ fwrite($fsi,"		<form name='makeform' method='post' enctype='multipart/form-data'
 fwrite($fsi,"				<input type='hidden' name='page'		value='<?=$"."_REQUEST[\"page\"]?>' />   \r\n");
 fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"line_cnt\"]?>' />   \r\n");
 
-
 		$kkk="off";
 		$ddd = "";
 		$iftypeX = "";
 		$ifdataX = "";
-
-		//$kkk0 = "document.makeform.fld_1.value";
-		//$kkk1 = "document.makeform.fld_1.value";
-		//$kkk2 = "document.makeform.fld_2.value";
-		//$kkk3 = "+";
-
 		$kkk0 = array();
 		$kkk1 = array();
 		$kkk2 = array();
 		$kkk3 = array();
-		
 		$kkk5 = 1;
-		
 		$iftype		= explode("|", $if_typePG);
 		$ifdata		= explode("|", $if_dataPG);
-
-//		for( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 		for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 				$ddd		= $list[$i];
-				/*$typeX	= $iftype[$j];
-				$dataX	= $ifdata[$j];
-				$if_fld	= explode(":", $dataX);
-				$fld		= explode("|", $ddd);*/
-
 				if( isset($iftype[$j]) && $iftype[$j]!='' ) $typeX	= $iftype[$j];
 				else $typeX	= '';
 				if( isset($ifdata[$j]) && $ifdata[$j]!='' ) $dataX	= $ifdata[$j];
@@ -227,7 +168,6 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 				else $if_fld = '';
 				if( isset($ddd) ) $fld = explode("|", $ddd);
 				else $fld="";
-
 			if( isset($fld[1]) && $fld[1] != "seqno") {
 				$fld_enmX	= $fld[1];
 				if( $fld[3] == "TEXT" ) {
@@ -256,11 +196,6 @@ fwrite($fsi,"				<input type='hidden' name='line_cnt'	value='<?=$"."_REQUEST[\"l
 							$f2 = $ff[2];
 							$f3 = $ff[3];
 							$f4 = $ff[4];
-
-							//$kkk0 = "document.makeform." . $f0 . ".value";
-							//$kkk1 = "document.makeform." . $f2 . ".value";
-							//$kkk2 = "document.makeform." . $f4 . ".value";
-							//$kkk3 = $f3;
 
 							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
 							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
@@ -401,15 +336,6 @@ fwrite($fsi,"				document.makeform.action		=\"excel_upload_user.php\";   \r\n");
 fwrite($fsi,"		document.makeform.target='_self';   \r\n");
 fwrite($fsi,"		document.makeform.submit();   \r\n");
 fwrite($fsi,"	}   \r\n");
-
-/*
-if($kkk !="off") {
-	fwrite($fsi,"	function ".$kkk."FUNC".$kkk5."() {  \r\n");
-	fwrite($fsi,"		v1 = " . $kkk1 . "  " . $kkk3 . "  " . $kkk2 . ";  \r\n");
-	fwrite($fsi,"		" . $kkk0 . " = v1;  \r\n");
-	fwrite($fsi,"	}  \r\n");
-}*/
-
 fwrite($fsi," //-->                                \r\n");
 fwrite($fsi," </script>                                \r\n");
 

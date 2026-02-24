@@ -187,11 +187,11 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		$ddd = "";
 
 		$kkk="off";
-		$kkk0 = array(); //"document.makeform.fld_1.value";
-		$kkk1 = array(); //"document.makeform.fld_1.value";
-		$kkk2 = array(); //"document.makeform.fld_2.value";
-		$kkk3 = array(); //"+";
-		$kkk5 = 1; //func seq number
+		$kkk0 = array();
+		$kkk1 = array();
+		$kkk2 = array();
+		$kkk3 = array();
+		$kkk5 = 1;
 
 		$pg_name	= $rsPG['pg_name'];
 		$tab_enm	= $rsPG['tab_enm'];
@@ -306,11 +306,6 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 							$f3 = $ff[3];
 							$f4 = $ff[4];
 							
-							/*$kkk0 = "document.makeform." . $f0 . ".value";
-							$kkk1 = "document.makeform." . $f2 . ".value";
-							$kkk2 = "document.makeform." . $f4 . ".value";
-							$kkk3 = $f3;*/
-
 							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
 							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
 							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
@@ -318,18 +313,13 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 							$kkk3[$kkk5] = $f3;
 
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							
 							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='FUNC_$kkk5()' title='FUNC_$kkk5()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
-							//echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='$fld[1]FUNC$kkk5()' title='$fld[1]XY()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
-
 							$kkk5++; // = $func_cnt;
-
 						} else {
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type=number name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
 						}
-							echo " <div class='blankA'> </div> ";
-
+						echo " <div class='blankA'> </div> ";
 				} else if ( $typeX == '13' ) {	// popup window
 						$fld_session = $i;	// popup column 
 						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";

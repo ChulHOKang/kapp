@@ -466,7 +466,6 @@ fwrite($fsw,"			<input type=hidden name='mode'				value='' />   \r\n");
 fwrite($fsw,"			<input type=hidden name='seqno'			value='' />   \r\n");
 fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\n");
 
-
 		$sqlPG		= "select * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$pg_code' ";
 		$resultPG	= sql_query($sqlPG);
 		if ( $resultPG == false ) { m_(" tkher_php_programDNV pg_name:$pg_name select ERROR "); exit; }
@@ -474,34 +473,25 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 		$rsPG			= sql_fetch_array($resultPG);
 		$list			= array();
 		$ddd			= "";
-
 		$kkk ="off";
 		$kkk0 = array();
 		$kkk1 = array();
 		$kkk2 = array();
 		$kkk3 = array();
 		$kkk5 = 1;
-
-
 		$item_array= $rsPG['item_array'];
 		$item_cnt= $rsPG['item_cnt'];
 		$list= explode("@", $item_array);
-		
 		$iftypeX		= $rsPG['if_type'];
 		$ifdataX		= $rsPG['if_data'];
-
 		$iftype		= explode("|", $iftypeX);
 		$ifdata		= explode("|", $ifdataX);
-
 		for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 			$ddd		= $list[$i];
-
 			if( isset($iftype[$j]) && $iftype[$j]!='' ) $typeX	= $iftype[$j];
 			else $typeX	= '';
 			if( isset($ifdata[$j]) && $ifdata[$j]!='' ) $dataX	= $ifdata[$j];
 			else $dataX	= '';
-
-
 			$if_fldT	= explode(":", $ifdata[$j]); 
 			$nT = 'array(';
 			for( $n=0;$n < count($if_fldT)-1; $n++ ){
@@ -509,7 +499,6 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 			}
 			$nT = $nT . ' "' . $if_fldT[$n] . '" ) ';
 			$if_fld_data	= $ifdata[$j]; 
-
 			$fld = explode("|", $ddd);
 			$fldenm= $fld[1];
 			$fldhnm= $fld[2];
@@ -545,8 +534,6 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 						fwrite($fsw," <div class='menu1A'><input type='number' name='".$fld[1]."' value='<?=$"."row['".$fldenm."']?>' style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='Please enter a ".$fld[2]."' class=autom_subj></div>  \r\n");
 				}
 				fwrite($fsw," <div class='blankA'> </div>  \r\n");
-			
-			
 			} else if ( $typeX == '13' ) {	// popup.
 				fwrite($fsw,"<?php                                 \r\n");
 				fwrite($fsw,"  $"."fld_session = ".$i.";	// popupwin table   \r\n");
@@ -554,10 +541,8 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 				fwrite($fsw," <div class='menu1T' align=center><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fld[2]."</span></div>  \r\n");
 				
 				fwrite($fsw," <div class='menu1A'><input type=text name='".$fldenm."' value='<?=$"."row['".$fldenm."']?>' onclick=\"javascript:popup_callDN('".$if_dataPG."', '".$pop_dataPG."', '".$if_typePG."', '<?=$"."tkher_iurl?>', '".$i."')\" style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='PopUp Window. Please enter a ".$fld[2]."'></div>  \r\n");
-				
 				fwrite($fsw," <div class='blankA'> </div>  \r\n");
 			} else if ( $typeX == '9' ) {	// addfile
-
 				fwrite($fsw,"<?php        \r\n");
 				fwrite($fsw,"	if( !$"."row['". $fldenm."'] ) { ?>       \r\n");
 				fwrite($fsw,"		  <div class='menu1T' align=center><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>Attachment-File</span></div>           \r\n");
@@ -565,18 +550,14 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 				fwrite($fsw,"		  <div class='blankA'> </div>           \r\n");
 				fwrite($fsw,"<?php       \r\n");
 				fwrite($fsw,"	} else {       \r\n");
-
 				fwrite($fsw," $"."ifile = explode( \".\", $"."row['".$fldenm."'] );    \r\n");
 				fwrite($fsw," if( strtolower($"."ifile[1]) == 'jpg' or strtolower($"."ifile[1]) == 'png' or strtolower($"."ifile[1]) == 'gif' ) {    \r\n");
-
 				fwrite($fsw,"			$"."path = './';   \r\n");
-
 				fwrite($fsw,"			$"."image_size = GetImageSize("."$"."row['".$fldenm."']);   \r\n");
 				fwrite($fsw,"			$"."im = $"."path . $"."row['".$fldenm."'];   \r\n");
 				fwrite($fsw,"?>        \r\n");
 				fwrite($fsw,"			<p>".$fldhnm.":<?=$"."row['".$fldenm."']?></p>   \r\n");
 				fwrite($fsw,"			<div class='viewWriteBox' ><a href='#' onClick=\"popimage('<?=$"."im?>',<?=$"."image_size[0]?>,<?=$"."image_size[1]?>); return false\" onfocus='this.blur()'><img src='<?=$"."im?>'  width='<?=$"."img_size[0]?>' height='100' border=0></a> </div>   \r\n");
-
 				fwrite($fsw,"<?php        \r\n");
 				fwrite($fsw," } else {    \r\n");
 				fwrite($fsw,"?>        \r\n");
@@ -587,7 +568,6 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 				fwrite($fsw," }	// addfile    \r\n");
 				fwrite($fsw,"	}                \r\n");
 				fwrite($fsw,"?>        \r\n");
-
 				fwrite($fsw," <div class='menu1T' align=center><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fldhnm."</span></div>    \r\n");
 				fwrite($fsw," <div class='File1A'>   \r\n");
 				fwrite($fsw," <input type='FILE' name='".$fldenm."' value='<?=$"."row['".$fldenm."']?>' placeholder='Please enter a ".$fld[2].".' style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>    \r\n");
@@ -595,13 +575,10 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 				fwrite($fsw," <div class='blankA'> </div>    \r\n");
 
 			} else if ( $typeX == '7' ) {	// password
-
 				fwrite($fsw," <div class='menu1T' align=center><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>$fld[2]</span></div>    \r\n");
 				fwrite($fsw," <div class='menu1A'><input type=PASSWORD name='".$fld[1]."' value='<?=$"."row['".$fldenm."']?>' style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;' placeholder='Please enter a ".$fld[2].".'></div>    \r\n");
 				fwrite($fsw," <div class='blankA'> </div>    \r\n");
-			
 			} else if ( $typeX == '5' ) {	// list box
-
 				fwrite($fsw," <div class='menu1T' align=center><span style='width:<?=$"."Xwidth?>;height:<?=$"."Xheight?>;'>".$fld[2]."</span></div>    \r\n");
 				fwrite($fsw," <div class='ListBox1A'>   \r\n");
 				fwrite($fsw,"<SELECT NAME='".$fld[1]."' SIZE='1' style='border-style:;height:25;'>   \r\n");
@@ -679,7 +656,6 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 		fwrite($fsw,"</body>   \r\n");
 		fwrite($fsw,"</html>   \r\n");
 
-
 	if( $kkk !="off") {
 		for( $fi=1, $fj=1; $fi<$kkk5; $fi++, $fj++){
 			$k0=$kkk0[$fj];
@@ -696,7 +672,7 @@ fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\
 		}
 	}
 
-		fclose($fsw);
+	fclose($fsw);
 
 	include('./include/lib/pclzip.lib.php');
 	$zf = $pg_code . '_view_update.zip';

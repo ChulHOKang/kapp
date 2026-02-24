@@ -5,22 +5,8 @@
     tkher_program_data_update.php						: data update system program
 	tkher_program_data_view.php							: data view   system program
 	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
-	** 프로그램:table_item_run70.php : 프로그램 속성을 저장한 table10_pg 테이블을 생성한다.
-	** table_pg70_write.php와 다른점 : item_array를 table10_pg테이블을 사용한다. 
-		: tab_list_pg70.php에서콜. 
-		: table10_pg_create, table_relation_pglist.php, table_search_list.php 에서도 콜.
-		javascript:submit_run2( '/t/tkher_program_data_list.php?pg_code=dao_1535240830', 'dao_1535240830', 'my_solpa_user_r');
-		http://tkher.com/test/css_pg_run.php?pg_code=dao_1540779796
-		http://tkher.com/test/css_pg_run.php?pg_code=dao_1537158930 : 각종 입력 필드 타입 . pg_505.
-
-	Data 등록 프로그램 - 같은 프로그램.
-	tkher_program_run.php
-	table_item_run50.php
-	table_pg70_write.php
-	//--- Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36, KAPP_MOBILE_AGENT: phone|samsung|lgtel|mobile|[^A]skt|nokia|blackberry|android|sony
 	----------------------------------------------------------------- */
 	$ip = $_SERVER['REMOTE_ADDR'];
-
 	$H_ID= get_session("ss_mb_id");
 	if( isset($H_ID) && $H_ID !='' ) {
 		$H_POINT	= $member['mb_point'];
@@ -115,7 +101,7 @@
 		$kkk1 = array();
 		$kkk2 = array();
 		$kkk3 = array();
-		$kkk5 = 1;  //func seq number
+		$kkk5 = 1;
 		$ddd = "";
 
 		$iftypeX = "";
