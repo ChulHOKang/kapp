@@ -23,16 +23,12 @@
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
-
 	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
 	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
 	else $pg_code = '';
-
-
 	if( isset( $_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else if( isset( $_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode = '';
-	
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
@@ -227,11 +223,9 @@ $(function () {
 			var c_sel3 = document.getElementById("c_sel3");
 			i = c_sel3.selectedIndex;
 			c_sel3 = c_sel3.options[i].value;
-			//var searchT = document.getElementById("searchT").value;
 			document.view_form.mode.value = 'search';
 			document.view_form.search_fld.value = c_sel;
 			document.view_form.search_choice.value = c_sel3;
-			//document.view_form.searchT.value = searchT;
 			document.view_form.action = 'tkher_program_data_list.php';
 			document.view_form.submit();
 		});
@@ -337,12 +331,10 @@ $(function () {
 	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld']; // c_sel
 	else if( isset($_POST['search_fld']) ) $search_fld= $_POST['search_fld'];
 	else  $search_fld = "";
-
-	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice']; // c_sel3
+	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice'];
 	else if( isset($_POST['search_choice']) ) $search_choice= $_POST['search_choice'];
 	else  $search_choice = "";
-
-	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT']; // search data
+	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
 	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
 	else  $searchT = "";
 
@@ -382,23 +374,10 @@ $(function () {
 	$view_msg ='';
 	if( $H_LEV >= $grant_view || $pg_mid == $H_ID ) {
 			$SQL1 = "SELECT * from `$tab_enm` ";
-			/*
-			if( $mode=='search' ){
-				if( $search_choice == "like")		$SQL1 = $SQL1 . " where `$search_fld` $search_choice '%$searchT%' ";
-				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
-			}
-			if( $mode=='title_func' ){      
-				if( $search_choice != '' && $search_text !='') {   
-					$SQL1 = $SQL1 . " where $search_fld $search_choice '%$search_text%' ";      
-					$SQL1 = $SQL1 . " order by $fld_code ";      
-				} else $SQL1 = $SQL1 . " order by $fld_code ";      
-			} */     
-
 			if( $search_choice != '' && $searchT !='') {   
 				if( $search_choice == "like")		$SQL1 = $SQL1 . " where `$search_fld` $search_choice '%$searchT%' ";
 				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
 			} 
-
 			if( ($result = sql_query( $SQL1 ) )==false ){
 				printf("Invalid query: %s\n", $SQL1);
 				echo "SQL:" . $SQL1; m_(" 4 Select Error ");
@@ -419,7 +398,6 @@ $(function () {
 	} else {
 		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
 	}
-
 ?>
 		<form name='view_form' method='post' enctype="multipart/form-data" >
 			<div style='width:99%;'>
@@ -453,9 +431,9 @@ $(function () {
 <?php
 
 	if( isset($H_ID) && $H_ID !='' ) {
-		if( $H_LEV > 7) $sql = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
-		else			$sql = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
-		$result = sql_query( $sql );
+		if( $H_LEV > 7) $sqlA = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
+		else			$sqlA = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
+		$result = sql_query( $sqlA );
 		if( $result == false ){
 			m_(" 2 Select Error ");
 			echo "Invalid query sql:"; exit;
@@ -522,11 +500,10 @@ if( $H_ID==$pg_mid ) {
 }
 						echo "<br>".$view_msg;
 ?>
-
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
-						<input type="hidden" name='fld_code'		value='<?=$fld_code?>' />
-						<input type="hidden" name='fld_code_asc'	value='<?=$fld_code_asc?>' />
+						<input type="hidden" name='fld_code'		value='' />
+						<input type="hidden" name='fld_code_asc'	value='' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
 						<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
 						<input type="hidden" name='tab_hnm'		value='<?=$tab_hnm?>' />
@@ -559,9 +536,6 @@ if( $H_ID==$pg_mid ) {
 						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
 <?php
 				}
-
-//	echo " <th title='project Sort click or doubleclick' >Project</th> ";
-
 ?>
 	<table class='listTableT' width='99%'>
 		<thead id='tit_et'>
@@ -573,7 +547,6 @@ if( $H_ID==$pg_mid ) {
 			$fenm = $fld_enm[$i];
 			echo " <th title='$fenm:$fhnm Sort click or doubleclick' >$fhnm</th> ";
 			echo "<input type='hidden' id='$fhnm' name='$fhnm' value='$fenm' >";
-			//echo " <th class='cell03' title='$fenm:$fhnm Sort click or doubleclick' onclick=\"javascript:title_func('".$fenm."')\">$fhnm</th> ";
 		}
 ?>
 			</tr>
@@ -583,20 +556,6 @@ if( $H_ID==$pg_mid ) {
 	if( $H_LEV>= $grant_view || $pg_mid == $H_ID ) {
 			$SQL		= "SELECT * from $tab_enm ";
 			$SQL_limit	= "  limit " . $start . ", " . $last;
-			
-//			if( $mode=='title_func' ) $OrderBy = " order by $fld_code ";    
-//			else $OrderBy	= " order by seqno desc ";        
-
-			/*if( $mode == "search" ){
-				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
-				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
-			} else if( $mode=='title_func' ) {     
-				if( $search_choice != '' && $searchT !='') {     
-					if( $search_choice == 'like' )	$SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";  
-					else					$SQL = $SQL . " where $search_fld $search_choice '$searchT' ";       
-				}     
-			}  */
-
 			if( $mode == "search" ){
 				if( $search_choice == "like") $SQL = $SQL . " where $search_fld $search_choice '%$searchT%' ";
 				else $SQL = $SQL . " where $search_fld $search_choice '$searchT' ";
@@ -606,15 +565,12 @@ if( $H_ID==$pg_mid ) {
 					else					$SQL = $SQL . " where $search_fld $search_choice '$searchT' ";       
 				}     
 			}
-
-			//$SQL = $SQL . $OrderBy . $SQL_limit;
 			if( $fld_code!='' ) $OrderBy = " ORDER BY $fld_code $fld_code_asc ";    
 			else $OrderBy	= " ORDER BY seqno desc ";
 			$SQL = $SQL . $OrderBy;
 			$SQL = $SQL . $SQL_limit;
-
 			if( ($result = sql_query( $SQL ) )==false )	{
-				printf("Record 0 : query: %s\n", $SQL);
+				printf("Record 0 : query: %s\n", $SQL); exit;
 			} else {
 				if( $page > 1 ) $no=($page -1) * $line_cnt;
 				else $no=0;
