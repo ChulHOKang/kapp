@@ -335,7 +335,6 @@
 		if_type = document.makeform["if_type[" + j + "]"].value;
 		if_data = document.makeform["if_data[" + j + "]"].value;
 		document.makeform.col_attr_old.value = if_type; 
-		alert("column_list_onclickA if_type: "+if_type);
 		switch( if_type ){
 			case 0:
 				document.makeform.ifcheck[0].checked=true;
