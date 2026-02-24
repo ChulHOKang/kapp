@@ -14,27 +14,25 @@
 	}
 	$H_LEV=$member['mb_level'];
 	connect_count($host_script, $H_ID, 0, $referer);
+	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
+	else $H_POINT = 0;
 	$formula_		= "";
 	$poptable_		= "";
-	$column_all		= ""; //my_func
+	$column_all		= "";
 	$pop_fld			= "";
 	$pop_mvfld		= "";
 	$relation_db	= "";
 	$rel_mvfld		= "";
 	$gita				= "";
-
 	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
 	$mid = $H_ID;
-
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else $page=1;
-
 	if( isset($_POST['pj_code']) && $_POST['pj_code']!='' ) $pj_code = $_POST['pj_code'];
 	else $pj_code = "";
 	if( isset($_POST['pj_name']) && $_POST['pj_name']!='' ) $pj_name = $_POST['pj_name'];
 	else $pj_name = "";
-
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
@@ -52,12 +50,26 @@
 </head>
 <style>
 table { border-collapse: collapse; }
-th { background: #cdefff; height: 27px; }
+/*th { background: #cdefff; height: 32px; } */
+th { background: #666fff; color: white; height: 32px; }
 th, td { border: 1px solid silver; padding:5px; }
-</style>
-<link rel="stylesheet" href="./admin.css" type="text/css" />
-<script src="//code.jquery.com/jquery.min.js"></script>
+	.container {
+		background-color: skyblue;
+		display :flex;									/* flex, inline-flex */
+		/*flex-direction: row;*/							/* row, row-reverse, column, column-reverse */
+		/*flex-wrap: nowrap;*/							/* nowrap, wrap, wrap-reverse */
+		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
+		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
+		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
+		height:25px;
 
+	}
+	.item {
+		background-color: gold;
+		boarder: 1px solid gray;
+	}
+</style>
+<script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
 	let timer;
@@ -77,8 +89,7 @@ $(function () {
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거	//alert('더블 클릭되었습니다!');
 		switch(e.target.innerText){
 				case 'Project' : title_wfunc('group_name'); break;
 				case 'User'    : title_wfunc('userid'); break;
@@ -117,7 +128,6 @@ $(function () {
 });
 </script>
 <script type="text/javascript" >
-<!--
 	function program_del_funcList2( seqno, pg_name, pg_code, hid, mid ) {
 		msg = "Are you sure you want to delete the program " + pg_name +"?";
 		if ( window.confirm( msg ) ){
@@ -202,7 +212,6 @@ $(function () {
 		document.tkher_search.action='kapp_program_list.php';
 		document.tkher_search.submit();                         
 	} 
-//-->
 </script>
 
  <BODY>
@@ -210,37 +219,30 @@ $(function () {
  <?php
 	if( isset($_POST["mode"]) ) $mode		= $_POST["mode"];
 	else $mode	 = "";
-
 	if( isset($_POST['param']) && $_POST['param'] !="" ) $param = $_POST['param'];
 	else $param = '';
 	if( isset($_POST['sel']) && $_POST['sel'] !="" ) $sel = $_POST['sel'];
 	else $sel = '';
 	if( isset($_POST['data']) && $_POST['data'] !="" ) $data = $_POST['data'];
 	else $data = '';
-
 	if( isset($_POST['seqno']) && $_POST['seqno'] !="" ) $seqno = $_POST['seqno'];
 	else $seqno = '';
-
 	if( isset($_POST['pg_code']) && $_POST['pg_code'] !="" ) $pg_code = $_POST['pg_code'];
 	else $pg_code = '';
 	if( isset($_POST['pg_name']) && $_POST['pg_name'] !="" ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
-
 	if( isset($_POST['tab_hnm']) )  $tab_hnm = $_POST['tab_hnm'];
-	$tab_hnm = "";
+	else $tab_hnm = "";
 	if( isset($_POST['tab_enm']) )  $tab_enm = $_POST['tab_enm'];
-	$tab_enm = "";
-	
-	//m_("pj_code: " . $pj_code . ", mode:" . $mode );
+	else $tab_enm = "";
 
 	if( $mode == 'Delete_mode' ) { 
 		$lsD = " DELETE from {$tkher['table10_pg_table']} ";
-		$lsD = $lsD . " where userid='".$H_ID."' and seqno=" . $seqno; //중요 Table 첫컬럼.
+		$lsD = $lsD . " where userid='".$H_ID."' and seqno=" . $seqno;
 		echo "sql: " . $lsD;
 		$reT = sql_query( $lsD );
 		if( $reT ) {
 			m_( "delete ok pg_name:" . $pg_name . ", pg_code:" . $pg_code);
-			// delete ok pg_name:order_pg10, pg_code:dao_1632720522 , seqno: 184
 		} else {
 			m_( "delete error pg_name:" . $pg_name . ", pg_code:" . $pg_code);
 		}
@@ -310,12 +312,11 @@ $(function () {
 	} else {
 		$total = 0;
 	}
-		$cur='B';
-		include_once "./menu_run.php";
-
-
+	//	$cur='B';
+	//	include_once "./menu_run.php";
 ?>
-<h2 title='pg:kapp_program_list'>Program List (admin:<?=$H_ID?>) - total:<?=$total?></h2>
+<h2 title='pg:kapp_program_list'>KAPP Program List(<?=$H_ID?>) - total:<?=$total?></h2>
+
 	<form name="tkher_search" target="_self" method="post" action="kapp_program_list.php"  >
 			<input type='hidden' name='mode'    value='<?=$mode?>'>
 			<input type='hidden' name='page'    value="<?=$page?>">
@@ -326,21 +327,44 @@ $(function () {
 			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
 			<input type='hidden' name='mid'     value="<?=$H_ID?>">
-			<!-- <input type='hidden' name='mid_nm' value="<?=$mid_nm?>"> -->
 			<input type="hidden" name='pj_name' value="<?=$pj_name?>">
 			<input type="hidden" name="pj_code" value="<?=$pj_code?>" >
 			<input type="hidden" name="pj_code_check" value="<?=$pj_code_check?>" >
+			<input type="hidden" name="data" >
+			<input type="hidden" name="seqno" >
+			<input type="hidden" name="seqno" >
+			<input type="hidden" name="userid" >
+			<input type='hidden' name='group_name' >
+			<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
+			<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+<?php
+		if( $mode == "Search" ) $T_msg = "[ KAPP Program : <b>". $pg_name . "</b> ] - code: <b>" .$pg_code . "</b>";
+		else $T_msg = "[ ".$member['mb_id']." ]";
+		if( !isset($H_ID) || $H_ID == '' || !$H_ID ) {
+			$T_msg = $T_msg . " : " . $ip;
+		} else {
+			$T_msg = $T_msg . " Point:" . number_format($H_POINT). " : Lev:" . $member['mb_level'];
+		}
+?>
 
-		<input type="hidden" name="data" >
-		<input type="hidden" name="seqno" >
+		<div>
+			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
+				<option value="pg_name">Program</option>
+				<option value="tab_hnm" style="background-color:gray;color:white;" >Table</option>
+				<option value="group_name" style="background-color:gray;color:white;">Project Name</option>
+				<option value="userid" style="background-color:gray;color:white;">User</option>
+			</select>
+			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
+				<option value="=" <?php if($sel =='=') echo ' selected ';?> >=</option>
+				<option value="like" <?php if($sel =='like') echo ' selected ';?> >Like</option>
+			</SELECT>
+			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
+			<input type="button" value="Search" onclick='search_func()'>
+		</div>
 
-	<input type="hidden" name="seqno" >
-	<input type="hidden" name="userid" >
-	<input type='hidden' name='group_name' >
-
-	<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
-	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
-
+<span title='data print - kapp_program_list'><strong><?=$T_msg?></strong></span>
+<br>
+<span>
 			<SELECT name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
 			<option value="">Select Project</option>
 <?php
@@ -353,15 +377,7 @@ $(function () {
 			<option value="<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php echo $chk;?> ><?=$rs['group_name']?></option>
 <?php } ?>
 			</SELECT>
-			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
-				<option value="pg_name">Program</option>
-			</select>
-			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="like" <?php if($sel =='like') echo ' selected ';?> >Like</option>
-				<option value="=" <?php if($sel =='=') echo ' selected ';?> >=</option>
-			</SELECT>
-			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
-			<input type="button" value="Search" onclick='search_func()'>
+</span>
 <span>
 View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
@@ -376,7 +392,6 @@ View Line:
 <thead id='tit_et' width="100%">
 	<tr>
 	<th>NO</th>
-
 <?php
 	echo " <th title='User Sort click or doubleclick' >User</th> ";
 	echo " <th title='project Sort click or doubleclick' >Project</th> ";
@@ -384,12 +399,6 @@ View Line:
 	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
 	echo " <th title='Date Sort click or doubleclick' >Date</th> ";
 ?>
-	
-	<!-- <th>user</th>
-	<th>Project</th>
-	<th>Program</th>
-	<th>Table</th>
-	<th>Date</th> -->
 	<th>Management</th>
 	</tr>
 </thead>
@@ -397,16 +406,18 @@ View Line:
  <?php
 	$line=0;
 	$i=1;
-	
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
-
 	$ls = $ls . $limit;
 	$resultT	= sql_query( $ls );
 	while( $rs = sql_fetch_array( $resultT ) ) {
 		$line=$line_cnt*$page + $i - $line_cnt;
-			$bgcolor = "#eeeeee";
+		$bgcolor = "#eeeeee";
+		$mid = $rs['userid'];
+		if( $H_ID == $mid) $bcolor ="style='background-color:cyan;'";
+		else $bcolor='';
+
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
@@ -417,16 +428,16 @@ View Line:
 		else $attr="";
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR bgcolor='<?=$bgcolor?>' width='100%' >
-	<td width='1%'><?=$line?></td>
-	<td width='3%'><?=$rs['userid']?> </td>
-	<td width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
-	<td  width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td width='5%' title='Data List program run'>
+	<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'>
+	<TD <?=$bcolor?> width='1%'><?=$line?></td>
+	<TD <?=$bcolor?> width='3%'><?=$rs['userid']?> </td>
+	<TD <?=$bcolor?> width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
+	<TD <?=$bcolor?> width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></td>
+	<td TD <?=$bcolor?> width='5%' title='Data List program run'>
 		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
 	</td>
-	<td width='5%'><?=substr($rs['upday'], 0,10)?></td>
-	<td width='15%' align='center'>
+	<TD <?=$bcolor?> width='5%'><?=substr($rs['upday'], 0,10)?></td>
+	<TD <?=$bcolor?> width='15%' align='center'>
 	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>>
 <?php if( $H_ID == $rs['userid'] ) { ?>
 	<input type='button' onclick="program_del_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>', '<?=$H_ID?>', '<?=$rs['userid']?>')" value='Delete' style='height:22px;width:60px;background-color:red;color:white;border-radius:20px;border:1 solid black'  <?php echo "title=' Delete of ".$rs['pg_name']."' ";?>>
@@ -437,31 +448,30 @@ View Line:
 	</td>
 	</TR>
  <?php
-		$i++;		//$count = $count - 1;
+		$i++;
     }
  ?>
 </form>
 </tbody>
 </table>
-<table width="100%"   bgcolor="#CCCCCC">
+<table width="100%" bgcolor="#CCCCCC">
   <tr>
     <td align="center" bgcolor="f4f4f4">
 <?php
-
-		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-		$last_page = $first_page+($page_num-1);
-		if( $last_page > $total_page) $last_page = $total_page;
-		$prev = $first_page-1;
-		if( $page > $page_num)
-			echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-		for( $i = $first_page; $i <= $last_page; $i++){
-			if($page == $i) echo" <b>".$i."</b> ";
-			else
-				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
-		}
-		$next = $last_page+1;
-		if($next <= $total_page)
-			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
+	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	$last_page = $first_page+($page_num-1);
+	if( $last_page > $total_page) $last_page = $total_page;
+	$prev = $first_page-1;
+	if( $page > $page_num)
+		echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
+	for( $i = $first_page; $i <= $last_page; $i++){
+		if($page == $i) echo" <b>".$i."</b> ";
+		else
+			echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
+	}
+	$next = $last_page+1;
+	if($next <= $total_page)
+		echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 ?>
 	</td>
   </tr>

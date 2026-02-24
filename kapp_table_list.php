@@ -80,8 +80,7 @@ $(function () {
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거//alert('더블 클릭되었습니다!');
 		switch(e.target.innerText){
 				case 'Project'    : title_wfunc('group_name'); break;
 				case 'User'       : title_wfunc('userid'); break;
@@ -126,15 +125,12 @@ $(function () {
 	$page_num = 10;
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode	= '';
-
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
 	else $fld_code_asc = '';
-
 	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
 		$group_code = $_POST['group_code'];   
 		$wsel = " and group_code = '$group_code' ";
@@ -142,21 +138,18 @@ $(function () {
 		$group_code= '';
 		$wsel = '';
 	}
-
 	if( isset($_POST["pg_code"]) ) $pg_code		= $_POST["pg_code"];
 	else $pg_code		= "";
 	if( isset($_POST["tab_enm"]) ) $tab_enm	= $_POST["tab_enm"];
 	else $tab_enm		= "";
 	if( isset($_POST["tab_hnm"]) ) $tab_hnm	= $_POST["tab_hnm"];
 	else $tab_hnm		= "";
-
 	if( isset($_POST['param']) && $_POST['param']!='' ) $param =$_POST['param'];
 	else $param = "tab_hnm";
 	if( isset($_POST['sel']) && $_POST['sel']!='' ) $sel =$_POST['sel'];
 	else $sel = "";
 	if( isset($_POST['data']) && $_POST['data']!='' ) $data = $_POST['data'];
 	else $data	= "";
-
    if( $H_ID !='' && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
@@ -228,10 +221,8 @@ $(function () {
 		$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
 		if( $wsel!='') $ls = $ls . $wsel;
    }
-
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-
 	$total_page = intval(($total-1) / $line_cnt)+1;
 	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
 	else $first =0;
@@ -445,7 +436,7 @@ $(function () {
 </script>
 <body>
 <center>
-<h2 title='pg:kapp_program_list_all'>KAPP Table List (total:<?=$total?>)</h2>
+<h2 title='pg:kapp_table_list'>KAPP Table List(<?=$H_ID?>) - total:<?=$total?></h2>
 
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
@@ -461,29 +452,29 @@ $(function () {
 	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
 	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 <?php
-		if( $mode == "Search" ) $T_msg = "[ Table10i, Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
+		if( $mode == "Search" ) $T_msg = "[ KAPP Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
 		else $T_msg = "[ ".$member['mb_id']." ]";
 		if( !isset($H_ID) || $H_ID == '' || !$H_ID ) {
 			$T_msg = $T_msg . " , " . $ip;
 		} else {
-			$T_msg = $T_msg . ", Point:" . number_format($H_POINT). ", Lev:" . $member['mb_level'];
+			$T_msg = $T_msg . " Point:" . number_format($H_POINT). " : Lev:" . $member['mb_level'];
 		}
 ?>
 		<div><center>
 			<select name="param" style="border-style:;background-color:gray;color:white;height:24;">
 				<option value="tab_hnm" style="background-color:gray;color:white;" >Table</option>
-				<option value="userid" style="background-color:gray;color:white;">User</option>
 				<option value="group_name" style="background-color:gray;color:white;">Project Name</option>
+				<option value="userid" style="background-color:gray;color:white;">User</option>
 			</select>
 			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
 				<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
+				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
 			</select>
 			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
 			<input type='button' value='Search' onclick="javascript:table_search();" >
 		</div>
 
-<span title='my data print - kapp_table_list.php'><strong><a onclick="javascript:my_data();" style="background-color:black;color:yellow;height:36px;border-radius:20px;">&nbsp;&nbsp;&nbsp;<?=$T_msg?></a></strong></span>
+<span title='my data print - kapp_table_list.php'><strong><?=$T_msg?></strong></span>
 <br>
 <span>
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
@@ -537,23 +528,18 @@ if( $mode != 'Search') {
 </thead>
 <tbody width='100%'>
 <?php
-		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
-		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
-		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
-
+	$item_list = " create table ". $tab_enm . " ( ";
+	$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
+	$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
+	$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
     $line=0;
 	$i=1;
-	
-
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
-	if( $mode != "Search") { // table 상세 조화가 아님.
+	if( $mode != "Search") {
 		$ls = $ls . " $limit ";
 	}
-
-	
 	$resultT	= sql_query( $ls );
 	while( $rs = sql_fetch_array( $resultT ) ) {
 		$group_code = $rs['group_code'];
@@ -585,25 +571,25 @@ if( $mode != 'Search') {
 			<TD><?=$rs['fld_len']?></TD>
 			<TD title='<?=$rs['memo']?>'><?=$rs['memo']?></TD>
 <?php
-				$fld_enm = $rs['fld_enm'];
-				if( $fld_enm != 'seqno' ){
-					$fld_type = $rs['fld_type'];
-					$fld_len		= $rs['fld_len'];
-					if( $fld_type =='INT' )					$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
-					else if( $fld_type =='BIGINT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='TINYINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='SMALLINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='DECIMAL' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='FLOAT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-					else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
-					else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
-					else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-					else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-					else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-					else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				}
+			$fld_enm = $rs['fld_enm'];
+			if( $fld_enm != 'seqno' ){
+				$fld_type = $rs['fld_type'];
+				$fld_len		= $rs['fld_len'];
+				if( $fld_type =='INT' )					$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='BIGINT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='TINYINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='SMALLINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='DECIMAL' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='FLOAT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
+				else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
+				else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+			}
 		}
 		if( $mode != 'Search' && isset($H_ID) && $H_ID !='' ){
 				echo " <TD align='center' $bcolor><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
@@ -614,15 +600,15 @@ if( $mode != 'Search') {
 		}
 ?>
 	</TR>
- <?php
+<?php
 		$i++;
     }
 		$item_list = $item_list . " primary key(seqno) ) ";
- ?>
+?>
 		<tr align="center"></tr>
 </tbody>
 </table>
-<table width="100%"   bgcolor="#CCCCCC">
+<table width="100%" bgcolor="#CCCCCC">
   <tr>
     <td align="center" bgcolor="f4f4f4">
 <?php

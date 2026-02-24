@@ -160,6 +160,7 @@ $(function () {
 		document.table_list.submit();
 	}
 	function Change_line_cnt( $line){
+		document.table_list.mode.value = '';
 		document.table_list.page.value = 1;
 		document.table_list.line_cnt.value = $line;
 		document.table_list.action='kapp_program_list_all.php';
@@ -170,12 +171,15 @@ $(function () {
 <body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
 <center>
 <?php
-   $param	= '';   
-   $sel	    = '';   
-   $seqno	= '';   
-   $pg_code	= '';   
-   $pg_name = '';   
+	$param= '';   
+	$sel= '';   
+	$data= '';
+	$seqno= '';   
+	$pg_code= '';   
+	$pg_name= '';   
 
+	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
+	else $page=1;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
@@ -197,42 +201,33 @@ $(function () {
 	}
 
 	if( isset($_POST['data']) ) $data = $_POST['data'];
-	else $data = '';
-	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
-	else $page=1;
-
-	if( isset($_POST['param']) ) $param	= $_POST["param"];   
-	if( isset($_POST['sel']) )   $sel	= $_POST["sel"];   
+	if( isset($_POST['param']) ) $param	= $_POST['param'];   
+	if( isset($_POST['sel']) )   $sel	= $_POST['sel'];   
 	if( isset($_POST['seqno']) ) $seqno	= $_POST["seqno"];   
 	if( isset($_POST['pg_code']) ) $pg_code	= $_POST["pg_code"];   
 	if( isset($_POST['pg_name']) ) $pg_name= $_POST["pg_name"];   
-
 	if( $mode == 'Program_Search' ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if( $wsel!='') $ls = $ls . " where $param like '%$data%' " . $wsel;
-			else $ls = $ls . " where $param like '%$data%' ";
+			$ls = $ls . " where $param like '%$data%' " . $wsel;
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if( $wsel!='') $ls = $ls . " where $param $sel '$data' " . $wsel;
-			else $ls = $ls . " where $param $sel '$data' ";
-		}
-	} else if( $data != '' ) { // program 검색.
-		if( $sel == 'like') {
-			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if( $wsel!='') $ls = $ls . " where pg_name like '%$data%' ". $wsel;
-			else $ls = $ls . " where pg_name like '%$data%' ";
-		} else {
-			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			if( $wsel!='') $ls = $ls . " where pg_name $sel '$data' " . $wsel;
-			else $ls = $ls . " where pg_name $sel '$data' ";
+			$ls = $ls . " where $param $sel '$data' " . $wsel;
 		}
 	} else if( $mode == 'Search_Project' && $group_code!='') {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $wsel!='' ) $ls = $ls . " where group_code= '$group_code' ";
+		$ls = $ls . " where group_code= '$group_code' ";
+	} else if( $data != '' ) {
+		if( $sel == 'like') {
+			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
+			$ls = $ls . " where $param like '%$data%' " . $wsel;
+		} else {
+			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
+			$ls = $ls . " where $param $sel '$data' " . $wsel;
+		}
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $wsel!='' ) $ls = $ls . " where group_code= '$group_code' ";
+		if( $group_code !='') $ls = $ls . " where group_code= '$group_code' ";
 	}
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
@@ -256,7 +251,8 @@ $(function () {
 	if( isset($_POST['tab_hnm']) ) $tab_enm = $_POST['tab_hnm'];
 ?>
 <h2 title='pg:kapp_program_list_all'>Program List (total:<?=$total?>)</h2>
-<FORM name="tkher_search" target="_self" method="post" action="kapp_program_list_all.php"  >
+<!-- <FORM name="tkher_search" target="_self" method="post" action="kapp_program_list_all.php"  > -->
+<FORM name="table_list" target="_self" method="post" action="kapp_program_list_all.php"  >
 			<input type='hidden' name='mode'    value='Program_Search'>
 			<input type='hidden' name='modeS'   value='Program_Search'>
 			<input type='hidden' name='page'    value="<?=$page?>">
@@ -266,8 +262,12 @@ $(function () {
 			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>"> 
 			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+
 			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
-				<option value="pg_name">Program</option>
+				<option value="pg_name" <?php if($param == 'pg_name') echo " selected ";?>>Program</option>
+				<option value="tab_hnm" <?php if($param == 'tab_hnm') echo " selected ";?> >Table</option>
+				<option value="group_name" <?php if($param == 'group_name') echo " selected ";?>>Project Name</option>
+				<option value="userid" <?php if($param == 'userid') echo " selected ";?>>User</option>
 			</SELECT> 
 			<SELECT name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
 				<option value="=" <?php if($sel == '=') echo " selected ";?>>=</option>
@@ -275,21 +275,14 @@ $(function () {
 			</SELECT>
 			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="submit" value="Search">
-		</form>
 
-<FORM name="table_list" method='POST' enctype="multipart/form-data" >
-	<input type="hidden" name="mode" > 
-	<input type="hidden" name="page" > 
-	<input type="hidden" name="data" > 
+<!-- 		</form>
+<FORM name="table_list" method='POST' enctype="multipart/form-data" > -->
 	<input type="hidden" name="seqno" > 
-	<input type="hidden" name="pg_name" > 
-	<input type="hidden" name="pg_code" > 
 	<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
 	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
-	<input type='hidden' name='tab_enm' value='<?=$tab_enm?>'>
-	<input type='hidden' name='tab_hnm' value='<?=$tab_hnm?>'>
 	<input type='hidden' name='group_name' >
-
+<div>
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
 							<option value=''>Project</option>
 <?php
@@ -312,6 +305,7 @@ View Line:
 		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
 	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 </span>
+</div>
 <table class='floating-thead' width="100%" style='background-color:black;color:white;'>
 
 <thead id='tit_et' width="100%">
@@ -334,7 +328,7 @@ View Line:
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
-	$ls = $ls . " $limit ";
+	$ls = $ls . $limit;
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) { 
 		$mid=$rs['userid'];
@@ -345,21 +339,13 @@ View Line:
 		$bgcolor = 'black'; //"#eeeeee";
 		if( $H_ID == $mid) $bcolor ="style='background-color:black;color:yellow;'";//style='background-color:black;color:white;'
 		else $bcolor ="style='background-color:black;color:gray;'";
-		//$if_data = $rs['if_data'];
-		//$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
-		//$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
-		/*if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
-		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
-		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
-		else if( !$pop_fld && !$pop_mvfld )	$attr = $gita;
-		else $attr="";*/
   ?> 
 		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' width='900' >
 		<td width='1%' <?=$bcolor?> ><?=$line?></td>
 		<td width='5%' <?=$bcolor?> title=" project code:<?=$group_code?>"><?=$group_name?></td>
 		<td width='3%' <?=$bcolor?> ><?=$rs['userid']?> </td>
-		<td width='15%' style='background-color:000051;' ><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) - Run</a></td> 
+		<td width='15%' style='background-color:000051;' ><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) <img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></td> 
 
 		<td width='15%' onclick="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" <?=$bcolor?> ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</td> 
 		<td width='5%' <?=$bcolor?> ><?=$rs['upday']?></td>
