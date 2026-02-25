@@ -164,8 +164,9 @@ $(function () {
 		document.view_form.target="_blank";
 		document.view_form.submit();
 	}
-    function table_record_view(enm,hnm)
-	{
+    function table_record_view(enm,hnm)	{
+		document.view_form.fld_code_pg.value='';
+		document.view_form.fld_code_asc_pg.value='';
 		document.view_form.pg_code.value=enm;
 		document.view_form.pg_name.value=hnm;
 		document.view_form.action='tkher_program_data_list.php'; 
