@@ -29,10 +29,10 @@
 	if( isset( $_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else if( isset( $_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode = '';
-	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
-	else $fld_code = '';
-	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
-	else $fld_code_asc = '';
+	if( isset( $_POST['fld_code_pg']) ) $fld_code_pg= $_POST['fld_code_pg'];
+	else $fld_code_pg = '';
+	if( isset( $_POST['fld_code_asc_pg']) ) $fld_code_asc_pg= $_POST['fld_code_asc_pg'];
+	else $fld_code_asc_pg = '';
 	if( $mode == "project_search" ) $group_code = $_POST['group_code'];
 	else if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
 	else $group_code = '';
@@ -124,19 +124,19 @@ $(function () {
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 <script type="text/javascript" >
 <!--
-	function title_wfunc(fld_code){       
+	function title_wfunc(fld_code_pg){       
 		document.view_form.page.value = 1;
-		document.view_form.fld_code.value= fld_code;
-		document.view_form.fld_code_asc.value= 'desc';
+		document.view_form.fld_code_pg.value= fld_code_pg;
+		document.view_form.fld_code_asc_pg.value= 'desc';
 		document.view_form.mode.value='title_wfunc';
 		document.view_form.target='_self';
 		document.view_form.action='tkher_program_data_list.php';
 		document.view_form.submit();                         
 	} 
-	function title_func(fld_code){       
+	function title_func(fld_code_pg){       
 		document.view_form.page.value = 1;                
-		document.view_form.fld_code.value= fld_code;           
-		document.view_form.fld_code_asc.value= 'asc';
+		document.view_form.fld_code_pg.value= fld_code_pg;           
+		document.view_form.fld_code_asc_pg.value= 'asc';
 		document.view_form.mode.value='title_func';           
 		document.view_form.target='_self';
 		document.view_form.action='tkher_program_data_list.php';
@@ -502,8 +502,8 @@ if( $H_ID==$pg_mid ) {
 ?>
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
-						<input type="hidden" name='fld_code'		value='' />
-						<input type="hidden" name='fld_code_asc'	value='' />
+						<input type="hidden" name='fld_code_pg'		value='<?=$fld_code_pg?>' />
+						<input type="hidden" name='fld_code_asc_pg'	value='<?=$fld_code_asc_pg?>' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
 						<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
 						<input type="hidden" name='tab_hnm'		value='<?=$tab_hnm?>' />
@@ -565,7 +565,7 @@ if( $H_ID==$pg_mid ) {
 					else					$SQL = $SQL . " where $search_fld $search_choice '$searchT' ";       
 				}     
 			}
-			if( $fld_code!='' ) $OrderBy = " ORDER BY $fld_code $fld_code_asc ";    
+			if( $fld_code_pg!='' ) $OrderBy = " ORDER BY $fld_code_pg $fld_code_asc_pg ";    
 			else $OrderBy	= " ORDER BY seqno desc ";
 			$SQL = $SQL . $OrderBy;
 			$SQL = $SQL . $SQL_limit;
