@@ -191,7 +191,7 @@ $(function () {
 	function Change_line_cnt( $pg_code, $line){
 		
 		document.view_form.page.value = 1;
-		document.view_form.line_cnt.value = $line;
+		document.view_form.line_cnt_pg.value = $line;
 		document.view_form.action='tkher_program_data_list.php?pg_code='+$pg_code;
 		document.view_form.submit();
 	}
@@ -360,9 +360,9 @@ $(function () {
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
 	$in_day		= date("Y-m-d H:i");
-	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!="" ){
-		$line_cnt	= $_POST['line_cnt'];
-	} else  $line_cnt	= 10;
+	if( isset($_POST['line_cnt_pg']) && $_POST['line_cnt_pg']!="" ){
+		$line_cnt_pg	= $_POST['line_cnt_pg'];
+	} else  $line_cnt_pg	= 10;
 	$page_cnt	= 10;
 ?>
 			<br>
@@ -384,15 +384,15 @@ $(function () {
 				$total_count = 0; exit;
 			} else {
 				$total_count = $result->num_rows;
-				if( $total_count ) $total_page  = ceil($total_count / $line_cnt);
+				if( $total_count ) $total_page  = ceil($total_count / $line_cnt_pg);
 				else $total_page = 1;
 				if( $page < 2 ) {
 					$page = 1;
 					$start = 0;
 				} else {
-					$start = ($page - 1) * $line_cnt;
+					$start = ($page - 1) * $line_cnt_pg;
 				}
-				$last = $line_cnt;
+				$last = $line_cnt_pg;
 				if( $total_count < $last) $last = $total_count;
 			}
 	} else {
@@ -471,10 +471,10 @@ $(function () {
 					Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='View page count'>Page:<?=$page?></strong>
 						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
-							<option value='10'  <?php if($line_cnt=='10')  echo " selected" ?> >10</option>
-							<option value='30'  <?php if($line_cnt=='30')  echo " selected" ?> >30</option>
-							<option value='50'  <?php if($line_cnt=='50')  echo " selected" ?> >50</option>
-							<option value='100' <?php if($line_cnt=='100') echo " selected" ?> >100</option>
+							<option value='10'  <?php if($line_cnt_pg=='10')  echo " selected" ?> >10</option>
+							<option value='30'  <?php if($line_cnt_pg=='30')  echo " selected" ?> >30</option>
+							<option value='50'  <?php if($line_cnt_pg=='50')  echo " selected" ?> >50</option>
+							<option value='100' <?php if($line_cnt_pg=='100') echo " selected" ?> >100</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 					</span>
 <?php
@@ -528,7 +528,7 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='fld_len'			value='<?=$fld_len?>' />
 						<input type="hidden" name='search_fld'	value='<?=$search_fld?>' />
 						<input type="hidden" name='search_choice'		value='<?=$search_choice?>' />
-						<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
+						<input type="hidden" name='line_cnt_pg'		value='<?=$line_cnt_pg?>' />
 <?php
 				for( $i=0;$i<$item_cnt;$i++){
 ?>
@@ -572,7 +572,7 @@ if( $H_ID==$pg_mid ) {
 			if( ($result = sql_query( $SQL ) )==false )	{
 				printf("Record 0 : query: %s\n", $SQL); exit;
 			} else {
-				if( $page > 1 ) $no=($page -1) * $line_cnt;
+				if( $page > 1 ) $no=($page -1) * $line_cnt_pg;
 				else $no=0;
 				while( $row = sql_fetch_array($result)  ) {
 					$no++;
@@ -636,7 +636,7 @@ if( $H_ID==$pg_mid ) {
 					</form>
 			</div> 
 <?php
-	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
+	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt_pg); 
 ?> 
 
 </body>
