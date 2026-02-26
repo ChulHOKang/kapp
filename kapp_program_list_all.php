@@ -196,7 +196,7 @@ $(function () {
 	else $page=1;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
-	} else  $line_cnt	= 10;
+	} else  $line_cnt	= 15;
 	$page_num = 10; 
 
 	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];   
@@ -310,7 +310,7 @@ $(function () {
 <span>
 View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
+		<option value='15'  <?php if( $line_cnt=='15')  echo " selected" ?> >15</option>
 		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
 		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
 		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
