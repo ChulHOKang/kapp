@@ -85,8 +85,7 @@ $(function () {
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 			switch(e.target.innerText){
 				case 'User'    : title_wfunc('make_id'); break;
 				case 'info'    : title_wfunc('no'); break;
@@ -131,9 +130,6 @@ $(function () {
 		var t = document.makeform.fnclist.options[seli].text;
 		document.makeform.board_type_name.value = t;
 		document.makeform.sellist_index.value   = v;
-		//document.makeform.mode.value ='';
-		//document.makeform.action='board_list3.php';
-		//document.makeform.submit();
 	}
 	function chkDescription(){
 		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
@@ -266,7 +262,7 @@ $(function () {
 		var selind = makeform.sellist.selectedIndex
 		var strAx = makeform.sellist.options[selind].value
 		var strA  = strAx.split("|");
-		makeform.board_no.value = strA[0]; // $rsno
+		makeform.board_no.value = strA[0];
 		makeform.board_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
 		var category = "D02"
@@ -309,8 +305,7 @@ $(function () {
 			return false
 		}
 	}
-	function Update_func(no, num)
-	{
+	function Update_func(no, num){
 			document.Board_List_Form.mode.value = "Update_func_run";
 			document.Board_List_Form.no.value = no;
 			document.Board_List_Form.infor.value = no;
@@ -324,12 +319,11 @@ $(function () {
 			document.Board_List_Form.xmemo.value  = sel_m;
 			document.Board_List_Form.xskin.value  = sel_s;
 			document.Board_List_Form.xfile_size.value  = eval( "document.Board_List_Form.file_size_"+num+".value");
-			document.Board_List_Form.action='query_ok_new.php'; //'board_create_pop_ok.php';
+			document.Board_List_Form.action='query_ok_new.php';
 			var res = confirm(" Are you sure you want to change the bulletin board properties? ");
 			if (res) { document.Board_List_Form.submit(); }
 	}
-	function Set_func(no, num)
-	{
+	function Set_func(no, num){
 			makeform.infor.value = no;
 			makeform.no.value = no;
 			makeform.action='board_list3_update.php'; 
@@ -396,7 +390,6 @@ $(function () {
 	if( isset($_POST['page']) ) $page= $_POST['page'];
 	else if( isset($_REQUEST['page']) )   $page= $_REQUEST['page'];
 	else $page = 1;
-
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ) $line_cnt = $_POST['line_cnt'];
 	else if( isset($_REQUEST['line_cnt']) && $_REQUEST['line_cnt']!='' ) $line_cnt = $_REQUEST['line_cnt'];
 	else $line_cnt	= 10;
@@ -488,13 +481,8 @@ $(function () {
 		} // while
 	?>
 								   </select>
-
-
 										</td>
 									  </tr>
-	 <script>
-		//init();
-	</script>
 									  <tr>
 										<td height="24">Change Board Title<br>
 										   <input class='boxstyle' id='chgname' onKeyDown='CheckKey1()' onBlur='btncfm_onclick()' maxlength='70' size='20' name='chgname' >
@@ -662,7 +650,7 @@ $(function () {
 			<TH title="data read level">read</TH>
 			<TH title="data write level">write</TH>
 			<TH>memo</TH>
-			<TH>exec</TH>
+			<TH>CTL</TH>
 		</tr>
  </thead>
 
@@ -706,19 +694,17 @@ $(function () {
 		$query	= "SELECT * from aboard_" . $rs['table_name'] . " ";
 		$mq1	= sql_query($query);
 		$board_cnt = sql_num_rows($mq1);
-
 ?>
-
 		  <tr>
 				<td style='color:white;text-align:center;'><?=$i?></td>
 				<td style='color:white;text-align:center;'><?=$rs['make_id']?></td>
 			<td style='color:white;text-align:center;'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['no']?></a></td>
 			<td  style='color:white;text-align:center;' width='10%' title='make gubun:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
-				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['name']?></a></td>
+				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['name']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></td>
 			<td style='color:white;text-align:center;'><?=$dateR?></td>
 
-			<td style='color:white;text-align:center;'><?=$board_cnt?></td><!-- data record count -->
+			<td style='color:white;text-align:center;'><?=$board_cnt?></td>
 			<td style='color:white;text-align:center;' title="upload file use and size:<?=$rs['fileup']?>">
 				<input style='background-color:black;color:white;text-align:center;' type='text' name='file_size_<?=$line_no?>' value='<?=$rs['fileup']?>' title='upload file size change' size='1'>
 			</td>
@@ -758,15 +744,15 @@ $(function () {
 if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
 			<td style='color:white;text-align:center;'>
-				<input type='button' value="Change" onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;color:black;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
-				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;color:black;" title=' Run the bulletin board. '>
+				<input type='button' value=" Change " onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;background-color:red;color:yellow;border-radius:20px;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
+				<!-- <input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;color:black;" title=' Run the bulletin board. '> -->
 			</td>
 
 		<?php
 } else {
 		?>
-			<td>
-				<input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '>
+			<td> ---
+				<!-- <input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '> -->
 			</td>
 		<?php
 }
