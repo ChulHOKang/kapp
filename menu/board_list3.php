@@ -486,7 +486,7 @@ $(function () {
 									  <tr>
 										<td height="24">Change Board Title<br>
 										   <input class='boxstyle' id='chgname' onKeyDown='CheckKey1()' onBlur='btncfm_onclick()' maxlength='70' size='20' name='chgname' >
-										   <input type='button' value="Name Change" onClick="Update_title()" style="border:1px solid black;background-color:red;color:white;width:100px;height:27px;border-radius:20px;border:1 solid black;" title='Change the board name.'>
+										   <input type='button' value="Name Change" onClick="Update_title()" style="border:1px solid black;background-color:red;color:white;width:100px;height:27px;border-radius:20px;" title='Change the board name.'>
 										   <input id='mnhide' onBlur='btncfm_onclick()' type='checkbox' align='absMiddle' name='mnhide' style="display:none; border:0;">
 										   <textarea id='mncontents' onKeyUp='chkDescription()' name='mncontents' rows='3' cols='60' onChange='chkDescription()' style="display:none;"></textarea>
 										   <input id='chkByte' readOnly size='4' value='0' name='chkByte' style="display:none;">
@@ -744,7 +744,7 @@ $(function () {
 if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
 			<td style='color:white;text-align:center;'>
-				<input type='button' value=" Change " onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="cursor:hand;background-color:red;color:yellow;border-radius:20px;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
+				<input type='button' value=" Change " onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="border:1px solid black;background-color:red;color:white;width:100px;height:27px;border-radius:20px;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
 				<!-- <input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;color:black;" title=' Run the bulletin board. '> -->
 			</td>
 
