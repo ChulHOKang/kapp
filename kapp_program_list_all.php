@@ -42,15 +42,30 @@ textarea {
 	  font-family: Arial, sans-serif;
 	  font-size: 12px;
 	  color: #fff;
-	  /*resize: vertical;  Allows vertical resizing only */
 	}
 	textarea:focus {
-	  border-color: #007bff; /* Changes border color on focus */
-	  outline: none; /* Removes default outline on focus */
+	  border-color: #007bff; 
+	  outline: none;
 	}
 table { border-collapse: collapse; }
-th { background: #cdefff; height: 27px; }
-th, td { border: 1px solid silver; padding:0px; }
+th { background: #666fff; color: white; height: 32px; }
+th, td { border: 1px solid silver; padding:5px; }
+
+	.container {
+		background-color: skyblue;
+		display :flex;									/* flex, inline-flex */
+		/*flex-direction: row;*/							/* row, row-reverse, column, column-reverse */
+		/*flex-wrap: nowrap;*/							/* nowrap, wrap, wrap-reverse */
+		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
+		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
+		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
+		height:25px;
+
+	}
+	.item {
+		background-color: gold;
+		boarder: 1px solid gray;
+	}
 </style>
 
 <script src="//code.jquery.com/jquery.min.js"></script>
@@ -73,8 +88,7 @@ $(function () {
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거	//alert('더블 클릭되었습니다!');
 		switch(e.target.innerText){
 				case 'Project' : title_wfunc('group_name'); break;
 				case 'User'    : title_wfunc('userid'); break;
@@ -85,33 +99,33 @@ $(function () {
 		}
 	});
 
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
+	$('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	});
+	  
+	$(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
 
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	});
 });
 </script>
 <script type="text/javascript" >
@@ -251,37 +265,34 @@ $(function () {
 	if( isset($_POST['tab_hnm']) ) $tab_enm = $_POST['tab_hnm'];
 ?>
 <h2 title='pg:kapp_program_list_all'>Program List (total:<?=$total?>)</h2>
-<!-- <FORM name="tkher_search" target="_self" method="post" action="kapp_program_list_all.php"  > -->
 <FORM name="table_list" target="_self" method="post" action="kapp_program_list_all.php"  >
-			<input type='hidden' name='mode'    value='Program_Search'>
-			<input type='hidden' name='modeS'   value='Program_Search'>
-			<input type='hidden' name='page'    value="<?=$page?>">
-			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>"> 
-			<input type="hidden" name='pg_name' value="<?=$pg_name?>"> 
-			<input type="hidden" name="pg_code" value="<?=$pg_code?>" > 
-			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>"> 
-			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
-			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+		<input type='hidden' name='mode'    value='Program_Search'>
+		<input type='hidden' name='modeS'   value='Program_Search'>
+		<input type='hidden' name='page'    value="<?=$page?>">
+		<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>"> 
+		<input type="hidden" name='pg_name' value="<?=$pg_name?>"> 
+		<input type="hidden" name="pg_code" value="<?=$pg_code?>" > 
+		<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>"> 
+		<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
+		<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+		<input type="hidden" name="seqno" > 
+		<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
+		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+		<input type='hidden' name='group_name' >
 
-			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
-				<option value="pg_name" <?php if($param == 'pg_name') echo " selected ";?>>Program</option>
-				<option value="tab_hnm" <?php if($param == 'tab_hnm') echo " selected ";?> >Table</option>
-				<option value="group_name" <?php if($param == 'group_name') echo " selected ";?>>Project Name</option>
-				<option value="userid" <?php if($param == 'userid') echo " selected ";?>>User</option>
-			</SELECT> 
-			<SELECT name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="=" <?php if($sel == '=') echo " selected ";?>>=</option>
-				<option value="like" <?php if($sel == 'like') echo " selected ";?>>Like</option>
-			</SELECT>
-			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
-			<input type="submit" value="Search">
+		<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
+			<option value="pg_name" <?php if($param == 'pg_name') echo " selected ";?>>Program</option>
+			<option value="tab_hnm" <?php if($param == 'tab_hnm') echo " selected ";?> >Table</option>
+			<option value="group_name" <?php if($param == 'group_name') echo " selected ";?>>Project Name</option>
+			<option value="userid" <?php if($param == 'userid') echo " selected ";?>>User</option>
+		</SELECT> 
+		<SELECT name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
+			<option value="=" <?php if($sel == '=') echo " selected ";?>>=</option>
+			<option value="like" <?php if($sel == 'like') echo " selected ";?>>Like</option>
+		</SELECT>
+		<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
+		<input type="submit" value="Search">
 
-<!-- 		</form>
-<FORM name="table_list" method='POST' enctype="multipart/form-data" > -->
-	<input type="hidden" name="seqno" > 
-	<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
-	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
-	<input type='hidden' name='group_name' >
 <div>
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
 							<option value=''>Project</option>
@@ -306,8 +317,8 @@ View Line:
 	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 </span>
 </div>
-<table class='floating-thead' width="100%" style='background-color:black;color:white;'>
 
+<table class='floating-thead' width="100%" >
 <thead id='tit_et' width="100%">
 	<tr>
 	<th>NO</th>
@@ -338,7 +349,7 @@ View Line:
 		else $line=$i;
 		$bgcolor = 'black'; //"#eeeeee";
 		if( $H_ID == $mid) $bcolor ="style='background-color:black;color:yellow;'";//style='background-color:black;color:white;'
-		else $bcolor ="style='background-color:black;color:gray;'";
+		else $bcolor ="style='background-color:black;color:cyan;'";
   ?> 
 		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' width='900' >
