@@ -1,23 +1,17 @@
 <?php
 	/*
 		kapp_history_.php -	call : kapp_history.php : 
-		kapp_history.php  : = kapp_history.php
-		kapp_history_.php : = bbs_history_admin.php
 	*/
 	if( isset($_POST["comment"])) $comment = $_POST["comment"];
 	else $comment = '';
 	if( isset($_POST["mode"])) $mode = $_POST["mode"];
 	else $mode = '';
-
 	if( isset($_POST["pg_code"])) $pg_code = $_POST["pg_code"];
 	else $pg_code = '';
 	if( isset($_POST["pg_name"])) $pg_name = $_POST["pg_name"];
 	else $pg_name = '';
-
 	if( isset($_POST["no"])) $no = $_POST["no"];
 	else $no = '';
-
-	//my_msg( " mode: ". $mode . $comment);
 	if( $mode=='update') {
 		$build_time = time();
 		sql_query( "update {$tkher['bbs_history_table']} set pg_code='$pg_code', pg_name='$pg_name', comment='$comment', cid='$H_ID', ctime='$build_time' where no=$no " );
@@ -27,16 +21,16 @@
 		$build_time = time();
 		sql_query( "insert into {$tkher['bbs_history_table']} set id='$H_ID', pg_code='$pg_code', pg_name='$pg_name', build_time='$build_time', comment='$comment'" );
 		echo "<script>window.open( 'kapp_history.php' , '_self',''); </script>";
-		//exit;
 	} else {
 ?>
 <center>
-<p>
-		<font color='maroon'><b>K-APP History Management</b></font><p>
-		<form name='history' method='post' action='kapp_history.php'>
-				<input type='hidden' name='no' value=''>
-			
-		<Table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
+<p style='color:maroon;font-size:25px;'>K-APP History Management<p>
+<FORM name='history' method='post' action='kapp_history.php'>
+		<input type='hidden' name='no' value=''>
+		<input type='hidden' name='mode' value='insert'>
+		<input type='hidden' name='xday' value=''>
+
+	<Table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 				<tr>
 					<td bgcolor='#cccc66' height='1' colspan='5'></td>
 				</tr>
@@ -73,13 +67,8 @@
 				}
 ?>
 <p>
-			<!-- ---------------------------------------------------------------------&nbsp; -->
 		<div id="mypanel2" class="ddpanel">
-			<div id="mypanelcontent2" class="ddpanelcontent">
-			<!-- --------------------------------------------------------------------- -->
-
-			<input type='hidden' name='mode' value='insert'>
-			<input type='hidden' name='xday' value=''>
+		<div id="mypanelcontent2" class="ddpanelcontent">
 		<center>
 			<div style="border-style:;background-color:#666666;color:yellow;height:30px;margin-top:3px;">
 			<span style="color:white;margin-top:3px;">&nbsp;Program : </span>
@@ -109,21 +98,16 @@
 			<input type='text' id='pg_name' name='pg_name' value='' style="border-style:;background-color:black;color:yellow;height:25;width:250;"></span></div>
 			<div><span style="border-style:;background-color:#666666;color:cyan;">&nbsp;Contents:</span>
 			<br>&nbsp;<textarea name='comment' rows='5' cols='80' style="border-style:;background-color:#666666;color:cyan;"></textarea></div>
-
 			<a id='update_btn' href="javascript:update_func('insert');" style="background-color:blue;color:yellow;height:35;">Save Change</a>
-
-
 			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 			<input type='submit' onclick="javascript:f_ins('insert'); return false;" value='INSERT' >
+			</div>
 
-			</div>
-			<div id="mypaneltab2" class="ddpaneltab">
-				<a href="#"><span>▤ K-APP History Management ▤</span> </a>
-			</div>
+	<!-- <div id="mypaneltab2" class="ddpaneltab"><a href="#"><span>▤ K-APP History Management ▤</span></a></div> -->
+	<div id="mypaneltab2" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; K-APP History Management &nbsp;▼ &nbsp;</a></span></div>
 
 		</div>
-
-			</form>
+	</form>
 <?php
 }
 ?>

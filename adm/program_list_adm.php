@@ -4,7 +4,7 @@
 	if( isset($member['mb_level'])) $H_LEV = $member['mb_level'];
 	else $H_LEV = 0;
 	if( !$H_ID || $H_LEV < 8 ) {
-			m_("admin page.  lev= $H_LEV");// echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
+			m_("admin page.  lev= $H_LEV");
 			exit;
 	}
 	$formula_		= "";
@@ -15,12 +15,10 @@
 	$relation_db	= "";
 	$rel_mvfld		= "";
 	$gita				= "";
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
-
 	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
 		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
 				$list	= explode("@", $item);
@@ -49,7 +47,7 @@
 							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
 						}
 		}
-		$popdata = explode("@", $popdata); // pop_data, 첫번째 분류.
+		$popdata = explode("@", $popdata); 
 		$pop_fld ="";
 		for ( $i=0,$j=1; isset($popdata[$i]) && $popdata[$i] !== ""; $i++, $j++ ){
 			if( isset($popdata[$j]) ){
@@ -62,22 +60,22 @@
 			}
 		}
 		$mpop = $popdata[0];
-		$mpop = explode("$", $mpop); // pop_data, 두번째 분류.
+		$mpop = explode("$", $mpop);
 		$pop_mvfld = "";
 		for ( $i=0,$j=1; isset($mpop[$j]) && $mpop[$j] !== ""; $i++, $j++ ){
-			$mv = explode("|", $mpop[$j]); // pop_data, 세번째 분류.
+			$mv = explode("|", $mpop[$j]); 
 			$fld1 = $mv[0];
 			$fld2 = $mv[1];
 			$mvfld1 = explode(":", $fld1);
 			$mvfld2 = explode(":", $fld2);
 			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
 		}
-			$relationdata = explode("$", $relationdata);
-			$rel_db = $relationdata[0];
-			$reldb = explode(":", $rel_db);
-			if( isset($reldb[1]) ) $relation_db = $reldb[1];
-			else  $relation_db = "";
-			$rel_mvfld = "";
+		$relationdata = explode("$", $relationdata);
+		$rel_db = $relationdata[0];
+		$reldb = explode(":", $rel_db);
+		if( isset($reldb[1]) ) $relation_db = $reldb[1];
+		else  $relation_db = "";
+		$rel_mvfld = "";
 		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] !== ""; $i++, $j++ ){
 			$reldata = $relationdata[$j];
 			$rel = explode("|", $reldata );
@@ -216,7 +214,6 @@ $(function () {
 <?php
 	$limite = 15;
 	$page_num = 10;
-
 	if( isset($_POST['data']) ) $data = $_POST['data'];
 	else $data = '';
 	if( isset($_POST['param']) ) $param	= $_POST['param'];
@@ -225,12 +222,10 @@ $(function () {
 	else $sel = '';
 	if( isset($_POST['seqno']) ) $seqno	= $_POST['seqno'];
 	else $seqno = '';
-
 	if( isset($_POST['pg_code']) ) $pg_code	= $_POST['pg_code'];
 	else $pg_code = '';
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
-   
    if( $mode=='project_name_change'){
 		$project_code	= $_POST["project_codeX"];
 		$project_name	= $_POST["project_name"];
@@ -302,7 +297,6 @@ $(function () {
 		}
 	} else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		//$ls = $ls . " where userid='$H_ID' ";
 		$ls = $ls . " ORDER BY upday desc, pg_name asc ";
    }
 	$resultT	= sql_query( $ls );
@@ -313,7 +307,7 @@ $(function () {
 	$last = $limite;
 	if($total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-	if ($page == "1"){
+	if( $page == "1"){
 		$no = $total;
 	} else {
 		$no = $total - ($page - 1) * $limite;
@@ -344,7 +338,8 @@ $(function () {
 			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
 			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
 			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
-		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
+
+<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
  if( isset($group_name) && $group_name !== "" ){
 ?>
@@ -363,7 +358,7 @@ $(function () {
 <?php
 			}
 ?>
-			</select>
+</select>
 			<select name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
 				<option value="pg_name">Program</option>
 			</select>

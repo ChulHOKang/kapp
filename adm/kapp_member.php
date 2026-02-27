@@ -2,7 +2,7 @@
 	include_once('../tkher_start_necessary.php');
 	$H_ID	= get_session("ss_mb_id");
 	connect_count($host_script, $H_ID, 0, $referer);
-	/*  2021-04-08
+	/*  
 		kapp_member.php : Manager
 	*/
 	$day = date("Y-m-d H:i:s");
@@ -29,13 +29,14 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Link - App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="./logo/land25.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
 
 <style>
 table { border-collapse: collapse; }
@@ -94,10 +95,9 @@ $(function () {
 });
 </script>
 
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
+<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script>
-</head>
+<script type="text/javascript" src="../include/js/common.js"></script> -->
 
 <?php
 	if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
@@ -119,19 +119,14 @@ $(function () {
 		form.mode.value="search_rtn";
 		form.submit();
 	}
-
-	//-------------
 	function member_set(i, n, id, ph, e, nick) {
-		//alert( "p: " + p);
 		msg = eval( "document.member_form.msg_"+i+".value");
 		document.member_form.mb_no.value = n;
 		document.member_form.mid.value = id;
 		document.member_form.nickname.value = nick;
-		//document.member_form.email.value = e;
 		document.member_form.phone.value = ph;
 		document.member_form.memo.value = msg;
 	}
-
 	function update_save(){
 		document.member_form.mode.value = "Change";
 		document.member_form.action = "kapp_member.php";
@@ -142,73 +137,48 @@ $(function () {
 
 <link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
-
-<body>
-
-<?php
-		$cur='B';
-		//include_once "../menu_run.php";
-?>
-
-		<form name="member_form" method="post" ><!-- /contents/board_create_pop_ok.php  -->
+<body><center>
+	<form name="member_form" method="post" >
 			<input type="hidden" name="mb_no" value="<?=$mb_no?>" >
 			<input type="hidden" name="mb_id" value="" >
 			<input type="hidden" name="mode" value="">
 
-
-
-<?php //if( $H_ID ) { // 로그인 일때만 그룹관리와 Url link 등록이 가능하도록한다. ?>
-
-<!-- --------------------------------------------------------------------- -->
 <div id="mypanel" class="ddpanel">
-<div id="mypanelcontent" class="ddpanelcontent">
-<!-- --------------------------------------------------------------------- -->
-  <div>
-	<div><span style="color:cyan;">&nbsp;user id &nbsp;&nbsp; :</span> <span><input type='text' name='mid' value='' readonly style="background-color:green;color:white;"></span></div>
-	<div><span style="color:cyan;">&nbsp;nick name:</span> <span><input type='text' name='nickname' value='' style="background-color:blue;color:yellow;"></span></div>
-	<div><span style="color:cyan;">&nbsp;phone no :</span> <span><input type='text' name='phone' value='' style="background-color:blue;color:yellow;"></span></div>
-	<div style="color:cyan">About Me:<br>
-	   <textarea id='memo' name='memo' rows='3' cols='60' class='form' style="background-color:blue;color:yellow;"></textarea></div>
-	<div><input type='button' value=" Save " onClick="update_save()" style="cursor:hand;background-color:yellow;color:black;" title='Change my infomation.'></div>
-</div>
-
-</div>
-	<div id="mypaneltab" class="ddpaneltab" >
-		<a href="#" ><span style="border-style:;background-color:;color:yellow;">ReSet Member Info</span> </a>
+	<div id="mypanelcontent" class="ddpanelcontent">
+	<div>
+		<div><span style="color:cyan;">&nbsp;user id &nbsp;&nbsp; :</span> <span><input type='text' name='mid' value='' readonly style="background-color:green;color:white;"></span></div>
+		<div><span style="color:cyan;">&nbsp;nick name:</span> <span><input type='text' name='nickname' value='' style="background-color:blue;color:yellow;"></span></div>
+		<div><span style="color:cyan;">&nbsp;phone no :</span> <span><input type='text' name='phone' value='' style="background-color:blue;color:yellow;"></span></div>
+		<div style="color:cyan">About Me:<br>
+		   <textarea id='memo' name='memo' rows='3' cols='60' class='form' style="background-color:blue;color:yellow;"></textarea></div>
+		<div><input type='button' value=" Save " onClick="update_save()" style="cursor:hand;background-color:yellow;color:black;" title='Change my infomation.'></div>
 	</div>
+	</div>
+	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; ReSet Member Info &nbsp;▼ &nbsp;</a></span></div>
 </div>
-<link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
-		<!-- popup end ------------------------------------------------- -->
 <?php
 		$limite = 10;
 		$page_num = 10;
-
 		if($mode == 'search_rtn') {
 			$sdata = $sel_num;
 		}
-
 		$w = " ";
 		$w1= " ";
 		$w2 = " ";
-
-$ls = " SELECT * from {$tkher['tkher_member_table']} ";
-$ls_w = " WHERE name like '%$sdata%' $w ";
-
+		$ls = " SELECT * from {$tkher['tkher_member_table']} ";
+		$ls_w = " WHERE name like '%$sdata%' $w ";
 		if ( $sdata ) {
 			$ls = $ls . $ls_w;
 		}
-
 		$result = sql_query( $ls );
 		if( $result ) $total = sql_num_rows($result);
 		else {
 			echo "sql: " . $ls; exit;
 		}
-
 		if(!$page) $page=1;
 		$total_page = intval(($total-1) / $limite)+1;
 		$first = ($page-1)*$limite;
 		$last = $limite;
-
 		if($total < $last) $last = $total;
 		$limit = " limit $first,$last";
 		if ($page == "1")
@@ -216,15 +186,13 @@ $ls_w = " WHERE name like '%$sdata%' $w ";
 		else {
 			$no = $total - ($page - 1) * $limite;
 		}
-
 		if( $sdata )  $g_nameX = "Search : " . $sdata;
 		else $g_nameX = " page:" . $page . ", [count:" .$total. "]";
 
 		if( $H_ID ) $g_nameX = $g_nameX . ", level:" . $member['mb_level'] . "," .$member['mb_email'];
 ?>
-
 		<tr>
-			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$g_nameX?><!--  [count:<?=$total?>] -->
+			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$g_nameX?>
 			</td>
 		</tr>
 , *User name: <input type='text' name='mb_name' id='mb_name' > <input type='button' value='Search' id='Search' >
@@ -247,28 +215,22 @@ $ls_w = " WHERE name like '%$sdata%' $w ";
 
  </thead>
 <tbody width='100%'>
-
-		<?php
-		$w = " order by mb_name ";
-$ls = " SELECT * from {$tkher['tkher_member_table']} $w ";
-$ls_w = " WHERE name like '%$sdata%' $w ";
-			//echo "<br>sql:".$ls;*/
-
-			if ( $sdata ) {
-				$ls = $ls . $ls_w;
-				$ls = $ls . " $limit ";
-			} else{
-				$ls = $ls . " $limit ";
-			}
-			$result = sql_query(  $ls );
+<?php
+	$w = " order by mb_name ";
+	$ls = " SELECT * from {$tkher['tkher_member_table']} $w ";
+	$ls_w = " WHERE name like '%$sdata%' $w ";
+	if ( $sdata ) {
+		$ls = $ls . $ls_w;
+		$ls = $ls . " $limit ";
+	} else{
+		$ls = $ls . " $limit ";
+	}
+	$result = sql_query(  $ls );
 	$aaa = 0;
 	$line = 0;
 	$i=1;
 	while ( $rs = sql_fetch_array( $result ) ) {
 		$line=$limite*$page + $i - $limite;
-		//$line++;
-			//no, user id, mb_sn, name, nick name, email, phone, login date, datetime, point
-			// style='background-color:#FFFFFF' align='center'
 		if($rs['mb_password']) $p='ok';
 		else $p='None';
 ?>
@@ -281,7 +243,6 @@ $ls_w = " WHERE name like '%$sdata%' $w ";
 			<td><?=$rs['mb_email']?></td>
 			<td><?=$rs['mb_hp']?></td>
 			<td><?=$rs['mb_today_login']?></td>
-			<!-- <td><?=$rs['mb_datetime']?></td> -->
 			<td><?=$rs['mb_email_certify']?></td>
 			<td><?=number_format($rs['mb_point'])?></td>
 			<td><textarea name="memoA" cols="30" rows="2"><?=$rs['mb_memo']?></textarea></td>
@@ -290,18 +251,15 @@ $ls_w = " WHERE name like '%$sdata%' $w ";
 	$nickname=$rs['mb_nick'];$phone=$rs['mb_hp'];$email=$rs['mb_email'];
 ?>
 			<td>
-				<!-- <input type='button' style="cursor:hand;" value="ReSet" onClick="member_set('<?=$aaa?>','<?=$mid?>','<?=$no?>','<?=$point?>','<?=$memo?>')" title='set:<?=$point?>:<?=$no?>:<?=$rs['mb_id']?> '> -->
 				<input type='button' style="cursor:hand;" value="ReSet" onClick="member_set('<?=$aaa?>','<?=$no?>','<?=$mid?>','<?=$phone?>','<?=$email?>','<?=$nickname?>')" title='set:<?=$point?>:<?=$no?>:<?=$rs['mb_id']?> '>
 			</td>
 		  </tr>
 			<input type='hidden' name='msg_<?=$aaa?>' value="<?=$rs['mb_memo']?>">
-
-
-		<?php
+<?php
 			$aaa = $aaa +1;
 			$i++;
-		}	//Loop
-		?>
+	}	//Loop
+?>
 
 
 		  </td>
@@ -314,19 +272,19 @@ $ls_w = " WHERE name like '%$sdata%' $w ";
 <div style="font-size:18;text-align:center;">
 
 <?php
-$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-$last_page = $first_page+($page_num-1);
-if($last_page > $total_page) $last_page = $total_page;
-$prev = $first_page-1;
+	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	$last_page = $first_page+($page_num-1);
+	if($last_page > $total_page) $last_page = $total_page;
+	$prev = $first_page-1;
 
-if($page > $page_num) echo"[<a href=$PHP_SELF?page=$prev&sdata=$sdata >Prev</a>] ";
-for($i = $first_page; $i <= $last_page; $i++)
-{
-	if($page == $i) echo" <b>$i</b> ";
-	else echo"[<a href=$PHP_SELF?page=$i&sdata=$sdata style='font-size:18;'>$i</a>]";
-}
-$next = $last_page+1;
-if($next <= $total_page) echo" [<a href=$PHP_SELF?page=$next&sdata=$sdata >Next</a>]";
+	if($page > $page_num) echo"[<a href=$PHP_SELF?page=$prev&sdata=$sdata >Prev</a>] ";
+	for($i = $first_page; $i <= $last_page; $i++)
+	{
+		if($page == $i) echo" <b>$i</b> ";
+		else echo"[<a href=$PHP_SELF?page=$i&sdata=$sdata style='font-size:18;'>$i</a>]";
+	}
+	$next = $last_page+1;
+	if($next <= $total_page) echo" [<a href=$PHP_SELF?page=$next&sdata=$sdata >Next</a>]";
 ?>
 </div>
 </form>
