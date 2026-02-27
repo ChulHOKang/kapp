@@ -92,33 +92,34 @@ if($mode == "Update_func") {
 		$view_no  = $_POST['view_noA'];
 
 		$SQL = "update {$tkher['tkher_main_img_table']} set jpg_name = '$jpg_name', jpg_memo = '$jpg_memo', view_no = '$view_no' where no = $no";
-		if ( ($result = sql_query( $SQL ) )==false ){
-		  printf("Invalid query: %s \n", $SQL);
-			m_("Update error occurred.");
-			//exit();
+		if( ($result = sql_query( $SQL ) )==false ){
+			m_("Update error occurred.");		//exit();
 		} else {
 			m_(" Title, Message, display order changed.");
 		}
-}
-else if($mode == "Delete_Image") {
-
+} else if( $mode == "Delete_Image") {
 	if( $H_LEV < 8 ) {
 		m_(" You do not have permission.");
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
-	$no = $_REQUEST[no];
-	$SQL = "delete from tkher_main_img where no = $no ";
-	if ( ($result = sql_query( $SQL ) )==false ){
-	  printf("Invalid query: %s \n", $SQL);
-		m_("A delete error occurred.");
-		exit();
-	} else {
-		m_(" Deleted.");
-	}
-}
-else if($mode == "Insert_func") {
-
+	if( isset($_POST['no']) ){
+		$no = $_POST['no'];
+		if( isset($_POST['jpg_nameA']) ) $jpg_nameA = $_POST['jpg_nameA'];
+		if( isset($_POST['jpg_fileA']) ) $jpg_fileA = $_POST['jpg_fileA'];
+		$SQL = "delete from {$tkher['tkher_main_img_table']} where no = $no ";
+		if( ($result = sql_query( $SQL ) )==false ){
+			m_("A delete error occurred.");
+			exit();
+		} else {
+			$del_file = KAPP_PATH_T_ . "/data/main_scroll_image/" . $jpg_fileA; 
+			exec ("rm $del_file");
+			m_("no:$no, jpg_name: $jpg_nameA, Deleted.");
+			//no:101, jpg_name: K-APP, Deleted.
+			//no:89, jpg_name: bg_proj03.jpg, Deleted.
+		}
+	} else m_("ERROR delete no null");
+} else if( $mode == "Insert_func") {
 	if( $H_LEV < 8 ) {
 		m_(" You do not have permission.");
 			$url = "main_img.php";
@@ -126,30 +127,28 @@ else if($mode == "Insert_func") {
 	} else {
         $jpg_name = $_POST['jpg_name'];
         $jpg_memo = $_POST['jpg_memo'];
-		$cd = 'main';		//$jpg[0];	
-		$nm = 'main';		//$jpg[1];
+		$cd = 'main';
+		$nm = 'main';
         $f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";
 		$in_date = time();
 		$file_ = $_FILES["file"]["name"];
-		if ( $_FILES["file"]["error"] > 0){ 
+		if( $_FILES["file"]["error"] > 0){ 
 			echo "Return Code: " . $_FILES["file"]["error"] . "<br>"; 
 		} else { 
-			if ( file_exists( $f_path . $_FILES["file"]["name"])) { 
+			if( file_exists( $f_path . $_FILES["file"]["name"])) { 
 				echo $_FILES["file"]["name"] . " I have the same file.";
 				move_uploaded_file($_FILES["file"]["tmp_name"], $f_path . $_FILES["file"]["name"] );
 				$SQL = "INSERT INTO {$tkher['tkher_main_img_table']} SET jpg_name='$jpg_name', jpg_file='$file_', jpg_memo='$jpg_memo', group_code='$cd', group_name='$nm', view_no='99', userid='tkher'  ";
-				if ( ($result = sql_query( $SQL ) )==false )
-				{
+				if( ($result = sql_query( $SQL ) )==false ){
 					printf("Invalid query: %s \n", $SQL);
-					m_("Registration error occurred.");	
-					//exit();
+					m_("Registration error occurred.");	//exit();
 				} else {
 					m_(" Registered.");
 				}
 			} else {
 				move_uploaded_file($_FILES["file"]["tmp_name"], $f_path . $_FILES["file"]["name"] );
 				$SQL = "INSERT INTO {$tkher['tkher_main_img_table']} SET jpg_name='$jpg_name', jpg_file='$file_', jpg_memo='$jpg_memo', group_code='$cd', group_name='$nm', view_no='99', userid='tkher'  ";
-				if ( ($result = sql_query( $SQL ) )==false ){
+				if( ($result = sql_query( $SQL ) )==false ){
 					m_("Registration error occurred.");
 				} else {
 					m_(" Registered.");
@@ -165,45 +164,39 @@ else if($mode == "Insert_func") {
 <script language="JavaScript"> 
 <!-- 
 	function upload_func(no, i){
-
 		document.form2.no.value		= no;
 		document.form2.i.value			= i;
 		document.form2.mode.value	= 'File_Change';
 		document.form2.submit();
 	}
-
 	function check(x){
-		if(x.jpg_name.value==''){
+		if( x.jpg_name.value==''){
 			alert('Please enter a title.');
 			x.jpg_name.focus();
 			return false;
-		}
-		else if(x.temp_name.value==''){
+		}else if(x.temp_name.value==''){
 			alert('Please enter a file.');
 			x.temp_name.focus();
 			return false;
-		}
-		else{
+		}else{
 			document.form1.submit();
 			return true;
 		}
 	}
-
-	function del_check(no, i, lev){
+	function del_check( no, i, lev , img_file, img_name){
 		if( lev < 7) {
 			alert('not eligible ' + lev);
 			return false;
 		}
-		yn = confirm('Are you sure you want to delete the image?');
-		if ( yn == true ) {
+		document.form2.jpg_nameA.value	= img_name;
+		document.form2.jpg_fileA.value	= img_file;
+		yn = confirm('Are you sure you want to delete the image? delele file name:' + img_name + ", img_file: " + img_file);
+		if( yn == true ) {
 			document.form2.mode.value='Delete_Image';
 			document.form2.no.value	= no;
 			document.form2.submit();
-		}
-		else return false;
+		}else return false;
 	}
-
-
 	function update_func(no, i){
 		jpg_name	= document.form2["jpg_name[" + i + "]"].value;
 		jpg_memo	= document.form2["jpg_memo[" + i + "]"].value;
@@ -215,7 +208,6 @@ else if($mode == "Insert_func") {
 		document.form2.no.value			= no;
 		form2.submit();
 	}
-
 	function time_func(x){
 		if( document.form1.slide_time.value == ''){
 			alert(' Enter time in 1000s!');
@@ -237,16 +229,13 @@ else if($mode == "Insert_func") {
 			document.form1.jpg_memo.focus();
 			return;
 		}
-
 		document.form1.mode.value = 'Insert_func';
-
 		document.form1.submit();
 	}
  -->
 </script>
 <link rel="stylesheet" type="text/css" href="<?=KAPP_URL_T_?>/include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/dddropdownpanel.js"></script>
-
 <?php
 	$SQL = "SELECT * from {$tkher['tkher_my_control_table']} where userid='tkher' ";
 	$result = sql_query( $SQL );
@@ -268,7 +257,7 @@ else if($mode == "Insert_func") {
 		?>
 <h style='font-size:25px;height:27px;'>[Main Slide Image Management]</h>
 
-			<form name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
+<FORM name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
 <div id="mypanel" class="ddpanel">
 	<div id="mypanelcontent" class="ddpanelcontent">
 		<table style="border-style:;background-color:#666666;color:black;color:white;height:30;width:100;width:100%;">
@@ -297,12 +286,12 @@ else if($mode == "Insert_func") {
 					<tr>
 						<td style="text-align:right;">&nbsp;<input type='button'  onclick='insert_func()' value=' Insert ' style="border-style:;background-color:blue;color:yellow;height:30;width:100;text-align:center;"></td>
 					</tr>
-		</form>
 		</table>
 	</div>
-	<div id="mypaneltab" class="ddpaneltab"><a href="#"><span style="border-style:;background-color:;color:yellow;"><b>&#9776; Main Image Insert</b></span></a></div>
-
+</FORM>
+	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Main Image Insert &nbsp;▼ &nbsp;</a></span></div>
 </div>
+
 <table border="1" width=100% cellspacing="0" bordercolor="#C0C0C0" bordercolordark="#FFFFFF" bordercolorlight="#FFFFFF" align='center'>
 	<tr>
 		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">Image </font></td>
@@ -314,6 +303,7 @@ else if($mode == "Insert_func") {
 					<input type='hidden' name='i'				value=''>
 					<input type='hidden' name='no'			value=''>
 					<input type='hidden' name='jpg_nameA'		value=''>
+					<input type='hidden' name='jpg_fileA'		value=''>
 					<input type='hidden' name='jpg_memoA'		value=''>
 					<input type='hidden' name='view_noA'		value=''>
 					<input type='hidden' name='mode'			value=''>
@@ -322,18 +312,18 @@ else if($mode == "Insert_func") {
 	$SQL = "SELECT * from {$tkher['tkher_main_img_table']} where userid='tkher'  order by view_no, no";
 	if( ($result = sql_query( $SQL ) )==false ){
 	  printf("Invalid query: %s \n", $SQL);
+	  m_("select error");
 	  exit();
 	} else {
 		$i=0;
 		$selx = "selected";
-		while ($row = sql_fetch_array( $result )) {
+		while( $row = sql_fetch_array( $result )) {
 				$no				= $row['no'];
 				$jpg_name		= $row['jpg_name'];
-				$jpg_file			= $row['jpg_file'];
+				$jpg_file		= $row['jpg_file'];
 				$jpg_memo		= $row['jpg_memo'];
 				$group_code	= $row['group_code'];
 				$g_name	= $row['group_name'];
-
 		echo "	
 			<tr>
 				<td align='center'><img src='".KAPP_URL_T_."/data/main_scroll_image/".$row['jpg_file']."' width='300' height='200' title='$jpg_file'></td>
@@ -348,17 +338,15 @@ else if($mode == "Insert_func") {
 					<input type='button' value='File_Change' onclick=\"javascript:upload_func('$no', '$i')\" title='Change the file.'>
 				</td>
 				";
-
 		echo "	&nbsp;
 				<td align='center'><input type='text' name='view_no[$i]' value='".$row['view_no']."' size=2 title='Output Order.'>&nbsp;
 				</td>
 				<td align='center'>
 					<input type=button value='Update' onclick=\"javascript:update_func('$no', '$i');\" style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Change the title.'><br><br>
-					<input type=button value='Delete_Image' onclick=\"javascript:del_check('$no', '$i', '$H_LEV' )\" style='height:22px;background-color:red;color:white;border:1 solid black' title='Delete the image.'>
+					<input type=button value='Delete_Image' onclick=\"javascript:del_check( '$no', '$i', '$H_LEV', '".$jpg_file."', '".$jpg_name."' )\" style='height:22px;background-color:red;color:white;border:1 solid black' title='Delete the image.'>
 				</td>
 			</tr>
 			";
-
 			$i++;
 		} //while
 	}

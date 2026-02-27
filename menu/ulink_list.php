@@ -62,14 +62,9 @@ th, td { border: 1px solid silver; padding:5px; }
 		boarder: 1px solid gray;
 	}
 </style>
-<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script>
- -->
 <link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
-<!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
 
 <script>
 $(function () {
@@ -77,7 +72,6 @@ $(function () {
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
 			switch(e.target.innerText){
 				case 'Project' : title_func('job_group'); break;
 				case 'User'    : title_func('user_id'); break;
@@ -93,8 +87,7 @@ $(function () {
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer); // 마지막 클릭 타이머를 제거	//alert('더블 클릭되었습니다!');
 		switch(e.target.innerText){
 			case 'Project' : title_wfunc('job_group'); break;
 			case 'User'    : title_wfunc('user_id'); break;
@@ -107,33 +100,31 @@ $(function () {
 		}
 	});
 
-
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
-
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	  $('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+	  $(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+			var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+			if( scrollTop < top || scrollTop > bottom ) {
+				clone.hide();
+				return true;
+			}
+			if( clone.is('visible') ) return true;
+			clone.find('th').each(function(i) {
+				$(this).width( thead.find('th').eq(i).width() );
+			});
+			clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	  });
 });
 </script>
 
@@ -571,11 +562,9 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='num'				value='' > 
 	<input type='hidden' name='webnum'			value='' > 
 	<input type='hidden' name='gong_num' value='0'>
-	<input type='hidden' id='g_name_code' name='g_name_code' value='<?=$g_name_code?>'>
+	<input type='hidden' name='g_name_code' id='g_name_code' value='<?=$g_name_code?>'>
 	<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
 	<input type='hidden' name='fld_code_asc' value='<?=$fld_code_asc?>' > 
-
-
 	<input type='hidden' name='mid'			value='' > 
 	<input type='hidden' name='seqno'		value='' > 
 	<input type='hidden' name='link_'		value='' > 
@@ -648,9 +637,9 @@ jQuery(document).ready(function ($) {
 	</tr>
 </table>
 </div>
-<div id="mypaneltab" class="ddpaneltab" >
-<a href="#" ><span style="background-color:;color:yellow;">Note Create</span> </a>
-</div>
+<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Note Create &nbsp;▼ &nbsp;</a></span></div>
+
+
 </div>
 <link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
 
@@ -710,7 +699,6 @@ jQuery(document).ready(function ($) {
 				<a href="javascript:void()" id="contentlink" rel="subcontent2">
 					<font color='black' ><b>&#9776; Project List [▼]</b></font>
 				</a> 
-				<!-- --------------------------- -->
 				<span style='color:black;text-align:center;font-size:21px;'>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View Line: 
 					<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='color:black;text-align:center;font-size:18px;height:27;'>
@@ -719,12 +707,10 @@ jQuery(document).ready(function ($) {
 						<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
 						<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
 					</select>
-				</span>
-				&nbsp;&nbsp;&nbsp;&nbsp;
+				</span>	&nbsp;&nbsp;&nbsp;&nbsp;
 				<span> total: <?=$total?></span>&nbsp;
 				<span> , current page: <?=$page?></span>&nbsp;
 				<span> , total page: <?=$total_page?></span>
-				<!-- ----------------------------- -->
 			</p>
 			<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 600px; height: 100%px; padding: 4px;z-index:1000">
 			<table border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='209'>
@@ -790,10 +776,6 @@ jQuery(document).ready(function ($) {
 			</TABLE>
 		<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
 		</DIV>
-		<!-- <script type="text/javascript">
-			dropdowncontent.init("searchlink", "left-bottom", 800, "mouseover")
-			dropdowncontent.init("contentlink", "right-bottom", 800, "click")
-		</script> -->
 		</td>
 	</tr>
 <table class='floating-thead' width='100%'>

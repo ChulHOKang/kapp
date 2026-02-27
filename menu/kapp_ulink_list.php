@@ -57,14 +57,12 @@ th, td { border: 1px solid silver; padding:5px; }
 	}
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
-<!-- <script src="//code.jquery.com/jquery.min.js"></script> -->
 <script>
 $(function () {
 	let timer;
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			//alert(e.target.innerText + ' one click');
 			switch(e.target.innerText){
 				case 'Project' : title_func('job_group'); break;
 				case 'User'    : title_func('user_id'); break;
@@ -78,10 +76,8 @@ $(function () {
 		}, 250); // 250ms after
 	  
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // Remove last click timer 마지막 클릭 타이머를 제거
-		//alert('Double clicked!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 			case 'Project' : title_wfunc('job_group'); break;
 			case 'User'    : title_wfunc('user_id'); break;
@@ -122,13 +118,8 @@ $(function () {
 	  });
 });
 </script>
-<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script> -->
-
 <link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
-
 <?php
 		$g_name = "";
 		$project_code = "";
@@ -147,7 +138,7 @@ $(function () {
 		$g_name = $aa[0];
 		$g_num = $aa[1];
 		$project_code = $g_num;
-		$g_name_code = $g_num; // ulink_ajax.php use
+		$g_name_code = $g_num;
 		if( isset($aa[2])) $gg_user = $aa[2];
 		else $gg_user = $H_ID;
 		if( isset($aa[3])) $g_no = $aa[3];
@@ -157,7 +148,6 @@ $(function () {
 		else $gg_user = "";
 		$g_no = "";
 	}
-	
 	if( isset($_REQUEST["g_name"]) ) $gnm = $_REQUEST["g_name"];
 	if( isset($gnm) && $gnm != '' ) {
 		$aa = explode(':', $_REQUEST["g_name"]); 
@@ -166,7 +156,6 @@ $(function () {
 		if( isset($aa[2]) ) $gg_user = $aa[2];
 		if( isset($aa[3]) ) $g_no = $aa[3];
 	}
-
 	if( isset($_REQUEST["mode"]) ) 	$mode= $_REQUEST["mode"];
 	else if( isset($_POST["mode"]) ) $mode= $_POST["mode"];
 	else	$mode			= "";
@@ -205,15 +194,13 @@ $(function () {
 			$jong	= $rs['jong'];
 			$memo	= $rs['memo'];
 		}
-	}
-	else if($mode == 'insert_url_func_mode') { 
+	}else if($mode == 'insert_url_func_mode') { 
 		if ( !$H_ID ) {
 			$url = "kapp_ulink_list.php";
 			echo "<script>alert('Member Login IN! Please!'); window.open('$url', '_self', '');</script>";
 		}
 		$job_ = 'Link Note';
 		$create_type = 'Note';
-
 		$title_nm		= $_POST['title_nm'];
 		$sys_subtit		= $_POST['title_nm'];
 		$job_url	= KAPP_URL_T_ . "/my/kapp_ulink_list.php";
@@ -233,12 +220,12 @@ $(function () {
 		$kapp_theme0 = '';
 		$kapp_theme1 = '';
 		$kapp_theme = $config['kapp_theme'];
-		$kapp_theme = explode('^', $kapp_theme );	//$n = sizeof($server_);
+		$kapp_theme = explode('^', $kapp_theme );
 		$kapp_theme0 = $kapp_theme[0];
 		$kapp_theme1 = $kapp_theme[1];
 		if( $ret ) {
 			if( $kapp_theme0 !='' ) {
-				$kapp_theme0 = $kapp_mainnet; //"https://fation.net/kapp"; // Share start server
+				$kapp_theme0 = $kapp_mainnet;
 				if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day ) ) {
 					if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $url_nm, $ip, $memo, $up_day );
 				}
@@ -258,15 +245,13 @@ $(function () {
 		$str = $_POST['memo'];
 		$secret_key = $_POST['form_psw'];
 		$memo = Encrypt($str, $secret_key, $link_secret_iv);
-	}
-	else if($mode_up == 'Decryption_run') {
+	}else if($mode_up == 'Decryption_run') {
 		$link_ = $_POST['url_nm'];
 		$title_ = $_POST['title_nm'];
 		$encrypted = $_POST['memo'];
 		$secret_key = $_POST['form_psw'];
 		$memo = Decrypt($encrypted, $secret_key, $link_secret_iv);
-	}
-	else if ( $mode_up == 'update_link_run') {
+	}else if ( $mode_up == 'update_link_run') {
 		if ( !$H_ID ) {
 			$url = "kapp_ulink_list.php";
 			echo "<script>alert('Please log in'); window.open('$url', '_self', '');</script>";
@@ -309,7 +294,7 @@ $(function () {
 		g_no = gg[3];
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.project_code.value = gg[1]; 
-		document.insert_form.g_name_code.value = gg[1]; // ulink_ajax.php use
+		document.insert_form.g_name_code.value = gg[1];
 	}
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) {
 		document.insert_form.link_.value =link_;
@@ -708,8 +693,6 @@ jQuery(document).ready(function ($) {
 			<br> &nbsp; Encrypt and save notes. 
 			<br> &nbsp; The encryption key is not stored and should be remembered. 
 			<br> &nbsp; If you forget the key, the memo can not be decrypted.
-			<!--<br> &nbsp; 메모를 암호화하여저장합니다. <br> &nbsp; 암호키는 저장되지않으며 잘기억해두어야합니다. 
-			<br> &nbsp; 키를 잊어버리면 메모는 복호화가 불가능합니다.-->
 		</td>
 	</tr>
 	<tr>
@@ -721,25 +704,21 @@ jQuery(document).ready(function ($) {
 			if ( $mode == 'update_link') { ?>			
 				<input id="upd_save_button" type='button'  onclick="javascript:contents_upd_run();" value='Save Changes' style="background-color:blue;color:yellow;height:25;">
 				<input id="upd_cancle" type='button'  onclick="javascript:Cancle_run();" value='Cancel Change' style="background-color:red;color:yellow;height:25;">
-<?php		} else { ?>			
-				<!-- <input type='button'  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'><br> User:<?=$H_ID?> -->
 <?php		} ?>			
 				<input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" />
-				<!-- <input type='button' id="save_button"  onclick="javascript:insert_url_func();" value='Save' style="background-color:green;color:yellow;height:25;" title='Save the link.'> -->
 				<br> User:<?=$H_ID?> - If you want to change the registered link data, you can change the data by clicking the Title.
-				<!-- 등록한 링크 자료를 변경하고자 할 때 Title 을 클릭하면 자료를 변경 할 수 있다. -->
 <?php } ?> 
 
 		</td>
 	</tr>
-	<!-- </form> -->
 </table>
 </div>
-<div id="mypaneltab" class="ddpaneltab" >
-<a href="#" ><span style="background-color:;color:yellow;">Note Create</span> </a>
+
+<!-- <div id="mypaneltab" class="ddpaneltab" ><a href="#" ><span style="background-color:;color:yellow;">Note Create</span></a></div> -->
+<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Note Create &nbsp;▼ &nbsp;</a></span></div>
+
 </div>
-</div>
-<link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
+<!-- <link rel="stylesheet" href="../include/css/kancss.css" type="text/css"> -->
 
 <table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 	<tr>
@@ -829,14 +808,12 @@ jQuery(document).ready(function ($) {
 		<tr align='center'>
 			<TH>icon</TH>
 	<?php
-//		echo " <TH title='User Sort click or doubleclick' >User</th> ";
 		echo " <TH title='Project Sort click or doubleclick'  >Project</th> ";
 		echo " <TH title='Project Sort click or doubleclick' >Title</th> ";
 		echo " <TH title='url Sort click or doubleclick' >Link Url</th> ";
 		echo " <TH title='type Sort click or doubleclick' >type</th> ";
 		echo " <TH title='View Sort click or doubleclick' >View</th> ";
 		echo " <TH title='date Sort click or doubleclick' >date</th> ";
-
 	?>
 		</tr>
 </thead>
@@ -845,7 +822,6 @@ jQuery(document).ready(function ($) {
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY up_day desc, user_name ";
 	$ls = $ls . $OrderBy;
-
 	$ls = $ls . $limit;
 	$result = sql_query( $ls );
 	while( $rs = sql_fetch_array( $result ) ) {
@@ -886,20 +862,17 @@ jQuery(document).ready(function ($) {
 				  <td  bgcolor='black' title='<?=$user_id?>' style="width:1%;"><img src='<?=$icon?>' style="width:25px;"></td>
 				  <td  bgcolor='black' style="width:15%;color:<?=$t_color?>;"><?=$sys_group?></td>
 <?php
-	// 여기서 등록한 데이터 'Note', 'U' - 타이틀 클릭시에 수정 할 수 있게 한다. contents_upd()
 	if( $rs['job_name']=='Note') { 
 ?>
 	  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
 		<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
 	  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
-	  <!-- <a href='<?=$rs_club_url?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;"><?=$rs_club_url?></a> -->
 	  <?=$rs_club_url?>
 	  </td>
 <?php } else { ?>
 	  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
 		<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
 	  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
-	  <!-- <a href='<?=$rs_job_addr?>' target='_BLANK' style="background-color:black;color:<?=$t_color?>;" ><?=$rs_job_addr ?></a> -->
 	  <?=$rs_job_addr?>
 	  </td>
 <?php } ?>

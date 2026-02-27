@@ -503,7 +503,8 @@ $(function () {
 
 	</table>
 	</div>
-	<div id="mypaneltab" class="ddpaneltab"><a href="#"><span style="border-style:;background-color:;color:yellow;">Board Create</span></a></div>
+	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Board Creat &nbsp;▼ &nbsp;</a></span>
+	</div>
 </div>
 
 <?php } // H_ID check ?>

@@ -11,7 +11,6 @@
 		echo("<meta http-equiv='refresh' content='0; URL=../'>"); exit;
 	}
 	$ip     = $_SERVER['REMOTE_ADDR'];
-
 	connect_count($host_script, $H_ID, 0, $referer);	// log count
 	/*
 		kapp_board_list.php : board_list3.php : table-{$tkher['aboard_infor_table']}
@@ -67,10 +66,8 @@ $(function () {
 		}, 250); // 약 300ms 대기 후 실행
 	  
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 			switch(e.target.innerText){
 				case 'User'    : title_wfunc('make_id'); break;
 				case 'info'    : title_wfunc('no'); break;
@@ -150,7 +147,7 @@ $(function () {
 	function chkDescription(){
 		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
 	}
-	function Update_title(){ // board name update
+	function Update_title(){
 		var seli = document.makeform.sellist.selectedIndex;
 		if( seli < 0 ) {
 			alert('Please select a bulletin board to change!'); return false;
@@ -164,7 +161,6 @@ $(function () {
 		document.makeform.board_no.value = sel_v[0];
 		document.makeform.board_gubun_value.value = sel_v[1];
 		document.makeform.board_nm.value = sel_v[2];
-
 		var t = document.makeform.sellist.options[seli].text;
 		var c = document.makeform.chgname.value;
 		document.makeform.mode.value ='Update_nm_change';
@@ -206,10 +202,9 @@ $(function () {
 		}
 	}
 	function New_Create() {
-
 		var seli = makeform.fnclist.selectedIndex;
 		if( seli < 0 ){
-			alert("Select Board Type! board type seli: " + seli );//board type seli: 0
+			alert("Select Board Type! board type seli: " + seli );
 			return false;
 		} else {
 			var t = makeform.fnclist.options[seli].text;
@@ -282,15 +277,13 @@ $(function () {
 		makeform.board_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
 		var category = "D02"
-		if (selind >= 0 && makeform.sellist.options[selind].text != "")
-		{
+		if( selind >= 0 && makeform.sellist.options[selind].text != ""){
 			var grpname = strA[1];
 			if (( grpname == "group") || (grpname == "groupend") ||  (getObjid(grpname) == "GSTR") || (getObjid(grpname) == "GEND")) {
 				makeform.chgname.value = chkGroup(makeform.sellist.options[selind].text)
 				document.makeform.mncontents.value = ""
 				document.makeform.chkByte.value = "0";
-			}
-			else {
+			}else {
 				makeform.chgname.value = getfname( makeform.sellist.options[selind].text )
 				var valname = strA[1];
 				if (valname.length>0) {
@@ -302,13 +295,11 @@ $(function () {
 					var chkobjid = eval("document.makeform." + strA + ".value")
 					document.makeform.mncontents.value = eval("document.makeform." + strA + ".value")
 				}
-				//선택된 항목의 이름이 (숨기기)되어있을 경우 checkbox의 V표시
 				var strChgnm = makeform.chgname.value
 				if (strChgnm.substring(strChgnm.indexOf("<")+1, strChgnm.indexOf(">")) == "숨기기"){
 					document.makeform.mnhide.checked = true
 					makeform.chgname.value = strChgnm.substring(0, strChgnm.indexOf("<"))
-				}
-				else{
+				}else{
 					document.makeform.mnhide.checked = false
 					makeform.chgname.value = getfname(makeform.sellist.options[selind].text)
 				}
@@ -500,7 +491,10 @@ $(function () {
 
 	</table>
 	</div>
-	<div id="mypaneltab" class="ddpaneltab"><a href="#"><span style="border-style:;background-color:;color:yellow;">Board Create</span></a></div>
+	
+	<!-- <div id="mypaneltab" class="ddpaneltab"><a href="#"><span style="border-style:;background-color:;color:yellow;">Board Create</span></a></div> -->
+	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Board Create &nbsp;▼ &nbsp;</a></span></div>
+
 </div>
 </form>
 
