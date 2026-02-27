@@ -115,8 +115,6 @@ if($mode == "Update_func") {
 			$del_file = KAPP_PATH_T_ . "/data/main_scroll_image/" . $jpg_fileA; 
 			exec ("rm $del_file");
 			m_("no:$no, jpg_name: $jpg_nameA, Deleted.");
-			//no:101, jpg_name: K-APP, Deleted.
-			//no:89, jpg_name: bg_proj03.jpg, Deleted.
 		}
 	} else m_("ERROR delete no null");
 } else if( $mode == "Insert_func") {
@@ -156,11 +154,8 @@ if($mode == "Update_func") {
 			}
 		}
 	} //8
-
 }
-
 ?>
-
 <script language="JavaScript"> 
 <!-- 
 	function upload_func(no, i){
@@ -256,9 +251,8 @@ if($mode == "Update_func") {
 		include_once( KAPP_PATH_T_ . "/menu_run.php"); 
 		?>
 <h style='font-size:25px;height:27px;'>[Main Slide Image Management]</h>
-
 <FORM name='form1' action='main_img.php' method='post' enctype="multipart/form-data" >
-<div id="mypanel" class="ddpanel">
+	<div id="mypanel" class="ddpanel">
 	<div id="mypanelcontent" class="ddpanelcontent">
 		<table style="border-style:;background-color:#666666;color:black;color:white;height:30;width:100;width:100%;">
 				<input type='hidden' name='mode'	 value=''>
@@ -291,7 +285,6 @@ if($mode == "Update_func") {
 </FORM>
 	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Main Image Insert &nbsp;▼ &nbsp;</a></span></div>
 </div>
-
 <table border="1" width=100% cellspacing="0" bordercolor="#C0C0C0" bordercolordark="#FFFFFF" bordercolorlight="#FFFFFF" align='center'>
 	<tr>
 		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">Image </font></td>

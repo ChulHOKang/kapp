@@ -87,7 +87,7 @@ $(function () {
 	});
 
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거	//alert('더블 클릭되었습니다!');
+		clearTimeout(timer); 
 		switch(e.target.innerText){
 			case 'Project' : title_wfunc('job_group'); break;
 			case 'User'    : title_wfunc('user_id'); break;
@@ -153,7 +153,6 @@ $(function () {
 	} else {
 		$g_no = "";
 	}
-	
 	if( isset($_REQUEST["g_name"]) ) $gnm = $_REQUEST["g_name"];
 	if( isset($gnm) && $gnm !="" ) {
 		$aa = explode(':', $_REQUEST["g_name"]); 
@@ -161,7 +160,6 @@ $(function () {
 		if( isset($aa[1]) ) $g_num = $aa[1];
 		if( isset($aa[3]) ) $g_no = $aa[3];
 	}
-
 	if( isset($_REQUEST["mode"]) ) 	$mode= $_REQUEST["mode"];
 	else if( isset($_POST["mode"]) )	$mode= $_POST["mode"];
 	else	$mode			= "";
@@ -173,7 +171,6 @@ $(function () {
 	else	$mode_in			= "";
 	if( isset($_REQUEST["sdata"]) ) 	$sdata= $_REQUEST["sdata"];
 	else	$sdata			= "";
-
 	if( isset($_POST["page"]) )	$page= $_POST["page"];
 	else if( isset($_REQUEST["page"]) )	$page= $_REQUEST["page"];
 	else $page= 1;
@@ -184,9 +181,7 @@ $(function () {
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
 	else $fld_code_asc = '';
-
 	$page_num = 10; 
-
 	if( $mode == 'update_link') {
 		$seq_no = $_REQUEST['seq_no'];	
 		$result	= 		$result = sql_query( "select * from {$tkher['job_link_table']} where seqno=$seq_no" );
@@ -196,7 +191,7 @@ $(function () {
 			sql_query($sql);
 			$title_	= $rs['user_name'];
 			$link_	= $rs['job_addr'];
-			$g_name	= $rs['job_name'];	// =job_group
+			$g_name	= $rs['job_name'];
 			$lev	= $rs['job_level'];
 			$jong	= $rs['jong'];
 			$memo	= $rs['memo'];
@@ -234,7 +229,6 @@ $(function () {
 			}
 			else document.insert_form.memo.focus();
 		} 
-
 	}
 	function change_g_name_func(g_nm) {
 		g_name = g_nm;
@@ -246,7 +240,6 @@ $(function () {
 		document.insert_form.g_name.value = gg[0]; 
 		document.insert_form.g_name_code.value = gg[1]; 
 	}
-	//( '$rs_job_addr', '$user_id', '$sys_label', '$sys_name','$gubun','$num','$aboard_no', '$seqno' )
 	function call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno, cntno, vcnt) {
 		vcntA = document.insert_form["vcnt[" + cntno + "]"].value = vcnt+1;
 		document.insert_form.mid.value   =id;
@@ -638,12 +631,8 @@ jQuery(document).ready(function ($) {
 </table>
 </div>
 <div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Note Create &nbsp;▼ &nbsp;</a></span></div>
-
-
 </div>
 <link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
-
-
 <?php
 		if ( $g_type=='mylist' && isset($sdata) && $sdata != ""  ) {
 				$ls = "SELECT * from {$tkher['job_link_table']} WHERE user_id='$H_ID' and user_name like '%$sdata%' ";

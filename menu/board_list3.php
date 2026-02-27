@@ -746,21 +746,19 @@ if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
 			<td style='color:white;text-align:center;'>
 				<input type='button' value=" Change " onClick="Update_func('<?=$rsno?>','<?=$line_no?>')" style="border:1px solid black;background-color:red;color:white;width:100px;height:27px;border-radius:20px;" title='<?=$rsno?> - Confirm - Save the skin and read and write permissions.'>
-				<!-- <input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;color:black;" title=' Run the bulletin board. '> -->
 			</td>
 
 		<?php
 } else {
 		?>
 			<td> ---
-				<!-- <input type='button' value='Run' onclick="javascript:window.open('index_bbs.php?infor=<?=$rsno?>','_blank','')" style="cursor:hand;" title=' Run the bulletin board. '> -->
 			</td>
 		<?php
 }
 		?>
 		  </tr>
 		<?php
-			$line_no = $line_no +1; // 배열 변수 용.
+			$line_no = $line_no +1;
 			$i++;
 		}	//Loop
 		?>
@@ -801,9 +799,6 @@ function paging($link, $total, $page, $size){
 	if( $page > $page_num ) {
 		$back_page = $first_page - 1;
 		echo("<a href='javascript:page_move($back_page)' >[Prev]</a><span>&nbsp;</span>");
-	} else {
-		//echo("<img src=./include/img/btn/btn_prev.png width=30 title='Previous'>");
-		//echo("<span>[Prev].</span>");
 	}
 	for( $i=$first_page; $i <= $last_page; $i++ ){
 		if( $i > $total_page){ break;}
@@ -813,9 +808,6 @@ function paging($link, $total, $page, $size){
 	if( $last_page < $total_page){
 		$next_page=$last_page+1;
 		echo("<a href='javascript:page_move($next_page)'>[Next]</a><span>&nbsp;</span>");
-	} else {
-		//echo("<img src=./include/img/btn/btn_next.png width=30 title='Btn Next Page'>");
-		//echo("<span>[Next].</span>");
 	}
 	if( $last_page < $total_page){
 		echo("<a href='javascript:page_move($total_page)'>[Last]</a>");
