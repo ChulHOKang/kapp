@@ -33,24 +33,23 @@ if( $mode == "File_Change") {
 			$url = "main_img.php";
 			echo "<script>window.open('$url', '_self', '');</script>";
 	}
-	if( isset($_POST['i']) ) $i = $_POST[i];
+	if( isset($_POST['i']) ) $i = $_POST['i'];
 	else $i = 0;
 	$fnm = "file_" . $i;
 	$filenm = $_FILES[$fnm]['name'];
 	$f_path = KAPP_PATH_T_ . "/data/main_scroll_image/";
-	$in_date = time();
-	if ( $_FILES["file[$i]"]["error"] > 0){ 
+	$filenm = $filenm . time();
+	if( $_FILES["$fnm"]["error"] > 0){ 
 		echo "Return Code: " . $_FILES["$fnm"]["error"] . "<br>"; 
 	} else { 
-		if ( file_exists( $f_path . $filenm ) ) { 
-			echo $_FILES["file"]["name"] . " I have the same file. Covered. ";
+		if( file_exists( $f_path . $filenm ) ) { 
+			echo $_FILES["$fnm"]["name"] . " I have the same file. Covered. ";
 			move_uploaded_file($_FILES["$fnm"]["tmp_name"], $f_path . $filenm );
 		} else { 
 			move_uploaded_file($_FILES["$fnm"]["tmp_name"], $f_path . $filenm );
 		}
 	}
 	if( $filenm ) {
-
 		$file_ext  = explode(".", $filenm );
 		$file_nm   = strtolower( $file_ext[0]);
 		$file_type = strtolower( $file_ext[1]);
@@ -62,8 +61,7 @@ if( $mode == "File_Change") {
 			m_(" The image file has been changed.");
 		}
 	}
-}
-if( $mode=="Time_Change" ){
+} else if( $mode=="Time_Change" ){
 	if( $H_LEV < 8 ) {
 		m_(" You do not have permission.");
 		$url = "main_img.php";
@@ -78,8 +76,7 @@ if( $mode=="Time_Change" ){
 	} else {
 		m_(" Time changed.");
 	}
-}
-if($mode == "Update_func") {
+} else if($mode == "Update_func") {
 
 	if( $H_LEV < 8 ) {
 		m_(" You do not have permission.");
@@ -159,10 +156,15 @@ if($mode == "Update_func") {
 <script language="JavaScript"> 
 <!-- 
 	function upload_func(no, i){
-		document.form2.no.value		= no;
-		document.form2.i.value			= i;
-		document.form2.mode.value	= 'File_Change';
-		document.form2.submit();
+		jpg_name	= document.form2["file_" + i ].value;
+		if( jpg_name == '' ){
+			alert("file을 선택하세요 file name: "+jpg_name); return ;
+		} else {
+			document.form2.no.value= no;
+			document.form2.i.value= i;
+			document.form2.mode.value= 'File_Change';
+			document.form2.submit();
+		}
 	}
 	function check(x){
 		if( x.jpg_name.value==''){
@@ -287,6 +289,7 @@ if($mode == "Update_func") {
 </div>
 <table border="1" width=100% cellspacing="0" bordercolor="#C0C0C0" bordercolordark="#FFFFFF" bordercolorlight="#FFFFFF" align='center'>
 	<tr>
+		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">no</font></td>
 		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">Image </font></td>
 		<td bgcolor="#C0C0C0" align='center'><font color="#FFFFFF">Title / Message </font></td>
 		<td bgcolor="#C0C0C0" align='center' title='Output Order'><font color="#FFFFFF">no</td>
@@ -310,6 +313,7 @@ if($mode == "Update_func") {
 	} else {
 		$i=0;
 		$selx = "selected";
+		//$lineno=1;
 		while( $row = sql_fetch_array( $result )) {
 				$no				= $row['no'];
 				$jpg_name		= $row['jpg_name'];
@@ -317,8 +321,10 @@ if($mode == "Update_func") {
 				$jpg_memo		= $row['jpg_memo'];
 				$group_code	= $row['group_code'];
 				$g_name	= $row['group_name'];
+				$ii = $i+1;
 		echo "	
 			<tr>
+				<td>$ii</td>
 				<td align='center'><img src='".KAPP_URL_T_."/data/main_scroll_image/".$row['jpg_file']."' width='300' height='200' title='$jpg_file'></td>
 				<td align='left'>
 						Group:".$row['group_name']."<br>
@@ -327,8 +333,8 @@ if($mode == "Update_func") {
 						Message:<br>
 					<textarea id='jpg_memo' name='jpg_memo[$i]' style='border-style:;background-color:cyan;color:black;height:60;width:350;' >".$row['jpg_memo']."</textarea>
 						<br><label for='file'>Filename:</label>
-					<input type='file' name='file_$i' id='file'><br>
-					<input type='button' value='File_Change' onclick=\"javascript:upload_func('$no', '$i')\" title='Change the file.'>
+					<input type='file' name='file_$i' id='file_$i'><br>
+					<input type='button' value=' File_Change ' style='border:1px solid black;background-color:red;color:white;width:100px;height:27px;border-radius:20px;' onclick=\"javascript:upload_func($no, $i)\" title='Change the file.'>
 				</td>
 				";
 		echo "	&nbsp;
