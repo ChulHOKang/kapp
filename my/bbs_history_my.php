@@ -1,22 +1,18 @@
 <?php
-/*
-	bbs_history_my.php :
-		call : bbs_history_myjob.php : 
-*/
+	/*
+		bbs_history_my.php :
+			call : bbs_history_myjob.php : 
+	*/
 	if( isset($_POST["comment"])) $comment = $_POST["comment"];
 	else $comment = '';
 	if( isset($_POST["mode"])) $mode = $_POST["mode"];
 	else $mode = '';
-
 	if( isset($_POST["pg_code"])) $pg_code = $_POST["pg_code"];
 	else $pg_code = '';
 	if( isset($_POST["pg_name"])) $pg_name = $_POST["pg_name"];
 	else $pg_name = '';
-
 	if( isset($_POST["no"])) $no = $_POST["no"];
 	else $no = '';
-
-	//my_msg( " mode: ". $mode . $comment);
 	if( $mode=='update') {
 		$build_time = time();
 		sql_query( "update {$tkher['bbs_history_table']} set pg_code='$pg_code', pg_name='$pg_name', comment='$comment', cid='$H_ID', ctime=$build_time where no=$no and id='$H_ID' " );
@@ -26,16 +22,15 @@
 		$build_time = time();
 		sql_query( "insert into {$tkher['bbs_history_table']} set id='$H_ID', pg_code='$pg_code', pg_name='$pg_name', build_time='$build_time', comment='$comment'" );
 		echo "<script>window.open( 'bbs_history_myjob.php' , '_self',''); </script>";
-		//exit;
 	} else {
-		$result = sql_query( "SELECT * from {$tkher['bbs_history_table']} order by build_time desc");
+		$result = sql_query( "SELECT * from {$tkher['bbs_history_table']} where id='$H_ID' order by build_time desc");
 ?>
 <center>
-<p>
-		<font color='maroon'><b>K-APP History Management</b></font><p>
-		<form name='history' method='post' action='bbs_history_myjob.php'>
-				<input type='hidden' name='no' value=''>
-			
+<p style='color:maroon;font-size:21px;'>K-APP History Management<p>
+<FORM name='history' method='post' action='bbs_history_myjob.php'>
+			<input type='hidden' name='no' value=''>
+			<input type='hidden' name='mode' value='insert'>
+			<input type='hidden' name='xday' value=''>
 		<Table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 				<tr>
 					<td bgcolor='#cccc66' height='1' colspan='5'></td>
@@ -59,21 +54,20 @@
 						<td style="background-color:#666666;color:cyan;"><?=$rs['pg_name']?></td>
 						<td style="background-color:#666666;color:cyan;"><?=$rs['comment'] ?></td>
 						<td style='border:1 black solid;width:50;'>
-						<?php 
-								$bt=$rs['build_time'];$no=$rs['no']; 
-								$pcd=$rs['pg_code']; $pnm=$rs['pg_name'];
-								//$mg=$rs['comment']; // error : 메세지내용에 엔터값이 있을때 update버턴이 클릭되지않는다.
-								$mg=''; 
+					<?php 
+						$bt=$rs['build_time'];$no=$rs['no']; 
+						$pcd=$rs['pg_code']; $pnm=$rs['pg_name'];
+						$mg=''; 
 						if($H_ID == $rs['id']) {
-						?>
+					?>
 							<input type='button' onclick="javascript:his_update('<?=$i?>','<?=$bt?>', '<?=$mg?>','<?=$no?>', '<?=$pcd?>','<?=$pnm?>','<?=$mid?>','<?=$H_ID?>')" value='Update' class='form'>
-						<?php
+					<?php
 						} else {
-						?>
+					?>
 							---
-						<?php
+					<?php
 						} 
-						?>
+					?>
 							<input type='hidden' name='msg_<?=$i?>' value="<?=$rs['comment']?>">
 						</td>
 					</tr>
@@ -82,13 +76,9 @@
 				}
 				?>
 <p>
-			<!-- ---------------------------------------------------------------------&nbsp; -->
-		<div id="mypanel2" class="ddpanel">
-			<div id="mypanelcontent2" class="ddpanelcontent">
-			<!-- --------------------------------------------------------------------- -->
+		<div id="mypanel" class="ddpanel">
+			<div id="mypanelcontent" class="ddpanelcontent">
 
-			<input type='hidden' name='mode' value='insert'>
-			<input type='hidden' name='xday' value=''>
 		<center>
 			<div style="border-style:;background-color:#666666;color:yellow;height:30px;margin-top:3px;">
 			<span style="color:white;margin-top:3px;">&nbsp;Program : </span>
@@ -113,18 +103,13 @@
 			<input type='text' id='pg_name' name='pg_name' value='' style="border-style:;background-color:black;color:yellow;height:25;width:250;"></span></div>
 			<div><span style="border-style:;background-color:#666666;color:cyan;">&nbsp;message:</span>
 			<br>&nbsp;<textarea name='comment' rows='5' cols='80' class='form' style="border-style:;background-color:#666666;color:cyan;"></textarea></div>
-
-			<!-- &nbsp;<input type='submit' id="update" onclick="javascript:update_func('insert'); return false;" value='UPDATE' class='form' style="display:none;">  -->
 			<a id='update_btn' href="javascript:update_func('insert');" style="background-color:blue;color:yellow;height:35;">Save Change</a>
-
-
 			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 			<input type='submit' onclick="javascript:f_ins('insert'); return false;" value='INSERT' class='form' >
+			</div>
 
-			</div>
-			<div id="mypaneltab2" class="ddpaneltab">
-				<a href="#"><span>▤ K-APP History Management ▤</span> </a>
-			</div>
+		<!-- <div id="mypaneltab2" class="ddpaneltab"><a href="#"><span>▤ K-APP History Management ▤</span></a></div> -->
+	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; K-APP History Management &nbsp;▼ &nbsp;</a></span></div>
 
 		</div>
 
