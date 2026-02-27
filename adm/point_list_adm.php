@@ -5,6 +5,10 @@
 	  call : admin menu : t/adm/
 	*/
 	$H_ID		= get_session("ss_mb_id");
+	if( $H_ID == '') {
+		m_("login please");
+		exit;
+	}
 	$H_LEV		= $member['mb_level'];
 	if( $H_LEV < 8) {
 		m_("admin page");

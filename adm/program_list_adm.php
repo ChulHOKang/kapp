@@ -1,12 +1,12 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 	$H_ID	= get_session("ss_mb_id"); $ip = $_SERVER['REMOTE_ADDR'];
-	if( isset($member['mb_level'])) $H_LEV = $member['mb_level'];
-	else $H_LEV = 0;
-	if( !$H_ID || $H_LEV < 8 ) {
-			m_("admin page.  lev= $H_LEV");
+	if( !$H_ID || $H_ID =='' ) {
+			m_("login please");
 			exit;
 	}
+	if( isset($member['mb_level'])) $H_LEV = $member['mb_level'];
+	else $H_LEV = 1;
 	$formula_		= "";
 	$poptable_		= "";
 	$column_all		= "";
@@ -34,18 +34,18 @@
 				if(isset($ifdata[$j]) ) $dataX	= $ifdata[$j];
 				else $dataX = "";
 				$ddd		= $list[$i];
-				$fld		= explode("|", $ddd);		// 구분자='|' 를 각가가 분류 : 36|fld_2|전화폰|2
+				$fld		= explode("|", $ddd);
 				$column_all = $column_all . $fld[2] . "(" . $fld[3] . ") , ";
-						if( !$typeX ) { // 0 or ''
-						} else if( $typeX == "11" ) { // calc
-							$formula = explode(":", $dataX);
-							if( isset($formula[1]) ) $formula_ = $formula[1];
-						} else if( $typeX == "13" ) { // 팝업창
-							$poptable = explode(":", $dataX);
-							if( isset($poptable[1]) ) $poptable_ = $poptable[1];
-						} else {
-							$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
-						}
+				if( !$typeX ) { // 0 or ''
+				} else if( $typeX == "11" ) { // calc
+					$formula = explode(":", $dataX);
+					if( isset($formula[1]) ) $formula_ = $formula[1];
+				} else if( $typeX == "13" ) {
+					$poptable = explode(":", $dataX);
+					if( isset($poptable[1]) ) $poptable_ = $poptable[1];
+				} else {
+					$gita = $gita . $fld[2] . "-" . $dataX . "<br>";
+				}
 		}
 		$popdata = explode("@", $popdata); 
 		$pop_fld ="";
@@ -161,8 +161,7 @@ $(function () {
 		project_name = document.project_search.project_name.value;
 		project_code = document.project_search.project_codeX.value;
 		msg = " Do you want to change the project name of program " + group_name + " to " + project_name + "?";
-		if ( window.confirm( msg ) )
-		{
+		if ( window.confirm( msg ) ){
 			document.project_search.mode.value ="project_name_change";
 			document.project_search.action ="program_list_adm.php";
 			document.project_search.group_name.value = project_name;
@@ -427,7 +426,7 @@ $(function () {
 		$line=$limite*$page + $i - $limite;
 		$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
-		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
+		$pop_data = $rs['pop_data'];
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;

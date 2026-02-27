@@ -102,8 +102,6 @@
 			&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
 			<input type='submit' onclick="javascript:f_ins('insert'); return false;" value='INSERT' >
 			</div>
-
-	<!-- <div id="mypaneltab2" class="ddpaneltab"><a href="#"><span>▤ K-APP History Management ▤</span></a></div> -->
 	<div id="mypaneltab2" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; K-APP History Management &nbsp;▼ &nbsp;</a></span></div>
 
 		</div>

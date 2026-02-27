@@ -94,17 +94,11 @@ $(function () {
   });
 });
 </script>
-
-<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
-<script type="text/javascript" src="../include/js/common.js"></script> -->
-
 <?php
 	if( isset($_POST['sdata']) ) $sdata = $_POST['sdata'];
 	else $sdata = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
-
 ?>
 <script language='javascript'>
 <!--
