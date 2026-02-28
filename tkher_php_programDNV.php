@@ -64,10 +64,10 @@
 	fwrite($fsi,"</head> \r\n");
 
 	fwrite($fsi,"<?php                                 \r\n");
-	fwrite($fsi,"	$"."is_mobile = false;  \r\n");
-	fwrite($fsi,"	$"."is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $"."_SERVER['HTTP_USER_AGENT']);   \r\n");
+	//fwrite($fsi,"	$"."is_mobile = false;  \r\n");
+	//fwrite($fsi,"	$"."is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $"."_SERVER['HTTP_USER_AGENT']);   \r\n");
 	fwrite($fsi,"	$"."menu1TWPer=15;  \r\n");
-	fwrite($fsi,"	if( $"."is_mobile ) $"."menu1TWPer=36;    \r\n");
+	//fwrite($fsi,"	if( $"."is_mobile ) $"."menu1TWPer=36;    \r\n");
 
 	fwrite($fsi,"	$"."menu1AWPer=100 - $"."menu1TWPer;  \r\n");
 	fwrite($fsi,"	$"."menu2TWPer=10;  \r\n");
@@ -82,7 +82,12 @@
 
 	//fwrite($fsi,"   <link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type=\"text/css\" />  \r\n");
 	fwrite($fsi,"   <link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \r\n");
-
+/*fwrite($fsi,"<?php  \r\n");
+	fwrite($fsi,"		if( isset($"."_REQUEST['pgtest']) && $"."_REQUEST['pgtest'] == 'pgtest' )  \r\n");
+	fwrite($fsi,"			 echo \"<link rel='stylesheet' href='".KAPP_URL_T_."/include/css/kapp_basic.css' type='text/css' />  \";  \r\n");
+	fwrite($fsi,"		else echo \"<link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \";  \r\n");
+fwrite($fsi,"?>  \r\n");
+*/
 	fwrite($fsi,"<script language='JavaScript'>   \r\n"); 
 	fwrite($fsi,"	function table_data_list($"."pg_code) {   \r\n");
 	fwrite($fsi,"		document.form_view.action='".$pg_code."_run.php?pg_code=' + $"."pg_code;   \r\n");
@@ -387,6 +392,9 @@
 	fwrite($fsw,"?> \r\n");
 
 	fwrite($fsw,"   <link rel='stylesheet' href='kapp_basic.css' type='text/css' /> \r\n");
+	/*fwrite($fsw,"		if( isset($_REQUEST['pgtest']) && $_REQUEST['pgtest'] == 'pgtest' )  \r\n");
+	fwrite($fsw,"			 echo \"<link rel='stylesheet' href='".KAPP_URL_T_."/include/css/kapp_basic.css' type='text/css' />  \";  \r\n");
+	fwrite($fsw,"		else echo \"<link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \";  \r\n");*/
 
 fwrite($fsw,"   <script type=\"text/javascript\">  \r\n");
 fwrite($fsw,"	function popup_callDN(if_dataPG, pop_dataPG, if_typePG , host_url, i) {   \r\n");
@@ -465,12 +473,8 @@ fwrite($fsw,"		<form name='makeform' action='' method='post' enctype='multipart/
 fwrite($fsw,"			<input type=hidden name='mode'				value='' />   \r\n");
 fwrite($fsw,"			<input type=hidden name='seqno'			value='' />   \r\n");
 fwrite($fsw,"			<input type=hidden name='page'				value='<?=$"."page?>' />   \r\n");
-
-		$sqlPG		= "select * from {$tkher['table10_pg_table']} where userid='$H_ID' and pg_code='$pg_code' ";
-		$resultPG	= sql_query($sqlPG);
-		if ( $resultPG == false ) { m_(" tkher_php_programDNV pg_name:$pg_name select ERROR "); exit; }
-		$table10_pg= sql_num_rows($resultPG);
-		$rsPG			= sql_fetch_array($resultPG);
+		$sqlPG= "select * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+		$rsPG= sql_fetch($sqlPG);
 		$list			= array();
 		$ddd			= "";
 		$kkk ="off";

@@ -63,11 +63,11 @@
 	fwrite($fsr,"			Fhnm = e.target.innerText; \r\n");
 	fwrite($fsr,"			Fenm = document.getElementById(Fhnm).value;         \r\n");
 	fwrite($fsr,"			title_func(Fenm); \r\n");
-	fwrite($fsr,"		}, 250); // Executes after waiting about 250ms - 약 250ms 대기 후 실행 \r\n");
+	fwrite($fsr,"		}, 250); \r\n");
 	fwrite($fsr,"	}); \r\n");
 
 	fwrite($fsr,"	document.getElementById('tit_et').addEventListener('dblclick', function(e) { \r\n");
-	fwrite($fsr,"		clearTimeout(timer); // Remove last click timer - 마지막 클릭 타이머를 제거 \r\n");
+	fwrite($fsr,"		clearTimeout(timer); // Remove last click timer  \r\n");
 	fwrite($fsr,"		Fhnm = e.target.innerText; \r\n");
 	fwrite($fsr,"		Fenm = document.getElementById(Fhnm).value; \r\n");
 	fwrite($fsr,"		title_wfunc(Fenm); \r\n");
@@ -103,8 +103,12 @@
 	fwrite($fsr,"</script> \r\n");
 
 	//fwrite($fsr,"<link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_program_data_list.css\" type=\"text/css\" /> \r\n");
-	fwrite($fsr,"<link rel='stylesheet' href='kapp_program_data_list.css' type='text/css' /> \r\n");
-
+	//fwrite($fsr,"<link rel='stylesheet' href='kapp_program_data_list.css' type='text/css' /> \r\n");
+	fwrite($fsr,"<?php  \r\n");
+	fwrite($fsr,"	if( isset($"."_REQUEST['pgtest']) && $"."_REQUEST['pgtest'] == 'pgtest' )  \r\n");
+	fwrite($fsr,"			 echo \"<link rel='stylesheet' href='".KAPP_URL_T_."/include/css/kapp_program_data_list.css' type='text/css' />  \";  \r\n");
+	fwrite($fsr,"	else echo \"<link rel='stylesheet' href='kapp_program_data_list.css' type='text/css' />  \";  \r\n");
+	fwrite($fsr,"?>  \r\n");
 
 	fwrite($fsr," <script type='text/javascript' >                          \r\n");
 	
@@ -437,9 +441,10 @@ echo "<pre>";
 			<h3> Created OK! pg_code:<?php echo $runF1; ?> , Zip File:<?=$zf?> </h3>
 			<h3> <a href='<?=$zff?>' target=_blank>[ Down RUN:<?=$zf?> ]</a> </h3>  
 <?php
-if ( $H_LEV > 1 ){
+if( $H_LEV > 1 ){
+	$test_run= "./file/" . $H_ID. "/" . $pg_code . "_run.php?pgtest=pgtest";
 ?>
-		<h3> <a href='./file/<?=$H_ID?>/<?=$list_run?>' target=_blank>[ Data_List RUN:<?=$list_run?> ]</a> </h3> 
+		<h3> <a href='<?=$test_run?>' target=_blank>[ Data_List RUN:<?=$test_run?> ]</a> </h3> 
 <?php } ?>
 <p>To run the downloaded program, </p>
 <p>Download the database table and upload it to the server you want to use.</p>

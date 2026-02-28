@@ -86,10 +86,10 @@ fwrite($fsi,"<meta name='description' content='no code webapp generator, No code
 fwrite($fsi,"<meta name='robots' content='ALL'> \r\n");
 fwrite($fsi,"</head> \r\n");
 fwrite($fsi,"<?php                                 \r\n");
-fwrite($fsi,"	$"."is_mobile = false;  \r\n");
-fwrite($fsi,"	$"."is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $"."_SERVER['HTTP_USER_AGENT']);   \r\n");
+//fwrite($fsi,"	$"."is_mobile = false;  \r\n");
+//fwrite($fsi,"	$"."is_mobile = preg_match('/'.KAPP_MOBILE_AGENT.'/i', $"."_SERVER['HTTP_USER_AGENT']);   \r\n");
 fwrite($fsi,"	$"."menu1TWPer=15;  \r\n");
-fwrite($fsi,"	if( $"."is_mobile ) $"."menu1TWPer=36;    \r\n");
+//fwrite($fsi,"	if( $"."is_mobile ) $"."menu1TWPer=36;    \r\n");
 fwrite($fsi,"	$"."menu1AWPer=100 - $"."menu1TWPer;  \r\n");
 fwrite($fsi,"	$"."menu2TWPer=10;  \r\n");
 fwrite($fsi,"	$"."menu2AWPer=50 - $"."menu2TWPer;  \r\n");
@@ -102,8 +102,13 @@ fwrite($fsi,"	$"."Xheight='100%';  \r\n");
 fwrite($fsi,"	$"."Text_height='60px';  \r\n");
 fwrite($fsi,"?>                                 \r\n");
 
-fwrite($fsi,"  <link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \r\n");
+//fwrite($fsi,"  <link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \r\n");
 //fwrite($fsi,"  <link rel=\"stylesheet\" href=\"".KAPP_URL_T_."/include/css/kapp_basic.css\" type=\"text/css\" />  \r\n");
+fwrite($fsi,"<?php  \r\n");
+fwrite($fsi,"		if( isset($"."_REQUEST['pgtest']) && $"."_REQUEST['pgtest'] == 'pgtest' )  \r\n");
+fwrite($fsi,"			 echo \"<link rel='stylesheet' href='".KAPP_URL_T_."/include/css/kapp_basic.css' type='text/css' />  \";  \r\n");
+fwrite($fsi,"		else echo \"<link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \";  \r\n");
+fwrite($fsi,"?>  \r\n");
 
 fwrite($fsi,"  <body width=100%>                            \r\n");
 fwrite($fsi,"  <center>                                           \r\n");
@@ -457,7 +462,7 @@ fwrite($fsw,"						}  \r\n");
 	$data = array( $file_php, $fileR_php );
 	$create		= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH);
 	echo "<pre>";
-	$write_run		= $pg_code . "_write.php";
+	$write_run		= $pg_code . "_write.php?pgtest=pgtest";
 ?> 
 <h3> Created OK! pg_code:<?php echo $runF2; ?> , Zip File:<?=$zf?> </h3>
 <h3> <a href='<?=$zff?>' target=_blank>[ Down RUN:<?=$zf?> ]</a> </h3> 
