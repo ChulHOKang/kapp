@@ -84,13 +84,10 @@ $(function () {
 				case 'Date'    : title_func('upday'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250);
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'Project' : title_wfunc('group_name'); break;
 				case 'User'    : title_wfunc('userid'); break;
@@ -154,11 +151,12 @@ $(function () {
 		document.project_search.group_name.value=nm;
 		vv = document.project_search.group_code.options[index].value;
 		document.project_search.action ="program_list_ai.php";
+		document.project_search.target='_self';
 		document.project_search.submit();
 		return;
 	}
 	function program_run_funcList2( seqno, pg_name, pg_code ) {
-		document.project_search.mode.value		="program_list_ai"; //tab_list_pg70
+		document.project_search.mode.value		="program_list_ai";
 		document.project_search.seqno.value		=seqno;
 		document.project_search.pg_name.value	=pg_name;
 		document.project_search.pg_code.value	=pg_code;
@@ -187,22 +185,19 @@ $(function () {
 		document.project_search.action='program_list_ai.php';
 		document.project_search.submit();
 	}
-
 </script>
 
- <BODY>
- <center>
+<BODY>
+<center>
 <?php
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
-
 	$page_num = 10;
 	if( isset( $_POST['fld_code']) && $_POST['fld_code']!='' ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
 	else $fld_code_asc = '';
-
 	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
 	else $page=1;
 	if( isset($_POST['data']) ) $data = $_POST['data'];
@@ -213,12 +208,10 @@ $(function () {
 	else $sel = '';
 	if( isset($_POST['seqno']) ) $seqno	= $_POST['seqno'];
 	else $seqno = '';
-
 	if( isset($_POST['pg_code']) ) $pg_code	= $_POST['pg_code'];
 	else $pg_code = '';
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
-	
 	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
 		$group_code = $_POST['group_code'];   
 		$wsel = " and group_code = '$group_code' ";
@@ -226,7 +219,6 @@ $(function () {
 		$group_code= '';
 		$wsel = '';
 	}
-
 	if( $mode == 'Program_Search' ) {
 		$page = 1;
 		if( $sel == 'like') {
@@ -254,7 +246,6 @@ $(function () {
 	if( $fld_code!=='' ) $OrderBy = " order by $fld_code $fld_code_asc ";
 	else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
 	$ls = $ls . $OrderBy;
-
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
 	$total_page = intval(($total-1) / $line_cnt)+1;
@@ -268,10 +259,8 @@ $(function () {
 	$last = $line_cnt;
 	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-
 	$cur='B';
 	include_once "./menu_run.php";
-
 	if( isset($_POST['tab_enm']) ) $tab_enm	= $_POST['tab_enm'];
 	else $tab_enm = '';
 	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
@@ -281,18 +270,18 @@ $(function () {
 ?>
 <h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total?></h2>
 <FORM name="project_search" method="post" action="program_list_ai.php" enctype="multipart/form-data" >
-			<input type="hidden" name="seqno" value='<?=$_POST['seqno']?>' >
-			<input type="hidden" name="group_name" >
-			<input type='hidden' name='mode'    value='<?=$mode?>'>
-			<input type='hidden' name='page'    value="<?=$page?>">
-			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
-			<input type="hidden" name='pg_name' value="<?=$pg_name?>">
-			<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
-			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
-			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
-			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
-		<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
-		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+	<input type="hidden" name="seqno" value='<?=$_POST['seqno']?>' >
+	<input type="hidden" name="group_name" >
+	<input type='hidden' name='mode'    value='<?=$mode?>'>
+	<input type='hidden' name='page'    value="<?=$page?>">
+	<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
+	<input type="hidden" name='pg_name' value="<?=$pg_name?>">
+	<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
+	<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
+	<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
+	<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
+	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
 	<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
@@ -316,8 +305,6 @@ $(function () {
 	</select>
 	<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 	<input type="button" id="Search" name="Search" value='Search' onclick='Search_func()';>
-	<!-- <input type="submit" value="Search"> -->
-
 <span>
 View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
@@ -334,7 +321,6 @@ View Line:
 	<tr>
 	<th>NO</th>
 <?php
-
  echo " <th title='User Sort click or doubleclick' >User</th> ";
  echo " <th title='project Sort click or doubleclick' >Project</th> ";
  echo " <th title='Program Sort click or doubleclick' >Program</th> ";
@@ -351,21 +337,19 @@ View Line:
 	<th>Column</th>
 	<th>Cnt</th>
 	<th>Memo</th>
-	<!-- <th>Date</th> -->
 	</tr>
 </thead>
 <tbody width="100%">
  <?php
 	$line=0;
 	$i=1;
-//	if( $mode == "" || $mode == "Program_Search" || $mode=="Project_Search")	$ls = $ls . " $limit ";
 	$ls = $ls . " $limit ";
 	$resultT	= sql_query( $ls );
 	while ( $rs = sql_fetch_array( $resultT ) ) {
 		$line=$line_cnt*$page + $i - $line_cnt;
 		$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
-		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
+		$pop_data = $rs['pop_data'];
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
@@ -374,7 +358,7 @@ View Line:
 		else $attr="";
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR bgcolor='<?=$bgcolor?>' >
+<TR bgcolor='<?=$bgcolor?>' >
 	<td style='width:2%;'><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
 	<td style='width:2%;'><?=$rs['userid']?> </td>
 	<td title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
@@ -392,7 +376,7 @@ View Line:
 	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td>
 	<td width='8px'><?=$rs['item_cnt']?></td>
 	<td><textarea id='memo' name='memo' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['memo']?></textarea></td>
-	</TR>
+</TR>
 <?php
 		$i++;
     }
@@ -400,11 +384,8 @@ View Line:
 </form>
 </tbody>
 </table>
-<!-- <table width="100%"   bgcolor="#CCCCCC">
-  <tr>
-    <td align="center" bgcolor="f4f4f4"> -->
 <?php
-	if( $mode=='Search' ) { // table click
+	if( $mode=='Search' ) {
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='DB & Table Source Down' onclick=\"DB_table_create_source('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of ".$tab_hnm."' >&nbsp;&nbsp; ";
@@ -429,8 +410,5 @@ View Line:
 			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 	}
 ?>
-	<!-- </td>
-  </tr>
-</table> -->
 </BODY>
 </HTML>
