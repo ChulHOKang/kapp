@@ -51,8 +51,8 @@ textarea {
 	  outline: none; /* Removes default outline on focus */
 	}
 	table { border-collapse: collapse; }
-	th { background: #666fff; color: white; height: 32px; }
-	th, td { border: 1px solid silver; padding:5px; }
+	th { background: #cdefff; height: 27px; }
+	th, td { border: 1px solid silver; padding:0px; }
 
 	.container {
 		background-color: skyblue;
@@ -67,14 +67,8 @@ textarea {
 		background-color: gold;
 		boarder: 1px solid gray;
 	}
- -->
+-->
 </style>
-<!-- // echo " <th title='User Sort click' onclick=title_func('userid')>User</th> ";
- //echo " <th title='project Sort click' onclick=title_func('group_name')>Project</th> ";
- //echo " <th title='Program Sort click' onclick=title_func('pg_name')>Program</th> ";
- //echo " <th title='Table Sort click' onclick=title_func('tab_hnm')>Table</th> ";
- //echo " <th title='date Sort click' onclick=title_func('upday')>Date</th> ";
- -->
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 $(function () {
@@ -154,6 +148,7 @@ $(function () {
 		document.project_search.submit();                         
 	} 
 	function group_code_change_func(cd){
+		document.project_search.page.value = 1;                
 		index = document.project_search.group_code.selectedIndex;
 		nm = document.project_search.group_code.options[index].text;
 		document.project_search.group_name.value=nm;
@@ -334,9 +329,6 @@ View Line:
 </span>
 </FORM>
 
-<!-- <table class='floating-thead' width="1900">
-<thead  width="100%"> -->
-
 <table class='floating-thead' style="width:1900px; table-layout:;">
 <thead id='tit_et' width="100%">
 	<tr>
@@ -389,6 +381,7 @@ View Line:
 	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
 	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
 	<td><?=$rs['upday']?></td>
+
 	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
 	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
 	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
@@ -407,16 +400,16 @@ View Line:
 </form>
 </tbody>
 </table>
-<table width="1500"   bgcolor="#CCCCCC">
+<!-- <table width="100%"   bgcolor="#CCCCCC">
   <tr>
-    <td align="center" bgcolor="f4f4f4">
+    <td align="center" bgcolor="f4f4f4"> -->
 <?php
 	if( $mode=='Search' ) { // table click
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='DB & Table Source Down' onclick=\"DB_table_create_source('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of ".$tab_hnm."' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Table Source Down' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Create and download table creation source and data processing program source of ".$tab_hnm."' >&nbsp;&nbsp; ";
-	} else if($mode == "Program_click") {
+	} else if( $mode == "Program_click") {
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_backX('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 	} else {
@@ -424,21 +417,20 @@ View Line:
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;
 		$prev = $first_page-1;
-		if($page > $page_num)
+		if( $page > $page_num)
 			echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-		for($i = $first_page; $i <= $last_page; $i++)
-		{
-			if($page == $i) echo" <b>".$i."</b> ";
+		for( $i = $first_page; $i <= $last_page; $i++){
+			if( $page == $i) echo" &nbsp;<b>".$i."</b> ";
 			else
-				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
+				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:21px;'>&nbsp;[".$i."]</a>";
 		}
 		$next = $last_page+1;
-		if($next <= $total_page)
+		if( $next <= $total_page)
 			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 	}
 ?>
-	</td>
+	<!-- </td>
   </tr>
-</table>
+</table> -->
 </BODY>
 </HTML>
