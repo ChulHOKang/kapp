@@ -143,18 +143,18 @@ $(function () {
 		document.project_search.submit();                         
 	} 
 	function Project_change_func(cd){
+		document.project_search.page.value = 1;                
 		index = document.project_search.group_code.selectedIndex;
 		nm = document.project_search.group_code.options[index].text;
 		document.project_search.group_name.value=nm;
-		//vv = document.project_search.group_code.options[index].value;
-		//document.project_search.group_codeX.value=vv;
 		document.project_search.mode.value		='Project_Search';
 		document.project_search.action ="kapp_program_list_adm_ai.php";
+		document.project_search.target='_self';
 		document.project_search.submit();
 		return;
 	}
 	function program_run_funcList2( seqno, pg_name, pg_code ) {
-		document.project_search.mode.value		="program_list_ai"; //tab_list_pg70
+		document.project_search.mode.value		="program_list_ai";
 		document.project_search.seqno.value		=seqno;
 		document.project_search.pg_name.value	=pg_name;
 		document.project_search.pg_code.value	=pg_code;
@@ -399,9 +399,9 @@ View Line:
 </form>
 </tbody>
 </table>
-<table width="1500"   bgcolor="#CCCCCC">
+<!-- <table width="1500"   bgcolor="#CCCCCC">
   <tr>
-    <td align="center" bgcolor="f4f4f4">
+    <td align="center" bgcolor="f4f4f4"> -->
 <?php
 	if( $mode=='Search' ) { // table click
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
@@ -420,17 +420,17 @@ View Line:
 			echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
 		for($i = $first_page; $i <= $last_page; $i++)
 		{
-			if($page == $i) echo" <b>".$i."</b> ";
+			if($page == $i) echo" &nbsp;<b>".$i."</b> ";
 			else
-				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
+				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:21px;'>&nbsp;[".$i."]</a>";
 		}
 		$next = $last_page+1;
 		if($next <= $total_page)
 			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 	}
 ?>
-	</td>
+	<!-- </td>
   </tr>
-</table>
+</table> -->
 </BODY>
 </HTML>
