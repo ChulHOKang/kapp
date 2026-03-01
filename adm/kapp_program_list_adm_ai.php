@@ -5,19 +5,17 @@
 	*/
 	$H_ID	= get_session("ss_mb_id");
 	if( !$H_ID || $H_ID=='' ) {
-			m_(" login please - admin page.");
-			exit;
+			m_(" login please - admin page.");exit;
 	}
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if( isset($member['mb_level'])) $H_LEV = $member['mb_level'];
 	else $H_LEV = 0;
 	if( !$H_ID || $H_LEV < 8 ) {
-			m_("admin page.  lev= $H_LEV");// echo("<meta http-equiv='refresh' content='0; URL=index.php'>");
-			exit;
+			m_("admin page.  lev= $H_LEV");	exit;
 	}
 	$formula_		= "";
 	$poptable_		= "";
-	$column_all		= ""; //my_func
+	$column_all		= "";
 	$pop_fld			= "";
 	$pop_mvfld		= "";
 	$relation_db	= "";
@@ -79,13 +77,11 @@ $(function () {
 				case 'Date'    : title_func('upday'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
+		}, 250);
 	  
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'Project' : title_wfunc('group_name'); break;
 				case 'User'    : title_wfunc('userid'); break;
@@ -96,31 +92,31 @@ $(function () {
 		}
 	});
 
-  $('table.floating-thead').each(function() {
-    if( $(this).css('border-collapse') == 'collapse') {
-      $(this).css('border-collapse','separate').css('border-spacing',0);
-    }
-    $(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-  });
-  $(window).scroll(function() {
-    var scrollTop = $(window).scrollTop(),
-      scrollLeft = $(window).scrollLeft();
-    $('table.floating-thead').each(function(i) {
-      var thead = $(this).find('thead:last'),
-        clone = $(this).find('thead:first'),
-        top = $(this).offset().top,
-        bottom = top + $(this).height() - thead.height();
-      if( scrollTop < top || scrollTop > bottom ) {
-        clone.hide();
-        return true;
-      }
-      if( clone.is('visible') ) return true;
-      clone.find('th').each(function(i) {
-        $(this).width( thead.find('th').eq(i).width() );
-      });
-      clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
-    });
-  });
+	  $('table.floating-thead').each(function() {
+		if( $(this).css('border-collapse') == 'collapse') {
+		  $(this).css('border-collapse','separate').css('border-spacing',0);
+		}
+		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+	  });
+	  $(window).scroll(function() {
+		var scrollTop = $(window).scrollTop(),
+		  scrollLeft = $(window).scrollLeft();
+		$('table.floating-thead').each(function(i) {
+		  var thead = $(this).find('thead:last'),
+			clone = $(this).find('thead:first'),
+			top = $(this).offset().top,
+			bottom = top + $(this).height() - thead.height();
+		  if( scrollTop < top || scrollTop > bottom ) {
+			clone.hide();
+			return true;
+		  }
+		  if( clone.is('visible') ) return true;
+		  clone.find('th').each(function(i) {
+			$(this).width( thead.find('th').eq(i).width() );
+		  });
+		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+		});
+	  });
 });
 </script>
 <script type="text/javascript" >
@@ -185,21 +181,17 @@ $(function () {
 	}
 
 </script>
-
- <BODY>
- <center>
+<BODY>
+<center>
 <?php
-	//$limite = 15;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
-
 	$page_num = 10;
 	if( isset( $_POST['fld_code']) && $_POST['fld_code']!='' ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
 	else $fld_code_asc = '';
-
 	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
 	else $page=1;
 	if( isset($_POST['data']) ) $data = $_POST['data'];
@@ -210,12 +202,10 @@ $(function () {
 	else $sel = '';
 	if( isset($_POST['seqno']) ) $seqno	= $_POST['seqno'];
 	else $seqno = '';
-
 	if( isset($_POST['pg_code']) ) $pg_code	= $_POST['pg_code'];
 	else $pg_code = '';
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = '';
-	
 	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
 		$group_code = $_POST['group_code'];   
 		$wsel = " group_code = '$group_code' ";
@@ -223,7 +213,6 @@ $(function () {
 		$group_code= '';
 		$wsel = '';
 	}
-
 	if( $mode == 'Program_Search' ) {
 		$page = 1;
 		if( $sel == 'like') {
@@ -255,15 +244,11 @@ $(function () {
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
 	$ls = $ls . $OrderBy;
-
 	$resultT= sql_query( $ls ) or die ("kapp_program_list_adm_ai.php Error sql:" . $ls);
 	$total = sql_num_rows( $resultT );
-
 	$total_page = intval(($total-1) / $line_cnt)+1;
-	
 	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
 	else $first =0;
-
 	$last = $line_cnt;
 	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
@@ -274,7 +259,6 @@ $(function () {
 	}
 	$cur='B';
 	include_once "../menu_run.php";
-
 	if( isset($_POST['tab_enm']) ) $tab_enm	= $_POST['tab_enm'];
 	else $tab_enm = '';
 	if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
@@ -284,20 +268,20 @@ $(function () {
 ?>
 <h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total?></h2>
 <FORM name="project_search" method="post" action="kapp_program_list_adm_ai.php" enctype="multipart/form-data" >
-			<input type="hidden" name="seqno" value='<?=$_POST['seqno']?>' >
-			<input type="hidden" name="group_name" >
-			<input type='hidden' name='mode'    value='<?=$mode?>'>
-			<input type='hidden' name='page'    value="<?=$page?>">
-			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
-			<input type="hidden" name='pg_name' value="<?=$pg_name?>">
-			<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
-			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
-			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
-			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
-		<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
-		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+	<input type="hidden" name="seqno" value='<?=$_POST['seqno']?>' >
+	<input type="hidden" name="group_name" >
+	<input type='hidden' name='mode'    value='<?=$mode?>'>
+	<input type='hidden' name='page'    value="<?=$page?>">
+	<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
+	<input type="hidden" name='pg_name' value="<?=$pg_name?>">
+	<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
+	<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
+	<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
+	<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
+	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
-	<SELECT id='group_code' name='group_code' onchange="Project_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
+<SELECT id='group_code' name='group_code' onchange="Project_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
 			echo "<option value=''>Select Project</option>";
 			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
@@ -319,10 +303,7 @@ $(function () {
 	</select>
 	<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 	<input type="button" id="Search" name="Search" value='Search' onclick='Search_func()';>
-	<!-- <input type="submit" value="Search"> -->
-
-<span>
-View Line: 
+<span>View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
 		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
 		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
@@ -331,7 +312,6 @@ View Line:
 	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 </span>
 </FORM>
-
 <table class='floating-thead' style="width:1900px; table-layout:;">
 <thead id='tit_et' width='100%'>
 	<tr>
@@ -365,7 +345,7 @@ View Line:
 		$line=$line_cnt*$page + $i - $line_cnt;
 		$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
-		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
+		$pop_data = $rs['pop_data'];
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
@@ -399,11 +379,8 @@ View Line:
 </form>
 </tbody>
 </table>
-<!-- <table width="1500"   bgcolor="#CCCCCC">
-  <tr>
-    <td align="center" bgcolor="f4f4f4"> -->
 <?php
-	if( $mode=='Search' ) { // table click
+	if( $mode=='Search' ) { 
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_back('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Search List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='DB & Table Source Down' onclick=\"DB_table_create_source('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of ".$tab_hnm."' >&nbsp;&nbsp; ";
@@ -429,8 +406,5 @@ View Line:
 			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 	}
 ?>
-	<!-- </td>
-  </tr>
-</table> -->
 </BODY>
 </HTML>
