@@ -21,7 +21,6 @@
 	$relation_db	= "";
 	$rel_mvfld		= "";
 	$gita				= "";
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
@@ -78,7 +77,6 @@ $(function () {
 				default        : title_func(''); break;
 			}
 		}, 250);
-	  
 	});
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
 		clearTimeout(timer);
@@ -355,10 +353,11 @@ $(function () {
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR bgcolor='<?=$bgcolor?>' >
-	<td style='width:2%;'><?=$line?><br><input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:60px;background-color:cyan;color:black;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>></td>
+	<td style='width:2%;'><?=$line?></td>
 	<td style='width:2%;'><?=$rs['userid']?> </td>
 	<td title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
-	<td style='width:9%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<td style='width:9%;'><img src="<?=KAPP_URL_T_?>/icon/default.gif">
+	<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
 	<td style='width:9%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
 	<td><?=$rs['upday']?></td>
 	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>

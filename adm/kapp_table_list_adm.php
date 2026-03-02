@@ -3,11 +3,6 @@
 	/*
 		kapp_table_list_adm.php : kapp_table_list.php copy
 		call : table_design_update_adm.php
-		- Download : Download data from db table to excel
-		- Upload : Upload excel data to table
-		- Delete : table and app all delete
-		- Update : table re design
-		- Data list : app data list
 	*/
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID	= get_session("ss_mb_id");
@@ -20,7 +15,6 @@
 		m_("admin page");
 		echo("<meta http-equiv='refresh' content='0; URL=../'>"); exit;
 	}
-
 	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
 	else $H_POINT = 0;
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -75,13 +69,10 @@ $(function () {
 				case 'Date'       : title_func('upday'); break;
 				default           : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250);
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'Project'    : title_wfunc('group_name'); break;
 				case 'User'       : title_wfunc('userid'); break;
@@ -143,22 +134,19 @@ $(function () {
 		$group_code= '';
 		$wsel = '';
 	}
-
 	if( isset($_POST["pg_code"]) ) $pg_code		= $_POST["pg_code"];
 	else $pg_code		= "";
 	if( isset($_POST["tab_enm"]) ) $tab_enm	= $_POST["tab_enm"];
 	else $tab_enm		= "";
 	if( isset($_POST["tab_hnm"]) ) $tab_hnm	= $_POST["tab_hnm"];
 	else $tab_hnm		= "";
-
 	if( isset($_POST['param']) && $_POST['param']!='' ) $param =$_POST['param'];
 	else $param = "tab_hnm";
 	if( isset($_POST['sel']) && $_POST['sel']!='' ) $sel =$_POST['sel'];
 	else $sel = "";
 	if( isset($_POST['data']) && $_POST['data']!='' ) $data = $_POST['data'];
 	else $data	= "";
-
-   if( $H_LEV > 7 && $mode == 'Delete_mode' ) {
+	if( $H_LEV > 7 && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
@@ -185,7 +173,7 @@ $(function () {
 		}
 		$url = "kapp_table_list_adm.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
-   } else if( $mode == 'Search' && $H_LEV > 7 ) {
+	} else if( $mode == 'Search' && $H_LEV > 7 ) {
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
 			$tab_hnm = $aa[1];
@@ -201,7 +189,7 @@ $(function () {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " where tab_enm='$tab_enm' ";
 		}
-   } else if( $mode == 'Table_Search' ) {
+	} else if( $mode == 'Table_Search' ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			if( isset($data) && $data !=''  ){
@@ -224,19 +212,16 @@ $(function () {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		if( $wsel!='') $ls = $ls . " where fld_enm='seqno' " . $wsel;
 		else $ls = $ls . " where fld_enm='seqno' ";
-   } else {
+	} else {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		$ls = $ls . " where fld_enm='seqno' ";
 		if( $wsel!='') $ls = $ls . $wsel;
-   }
-
+	}
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-
 	$total_page = intval(($total-1) / $line_cnt)+1;
 	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
 	else $first =0;
-
 	$last = $line_cnt;
 	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
@@ -246,7 +231,6 @@ $(function () {
 		if( $page>1) $no = $total - ($page - 1) * $line_cnt;
 		else $no = $total;
 	}
-
 	function kapp_table_check( $tab ){
 		global $table_prefix;
 		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables
@@ -541,18 +525,16 @@ if( $mode != 'Search') {
 </thead>
 <tbody width='100%'>
 <?php
-		$item_list = " create table ". $tab_enm . " ( ";
-		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
-		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
-		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
-
+	$item_list = " create table ". $tab_enm . " ( ";
+	$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
+	$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
+	$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
     $line=0;
 	$i=1;
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
 	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
-	//$ls = $ls . $limit;
-	if( $mode != "Search") { // table 상세 조회가 아님.
+	if( $mode != "Search") {
 		$ls = $ls . " $limit ";
 	}
 	$resultT	= sql_query( $ls );
@@ -572,8 +554,8 @@ if( $mode != 'Search') {
 ?>
 			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>' ><?=$rs['userid']?></TD>
 			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>' ><?=$rs['group_name']?></TD>
-			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
-			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_hnm']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></TD>
+			<TD <?=$bcolor?> title='Prints a list of columns.' ><img src="<?=KAPP_URL_T_?>/icon/default.gif">
+			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_hnm']?></a></TD>
 			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
 			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_enm']?></a></TD>
 			<TD <?=$bcolor?> ><?=$rs['upday']?></TD>
@@ -606,7 +588,6 @@ if( $mode != 'Search') {
 					else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				}
 		}
-//		if( $mode != 'Search' && isset($H_ID) && $H_ID !='' ){
 		if( $mode != 'Search' && isset($H_LEV) && $H_LEV > 7 ){
 				echo " <TD align='center' $bcolor><input type='button' name='excel' onclick=\"javascript:excel_down_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Download ' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Download the data from the table to Excel-File. '>&nbsp;&nbsp;<input type='button' name='excel' onclick=\"javascript:excel_upload_func('".$rs['tab_enm']."', '".$rs['tab_hnm']."');\"  value=' Upload ' style='height:22px;background-color:red;border-radius:20px;color:yellow;border:1 solid black'  title=' Upload Excel data to table.  '> </TD>";
 
