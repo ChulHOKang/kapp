@@ -131,7 +131,6 @@ $(function () {
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
 			switch(e.target.innerText){
 				case 'User'    : title_func('sys_userid'); break;
 				case 'Title'   : title_func('sys_subtit'); break;
@@ -140,13 +139,10 @@ $(function () {
 				case 'Date'    : title_func('up_day'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250);
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'User'    : title_wfunc('sys_userid'); break;
 				case 'Title'   : title_wfunc('sys_subtit'); break;
@@ -421,7 +417,7 @@ if( $result ){
 	<tr>
 		<td align='center'>$ln $iconX</td>
 		<td>".$line['sys_userid']."</td>
-		<td><a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."' >".$line['sys_subtit']."</a></td>
+		<td><img src='".KAPP_URL_T_."/icon/default.gif'><a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."' >".$line['sys_subtit']."</a></td>
 
 		<td align='center'>$view</td>
 		<td align='center'>$day</td>

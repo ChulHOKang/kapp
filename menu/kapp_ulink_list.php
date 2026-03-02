@@ -73,8 +73,7 @@ $(function () {
 				case 'date'    : title_func('up_day'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 250ms after
-	  
+		}, 250);
 	});
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
 		clearTimeout(timer);
@@ -639,18 +638,15 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='target_'			value='<?=$target_?>' > 
 	<input type='hidden' name='webnum'			value='' > 
 	<input type='hidden' name='project_code' id='project_code' value='<?=$project_code?>'>
-
 	<input type='hidden' name='mid'			value='' > 
 	<input type='hidden' name='link_'		value='' > 
 	<input type='hidden' name='title_'		value='' > 
 	<input type='hidden' name='group'		value='' > 
 	<input type='hidden' name='aboard_no'	value='' > 
-	<input type='hidden' name='gong_num' value='0'><!-- ulink_ajax.php use -->
-	<input type='hidden' id='g_name_code' name='g_name_code' value='<?=$g_name_code?>'><!-- ulink_ajax.php use -->
+	<input type='hidden' name='gong_num' value='0'>
+	<input type='hidden' id='g_name_code' name='g_name_code' value='<?=$g_name_code?>'>
 	<input type='hidden' name='jong'	value='' > 
-	<input type='hidden' name='seqno'	value='' > <!-- call_pg_select( link_, id, group, title_, jong, num, aboard_no, seqno) -->
-
-
+	<input type='hidden' name='seqno'	value='' >
 <div id="mypanel" class="ddpanel">
 <div id="mypanelcontent" class="ddpanelcontent">
 <table border='0' bgcolor='#cccccc' width='100%'>
@@ -713,13 +709,8 @@ jQuery(document).ready(function ($) {
 	</tr>
 </table>
 </div>
-
-<!-- <div id="mypaneltab" class="ddpaneltab" ><a href="#" ><span style="background-color:;color:yellow;">Note Create</span></a></div> -->
 <div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Note Create &nbsp;▼ &nbsp;</a></span></div>
-
 </div>
-<!-- <link rel="stylesheet" href="../include/css/kancss.css" type="text/css"> -->
-
 <table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 	<tr>
 		<td align='left' colspan='9'>
@@ -848,7 +839,7 @@ jQuery(document).ready(function ($) {
 			$icon='../icon/seed.png';  $gubunT='B-Seed';$t_color='cyan';			$i_tit='B, D, DOC';
 		} else if( $gubun == 'G' )	{ 
 			$icon='../icon/pizza.png'; $gubunT='G-Pizza';$t_color='cyan';			$i_tit='G : Tree Board';
-		} else if( $gubun == 'P' )	{// Program List
+		} else if( $gubun == 'P' )	{
 			$icon='../icon/pcman1.png'; $gubunT='Program';$t_color='cyan';	$i_tit='P : Program';
 		}
 		else if( $gubun=='F' ){ $icon='../icon/land.png'; $gubunT='Land';$t_color='green';$i_tit='Board';}
@@ -865,13 +856,14 @@ jQuery(document).ready(function ($) {
 	if( $rs['job_name']=='Note') { 
 ?>
 	  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
+	  <img src="<?=KAPP_URL_T_?>/icon/default.gif">
 		<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
 	  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
-	  <?=$rs_club_url?>
-	  </td>
+	  <?=$rs_club_url?></td>
 <?php } else { ?>
 	  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
-		<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
+	  <img src="<?=KAPP_URL_T_?>/icon/default.gif">
+		<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>' )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a>
 	  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
 	  <?=$rs_job_addr?>
 	  </td>

@@ -701,8 +701,8 @@ $(function () {
 				<td style='color:white;text-align:center;'><?=$rs['make_id']?></td>
 			<td style='color:white;text-align:center;'>
 				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['no']?></a></td>
-			<td  style='color:white;text-align:center;' width='10%' title='make gubun:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'>
-				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['name']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></td>
+			<td  style='color:white;text-align:left;' width='10%' title='make gubun:<?=$mk_gubun?>, board no:<?=$rsno?>:aboard_<?=$rs['table_name']?>'><img src="<?=KAPP_URL_T_?>/icon/default.gif">
+				<a href="./index_bbs.php?infor=<?=$rsno?>" style='color:white;text-align:center;' target='_blank'><?=$rs['name']?></a></td>
 			<td style='color:white;text-align:center;'><?=$dateR?></td>
 
 			<td style='color:white;text-align:center;'><?=$board_cnt?></td>

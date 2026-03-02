@@ -680,25 +680,21 @@ $(function () {
 		}
 		if( $rs['home_url']=='GCOM05!' ) $mk_gubun = 'Tree';
 		else  $mk_gubun = 'Board';
-
 		$query	= "SELECT * from aboard_" . $rs['table_name'] . " ";
 		$mq1	= sql_query($query);
 		$board_cnt = sql_num_rows($mq1);
 		$rsno = $rs['no'];
 		$dateR = date('Y-m-d', $rs['in_date']);
-
 ?>
-
 		  <tr>
 				<td style='background-color:#FFFFFF' align='center'><?=$i?></td>
 				<td style='background-color:#FFFFFF' align='center'><?=$rs['make_id']?></td>
 			<td style='background-color:#FFFFFF' align='center'>
 				<a href="./index_bbs.php?infor=<?=$rs['no']?>" target='_blank'><?=$rs['no']?></a></td>
-			<td width='10%' bgcolor="#FFFFFF" title='make:<?=$mk_gubun?>, board no:<?=$rs['no']?>:aboard_<?=$rs['table_name']?>'>
+			<td width='10%' bgcolor="#FFFFFF" title='make:<?=$mk_gubun?>, board no:<?=$rs['no']?>:aboard_<?=$rs['table_name']?>'><img src="<?=KAPP_URL_T_?>/icon/default.gif">
 				<a href="./index_bbs.php?infor=<?=$rsno?>" target='_blank'><?=$rs['name']?></a></td>
 			<td bgcolor="#FFFFFF" align="center"><?=$dateR?></td>
-
-			<td style='background-color:#FFFFFF' align='center'><?=$board_cnt?></td><!-- data record count -->
+			<td style='background-color:#FFFFFF' align='center'><?=$board_cnt?></td>
 			<td style='background-color:#FFFFFF' align='center' title="upload file use and size:<?=$rs['fileup']?>">
 				<input type='text' name='file_size_<?=$line_no?>' value='<?=$rs['fileup']?>' title='upload file size change' size='1'>
 			</td>

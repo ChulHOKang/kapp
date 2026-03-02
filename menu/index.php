@@ -395,8 +395,8 @@ View Line:
 $ln = $no;
 if( $result ){
 	while( $line = sql_fetch_array( $result )) {
-		$num		= $line['book_num'];
-		$mid	= $line['sys_userid'];
+		$num= $line['book_num'];
+		$mid= $line['sys_userid'];
 		$sys_pg = $line['sys_pg'];
 		$up_day = $line['up_day'];
 		$seqno_	= $line['seqno'];
@@ -432,12 +432,11 @@ if( $result ){
 		$job_addr='contents_view_menuD.php?num=' . $num;
 		$run = './tree_run.php?sys_pg=' . $sys_pg . '&sys_subtitS=' . $line['sys_subtit'] .'&open_mode=on&mid='.$mid. '&sys_jong=' . $sys_jong. '&num=' . $num.'&job_addr='.$job_addr.'&start_click=on';
 
-		if( isset($H_ID) && $mid == $H_ID || $H_LEV > 7 ) {
-			echo "
+		echo "
 			<tr>
 				<td align='center'>$ln $iconX</td>
 				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td>
+				<td><img src='".KAPP_URL_T_."/icon/default.gif'>
 				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title=' $tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg."' >".$line['sys_subtit']."</a>
 				
 				</td>
@@ -447,21 +446,6 @@ if( $result ){
 				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
 			</tr>";
-		} else {
-			echo "
-			<tr>
-				<td align='center'>$ln $iconX</td>
-				&nbsp;<td>".$line['sys_userid']."</td>&nbsp;
-				<td>
-				<a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:$bb' title='$tit_gubun_ - mid:".$mid.", view:".$line['view_cnt'].", sys_pg: ".$sys_pg." '>".$line['sys_subtit']."</a>
-				</td>
-				<td align='center'>$view</td>
-				<td align='center'>$day</td>
-				<td align='center'><a onclick=\"list_click_run_func('".$sys_pg."', '".$subtit."', 'on', '".$mid."', '".$sys_jong."', '".$num."', '".$job_addr."')\" target='_blank' style='color:cyan' title='run: $run'>Popup</a></td>
-				<td><input type='button' value='Tree DN' onclick=\"treeDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-				<td><input type='button' value='Popup DN' onclick=\"popupDN_func('$mid', '$sys_pg', '$run_mode', '$H_POINT');\" style='background-color:black;color:white;' title='Download source code of $subtit'></td>
-			</tr>";
-		}
 		$ln--;
 	} // while
 } //if

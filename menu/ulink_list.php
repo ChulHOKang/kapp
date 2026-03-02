@@ -750,7 +750,7 @@ jQuery(document).ready(function ($) {
 <?php
 	$result = sql_query( $sql );
 	$j=0;
-	while ( $rs = sql_fetch_array( $result )  ) { 
+	while( $rs = sql_fetch_array( $result )  ) { 
 		$group_name=$rs['group_name'];
 		$userid=$rs['userid'];
 ?>
@@ -827,24 +827,21 @@ jQuery(document).ready(function ($) {
 <?php if( $rs['job_name']=='Note') { ?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;"  title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:contents_upd( '<?=$seqno?>', '<?=$sys_label?>', '<?=$num?>', '<?=$rs_job_addr?>', '<?=$memo?>', '<?=$sys_name?>', '<?=$user_id?>', '<?=$H_ID?>');" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-				  <td style="background-color:black;color:<?=$t_color?>;width:300px;" title="type:<?=$i_tit ?>">
+				  <td style="background-color:black;color:<?=$t_color?>;width:300px;" title="type:<?=$i_tit ?>"><img src="<?=KAPP_URL_T_?>/icon/default.gif">
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>"><?=$rs_job_addr ?></a></td>
 <?php } else {?>
 				  <td style="background-color:<?=$td_bg?>;color:<?=$t_color?>;width:180px;" title='<?=$user_id?>:<?=$rs_job_addr?>'>
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;" title='url:<?=$rs_job_addr?>'><?=$sys_name?></a></td>
-
-				  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>">
+				  <td style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>"><img src="<?=KAPP_URL_T_?>/icon/default.gif">
 					<a href="javascript:call_pg_select( '<?=$rs_job_addr?>', '<?=$user_id?>', '<?=$sys_label?>', '<?=$sys_name?>','<?=$gubun?>','<?=$num?>','<?=$aboard_no?>', '<?=$seqno?>', <?=$cntno?>, <?=$vcnt?> )" style="background-color:black;color:<?=$t_color?>;width:30%;" title="type:<?=$i_tit ?>"><?=$rs_job_addr ?></a></td>
 <?php }?>
 				  <td style="background-color:black;color:<?=$t_color?>;width:1%;text-align:center;"><?=$gubun?></td>
-
 				  <td style="background-color:black;color:yellow;text-align:center;width:1%;" >
 					<input type='text' name="vcnt[<?=$cntno?>]" id='vcnt[<?=$cntno?>]' value='<?=$vcnt?>' style="border:0 solid white;background-color:black;color:yellow;text-align:center;font-size:12px;width:38px;" readonly></td>
-				  
 				  <td style="background-color:black;color:<?=$t_color?>;width:6%;text-align:center;" ><?=$day_?></td>
 				</tr> 
 		<?php
-			}	//-------- Loop
+			}	// Loop
 		?>
 		  </td>
 		</tr>
