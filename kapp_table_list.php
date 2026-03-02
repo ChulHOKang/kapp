@@ -1,13 +1,8 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		kapp_table_list.php : table10i.php copy - table-{$tkher['table10_table']}
+		kapp_table_list.php - table-{$tkher['table10_table']}
 		: call - table_design_update.php 
-		- Download : Download data from db table to excel
-		- Upload : Upload excel data to table
-		- Delete : table and app all delete
-		- Update : table re design
-		- Data list : app data list
 	*/
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID	= get_session("ss_mb_id");
@@ -20,7 +15,6 @@
 		m_("login please");
 		echo "<script>top.location.reload();</script>";	exit;
 	}
-
 	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
 	else $H_POINT = 0;
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -75,12 +69,10 @@ $(function () {
 				case 'Date'       : title_func('upday'); break;
 				default           : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250);
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'Project'    : title_wfunc('group_name'); break;
 				case 'User'       : title_wfunc('userid'); break;
@@ -150,18 +142,16 @@ $(function () {
 	else $sel = "";
 	if( isset($_POST['data']) && $_POST['data']!='' ) $data = $_POST['data'];
 	else $data	= "";
-   if( $H_ID !='' && $mode == 'Delete_mode' ) {
+	if( $H_ID !='' && $mode == 'Delete_mode' ) {
 		$query	="delete from {$tkher['table10_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 		$mq1	=sql_query($query);
 		if( !$mq1 ) {
-			printf("query:%s", $query );
 			m_(" $tab_hnm table delete failed.");
 				exit;
 		} else {
 			$query	="delete from {$tkher['table10_pg_table']} where tab_enm='$tab_enm' and userid='$H_ID' ";
 			$mq3	=sql_query($query);
 			if( !$mq3 ) {
-				printf("query:%s", $query );
 				m_(" $tab_hnm table delete failed.");
 				exit;
 			}
@@ -177,7 +167,7 @@ $(function () {
 		}
 		$url = "kapp_table_list.php";
 		echo "<script>window.open( '$url' , '_self', '');</script>";
-   } else if( $mode == 'Search' ) {
+	} else if( $mode == 'Search' ) {
 			$aa = explode(':', $tab_hnmS);
 			$tab_enm = $aa[0];
 			$tab_hnm = $aa[1];
@@ -193,7 +183,7 @@ $(function () {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			$ls = $ls . " where tab_enm='$tab_enm' and userid='$H_ID'";
 		}
-   } else if( $mode == 'Table_Search' ) {
+	} else if( $mode == 'Table_Search' ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_table']} ";
 			if( isset($data) && $data !=''  ){
@@ -216,11 +206,11 @@ $(function () {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		if( $wsel!='') $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' " . $wsel;
 		else $ls = $ls . " where fld_enm='seqno' and userid='$H_ID' ";
-   } else {
+	} else {
 		$ls = " SELECT * from {$tkher['table10_table']} ";
 		$ls = $ls . " where fld_enm='seqno' and userid='$H_ID'";
 		if( $wsel!='') $ls = $ls . $wsel;
-   }
+	}
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
 	$total_page = intval(($total-1) / $line_cnt)+1;
@@ -229,15 +219,12 @@ $(function () {
 	$last = $line_cnt;
 	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-
 	if( $page == 1){
 		$no = $total;
 	} else {
 		if( $page>1) $no = $total - ($page - 1) * $line_cnt;
 		else $no = $total;
 	}
-
-
 	function kapp_table_check( $tab ){
 		global $table_prefix;
 		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables
@@ -557,8 +544,8 @@ if( $mode != 'Search') {
 ?>
 			<TD <?=$bcolor?> title='table_code:<?=$rs['tab_enm']?>,date:<?=$rs['upday']?>' ><?=$rs['userid']?></TD>
 			<TD <?=$bcolor?> title='project code:<?=$rs['group_code']?>' ><?=$rs['group_name']?></TD>
-			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
-			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_hnm']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></TD>
+			<TD <?=$bcolor?> title='Prints a list of columns.'><img src="<?=KAPP_URL_T_?>/icon/default.gif">
+			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_hnm']?></a></TD>
 			<TD <?=$bcolor?> <?php echo "title='Prints a list of columns.' "; ?> >
 			<a href="javascript:table_sel_func('<?=$rs['tab_enm']?>', '<?=$rs['tab_hnm']?>', '<?=$data?>', '<?=$page?>' );"><?=$rs['tab_enm']?></a></TD>
 			<TD <?=$bcolor?> ><?=$rs['upday']?></TD>

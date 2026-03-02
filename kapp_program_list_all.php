@@ -1,9 +1,8 @@
 <?php
-include_once('./tkher_start_necessary.php');
-/*
-	kapp_program_list_all.php
-*/
-
+	include_once('./tkher_start_necessary.php');
+	/*
+		kapp_program_list_all.php
+	*/
 	$H_ID	= get_session("ss_mb_id");
 	$ip = $_SERVER['REMOTE_ADDR'];
 	if( $H_ID!=''){
@@ -20,7 +19,6 @@ include_once('./tkher_start_necessary.php');
 	$rel_mvfld		= "";
 	$gita= "";	// 1,3,5,7,9
 ?>
-
 <html>
 <head>
 	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
@@ -83,12 +81,10 @@ $(function () {
 				case 'Date'    : title_func('upday'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250);
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거	//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'Project' : title_wfunc('group_name'); break;
 				case 'User'    : title_wfunc('userid'); break;
@@ -198,7 +194,6 @@ $(function () {
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 15;
 	$page_num = 10; 
-
 	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];   
 	else $mode= '';
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
@@ -213,7 +208,6 @@ $(function () {
 		$group_code= '';
 		$wsel = '';
 	}
-
 	if( isset($_POST['data']) ) $data = $_POST['data'];
 	if( isset($_POST['param']) ) $param	= $_POST['param'];   
 	if( isset($_POST['sel']) )   $sel	= $_POST['sel'];   
@@ -245,7 +239,6 @@ $(function () {
 	}
 	$resultT	= sql_query( $ls );
 	$total = sql_num_rows( $resultT );
-
 	$total_page = intval(($total-1) / $line_cnt)+1; 
 	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
 	else $first =0;
@@ -260,7 +253,6 @@ $(function () {
 	}
 	$cur='B';
 	include_once "./menu_run.php"; 
-
 	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
 	if( isset($_POST['tab_hnm']) ) $tab_enm = $_POST['tab_hnm'];
 ?>
@@ -356,7 +348,7 @@ View Line:
 		<td width='1%' <?=$bcolor?> ><?=$line?></td>
 		<td width='5%' <?=$bcolor?> title=" project code:<?=$group_code?>"><?=$group_name?></td>
 		<td width='3%' <?=$bcolor?> ><?=$rs['userid']?> </td>
-		<td width='15%' style='background-color:000051;' ><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) <img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></td> 
+		<td width='15%' style='background-color:000051;' ><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) </a></td> 
 
 		<td width='15%' onclick="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" <?=$bcolor?> ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</td> 
 		<td width='5%' <?=$bcolor?> ><?=$rs['upday']?></td>

@@ -84,12 +84,10 @@ $(function () {
 				case 'Date'    : title_func('upday'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250);
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
-		clearTimeout(timer); // 마지막 클릭 타이머를 제거	//alert('더블 클릭되었습니다!');
+		clearTimeout(timer);
 		switch(e.target.innerText){
 				case 'Project' : title_wfunc('group_name'); break;
 				case 'User'    : title_wfunc('userid'); break;
@@ -260,7 +258,6 @@ $(function () {
 		$lsPJ = " ";
 		$lsPJand = " ";
 	}
-
 	if( $mode == 'Program_Search' ) {
 		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
@@ -312,11 +309,8 @@ $(function () {
 	} else {
 		$total = 0;
 	}
-	//	$cur='B';
-	//	include_once "./menu_run.php";
 ?>
 <h2 title='pg:kapp_program_list'>KAPP Program List(<?=$H_ID?>) - total:<?=$total?></h2>
-
 	<form name="tkher_search" target="_self" method="post" action="kapp_program_list.php"  >
 			<input type='hidden' name='mode'    value='<?=$mode?>'>
 			<input type='hidden' name='page'    value="<?=$page?>">
@@ -346,7 +340,6 @@ $(function () {
 			$T_msg = $T_msg . " Point:" . number_format($H_POINT). " : Lev:" . $member['mb_level'];
 		}
 ?>
-
 		<div>
 			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
 				<option value="pg_name">Program</option>
@@ -361,12 +354,11 @@ $(function () {
 			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 			<input type="button" value="Search" onclick='search_func()'>
 		</div>
-
 <span title='data print - kapp_program_list'><strong><?=$T_msg?></strong></span>
 <br>
 <span>
-			<SELECT name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
-			<option value="">Select Project</option>
+	<SELECT name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
+		<option value="">Select Project</option>
 <?php
 	$sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$H_ID."'";
 	$ret = sql_query($sql);
@@ -376,7 +368,7 @@ $(function () {
 ?>
 			<option value="<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php echo $chk;?> ><?=$rs['group_name']?></option>
 <?php } ?>
-			</SELECT>
+	</SELECT>
 </span>
 <span>
 View Line: 
@@ -417,9 +409,8 @@ View Line:
 		$mid = $rs['userid'];
 		if( $H_ID == $mid) $bcolor ="style='background-color:cyan;'";
 		else $bcolor='';
-
 		$if_data = $rs['if_data'];
-		$pop_data = $rs['pop_data']; // item_array_func()에서 pop_data는 1.@로 분류, 2.$분류,3:로 분류를 3번 한다
+		$pop_data = $rs['pop_data'];
 		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
@@ -432,7 +423,7 @@ View Line:
 	<TD <?=$bcolor?> width='1%'><?=$line?></td>
 	<TD <?=$bcolor?> width='3%'><?=$rs['userid']?> </td>
 	<TD <?=$bcolor?> width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
-	<TD <?=$bcolor?> width='5%'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?><img src="<?=KAPP_URL_T_?>/icon/default.gif"></a></td>
+	<TD <?=$bcolor?> width='5%'><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
 	<td TD <?=$bcolor?> width='5%' title='Data List program run'>
 		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
 	</td>
