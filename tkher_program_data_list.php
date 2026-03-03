@@ -19,7 +19,6 @@
 		$H_LEV = $member['mb_level']; 
 		$H_POINT	= $member['mb_point']; 
 	} else {
-		m_("You need to login. ");
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
@@ -36,7 +35,6 @@
 	if( $mode == "project_search" ) $group_code = $_POST['group_code'];
 	else if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
 	else $group_code = '';
-
 	$pg_mid= ''; $tab_mid= ''; 
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
@@ -78,12 +76,11 @@ $(function () {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
 			$hnm = e.target.innerText;
-			$enm = document.getElementById($hnm).value;// document.view_form.$hnm.value;
+			$enm = document.getElementById($hnm).value;
 			title_func($enm);
 		}, 250); // Executes after waiting about 250ms - 약 250ms 대기 후 실행
 	  
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
 		clearTimeout(timer); // Remove last click timer - 마지막 클릭 타이머를 제거
 		$hnm = e.target.innerText;
@@ -251,7 +248,7 @@ $(function () {
 						alert("OK change --- " + grant_view);
 					},
 					error: function(jqXHR, textStatus, errorThrown) {
-						alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
+						alert(" error.-- kapp_column_ajax.php");
 						console.log(jqXHR);
 						console.log(textStatus);
 						console.log(errorThrown);
@@ -397,7 +394,7 @@ $(function () {
 				if( $total_count < $last) $last = $total_count;
 			}
 	} else {
-		$view_msg ='You do not have permission to view this material. The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
+		$view_msg ='You do not have permission to view this material. <br>The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
 	}
 ?>
 		<form name='view_form' method='post' enctype="multipart/form-data" >
@@ -430,8 +427,7 @@ $(function () {
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
-
-	if( isset($H_ID) && $H_ID !='' ) {
+//	if( isset($H_ID) && $H_ID !='' ) {
 		if( $H_LEV > 7) $sqlA = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
 		else			$sqlA = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
 		$result = sql_query( $sqlA );
@@ -439,9 +435,9 @@ $(function () {
 			m_(" 2 Select Error ");
 			echo "Invalid query sql:"; exit;
 		}
-	}	else {
-			m_(" -----------Please login"); exit;
-	}
+//	}	else {
+//			m_(" -----------Please login"); exit;
+//	}
 	while( $rs = sql_fetch_array( $result )  ) {
 		$pg_codeA = $rs['pg_code'];
 		$pg_nameA = $rs['pg_name'];
@@ -479,7 +475,7 @@ $(function () {
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 					</span>
 <?php
-if( $H_ID==$pg_mid ) {
+//if( $H_ID==$pg_mid ) {
 ?>
 					<span>
 						<strong title='Set data view level'>Grant View: </strong>
@@ -498,8 +494,8 @@ if( $H_ID==$pg_mid ) {
 						</select>
 					</span>
 <?php
-}
-						echo "<br>".$view_msg;
+//}
+						echo "<br><br><p style='font-size:25px;'>".$view_msg . "</p><br>";
 ?>
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />

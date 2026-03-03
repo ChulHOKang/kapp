@@ -78,6 +78,8 @@ $(function () {
 				case 'User'    : title_func('userid'); break;
 				case 'Program' : title_func('pg_name'); break;
 				case 'Table'   : title_func('tab_hnm'); break;
+				case 'View'    : title_func('grant_view'); break;
+				case 'Write'   : title_func('grant_write'); break;
 				case 'Date'    : title_func('upday'); break;
 				default        : title_func(''); break;
 			}
@@ -90,6 +92,8 @@ $(function () {
 				case 'User'    : title_wfunc('userid'); break;
 				case 'Program' : title_wfunc('pg_name'); break;
 				case 'Table'   : title_wfunc('tab_hnm'); break;
+				case 'View'    : title_func('grant_view'); break;
+				case 'Write'   : title_func('grant_write'); break;
 				case 'Date'    : title_wfunc('upday'); break;
 				default        : title_wfunc(''); break;
 		}
@@ -319,6 +323,8 @@ View Line:
 	echo " <th title='User Sort click or doubleclick' >User</th> ";
 	echo " <th title='Program Sort click or doubleclick' >Program</th> ";
 	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
+	echo " <th title='Grant view Sort click or doubleclick' >View</th> ";
+	echo " <th title='Grant write Sort click or doubleclick' >Write</th> ";
 	echo " <th title='Date Sort click or doubleclick' >Date</th> ";
 ?>
 	</tr>
@@ -339,18 +345,20 @@ View Line:
 		$group_code = $rs['group_code'];
 		if( $page>1 ) $line=$line_cnt*$page + $i - $line_cnt;
 		else $line=$i;
-		$bgcolor = 'black'; //"#eeeeee";
+		$bgcolor = "style='background-color:black;width:100%;'";
 		if( $H_ID == $mid) $bcolor ="style='background-color:black;color:yellow;'";//style='background-color:black;color:white;'
 		else $bcolor ="style='background-color:black;color:cyan;'";
   ?> 
 		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR bgcolor='<?=$bgcolor?>' width='900' >
-		<td width='1%' <?=$bcolor?> ><?=$line?></td>
-		<td width='5%' <?=$bcolor?> title=" project code:<?=$group_code?>"><?=$group_name?></td>
-		<td width='3%' <?=$bcolor?> ><?=$rs['userid']?> </td>
-		<td width='15%' style='background-color:000051;' ><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) </a></td> 
+	<TR <?=$bgcolor?> >
+		<td <?=$bcolor?> width='1%' ><?=$line?></td>
+		<td <?=$bcolor?> width='5%' title=" project code:<?=$group_code?>"><?=$group_name?></td>
+		<td <?=$bcolor?> width='3%' ><?=$rs['userid']?> </td>
+		<td <?=$bcolor?> width='15%' ><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) </a></td> 
 
-		<td width='15%' onclick="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );" <?=$bcolor?> ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</td> 
+		<td <?=$bcolor?> width='15%' onclick="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );"  ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</td> 
+		<td <?=$bcolor?> width='1%'><?=$rs['grant_view']?></td>
+		<td <?=$bcolor?> width='1%'><?=$rs['grant_write']?></td>
 		<td width='5%' <?=$bcolor?> ><?=$rs['upday']?></td>
 	</TR>
  <?php
