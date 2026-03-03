@@ -170,12 +170,13 @@ $(function () {
 		document.view_form.submit();
 	}
 	function table_record_write(pg_code, grant_write, h_lev){ 
-		if( h_lev > 1 && h_lev > grant_write || h_lev == grant_write){
-			document.view_form.action='tkher_program_run.php?pg_code='+pg_code; 
-			document.view_form.submit();
-		} else {
+		if( grant_write > h_lev ){
 			alert("No permission. ");
 			return;
+		} else {
+			//if( h_lev > 1 && h_lev > grant_write || h_lev == grant_write){
+			document.view_form.action='tkher_program_run.php?pg_code='+pg_code; 
+			document.view_form.submit();
 		}
 	}
 	function excel_down(){

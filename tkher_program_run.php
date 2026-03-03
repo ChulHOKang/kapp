@@ -12,8 +12,11 @@
 		$H_POINT	= $member['mb_point'];
 		$H_LEV=$member['mb_level'];
 	} else {
-		m_("You need to login. ");
-		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
+		$H_LEV=1;
+		$H_POINT= 0;
+		$H_ID='Guest';
+		//m_("You need to login. ");
+		//echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
 	}
 ?>
 <html>
@@ -51,12 +54,13 @@
 	$pg_mid	= $rsPG['userid'];
 	$tab_mid	= $rsPG['tab_mid'];
 	$grant_write = $rsPG['grant_write'];
-	if( $H_LEV >=$grant_write || $pg_mid == $H_ID ) {
-	} else{
-		$write_msg ='You do not have permission. Your permission level is higher than that of the creator. grant_write:'.$grant_write;
-		m_( $write_msg );//  권한이 없습니다. 권한은 생성자 이상의 레벨입니다.
-		echo "<script>window.open('tkher_program_data_list.php?pg_code=$pg_code','_self','')</script>";
-		exit;
+	if( $grant_write > $H_LEV ) {
+		if( $pg_mid != $H_ID ) {
+			$write_msg ='You do not have permission. Your permission level is higher than that of the creator. grant_write:'.$grant_write;
+			m_( $write_msg );//  권한이 없습니다. 권한은 생성자 이상의 레벨입니다.
+			echo "<script>window.open('tkher_program_data_list.php?pg_code=$pg_code','_self','')</script>";
+			exit;
+		}
 	}
 	$pg_name	= $rsPG['pg_name'];
 	$tab_enm	= $rsPG['tab_enm'];

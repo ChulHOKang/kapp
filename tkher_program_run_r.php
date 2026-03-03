@@ -5,8 +5,14 @@
 		$f_path = KAPP_PATH_T_ . "/file/" .  $tab_mid . "/" . $tab_enm;;  $H_ID->tab_mid, $pg_code->tab_enm,  to
 		Abnormal approach. pg_code:solpakan89_gmail_1750469450, tab_enm:solpakan89_gmail_1750469450, tab_mid:
 	*/
-	$H_ID = get_session("ss_mb_id"); //echo "h_id: ".$H_ID . "<br>";
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID= get_session("ss_mb_id");
+	if( isset($H_ID) && $H_ID !='' ) {
+		$H_LEV=$member['mb_level'];
+	} else {
+		$H_LEV=1;
+		$H_ID='Guest';
+	}
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = "";
 	if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
@@ -22,10 +28,10 @@
 		$rungo = "./";
 		exit;
 	}
-	if( $H_ID != '' ) {
-		$H_LEV = $member['mb_level'];  
-	} else {
-		m_("You need to login.");
+	if( isset($_POST['grant_write']) ) $grant_write = $_POST['grant_write'];
+	else $grant_write = "";
+	if( $grant_write > $H_LEV ) {
+		m_("You need to permission.");
 		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$pg_code."'>";
 		exit;
 	}
