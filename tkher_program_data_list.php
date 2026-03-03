@@ -404,8 +404,7 @@ $(function () {
 						<tr>
 							<td align='left'>
 								<script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
-								<p align="left" style="margin-top: 0px" title='pg: Project List '>
-
+			<P align="left" style="margin-top: 0px" title='pg: Project List '>
 			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 							<option value=''>Select Project</option>
 <?php
@@ -421,24 +420,21 @@ $(function () {
 			}
 ?>
 			</select>
-				<a href="#" id="contentlink" rel="subcontent2">
-				<font color='black' ><b>&#9776; Program List [▼]</b></font>
-				</a><?php if( isset($H_ID) ) echo "id:$H_ID, lev:$H_LEV"; ?> 
-				</p>
+			<a href="#" id="contentlink" rel="subcontent2"><font color='black' ><b>&#9776; Program List [▼]</b></font></a>
+<?php 
+	if( isset($H_ID) ) echo "id:$H_ID, lev:$H_LEV"; 
+?> 
+			</P>
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
 				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
 <?php
-//	if( isset($H_ID) && $H_ID !='' ) {
-		if( $H_LEV > 7) $sqlA = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
-		else			$sqlA = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
-		$result = sql_query( $sqlA );
-		if( $result == false ){
-			m_(" 2 Select Error ");
-			echo "Invalid query sql:"; exit;
-		}
-//	}	else {
-//			m_(" -----------Please login"); exit;
-//	}
+	if( $H_LEV > 7) $sqlA = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
+	else			$sqlA = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
+	$result = sql_query( $sqlA );
+	if( $result == false ){
+		m_(" 2 Select Error ");
+		echo "Invalid query sql:"; exit;
+	}
 	while( $rs = sql_fetch_array( $result )  ) {
 		$pg_codeA = $rs['pg_code'];
 		$pg_nameA = $rs['pg_name'];
@@ -465,7 +461,7 @@ $(function () {
 
 				<div class="viewHeaderT">
 					<span title='pg_mid:<?=$pg_mid?>, view level:<?=$grant_view?>'>&nbsp;&nbsp;
-					K-APP:<?=$pg_code?>(<?=$grant_view?>)&nbsp;&nbsp;&nbsp;&nbsp;
+					K-APP:<?=$pg_code?>&nbsp;&nbsp;&nbsp;&nbsp;
 					Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='View page count'>Page:<?=$page?></strong>
 						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
@@ -476,17 +472,17 @@ $(function () {
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 					</span>
 <?php
-//if( $H_ID==$pg_mid ) {
+if( $H_ID==$pg_mid ) {
 ?>
 					<span>
-						<strong title='Set data view level'>Grant View: </strong>
+						<strong title='Set data view level'>View: </strong>
 						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view('<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;'>
 							<option value='1' <?php if($grant_view=='0'||$grant_view=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_view=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_view=='3')  echo " selected"; ?> >For creators only</option>
 							<option value='8' <?php if($grant_view=='8')  echo " selected"; ?> >Only system manager</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
-						<strong title='Set data write level'>Grant Write: </strong>
+						<strong title='Set data write level'>Write: </strong>
 						<select id='grant_write' name='grant_write' onChange="Change_grant_write('<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;'>
 							<option value='1' <?php if($grant_write=='0'||$grant_write=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_write=='2')  echo " selected"; ?> >Member</option>
@@ -495,8 +491,8 @@ $(function () {
 						</select>
 					</span>
 <?php
-//}
-						echo "<br><br><p style='font-size:25px;'>".$view_msg . "</p><br>";
+}
+		echo "<br><p style='font-size:25px;'>".$view_msg . "</p><br>";
 ?>
 				</div>
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
