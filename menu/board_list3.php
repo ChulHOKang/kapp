@@ -262,19 +262,18 @@ $(function () {
 		var selind = makeform.sellist.selectedIndex
 		var strAx = makeform.sellist.options[selind].value
 		var strA  = strAx.split("|");
+		makeform.infor.value = strA[0];
 		makeform.board_no.value = strA[0];
 		makeform.board_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
 		var category = "D02"
-		if (selind >= 0 && makeform.sellist.options[selind].text != "")
-		{
+		if( selind >= 0 && makeform.sellist.options[selind].text != ""){
 			var grpname = strA[1];
 			if (( grpname == "group") || (grpname == "groupend") ||  (getObjid(grpname) == "GSTR") || (getObjid(grpname) == "GEND")) {
 				makeform.chgname.value = chkGroup(makeform.sellist.options[selind].text)
 				document.makeform.mncontents.value = ""
 				document.makeform.chkByte.value = "0";
-			}
-			else {
+			} else {
 				makeform.chgname.value = getfname( makeform.sellist.options[selind].text )
 				var valname = strA[1];
 				if (valname.length>0) {

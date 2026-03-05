@@ -399,11 +399,13 @@
 		$mq=sql_query($query);
 		$sqlA = "update {$tkher['job_link_table']} set user_name='$chgname', job_name='$chgname' , job_addr='$link_', jong='A' where user_id='$H_ID' and aboard_no='$board_nm' ";
 		sql_query( $sqlA );
-		if( $home_url == 'GCOM05!' ){
+		if( $home_url == 'GCOM05!' ){ // note board - tree menu
 			$sql = "update {$tkher['sys_menu_bom_table']} set sys_subtit='$chgname' where sys_userid='$H_ID' and book_num='$board_nm' "; 
 			sql_query( $sql );
 		}
-		echo "<script>window.open('board_list3.php?page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";exit;
+		echo "<script>alert('OK name changed');</script>";
+		echo "<script>window.open('board_list3.php?page=".$page."&line_cnt=".$line_cnt."','_top','')</script>";
+		exit;
 	} else if( $mode == "Update_func_my" ){
 		$pg  = $_POST['pg'];
 		$grant_read  = $_POST['xread'];
