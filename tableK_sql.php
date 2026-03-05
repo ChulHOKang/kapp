@@ -468,7 +468,7 @@ function SQL_check() {
 			document.insert.action="tableK_sql.php";
 			document.insert.submit();
 			ret = window.open('./progressbar.php?kapp_delay_time=6','','width=600,height=300, toolbar=no,scrollbars=yes,resizable=no');
-			time_delay_sample(6000, ret);
+			//time_delay_sample(6000, ret);
 		}
 	}
 
@@ -982,13 +982,13 @@ $sql_table = str_replace('\\', '', $sql_table);
 			if( $rets ){
 				if( !kapp_table_check( $tab_enm ) ){
 					$mq1 = sql_query( $SQLA );
-					sleep(1);
+					//sleep(1);
 					if( !$mq1 ) {
 						echo "<br>SQLA: " . $SQLA;
-						m_("ERROR - Make sure you use reserved words in column names. - Create table - $tab_enm");
+						m_("ERROR mq1 - Make sure you use reserved words in column names. - Create table - $tab_enm");
 						exit;
 					} else {
-						m_("$tab_enm : table create ok!");
+						//m_("mq1 -- tab_enm: $tab_enm : table create ok!");
 						$table_yn = 'y';
 						$link_ = KAPP_URL_T_ . "/tableK_sql.php?tab_enm=". $tab_enm;
 						$p_msg = 'table10@tableK_sql.php : ' . $tab_enm;
@@ -1004,6 +1004,8 @@ $sql_table = str_replace('\\', '', $sql_table);
 						} else  m_("TAB_curl_sendA -- Error");
 						if( $Pret ) m_("c  Successful creation of the $tab_hnm table - $tab_enm.");
 					}
+				//} else {
+				//	m_(" table is : tab_enm: $tab_enm");
 				}
 
 			} else {
@@ -1017,19 +1019,22 @@ $sql_table = str_replace('\\', '', $sql_table);
 		$sql = "SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' ";
 		$rec = sql_fetch($sql);
 		if( isset($rec['tab_enm']) && $rec['tab_enm'] !='' ) return true;
-		else false;
+		else {
+			//m_("Table_check_ ---- tab_enm: $tab_enm"); //Table_check_ ---- tab_enm: SQLKapp_SQLKapp_em_tran
+			false;
+		}
 	}
 	function kapp_table_check( $tab ){
 		global $table_prefix;
-		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables
-		WHERE table_schema = '".KAPP_MYSQL_DB."'
-		AND table_name = '".$tab."' ";
-		$ret = sql_fetch($sql);
-		if( $ret['cnt'] > 0 ) { 
+			//m_("kapp_table_check ---- tab: $tab"); //kapp_table_check ---- tab: SQLKapp_SQLKapp_em_tran
+		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables WHERE table_schema = '".KAPP_MYSQL_DB."' AND table_name = '".$tab."' ";
+		$ret = sql_fetch( $sql);
+		if( isset($ret['cnt']) && $ret['cnt'] > 0 ) { 
 			m_("Rec count:".$ret['cnt'] .", " . $tab . ", already exists. ");
 			echo "<br>rec count:".$ret['cnt'] .", " . $tab . ", already exists. ";
 			return true;
 		} else { 
+			//m_("--- none tab: " . $tab );
 			echo "<br>" . $tab . ", --- ";
 			return false;
 		}
