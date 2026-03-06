@@ -423,7 +423,7 @@ $(function () {
 </script>
 <body>
 <center>
-<h2 title='pg:kapp_table_list'>KAPP Table List(<?=$H_ID?>) - total:<?=$total?></h2>
+<h2 title='pg:kapp_table_list'>KAPP Table List</h2>
 
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
@@ -485,7 +485,7 @@ View Line:
 		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
 		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
 		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total?>
 </span>
 
 <table class='floating-thead' width='100%'>

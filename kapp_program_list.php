@@ -310,7 +310,7 @@ $(function () {
 		$total = 0;
 	}
 ?>
-<h2 title='pg:kapp_program_list'>KAPP Program List(<?=$H_ID?>) - total:<?=$total?></h2>
+<h2 title='pg:kapp_program_list'>KAPP Program List</h2>
 	<form name="tkher_search" target="_self" method="post" action="kapp_program_list.php"  >
 			<input type='hidden' name='mode'    value='<?=$mode?>'>
 			<input type='hidden' name='page'    value="<?=$page?>">
@@ -377,7 +377,7 @@ View Line:
 		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
 		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
 		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total?>
 </span>
 
 <table class='floating-thead' width="100%">
@@ -389,6 +389,8 @@ View Line:
 	echo " <th title='project Sort click or doubleclick' >Project</th> ";
 	echo " <th title='Program Sort click or doubleclick' >Program</th> ";
 	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
+	echo " <th title='Grant view Sort click or doubleclick' >View</th> ";
+	echo " <th title='Grant write Sort click or doubleclick' >Write</th> ";
 	echo " <th title='Date Sort click or doubleclick' >Date</th> ";
 ?>
 	<th>Management</th>
@@ -417,6 +419,17 @@ View Line:
 		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
 		else if( !$pop_fld && !$pop_mvfld )	$attr = $gita;
 		else $attr="";
+
+		$grant_view = $rs['grant_view'];
+		$grant_write = $rs['grant_write'];
+		if( $grant_view=='0'||$grant_view=='1')  $gr = 'Guest';
+		else if( $grant_view=='2' ) $gr = 'Member';
+		else if( $grant_view=='3' ) $gr = 'Creators';
+		else if( $grant_view=='8' ) $gr = 'Manager';
+		if( $grant_write=='0'||$grant_write=='1')  $gw = 'Guest';
+		else if( $grant_write=='2' ) $gw = 'Member';
+		else if( $grant_write=='3' ) $gw = 'Creators';
+		else if( $grant_write=='8' ) $gw = 'Manager';
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'>
@@ -427,6 +440,8 @@ View Line:
 	<td TD <?=$bcolor?> width='5%' title='Data List program run'>
 		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
 	</td>
+		<td <?=$bcolor?> width='1%'><?=$gr?></td>
+		<td <?=$bcolor?> width='1%'><?=$gw?></td>
 	<TD <?=$bcolor?> width='5%'><?=substr($rs['upday'], 0,10)?></td>
 	<TD <?=$bcolor?> width='15%' align='center'>
 	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>>
