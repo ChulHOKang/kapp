@@ -522,7 +522,7 @@ if( $mode != 'Search') {
     $line=0;
 	$i=1;
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
-	else $OrderBy	= " ORDER BY upday desc ";
+	else $OrderBy	= " ORDER BY disno, upday desc ";
 	$ls = $ls . $OrderBy;
 	if( $mode != "Search") {
 		$ls = $ls . " $limit ";

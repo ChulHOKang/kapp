@@ -27,14 +27,15 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-App System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="./logo/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
+<script src="//code.jquery.com/jquery.min.js"></script>
 <body leftmargin="0" topmargin="0">
 <script language="JavaScript"> 
 <!--
@@ -43,11 +44,11 @@
 		resp = confirm(' Would you like to reset relationship data removable? reset relation no: ' + relation_num);
 		if( !resp ) return false;
 		else {
-			makeform.mode.value='Reset_Check';
-			makeform.relation_reset.value='on';
-			makeform.relation_move_data.value='';
-			makeform.relation_data.value='';
-			makeform.relation_key.value='';
+			document.makeform.mode.value='Reset_Check';
+			document.makeform.relation_reset.value='on';
+			document.makeform.relation_move_data.value='';
+			document.makeform.relation_data.value='';
+			document.makeform.relation_key.value='';
 			document.makeform.action="kapp_table_relation_Change.php";
 			document.makeform.submit();
 		}
@@ -57,18 +58,33 @@
 		resp = confirm(' Would you like to Delete relationship data removable?');
 		if( !resp ) return false;
 		else {
-			makeform.mode.value='Delete_Check';
-			makeform.relation_reset.value='';
-			makeform.relation_move_data.value='';
-			makeform.relation_data.value='';
+			document.makeform.mode.value='Delete_Check';
+			document.makeform.relation_reset.value='';
+			document.makeform.relation_move_data.value='';
+			document.makeform.relation_data.value='';
 			document.makeform.action="kapp_table_relation_Change.php";
 			document.makeform.submit();
 		}
 		return;
 	}
 	//================================
+	function relation_back_func(){
+		document.makeform.mode.value="";
+		document.makeform.relation_reset.value = '';
+		document.makeform.action="kapp_table_relationA.php";
+		document.makeform.submit();
+	}
+	
+	function relation_Cancel_func(){
+		resp = confirm(' Do you want to Cancel relation '+relation_num +' ?');
+		if( !resp ) return false;
+		document.makeform.mode.value="";
+		document.makeform.relation_reset.value = '';
+		document.makeform.action="kapp_table_relationA.php";
+		document.makeform.submit();
+	}
 	function relation_save_ALL_func() {
-		if( makeform.relation_type_SQL[0] === false && makeform.relation_type_SQL[1] === false){
+		if( document.makeform.relation_type_SQL[0] === false && document.makeform.relation_type_SQL[1] === false){
 			alert(" The relation is Update. Please select a key field and click the 'SQL Save' button to save it! ");
 			return false;
 		}
@@ -79,9 +95,9 @@
 		resp = confirm(' Do you want to Save relation '+relation_num +' ?');
 		if( !resp ) return false;
 		//makeform.relation_reset.value = '';
-		makeform.modeRun.value="table_relation_save_Change";
-		makeform.action="kapp_table_relation_Change.php";
-		makeform.submit();
+		document.makeform.modeRun.value="table_relation_save_Change";
+		document.makeform.action="kapp_table_relation_Change.php";
+		document.makeform.submit();
 	}
 
 	function create_after_run(relation_pg_codeS, Rtab_hnmS){
@@ -301,12 +317,20 @@
 	function close_func(){
 		windows.close();
 	}
+	function Breturn_func(){
+		document.makeform.relation_reset.value = '';
+		document.makeform.mode.value='';	
+		document.makeform.action ="kapp_table_relationA.php";
+		document.makeform.target='_self';
+		document.makeform.submit();
+	}
 //-->
 </script>
 
 <?php
 
-	$relation_num = $_POST['relation_num'];
+	if( isset($_POST['relation_num']) ) $relation_num = $_POST['relation_num'];
+	else $relation_num = '0';
 
 	if( isset($_POST['modeRun']) ) $modeRun = $_POST['modeRun'];
 	else $modeRun = '';
@@ -315,8 +339,9 @@
 		$modeRun = $_POST['modeRun'];
 		$pg_code = $_POST['pg_code'];
 		table_relation_save_func( $pg_code, $relation_num );
+		//echo "<script>window.open('', '_self').close();</script>";
+		echo "<script>Breturn_func();</script>";
 		//echo "<script>window.close();</script> ";
-		echo "<script>window.open('', '_self').close();</script>";
 	}
 	$data_R = array();
 	$type_R = array();
@@ -383,8 +408,10 @@
 		if( isset($_POST['item_array']) ) $item_array = $_POST['item_array'];
 	}
 
-	$relation_project_nmS = $_SESSION['relation_project_nmS'];
-	$relation_pg_codeS =$_SESSION['relation_pg_codeS'];
+	if( isset( $_POST['relation_project_nmS']) ) $relation_project_nmS = $_POST['relation_project_nmS'];
+	else $relation_project_nmS = '';
+	if( isset($_POST['relation_pg_codeS']) ) $relation_pg_codeS =$_POST['relation_pg_codeS'];
+	else $relation_pg_codeS ='';
 
 	if( $modeRun != 'Relation_SearchTAB') {
 		switch($relation_num){
@@ -407,8 +434,8 @@
 	}
 
 	if( $modeRun=='Relation_SearchTAB' ) {
-		if( isset($_SESSION['Rtab_hnmS']) && $_SESSION['Rtab_hnmS'] !='' ){
-			$Rtab_hnmS =$_SESSION['Rtab_hnmS'];
+		if( isset($_POST['Rtab_hnmS']) && $_POST['Rtab_hnmS'] !='' ){
+			$Rtab_hnmS =$_POST['Rtab_hnmS'];
 			$relation_TAB = explode(":", $Rtab_hnmS); //dao_1766735120:ABCYY
 			$tab_enmR = $relation_TAB[0];
 			$tab_hnmR = $relation_TAB[1];
@@ -419,9 +446,9 @@
 <center>
    <table width='300' cellspacing='0' cellpadding='4' border='1' class="c1">
 		<FORM name='makeform' METHOD='POST' enctype="multipart/form-data">
-			<input type="hidden" name="mode" id="mode" value="<?=$mode?>" >
+			<input type="hidden" name="mode" value="<?=$mode?>" >
+			<input type="hidden" name="relation_reset"  value="<?=$relation_reset?>" >
 			<input type="hidden" name="modeRun" id="modeRun" value="<?=$modeRun?>" >
-			<input type="hidden" name="relation_reset" id="relation_reset" value="<?=$relation_reset?>" >
 			<input type="hidden" name="tab_enm" id="tab_enm" value="<?=$tab_enm?>">
 			<input type="hidden" name="pg_code"	id="pg_code" value="<?=$pg_code?>">
 			<input type="hidden" name="pg_name"	id="pg_name" value="<?=$pg_name?>">
@@ -497,15 +524,13 @@
 		<SELECT id='Rtab_hnmS' name='Rtab_hnmS' onchange="Change_Relation_Table_func(this.value);" style="background-color:#666666;color:yellow;height:33px;font-size:15;" >
 <?php 
 		if( $mode=='Reset_Check' && $modeRun=='Relation_SearchTAB' ) {
-			$Rtab_hnmS = $_SESSION['Rtab_hnmS'];
+			$Rtab_hnmS = $_POST['Rtab_hnmS'];
 			$tab_R = explode(":", $Rtab_hnmS);
 			$tab_enmR = $tab_R[0];
 			$tab_hnmR = $tab_R[1];
 		}
-		
 		if( $modeRun=='Relation_SearchTAB') echo "<option value='$Rtab_hnmS' selected >$tab_hnmR</option>";
 		else echo "<option value=''>Select Relation Table</option>";
-
 		$result = sql_query( "SELECT * from {$tkher['table10_table']} where group_code='$project_code' and userid='$H_ID' and fld_enm='seqno' " );//관계용테이블선택.
 		while( $rs = sql_fetch_array($result)) {
 ?>
@@ -571,6 +596,10 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		<tr>
 		  <td align="center" >
 		<input type='button' value='Change Save Submit ' id='all_save_button' onclick='relation_save_ALL_func()' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;'>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+		<input type='button' value=' Cancel ' id='Cancel_button' onclick='relation_Cancel_func()' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;'>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+		<input type='button' value=' Back Return ' id='back_button' onclick='relation_back_func()' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;'>&nbsp;&nbsp;&nbsp;
 			</td>
 		</tr>
 		</FORM>
