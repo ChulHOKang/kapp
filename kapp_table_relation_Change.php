@@ -107,12 +107,22 @@
 		document.makeform.submit();
 	}
 	function Relation_SQL_Key_Set_func(){
+		var Key_data = '';
 		var relation_num = document.getElementById('relation_num').value;
-		if ( makeform.relation_type_SQL[0].checked == true ) {
-			document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
-			key_type = document.getElementById('relation_key_old_'+relation_num).value;
-			if( key_type=='') document.getElementById('relation_key_old_'+relation_num).value = 'Insert' + ':' + ':' + ':';
+		//alert("relation_num: " + relation_num);
+		if( makeform.relation_type_SQL[0].checked === true ) {
+			alert(" Insert set OK");
+
+			//document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
+			//key_type = document.getElementById('relation_key_old_'+relation_num).value;
+			//if( key_type =='') document.getElementById('relation_key_old_'+relation_num).value = 'Insert' + ':' + ':' + ':';
+
+			Key_data = 'Insert' + ':' + ':' + ':'; //'Update' +':'+Kfld1e+':'+Kfld2e+':' + document.getElementById('relation_Key_fld_type').value;
+			document.getElementById('relation_key').value= Key_data;
+			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
+
 		} else {
+			alert(" Update set OK");
 			var relation_pg_codeS = makeform.relation_pg_codeS.value;
 			var Rtab_hnmS = makeform.Rtab_hnmS.value;
 			if(!relation_pg_codeS){
@@ -150,31 +160,46 @@
 			
 			Key_data = 'Update' +':'+Kfld1e+':'+Kfld2e+':' + document.getElementById('relation_Key_fld_type').value;
 			document.getElementById('relation_key').value= Key_data;
-			relation_num = document.getElementById('relation_num').value;
+			//relation_num = document.getElementById('relation_num').value;
 			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
 		}
 		r_t_k = document.makeform.relation_type_key.value;
-		if( r_t_k == '' ){
+		//alert("11 Key_data: " + Key_data); //11 Key_data: Update:fld_1:fld_5:CHAR
+		//alert("r_t_k: " + r_t_k);
+		//r_t_k: Update:fld_7:fld_7:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_6:fld_7:INT^
+		//|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@|fld_7|날짜|TIMESTAMP|20@^
+		//|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^
+		//|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+
+		//if( r_t_k == '' ){
 			//document.makeform.relation_type_key.value = Key_data + '@' +document.makeform.relation_key_old_1.value + '@' + document.makeform.relation_key_old_2.value + "^" + R_item_array + "^" + "^";
-		} else {
-			rtk[0]=''; rtk[1]=''; rtk[2]='';
-			rtk = r_t_k.split("^");
-			if( rtk[1] =='') {
-				RK = Key_data + '@' +document.makeform.relation_key_old_1.value + '@' + document.makeform.relation_key_old_2.value;
+		//} else {
+			//rtk[0]=''; rtk[1]=''; rtk[2]='';
+			//rtk = r_t_k.split("^");
+			//if( rtk[1] =='') {
+				//document.makeform.relation_key_old_0.value = Key_data;
+				//RK = Key_data + '@' +document.makeform.relation_key_old_1.value + '@' + document.makeform.relation_key_old_2.value;
 				//document.makeform.relation_type_key.value = RK + '@' +document.makeform.relation_key_old_1.value + '@' + document.makeform.relation_key_old_2.value + "^" + R_item_array + "^" + "^";
-			} else {
-				if(relation_num==0){
-					RK = Key_data + '@' +document.makeform.relation_key_old_1.value + '@' + document.makeform.relation_key_old_2.value;
+			//} else {
+				/*
+				if( relation_num ==0){
+					document.makeform.relation_key_old_0.value = Key_data;
+					//RK = Key_data + '@' +document.makeform.relation_key_old_1.value + '@' + document.makeform.relation_key_old_2.value;
 					//document.makeform.relation_type_key.value = RK + "^" + R_item_array + "^" + rtk[1] + "^" + rtk[2];
-				} if(relation_num==1) {
-					RK = document.makeform.relation_key_old_0.value + '@' +Key_data + '@' + document.makeform.relation_key_old_2.value;
+				} if( relation_num ==1) {
+					document.makeform.relation_key_old_1.value = Key_data;
+					//RK = document.makeform.relation_key_old_0.value + '@' +Key_data + '@' + document.makeform.relation_key_old_2.value;
 					//document.makeform.relation_type_key.value = RK + "^" + rtk[0]+ "^" + R_item_array + "^" + rtk[2];
-				} if(relation_num==2) {
-					RK = document.makeform.relation_key_old_0.value + '@' + document.makeform.relation_key_old_1.value +Key_data;
+				} if( relation_num ==2) {
+					document.makeform.relation_key_old_2.value = Key_data;
+					//RK = document.makeform.relation_key_old_0.value + '@' + document.makeform.relation_key_old_1.value + '@' + Key_data;
 					//document.makeform.relation_type_key.value = RK + "^" + rtk[0]+ "^" + rtk[1]+ "^" + R_item_array;
-				}
-			}
-		}
+				}*/
+			//document.getElementById('relation_key_old_'+relation_num).value = Key_data;
+
+			//}
+		//}
+		//alert("Key_data: " + Key_data);
 	}
 
 	function relation_move_set(){

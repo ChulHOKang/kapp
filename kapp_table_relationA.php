@@ -73,28 +73,6 @@
 		}
 		return;
 	}
-	// no use
-	function init_relation( relation_data ) {
-		rel=relation_data.split('$');
-		var hnmx2 = "";
-		//for( i=0; rel[i] !=""; i++ ){
-		for( i=1; rel[i] !=""; i++ ){
-			fld = rel[i];
-			fff=fld.split('|');
-			pg = fff[0];
-			sik = fff[1];
-			rt = fff[2];
-			pg_fld=pg.split(':');
-			fld_enm_pg = pg_fld[0];
-			fld_hnm_pg = pg_fld[1];
-			re_fld=rt.split(':');
-			fld_enm_re = re_fld[0];
-			fld_hnm_re = re_fld[1];			//상품=상품 , 수량=수량 , 수량+재고 , 일자=일자 , 
-			hnmx2 = hnmx2 + fld_hnm_pg + sik + fld_hnm_re + " , "; 
-		}
-		document.makeform.relation_move_data.value = hnmx2;
-		document.makeform.nmxh.value = hnmx2;
-	}
 	function relation_save_ALL_func() {
 		if( makeform.relation_type_SQL[0] === false && makeform.relation_type_SQL[1] === false){
 			alert(" The relation is Update. Please select a key field and click the 'SQL Save' button to save it! ");
@@ -272,73 +250,64 @@
 	}
 	// --- relation_num change dao_1755421034 Project59
 	function change_relation_num_func(pg) {
-		R_typeA = document.getElementById('relation_type_key').value;// Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR^0array^1array^2array
+		R_typeA = document.getElementById('relation_type_key').value;
 		R_dataA = document.getElementById('relation_data_tab').value;
-		//R_typeA: Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		//R_dataA: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT^dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT^dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
+		//R_typeA: Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR
+		//^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
+		//^|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		//^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
+		//R_dataA: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
+		//^dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
+		//^dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
 		if( R_dataA!=''){
 			R_data = R_dataA.split('^');
 			document.getElementById('relation_data').value= R_data[pg];
 		}
 		if( R_typeA !=''){
-			R_t = R_typeA.split('^');	// R_typeA = Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR^0array^1array^2array
-			R_type = R_t[0].split('@'); // R_t[0] = Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR
+			R_t = R_typeA.split('^');	//alert("R_t 0: " + R_t[0]);  //R_t 0: Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Insert:::
+			R_type = R_t[0].split('@');
 			document.getElementById('relation_key').value= R_type[pg];
 		}
 		dt = document.getElementById('relation_key_old_'+pg).value; 
 		dd = document.getElementById('relation_data_old_'+pg).value;
-		var selectIndex = document.makeform.Rtab_hnmS.selectedIndex;
-		//alert( selectIndex+ ", pg: " + pg+ ", dt: " + dt + ", dd: " + dd);
-		//7, pg: 0, dt: Update:fld_1:fld_1:CHAR, 
-		//dd: dao_1766822184:ABC_AAA:
-		//|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
-		//7, pg: 1, dt: Update:fld_1:fld_5:CHAR, 
-		//dd: dao_1766735120:ABCYY:
-		//|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
+		var selectIndex = document.makeform.Rtab_hnmS.selectedIndex; //alert( selectIndex+ ", pg: " + pg+ ", dt: " + dt + ", R_typeA: " + R_typeA);
 		if( dd !=''){
 			Rdata = dd.split('$');
 			dataT = Rdata[0].split(':'); //Rdata[0] = dao_1766735120:ABCYY
 			tabenm = dataT[0];
 			tabhnm = dataT[1];
 			document.makeform.Rtab_hnmS[selectIndex].value = tabenm+':'+tabhnm; //Rdata[0];//Rdata0: dao_1766812390:ABCYY_FFF_New
-			document.makeform.Rtab_hnmS[selectIndex].text = tabhnm;  //dataT[1]; //dataT[0]: dao_1766812390
-			
+			document.makeform.Rtab_hnmS[selectIndex].text = tabhnm;
 		} else {
 			document.getElementById('Rtab_hnmS').value = '';
 			document.getElementById('re_tab_column').value = '';
 		}
-		r_func( dd, dt );
+		relation_move_data= r_func( dd, dt );
+		document.makeform.relation_move_data.value = relation_move_data + ' ( ' + R_type[pg] + ' )';
+		pg_relation( dd, dt );
 		return;
 	}
 /*
 //rdata[0]: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
 //rdata0: dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
 //rdata[0]: dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-*/
-	function r_func(relation_column, keyf){
 		//alert("relation_column: "+relation_column);
 		//dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
 		//relation_column: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
 		//relation_column: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
 		//relation_column: dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
 		//relation_column: dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
-
+*/
+	function r_func(relation_column, keyf){
 		rt = keyf.split(':'); //Update:fld_1:fld_1:CHAR
 		rdata = relation_column.split('$'); //alert("rdata0: "+rdata[0]);
 		len = rdata.length;
-
-		rd0=rdata[0];
-		//alert("rd0: "+rd0);
-		//rd0: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		//rd0: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		tcol=rd0.split(':');
-		//tcal2: |fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		//tcal2: |fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
-		//tcal2: |fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		rtab=tcol[2].split('@');
-		rlen = rtab.length;
-		//alert("rlen: " + rlen);
+		rd0 =rdata[0];
+		tcol =rd0.split(':');
+		rtab =tcol[2].split('@');
+		rlen = rtab.length;		//alert("rlen: " + rlen);
 		ss="";
+		relation_move_data="";
 		here_relation.innerHTML=ss;
 		for( j=0; rtab[j]!='' && j<=rlen; j++){
 			rj = rtab[j].split('|');
@@ -346,6 +315,9 @@
 			for( i=1; i<len; i++){
 				rr = rdata[i].split('|');
 				pg = rr[0]; // program field
+				pgnm = pg.split(':');
+				pg_enm = pgnm[0];
+				pg_hnm = pgnm[1];
 				sk = rr[1]; // sik
 				re = rr[2]; // relation table field
 				fn = re.split(':');
@@ -358,7 +330,12 @@
 					if( rt[2] == re_enm) { // rt2 = Update:fld_1:fld_5:
 						ck = " checked ";
 						tt = " key " + tt;
-					}
+					} 
+					//else {
+						relation_move_data = relation_move_data + pg_hnm + sk + re_hnm + ',';
+						//if( relation_move_data == '') relation_move_data = pg_hnm + sk + re_hnm + ',';
+						//else relation_move_data = ',' + pg_hnm + sk + re_hnm;
+					//}
 					break;
 				} else {
 					re_hnm = rj[2];
@@ -371,32 +348,70 @@
 				ss+="<label " +st+ " title='"+ tt +"'><input type='radio' "+ck+" id='re_tab_column' name='re_tab_column' onclick='re_col_func(this.value)' title='"+ re+"' value='"+ re+"'>"+re_hnm+"</label><br>";
 		}
 		here_relation.innerHTML=ss;
+		return relation_move_data; //document.makeform.relation_move_data.value = relation_move_data;
 	} 
-	function r_funcXXX(relation_column, keyf){
+	function pg_relation(relation_column, keyf) {
 		rt = keyf.split(':'); //Update:fld_1:fld_1:CHAR
 		rdata = relation_column.split('$'); //alert("rdata0: "+rdata[0]);
 		len = rdata.length;
+		rd0 =rdata[0];
+		tcol =rd0.split(':');
+		rtab =tcol[2].split('@');
+		rlen = rtab.length;		//alert("rlen: " + rlen);
+
+		relation_PGdata = document.makeform.relation_pg_codeS.value;
+		pgD=relation_PGdata.split('!');
+		itemA = pgD[3];	//itemA: |fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@|fld_7|날짜|TIMESTAMP|20@
+
+		prel =itemA.split('@');
+		plen = prel.length;		//alert("rlen: " + rlen);
+
 		ss="";
-		for( i=1; i<len; i++){
-			rr = rdata[i].split('|');
-			pg = rr[0]; // program field
-			sk = rr[1]; // sik
-			re = rr[2]; // relation table field
-			fn = re.split(':');
-			re_enm = fn[0];
-			re_hnm = fn[1];
-			st = " style='background-color:cyan;' "; // white
-			ck = "";
-			tt = rdata[i];
-			if( rt[2] == re_enm) { // rt = Update:fld_1:fld_5:
-				st = " style='background-color:cyan;' ";
-				ck = " checked ";
-				tt = " key " + tt;
+		here_pgcolumn.innerHTML=ss;
+		for( j=0; prel[j]!='' && j<=plen; j++){ 
+			rj = prel[j].split('|'); //|fld_1|fld1|VARCHAR|15
+				ck = "";
+			for( i=1; i<len; i++){
+				//alert( "len: " + len+ ", i: " +i + ". rdata-i: " + rdata[i]);
+				//len: 5, i: 1. rdata-i: fld_1:fld1|=|fld_5:product:VARCHAR
+				//
+				rr = rdata[i].split('|');
+				pg = rr[0]; // program field
+				pgnm = pg.split(':');
+				pg_enm = pgnm[0];
+				pg_hnm = pgnm[1];
+				sk = rr[1]; // sik
+				re = rr[2]; // relation table field
+				fn = re.split(':');
+				re_enm = fn[0];
+				re_hnm = fn[1];
+
+				if( rj[1] == pg_enm ){
+					st = " style='background-color:cyan;' ";
+					tt = rdata[i];
+					if( rt[1] == pg_enm) { // rt2 = Update:fld_1:fld_5:
+						ck = " checked ";
+						tt = " key " + tt;
+					} 
+					//relation_move_data = relation_move_data + pg_hnm + sk + re_hnm + ',';
+					pre = rj[1] + ':'+ rj[2];
+					pre_hnm = rj[2];
+					break;
+				} else {
+					st = " style='background-color:white;' ";
+					pre_hnm = rj[2];
+					pre = rj[1] + ':'+ rj[2];
+					tt = prel[j];
+				}
+
 			}
-			ss+="<label " +st+ " title='"+ tt +"'><input type='radio' "+ck+" id='re_tab_column' name='re_tab_column' onclick='re_col_func(this.value)' title='"+ re+"' value='"+ re+"'>"+re_hnm+"</label><br>";
+
+//			ss+= "<label " +st+ " title='"+pre+"'><input type='radio' "+ck+" id='pg_tab_column' name='pg_tab_column' title='"+ pre+"' value='"+pre+"' >"+pre_hnm+"</label><br>";
+			ss+= "<label " +st+ " title='"+ tt +"'><input type='radio' "+ck+" id='pg_tab_column' name='pg_tab_column' title='"+ pre+"' value='"+ pre+"'>"+pre_hnm+"</label><br>";
 		}
-		here_relation.innerHTML=ss;
-	} 
+		here_pgcolumn.innerHTML=ss;
+
+	}
 	function sendDataToPHP( projectnmS, pnmdataS ) { /* No use */
 		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
 			method: 'POST',
@@ -704,10 +719,12 @@
                                   </tr>
                                   <tr>
 								  <td valign="top">
+	<div id="here_pgcolumn" style="font-size:18px;">
 <?php
 	$sel_color  = 'white';
 	if( $mode !='Project_Search' ) pg_tab_disp( $item_array );
 ?>
+	</div>
                                      </td>
                                    </tr>
                             </table>
@@ -762,7 +779,6 @@
 			 <td valign="top">
 	<div id="here_relation" style="font-size:18px;">
 <?php
-//m_("$mode - tab_enmR: $tab_enmR"); //- tab_enmR: //Project_Search - tab_enmR: //pg_codeS_Search - tab_enmR: dao_1766822184
 if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 	if( $tab_enmR !='' ) {
 		$Rdata = Relation_Table_Display( $tab_enmR );
@@ -789,8 +805,8 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 <?php
  echo "<input id='sqlsave_button' type='button' value=' SQL Key Set ' onClick='Relation_SQL_Key_Set_func();' style='height:30px;font-size:15; border-radius:20px;border:1 solid white;' title='If the sql type is update, you need to set the key column.'  >";
 ?>
-			<br>
-			<input width='' id='relation_move_data' name='relation_move_data' maxlength='250' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
+<br>
+	<input width='' id='relation_move_data' name='relation_move_data' maxlength='250' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
 			<!-- display:none -->
 			<!-- relation_data_tab(all) --><textarea id='relation_data_tab' name='relation_data_tab' rows='3' cols='84' style="display:none;"><?=$relation_data_tab?></textarea>
 			<!-- relation_type_key(all) --><textarea id='relation_type_key' name='relation_type_key' rows='3' cols='84' style="display:none;"><?=$relation_type_key?></textarea>
@@ -924,6 +940,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 				}
 			}
 		}
+		return $item_array;
 	}
 	function pg_tab_disp( $item_array ){
 		global $type_R_num, $pg_rel;
