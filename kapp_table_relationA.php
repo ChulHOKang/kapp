@@ -528,6 +528,7 @@
 	$relation_key_old_2 = '';
 	$item_array_2='';
 	$relation_num = 0;
+	$relation_type_memo ='';
 
 	if( $mode == 'Delete_Check' ) {
 		$pg_code = $_POST['pg_code'];
@@ -623,7 +624,7 @@
 	}
 	if( $mode !='Project_Search' && $mode !='Relation_SearchTAB' && isset($_POST['relation_pg_codeS']) ) {
 		//m_("--- mode: $mode, $pg_code, $pg_name");		//--- mode: pg_codeS_Search, dao_1757214499, ABC
-		Fetch_pg_code($pg_code, $pg_name);
+		$relation_type_memo = Fetch_pg_code($pg_code, $pg_name);
 	}
 	if( $mode=='Relation_SearchTAB' ) {
 		if( isset($_POST['Rtab_hnmS']) && $_POST['Rtab_hnmS'] !='' ){
@@ -671,6 +672,8 @@
 			<input type="hidden" name="relation_Key_fld_type" id="relation_Key_fld_type"  value="">
 			<input type="hidden" name="program_Key_fld" id="program_Key_fld" value="">
 			<input type="hidden" name="program_Key_nm" id="program_Key_nm" value="">
+			<input type="hidden" name="relation_type_memo" id="relation_type_memo" value="<?=$relation_type_memo?>">
+			$relation_type_memo =
 		  <tr>
 			<td align="center" <?php echo" title='\n(work order)\n1:Select program \n2:Select Relation Number \n3:Select relation table \n4:Select relation column \n5:Select relational expression \n6:Apply button \n7:Select SQL Type \n8:SQL Save button click \n9:Save button click' "; ?> style="border-style:;background-color:#666666;color:cyan;width:160px; height:33px;font-size:15;">
 			Relational settings(<?=$H_ID?>)
@@ -878,6 +881,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 			$item_array	= $rsPG['item_array'];
 			$tab_enm	= $rsPG['tab_enm'];
 			$tab_hnm	= $rsPG['tab_hnm'];
+			$relation_type_memo	= $rsPG['relation_type_memo'];
 			if( $rsPG['relation_data'] !='' ) {
 				$relation_data_tab = $rsPG['relation_data'];
 				$relation_data     = $rsPG['relation_data'];
@@ -945,7 +949,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 				}
 			}
 		}
-		return $item_array;
+		return $relation_type_memo;
 	}
 	function pg_tab_disp( $item_array ){
 		global $type_R_num, $pg_rel;
