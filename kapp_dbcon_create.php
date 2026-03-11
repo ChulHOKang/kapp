@@ -3,19 +3,17 @@
 	/*
         kapp_dbcon_create.php : 
 		: call : setup.php에서 call한다. 
-			- create table 'kapp_member' and 'DB의 id, pw record'를 생성한다 중요!
+			- create table 'kapp_member' and 'DB의 id, pw record' create
 			- DB_curl_get_ailinkapp.php : curl_server setting
-		out 1 : 'kapp_dbcon.php'       를 생성한다.
-		    2 : 'tkher_dbcon_Table.php' 를 생성한다.
-		out 3 : kapp_DB table create, 'kapp_member' Table and 'DB의 id, pw record'를 생성한다 중요!
-		: call : setup.php에서 call한다. 
+		out 1 : 'kapp_dbcon.php' create
+				2 : 'tkher_dbcon_Table.php' create
+		out 3 : kapp_DB table create, 'kapp_member' Table and 'DB id, pw record' create
+		: call : setup.php. 
 		- call : DB_curl_get_ailinkapp.php - DB server url setting
 		- DB : kapp_DB , kapp_DB_curl
 		- function : create_kapp_dbcon() , kapp_DB_table_create(), kapp_DB_record_create(), DB_curl_send( $ip, $server_name_set, $upday, $memo, $pw_md5 )
-
-		-file : /var/www/html/biog7/kapp/data/kapp_dbcon.php created. 
+		-ex) file : /var/www/html/biog7/kapp/data/kapp_dbcon.php created. 
 		-kapp_member Insert Success
-		-
 	*/
 	$tabData['data'][][] = array();
 	$db_host 		= "";
@@ -142,6 +140,7 @@
 		if( kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		drop_kapp_( $table_prefix . "aboard_memo" ); 
 		if( kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		drop_kapp_( $table_prefix . "admin_bbs" ); 
 		if( kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			drop_kapp_( $table_prefix . "ap_bbs" ); 
+		if( kapp_DB_table_check( $table_prefix . "ap_bbs_curl" ) )			drop_kapp_( $table_prefix . "ap_bbs_curl" ); 
 		if( kapp_DB_table_check( $table_prefix . "menuskin" ) )		drop_kapp_( $table_prefix . "menuskin" ); 
 		if( kapp_DB_table_check( $table_prefix . "webeditor" ) )		drop_kapp_( $table_prefix . "webeditor" ); 
 		if( kapp_DB_table_check( $table_prefix . "webeditor_comment"))	drop_kapp_( $table_prefix . "webeditor_comment" ); 
@@ -167,6 +166,9 @@
 		if( kapp_DB_table_check( $table_prefix . "tkher_content" ) )	drop_kapp_( $table_prefix . "tkher_content" ); 
 		if( kapp_DB_table_check( $table_prefix . "ip_info" ) )			drop_kapp_( $table_prefix . "ip_info" ); 
 		if( kapp_DB_table_check( $table_prefix . "login" ) )			drop_kapp_( $table_prefix . "login" ); 
+
+		if( kapp_DB_table_check( $table_prefix . "my_schedule" ) )			drop_kapp_( $table_prefix . "my_schedule" ); 
+		if( kapp_DB_table_check( $table_prefix . "my_everlasting_schedule" ) )			drop_kapp_( $table_prefix . "my_everlasting_schedule" ); 
 		echo "<br><br><b>--- Table : End ---</b><br>";
 	}
 	function drop_kapp_( $tab_){
@@ -194,6 +196,7 @@
 		if( !kapp_DB_table_check( $table_prefix . "aboard_memo" ) )		Aboard_memo( $table_prefix , "aboard_memo" ); 
 		if( !kapp_DB_table_check( $table_prefix . "admin_bbs" ) )		Admin_bbs( $table_prefix , "admin_bbs" ); 
 		if( !kapp_DB_table_check( $table_prefix . "ap_bbs" ) )			Ap_bbs( $table_prefix , "ap_bbs" ); 
+		if( !kapp_DB_table_check( $table_prefix . "ap_bbs_curl" ) )	Ap_bbs_curl( $table_prefix . "ap_bbs_curl" ); 
 		if( !kapp_DB_table_check( $table_prefix . "menuskin" ) )		Menuskin( $table_prefix , "menuskin" ); 
 		if( !kapp_DB_table_check( $table_prefix . "webeditor" ) )		Webeditor( $table_prefix , "webeditor" ); 
 		if( !kapp_DB_table_check( $table_prefix . "webeditor_comment"))	Webeditor_comment( $table_prefix , "webeditor_comment" ); 
@@ -220,6 +223,14 @@
 		if( !kapp_DB_table_check( $table_prefix . "ip_info" ) )			Ip_info( $table_prefix , "ip_info" ); 
 		if( !kapp_DB_table_check( $table_prefix . "login" ) )			Login( $table_prefix , "login" ); 
 
+		if( !kapp_DB_table_check( $table_prefix . "my_schedule" ) ) My_schedule( $table_prefix , "my_schedule" ); 
+		if( !kapp_DB_table_check( $table_prefix . "my_everlasting_schedule" ) ) My_everlasting_schedule( $table_prefix , "my_everlasting_schedule" ); 
+
+		if( !kapp_DB_table_check( $table_prefix . "income" ) ) Income( $table_prefix , "income" ); 
+		if( !kapp_DB_table_check( $table_prefix . "income_code" ) ) Income_code( $table_prefix , "income_code" ); 
+		if( !kapp_DB_table_check( $table_prefix . "pay" ) ) Pay( $table_prefix , "pay" ); 
+		if( !kapp_DB_table_check( $table_prefix . "pay_code" ) ) Pay_code( $table_prefix , "pay_code" ); 
+
 		echo "<br><br><b>--- Table Create : End ---</b><br>";
 		echo "K-APP Home<a href='".KAPP_URL_T_."' target='_blank'> [ Home - click ]</a>";
 		echo "<br>Click Here <a href='./DB_Table_CreateA.php?admin=modumoa' target='_blank'> Table List </a>";
@@ -244,57 +255,59 @@
 		global $tkher;      
 		$SQL = " 
 			CREATE TABLE ".$table_prefix."member (
-			  mb_no int(11) auto_increment NOT NULL,
-			  mb_id varchar(50) NOT NULL,
-			  mb_sn varchar(255) ,
-			  mb_password varchar(255) NOT NULL,
-			  mb_name varchar(255) NOT NULL,
-			  mb_nick varchar(255) ,
-			  mb_nick_date date,
-			  mb_email varchar(255) NOT NULL,
-			  mb_photo varchar(255) ,
-			  mb_homepage varchar(255) ,
-			  mb_level tinyint(4),
-			  mb_sex char(1) ,
-			  mb_birth varchar(255) ,
-			  mb_tel varchar(255) ,
-			  mb_hp varchar(255) ,
-			  mb_certify varchar(20) ,
-			  mb_adult tinyint(4) ,
-			  mb_dupinfo varchar(255) ,
-			  mb_zip1 char(4) ,
-			  mb_zip2 char(4) ,
-			  mb_addr1 varchar(255) ,
-			  mb_addr2 varchar(255) ,
-			  mb_addr3 varchar(255) ,
-			  mb_addr_jibeon varchar(255) ,
-			  mb_signature text,
-			  mb_recommend varchar(255) ,
-			  mb_point int(11) DEFAULT 0,
-			  mb_today_login datetime,
-			  mb_login_ip varchar(255) ,
-			  mb_datetime datetime ,
-			  mb_ip varchar(255) ,
-			  mb_leave_date varchar(8) ,
-			  mb_intercept_date varchar(8) ,
-			  mb_email_certify datetime,
-			  mb_email_certify2 varchar(255) ,
-			  mb_memo text NOT NULL,
-			  mb_lost_certify varchar(255),
-			  mb_mailling tinyint(4),
-			  mb_sms tinyint(4),
-			  mb_open tinyint(4),
-			  mb_open_date date,
-			  mb_profile text,
-			  mb_memo_call varchar(255),
-			  mb_penalty int(11) DEFAULT 0,
-			  mb_gpt_key varchar(255),
-			  mb_gpt_model varchar(255)
-			  , PRIMARY KEY (mb_no)
-			  , UNIQUE KEY mb_id (mb_id)
-			  , KEY mb_today_login (mb_today_login)
-			  , KEY mb_datetime (mb_datetime)
-			  , KEY mb_email (mb_email)
+			  `mb_no` int(11) auto_increment NOT NULL,
+			  `mb_id` varchar(50) NOT NULL,
+			  `mb_sn` varchar(255) ,
+			  `mb_password` varchar(255) NOT NULL,
+			  `mb_name` varchar(255) NOT NULL,
+			  `mb_nick` varchar(255) ,
+			  `mb_nick_date` date,
+			  `mb_email` varchar(50) NOT NULL,
+			  `mb_photo` varchar(255) ,
+			  `mb_homepage` varchar(255) ,
+			  `mb_level` tinyint(4),
+			  `mb_sex` char(1) ,
+			  `mb_birth` varchar(5) ,
+			  `mb_tel` varchar(20) ,
+			  `mb_hp` varchar(20) ,
+			  `mb_certify` varchar(20) ,
+			  `mb_adult` tinyint(4) ,
+			  `mb_dupinfo` varchar(20) ,
+			  `mb_zip1` char(10) ,
+			  `mb_addr1` varchar(255) ,
+			  `mb_addr2` varchar(255) ,
+			  `mb_signature` text,
+			  `mb_recommend` varchar(255) ,
+			  `mb_point` int(11) DEFAULT 0,
+			  `mb_today_login` datetime,
+			  `mb_login_ip` varchar(20) ,
+			  `mb_datetime` datetime ,
+			  `mb_ip` varchar(20) ,
+			  `mb_leave_date` varchar(8) ,
+			  `mb_intercept_date` varchar(8) ,
+			  `mb_email_certify` datetime,
+			  `mb_email_certify2` varchar(255) ,
+			  `mb_memo` text NOT NULL,
+			  `mb_lost_certify` varchar(255),
+			  `mb_mailling` tinyint(4),
+			  `mb_sms` tinyint(4),
+			  `mb_open` tinyint(4),
+			  `mb_open_date` date,
+			  `mb_profile` text,
+			  `mb_memo_call` varchar(255),
+			  `mb_penalty` int(11) DEFAULT 0,
+			  `mb_gpt_key` varchar(255),
+			  `mb_gpt_model` varchar(255),
+			  `hash_block_ab` longblob DEFAULT NULL,
+			  `hash_block_job` longblob DEFAULT NULL,
+			  `hash_block_bom` longblob DEFAULT NULL,
+			  `hash_block_table` longblob DEFAULT NULL,
+			  `hash_block_pg` longblob  DEFAULT NULL
+			  , PRIMARY KEY (`mb_no`)
+			  , UNIQUE KEY (`mb_id`)
+			  , KEY mb_today_login (`mb_today_login`)
+			  , KEY mb_datetime (`mb_datetime`)
+			  , KEY mb_email (`mb_email`)
 			  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		";
 		$result = sql_query( $SQL );
@@ -474,7 +487,7 @@
 		$sqlA = "insert into kapp_DB set kapp_dbhost='".$db_host."', kapp_dbname='$db_name', kapp_dbuser='$db_user', kapp_dbpw='".md5($db_password)."', admin_email='".$admin_email."', admin_pw='".md5($admin_password)."', kapp_point=10000, kapp_level=9, kapp_ip='".$_SERVER['REMOTE_ADDR']."', server_name='".$_SERVER['HTTP_HOST']."', upday='$upday', kapp_memo='".$memo."' ";
 		if( ($result = sql_query( $sqlA ) ) !== false ) {   
 			$RC = DB_curl_send( $_SERVER['REMOTE_ADDR'], KAPP_URL_T_, $upday, $memo, md5($admin_password) );
-			echo "<br> - Create Success and Record Create  Success : kapp_DB <br>RC: "; // ok
+			echo "<br> - Create Success and Record Create  Success : kapp_DB "; // ok
 
 		} else {
 			echo "ERROR - insert kapp_DB";
@@ -575,6 +588,16 @@
 		fwrite($fsi," $" . "tkher['webeditor_comment_table']	= KAPP_TABLE_PREFIX.'webeditor_comment'; // webeditor comment   \r\n");
 		fwrite($fsi," $" . "tkher['menuskin_table']			= KAPP_TABLE_PREFIX.'menuskin';     // board menuskin   \r\n");
 		fwrite($fsi," $" . "tkher['ap_bbs_table']			= KAPP_TABLE_PREFIX.'ap_bbs';       // Bulletin Board Collect All Data   \r\n");
+		fwrite($fsi," $" . "tkher['ap_bbs_curl_table']	= KAPP_TABLE_PREFIX.'ap_bbs_curl';       //  All Data network curl  \r\n");
+
+		fwrite($fsi," $" . "tkher['my_schedule_table']	= KAPP_TABLE_PREFIX.'my_schedule';       //  Schedule  \r\n");
+		fwrite($fsi," $" . "tkher['my_everlasting_schedule_table']	= KAPP_TABLE_PREFIX.'my_everlasting_schedule';       //  Everlasting schedule  \r\n");
+
+		fwrite($fsi," $" . "tkher['income_table']	= KAPP_TABLE_PREFIX.'income';       //  Income  \r\n");
+		fwrite($fsi," $" . "tkher['income_code_table']	= KAPP_TABLE_PREFIX.'income_code';       //  income code  \r\n");
+		fwrite($fsi," $" . "tkher['pay_table']	= KAPP_TABLE_PREFIX.'pay';       //  Pay  \r\n");
+		fwrite($fsi," $" . "tkher['pay_code_table']	= KAPP_TABLE_PREFIX.'pay_code';       //  pay code  \r\n");
+		
 		/*
 		fwrite($fsi," $" . "tkher['tkher_content_table']		= KAPP_TABLE_PREFIX.'tkher_content';       // 약관, 개인정보 처리방안 테이블   \r\n");
 		fwrite($fsi," $" . "tkher['group_table']		= KAPP_TABLE_PREFIX.'coin_group';   // 게시판 그룹 테이블   \r\n");
@@ -602,7 +625,7 @@ function Delete_table($_prefix, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         m_("Delete Success : $tab");
     }
@@ -690,13 +713,17 @@ function Config($t_head, $tab) {
         kapp_naver_client_secret varchar(255) DEFAULT NULL,
         kapp_pay_point int(11) DEFAULT 1,
         kapp_slide_time int(11) DEFAULT 6000,
-		PRIMARY KEY (kapp_title)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		  hash_block_ab longblob,
+		  hash_block_job longblob,
+		  hash_block_bom longblob,
+		  hash_block_table longblob,
+		  hash_block_pg longblob
+		, PRIMARY KEY (kapp_title) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
 		$query = "
         INSERT INTO ".$t_head."config set
@@ -792,7 +819,7 @@ function Aboard_admin($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         $query = "
         INSERT INTO `".$t_head."aboard_admin` (`no`, `id`, `password`, `url`, `db_host`, `db_user`, `db_password`, `db_database`, `bbsname`, `lev`, `bbstitle`) VALUES (1, 'admin', '1004', 'menu', '', '', '', '', 'tkher', 9, 'total manager')
@@ -863,7 +890,7 @@ function Aboard_infor($t_head, $tab) {
         title_text_color varchar(20) DEFAULT NULL,
         security char(1) DEFAULT NULL,
         lev char(1) DEFAULT NULL,
-        make_id varchar(50) NOT NULL DEFAULT '',
+        make_id varchar(50) NOT NULL,
         make_club varchar(255) DEFAULT NULL,
         sunbun int(4) DEFAULT 0,
         memo text DEFAULT NULL
@@ -872,7 +899,7 @@ function Aboard_infor($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
 		$notice_nm = $t_head ."notice";
 		$news_nm   = $t_head ."news";
@@ -899,14 +926,14 @@ $query = "
         CREATE TABLE `aboard_".$t_head."notice` (
 			  `no` int(11) auto_increment NOT NULL,
 			  `infor` int(11) DEFAULT NULL,
-			  `id` varchar(30) DEFAULT NULL,
-			  `name` varchar(30) DEFAULT NULL,
+			  `id` varchar(50) DEFAULT NULL,
+			  `name` varchar(50) DEFAULT NULL,
 			  `email` varchar(100) DEFAULT NULL,
 			  `home` varchar(200) DEFAULT NULL,
 			  `ip` varchar(15) DEFAULT NULL,
 			  `in_date` int(11) DEFAULT NULL,
 			  `subject` varchar(100) DEFAULT NULL,
-			  `context` text DEFAULT NULL,
+			  `context` longblob DEFAULT NULL,
 			  `html` int(11) DEFAULT NULL,
 			  `password` varchar(10) DEFAULT NULL,
 			  `file_name` varchar(250) DEFAULT NULL,
@@ -928,14 +955,14 @@ $query = "
 			CREATE TABLE `aboard_".$t_head."news` (
 			  `no` int(11) auto_increment NOT NULL,
 			  `infor` int(11) DEFAULT NULL,
-			  `id` varchar(30) DEFAULT NULL,
-			  `name` varchar(30) DEFAULT NULL,
+			  `id` varchar(50) DEFAULT NULL,
+			  `name` varchar(50) DEFAULT NULL,
 			  `email` varchar(100) DEFAULT NULL,
 			  `home` varchar(200) DEFAULT NULL,
 			  `ip` varchar(15) DEFAULT NULL,
 			  `in_date` int(11) DEFAULT NULL,
 			  `subject` varchar(100) DEFAULT NULL,
-			  `context` text DEFAULT NULL,
+			  `context` longblob DEFAULT NULL,
 			  `html` int(11) DEFAULT NULL,
 			  `password` varchar(10) DEFAULT NULL,
 			  `file_name` varchar(250) DEFAULT NULL,
@@ -957,14 +984,14 @@ $query = "
 			CREATE TABLE `aboard_".$t_head."qna` (
 			  `no` int(11) auto_increment NOT NULL,
 			  `infor` int(11) DEFAULT NULL,
-			  `id` varchar(30) DEFAULT NULL,
-			  `name` varchar(30) DEFAULT NULL,
+			  `id` varchar(50) DEFAULT NULL,
+			  `name` varchar(50) DEFAULT NULL,
 			  `email` varchar(100) DEFAULT NULL,
 			  `home` varchar(200) DEFAULT NULL,
 			  `ip` varchar(15) DEFAULT NULL,
 			  `in_date` int(11) DEFAULT NULL,
 			  `subject` varchar(100) DEFAULT NULL,
-			  `context` text DEFAULT NULL,
+			  `context` longblob DEFAULT NULL,
 			  `html` int(11) DEFAULT NULL,
 			  `password` varchar(10) DEFAULT NULL,
 			  `file_name` varchar(250) DEFAULT NULL,
@@ -986,14 +1013,14 @@ $query = "
 			CREATE TABLE `aboard_".$t_head."free` (
 			  `no` int(11) auto_increment NOT NULL,
 			  `infor` int(11) DEFAULT NULL,
-			  `id` varchar(30) DEFAULT NULL,
-			  `name` varchar(30) DEFAULT NULL,
+			  `id` varchar(50) DEFAULT NULL,
+			  `name` varchar(50) DEFAULT NULL,
 			  `email` varchar(100) DEFAULT NULL,
 			  `home` varchar(200) DEFAULT NULL,
 			  `ip` varchar(15) DEFAULT NULL,
 			  `in_date` int(11) DEFAULT NULL,
 			  `subject` varchar(100) DEFAULT NULL,
-			  `context` text DEFAULT NULL,
+			  `context` longblob DEFAULT NULL,
 			  `html` int(11) DEFAULT NULL,
 			  `password` varchar(10) DEFAULT NULL,
 			  `file_name` varchar(250) DEFAULT NULL,
@@ -1018,7 +1045,7 @@ function Aboard_memo($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."aboard_memo (
         no int(11) auto_increment NOT NULL,
-        board_name varchar(50) NOT NULL DEFAULT '',
+        board_name varchar(50) NOT NULL,
         list_no int(11) NOT NULL DEFAULT 0,
         name varchar(50) NOT NULL,
         memo text DEFAULT NULL,
@@ -1030,7 +1057,7 @@ function Aboard_memo($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1074,7 +1101,7 @@ function Admin_bbs($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1096,7 +1123,7 @@ function Bbs_history($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1109,7 +1136,7 @@ function Coin_view($t_head, $tab) {
         id varchar(50) NOT NULL,
         makeid varchar(50) NOT NULL,
         title varchar(255) NOT NULL,
-        url varchar(255) NOT NULL DEFAULT '',
+        url varchar(255) NOT NULL,
         up_day varchar(25) NOT NULL,
         ip varchar(15) NOT NULL,
         host varchar(100) NOT NULL,
@@ -1122,7 +1149,7 @@ function Coin_view($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1132,8 +1159,8 @@ function Ip_info($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."ip_info (
         no int(10) auto_increment NOT NULL,
-        ip1 varchar(30) NOT NULL DEFAULT '',
-        ip2 varchar(30) NOT NULL DEFAULT '',
+        ip1 varchar(30) NOT NULL,
+        ip2 varchar(30) NOT NULL,
         ipno1 bigint(11) NOT NULL DEFAULT 0,
         ipno2 bigint(11) NOT NULL DEFAULT 0,
         country_cd varchar(5) DEFAULT NULL,
@@ -1143,7 +1170,7 @@ function Ip_info($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1164,7 +1191,7 @@ function Visit_sum($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1175,8 +1202,8 @@ function Menuskin($t_head, $tab) {
         CREATE TABLE ".$t_head."menuskin (
         seqno int(11) auto_increment NOT NULL,
         user_id varchar(50) DEFAULT NULL,
-        sys_pg varchar(30) DEFAULT NULL,
-        sys_subtit varchar(50) NOT NULL DEFAULT '',
+        sys_pg varchar(50) DEFAULT NULL,
+        sys_subtit varchar(50) NOT NULL,
         sys_link varchar(100) DEFAULT NULL,
         bgcolor varchar(10) DEFAULT NULL,
         fontcolor varchar(10) DEFAULT NULL,
@@ -1186,14 +1213,14 @@ function Menuskin($t_head, $tab) {
         imgtype2 varchar(100) DEFAULT NULL,
         imgtype3 varchar(100) DEFAULT NULL,
         Mmemo varchar(100) DEFAULT NULL,
-        club_url varchar(15) DEFAULT NULL,
+        club_url varchar(100) DEFAULT NULL,
         up_day timestamp NULL DEFAULT current_timestamp()
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1204,7 +1231,7 @@ function Sajin_group($t_head, $tab) {
         CREATE TABLE ".$t_head."sajin_group (
         no int(10) auto_increment NOT NULL,
         g_code varchar(50) DEFAULT NULL,
-        g_name varchar(50) NOT NULL DEFAULT '',
+        g_name varchar(50) NOT NULL,
         g_class_code varchar(50) DEFAULT NULL,
         g_class_name varchar(50) DEFAULT NULL,
         userid varchar(50) DEFAULT NULL,
@@ -1215,7 +1242,7 @@ function Sajin_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1242,7 +1269,7 @@ function Sajin_jpg($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1266,18 +1293,20 @@ function Table10($t_head, $tab) {
         if_data text DEFAULT NULL,
         relation_data text DEFAULT NULL,
         memo text NOT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        upday timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL,
         grant_write int(3) DEFAULT 0,
         grant_view int(3) DEFAULT 0,
         table_yn varchar(3) DEFAULT NULL,
-        sqltable text DEFAULT NULL
+        sqltable text DEFAULT NULL,
+        key_msg text DEFAULT NULL,
+        sql_copy text DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1297,24 +1326,25 @@ function Table10_pg($t_head, $tab) {
         if_data text DEFAULT NULL,
         pop_data text DEFAULT NULL,
         relation_data text DEFAULT NULL,
-        relation_type varchar(255) DEFAULT NULL,
+        relation_type text DEFAULT NULL,
         memo text DEFAULT NULL,
         group_code varchar(50) DEFAULT NULL,
         group_name varchar(50) DEFAULT NULL,
         disno int(5) DEFAULT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        upday timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL,
         tab_mid varchar(50) NOT NULL,
         del varchar(1) DEFAULT NULL,
         grant_write int(3) DEFAULT 0,
         grant_view int(3) DEFAULT 0,
-        del_date datetime DEFAULT NULL
+        del_date datetime DEFAULT NULL,
+        relation_type_memo blob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1337,7 +1367,7 @@ function Job_link_table($t_head, $tab) {
         user_id varchar(50) DEFAULT NULL,
         email varchar(50) DEFAULT NULL,
         club_url varchar(50) DEFAULT NULL,
-        up_day timestamp NULL DEFAULT current_timestamp(),
+        up_day timestamp DEFAULT current_timestamp(),
         memo text DEFAULT NULL,
         view_cnt int(13) DEFAULT 0,
         ip varchar(255) DEFAULT NULL
@@ -1346,7 +1376,7 @@ function Job_link_table($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1373,7 +1403,7 @@ function Sys_menu_bom($t_head, $tab) {
         view_cnt int(11) DEFAULT 0,
         tit_gubun char(1) DEFAULT NULL,
         book_num varchar(50) DEFAULT NULL,
-        up_day timestamp NULL DEFAULT current_timestamp(),
+        up_day timestamp DEFAULT current_timestamp(),
         sys_comp varchar(200) DEFAULT NULL,
         ip varchar(20) DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1381,7 +1411,7 @@ function Sys_menu_bom($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1391,34 +1421,35 @@ function Table10_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` char(30) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `group_code` varchar(50)   DEFAULT NULL,
-  `group_name` varchar(50)   DEFAULT NULL,
-  `disno` int(5) NOT NULL,
-  `tab_enm` varchar(50) NOT NULL,
-  `tab_hnm` varchar(50) NOT NULL,
-  `fld_enm` varchar(50) NOT NULL,
-  `fld_hnm` varchar(50) NOT NULL,
-  `fld_type` varchar(20) NOT NULL,
-  `fld_len` int(10) NOT NULL,
-  `if_line` tinyint(3) DEFAULT NULL,
-  `if_type` text DEFAULT NULL,
-  `if_data` text DEFAULT NULL,
-  `relation_data` text DEFAULT NULL,
-  `memo` text DEFAULT NULL,
-  `upday` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `userid` varchar(50) NOT NULL,
-  `grant_write` varchar(3) DEFAULT NULL,
-  `grant_view` varchar(3) DEFAULT NULL,
-  `table_yn` varchar(3) DEFAULT NULL,
-  `sqltable` text DEFAULT NULL
+		  `host` varchar(100) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `group_code` varchar(50)   DEFAULT NULL,
+		  `group_name` varchar(50)   DEFAULT NULL,
+		  `disno` int(5) NOT NULL,
+		  `tab_enm` varchar(50) NOT NULL,
+		  `tab_hnm` varchar(50) NOT NULL,
+		  `fld_enm` varchar(50) NOT NULL,
+		  `fld_hnm` varchar(50) NOT NULL,
+		  `fld_type` varchar(20) NOT NULL,
+		  `fld_len` int(10) NOT NULL,
+		  `if_line` tinyint(3) DEFAULT NULL,
+		  `if_type` text DEFAULT NULL,
+		  `if_data` text DEFAULT NULL,
+		  `relation_data` text DEFAULT NULL,
+		  `memo` text DEFAULT NULL,
+		  `upday` timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		  `userid` varchar(50) NOT NULL,
+		  `grant_write` varchar(3) DEFAULT NULL,
+		  `grant_view` varchar(3) DEFAULT NULL,
+		  `table_yn` varchar(3) DEFAULT NULL,
+		  `sqltable` text DEFAULT NULL,
+		  `hash_block_table` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1428,34 +1459,35 @@ function Table10_pg_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."table10_pg_curl (
         `seqno` int(13) auto_increment NOT NULL,
-  `host` varchar(30) NOT NULL,
-  `pg_code` varchar(50) NOT NULL,
-  `pg_name` varchar(50) NOT NULL,
-  `tab_enm` varchar(50) NOT NULL,
-  `tab_hnm` varchar(50) NOT NULL,
-  `item_cnt` tinyint(3) DEFAULT NULL,
-  `item_array` text NOT NULL,
-  `if_type` text DEFAULT NULL,
-  `if_data` text DEFAULT NULL,
-  `pop_data` text DEFAULT NULL,
-  `relation_data` text DEFAULT NULL,
-  `relation_type` varchar(255) DEFAULT NULL,
-  `memo` text DEFAULT NULL,
-  `group_code` varchar(50) NOT NULL,
-  `group_name` varchar(50) NOT NULL,
-  `disno` int(5) DEFAULT NULL,
-  `upday` timestamp NOT NULL DEFAULT current_timestamp(),
-  `userid` varchar(50) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `del` varchar(1) DEFAULT NULL,
-  `del_date` datetime DEFAULT NULL,
-  `sys_link` varchar(255) NOT NULL
+		  `host` varchar(100) NOT NULL,
+		  `pg_code` varchar(50) NOT NULL,
+		  `pg_name` varchar(50) NOT NULL,
+		  `tab_enm` varchar(50) NOT NULL,
+		  `tab_hnm` varchar(50) NOT NULL,
+		  `item_cnt` tinyint(3) DEFAULT NULL,
+		  `item_array` text NOT NULL,
+		  `if_type` text DEFAULT NULL,
+		  `if_data` text DEFAULT NULL,
+		  `pop_data` text DEFAULT NULL,
+		  `relation_data` text DEFAULT NULL,
+		  `relation_type` text DEFAULT NULL,
+		  `memo` text DEFAULT NULL,
+		  `group_code` varchar(50) NOT NULL,
+		  `group_name` varchar(50) NOT NULL,
+		  `disno` int(5) DEFAULT NULL,
+		  `upday` timestamp DEFAULT current_timestamp(),
+		  `userid` varchar(50) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `del` varchar(1) DEFAULT NULL,
+		  `del_date` datetime DEFAULT NULL,
+		  `sys_link` varchar(255) NOT NULL,
+		  `hash_block_pg` longblob  DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1465,20 +1497,22 @@ function Job_link_table_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."job_link_table_curl (
         `seqno` int(11) auto_increment NOT NULL,
-  `kapp_server` varchar(30) DEFAULT NULL,
-  `link_title` varchar(200) DEFAULT NULL,
-  `link_url` text DEFAULT NULL,
-  `link_type` char(1) DEFAULT NULL,
-  `email` varchar(50) DEFAULT NULL,
-  `up_day` timestamp NULL DEFAULT current_timestamp(),
-  `memo` text DEFAULT NULL,
-  `user_ip` varchar(255) DEFAULT NULL
+		`host` varchar(100) NOT NULL,
+		  `kapp_server` varchar(250) DEFAULT NULL,
+		  `link_title` varchar(200) DEFAULT NULL,
+		  `link_url` text DEFAULT NULL,
+		  `link_type` char(1) DEFAULT NULL,
+		  `email` varchar(50) DEFAULT NULL,
+		  `up_day` timestamp DEFAULT current_timestamp(),
+		  `memo` text DEFAULT NULL,
+		  `user_ip` varchar(15) DEFAULT NULL,
+		 `hash_block_job` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1489,40 +1523,41 @@ function Sys_menu_bom_curl($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."sys_menu_bom_curl (
         `seqno` int(11) auto_increment NOT NULL,
-  `host` varchar(30) DEFAULT NULL,
-  `sys_userid` varchar(30) NOT NULL,
-  `email` varchar(30) NOT NULL,
-  `sys_pg` varchar(50) NOT NULL,
-  `sys_rcnt` int(11) DEFAULT 0,
-  `sys_disno` int(11) DEFAULT 0,
-  `sys_subtit` varchar(50) DEFAULT NULL,
-  `sys_link` varchar(250) NOT NULL,
-  `sys_level` varchar(50) DEFAULT NULL,
-  `sys_menu` varchar(100) NOT NULL,
-  `sys_submenu` varchar(100) NOT NULL,
-  `sys_cnt` int(11) DEFAULT 0,
-  `sys_memo` text DEFAULT NULL,
-  `sys_file` varchar(50) DEFAULT NULL,
-  `sys_menutit` varchar(100) DEFAULT NULL,
-  `view_lev` char(1) DEFAULT NULL,
-  `view_cnt` int(11) DEFAULT 0,
-  `tit_gubun` char(1) DEFAULT NULL,
-  `book_num` varchar(50) DEFAULT NULL,
-  `up_day` timestamp NULL DEFAULT current_timestamp(),
-  `ip` varchar(20) DEFAULT NULL,
-  `bgcolor` varchar(10) DEFAULT NULL,
-  `fontcolor` varchar(10) DEFAULT NULL,
-  `fontface` varchar(10) DEFAULT NULL,
-  `fontsize` varchar(10) DEFAULT NULL,
-  `imgtype1` varchar(100) DEFAULT NULL,
-  `imgtype2` varchar(100) DEFAULT NULL,
-  `imgtype3` varchar(100) DEFAULT NULL
+		  `host` varchar(100) DEFAULT NULL,
+		  `sys_userid` varchar(50) NOT NULL,
+		  `email` varchar(50) NOT NULL,
+		  `sys_pg` varchar(50) NOT NULL,
+		  `sys_rcnt` int(11) DEFAULT 0,
+		  `sys_disno` int(11) DEFAULT 0,
+		  `sys_subtit` varchar(50) DEFAULT NULL,
+		  `sys_link` varchar(250) NOT NULL,
+		  `sys_level` varchar(50) DEFAULT NULL,
+		  `sys_menu` varchar(100) NOT NULL,
+		  `sys_submenu` varchar(100) NOT NULL,
+		  `sys_cnt` int(11) DEFAULT 0,
+		  `sys_memo` text DEFAULT NULL,
+		  `sys_file` varchar(50) DEFAULT NULL,
+		  `sys_menutit` varchar(100) DEFAULT NULL,
+		  `view_lev` char(1) DEFAULT NULL,
+		  `view_cnt` int(11) DEFAULT 0,
+		  `tit_gubun` char(1) DEFAULT NULL,
+		  `book_num` varchar(50) DEFAULT NULL,
+		  `up_day` timestamp DEFAULT current_timestamp(),
+		  `ip` varchar(20) DEFAULT NULL,
+		  `bgcolor` varchar(10) DEFAULT NULL,
+		  `fontcolor` varchar(10) DEFAULT NULL,
+		  `fontface` varchar(10) DEFAULT NULL,
+		  `fontsize` varchar(10) DEFAULT NULL,
+		  `imgtype1` varchar(100) DEFAULT NULL,
+		  `imgtype2` varchar(100) DEFAULT NULL,
+		  `imgtype3` varchar(100) DEFAULT NULL,
+			  `hash_block_bom` longblob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1535,14 +1570,14 @@ function table10_group($t_head, $tab) {
         group_code varchar(50) NOT NULL,
         group_name varchar(50) NOT NULL,
         memo text NOT NULL,
-        upday timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+        upday timestamp DEFAULT current_timestamp() ON UPDATE current_timestamp(),
         userid varchar(50) NOT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1561,7 +1596,7 @@ function Tkher_main_img($t_head, $tab) {
         g_file1 varchar(100) DEFAULT NULL,
         g_file2 varchar(100) DEFAULT NULL,
         g_file3 varchar(100) DEFAULT NULL,
-        day timestamp NULL DEFAULT current_timestamp(),
+        day timestamp DEFAULT current_timestamp(),
         url varchar(200) DEFAULT NULL,
         userid varchar(50) NOT NULL,
         delay_time int(11) NOT NULL DEFAULT 3000
@@ -1570,7 +1605,7 @@ function Tkher_main_img($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         $query = "
         INSERT INTO `".$t_head."tkher_main_img` (`no`, `jpg_name`, `jpg_file`, `jpg_memo`, `group_code`, `group_name`, `view_no`, `g_file1`, `g_file2`, `g_file3`, `day`, `url`, `userid`, `delay_time`) VALUES
@@ -1615,7 +1650,7 @@ function Tkher_my_control($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         $query = "
         INSERT INTO `".$t_head."tkher_my_control` (`seqno`, `userid`, `slide_time`, `fld1`, `fld2`, `fld3`, `fld4`, `fld5`) VALUES (1, 'tkher', 6000, '', '', '', '', 0)";
@@ -1632,7 +1667,7 @@ function Url_group($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."url_group (
         no int(10) auto_increment NOT NULL,
-        g_name varchar(200) NOT NULL DEFAULT '',
+        g_name varchar(200) NOT NULL,
         g_num varchar(50) DEFAULT NULL,
         g_class varchar(20) DEFAULT NULL,
         g_class_num int(11) DEFAULT NULL,
@@ -1643,7 +1678,7 @@ function Url_group($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1657,11 +1692,11 @@ function Webeditor($t_head, $tab) {
         user varchar(50) DEFAULT 'solpakan',
         h_lev char(1) DEFAULT NULL,
         id varchar(50) DEFAULT NULL,
-        title varchar(255) NOT NULL DEFAULT '',
+        title varchar(255) NOT NULL,
         align varchar(255) DEFAULT NULL,
-        content text DEFAULT NULL,
-        reply text DEFAULT NULL,
-        date timestamp NULL DEFAULT current_timestamp(),
+        content longblob  DEFAULT NULL,
+        reply longblob  DEFAULT NULL,
+        date timestamp DEFAULT current_timestamp(),
         backgroundcolor varchar(7) DEFAULT NULL,
         backgroundimage varchar(100) DEFAULT NULL,
         diff char(1) DEFAULT NULL,
@@ -1674,7 +1709,7 @@ function Webeditor($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1690,8 +1725,8 @@ function Webeditor_comment($t_head, $tab) {
         doc_userid varchar(50) DEFAULT NULL,
         title varchar(255) DEFAULT NULL,
         align varchar(10) DEFAULT NULL,
-        content text DEFAULT NULL,
-        reply text DEFAULT NULL,
+        content longblob  DEFAULT NULL,
+        reply longblob  DEFAULT NULL,
         date datetime DEFAULT current_timestamp(),
         backgroundcolor varchar(7) DEFAULT NULL,
         backgroundimage varchar(100) DEFAULT NULL,
@@ -1704,7 +1739,7 @@ function Webeditor_comment($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1717,33 +1752,30 @@ function Member($t_head, $tab) {
         mb_id varchar(50) NOT NULL,
         mb_sn varchar(255) DEFAULT NULL,
         mb_password varchar(255) DEFAULT NULL,
-        mb_name varchar(255) DEFAULT NULL,
-        mb_nick varchar(255) DEFAULT NULL,
+        mb_name varchar(100) DEFAULT NULL,
+        mb_nick varchar(50) DEFAULT NULL,
         mb_nick_date date DEFAULT '0000-00-00',
         mb_email varchar(255) NOT NULL,
         mb_photo varchar(255) DEFAULT NULL,
         mb_homepage varchar(255) DEFAULT NULL,
         mb_level tinyint(4) DEFAULT 0,
         mb_sex char(1) DEFAULT NULL,
-        mb_birth varchar(255) DEFAULT NULL,
-        mb_tel varchar(255) DEFAULT NULL,
-        mb_hp varchar(255) DEFAULT NULL,
+        mb_birth varchar(5) DEFAULT NULL,
+        mb_tel varchar(20) DEFAULT NULL,
+        mb_hp varchar(20) DEFAULT NULL,
         mb_certify varchar(20) DEFAULT NULL,
         mb_adult tinyint(4) NOT NULL DEFAULT 0,
-        mb_dupinfo varchar(255) DEFAULT NULL,
+        mb_dupinfo varchar(20) DEFAULT NULL,
         mb_zip1 char(10) DEFAULT NULL,
-        mb_zip2 char(3) DEFAULT NULL,
         mb_addr1 varchar(255) DEFAULT NULL,
         mb_addr2 varchar(255) DEFAULT NULL,
-        mb_addr3 varchar(255) DEFAULT NULL,
-        mb_addr_jibeon varchar(255) DEFAULT NULL,
         mb_signature text DEFAULT NULL,
         mb_recommend varchar(255) DEFAULT NULL,
         mb_point int(11) DEFAULT 0,
         mb_today_login datetime DEFAULT '0000-00-00 00:00:00',
-        mb_login_ip varchar(255) DEFAULT NULL,
+        mb_login_ip varchar(20) DEFAULT NULL,
         mb_datetime datetime DEFAULT current_timestamp(),
-        mb_ip varchar(255) DEFAULT NULL,
+        mb_ip varchar(20) DEFAULT NULL,
         mb_leave_date varchar(8) DEFAULT NULL,
         mb_intercept_date varchar(8) DEFAULT NULL,
         mb_email_certify datetime DEFAULT '0000-00-00 00:00:00',
@@ -1755,8 +1787,11 @@ function Member($t_head, $tab) {
         mb_open tinyint(4) DEFAULT 0,
         mb_open_date date DEFAULT '0000-00-00',
         mb_profile text DEFAULT NULL,
-        mb_memo_call varchar(255) DEFAULT NULL,
-        PRIMARY KEY (mb_no),
+		  mb_memo_call varchar(255),
+		  mb_penalty int(11) DEFAULT 0,
+		  mb_gpt_key varchar(255),
+		  mb_gpt_model varchar(255)
+          , PRIMARY KEY (mb_no),
         UNIQUE KEY mb_id (mb_id),
         KEY mb_today_login (mb_today_login),
         KEY mb_datetime (mb_datetime),
@@ -1766,7 +1801,7 @@ function Member($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1779,7 +1814,7 @@ function Log_info($t_head, $tab) {
         url varchar(255) DEFAULT NULL,
         name varchar(100) NOT NULL,
         id varchar(50) NOT NULL,
-        uptime datetime NOT NULL DEFAULT current_timestamp(),
+        uptime datetime DEFAULT current_timestamp(),
         ip varchar(20) DEFAULT NULL,
         msg text DEFAULT NULL,
         country_cd char(5) DEFAULT NULL,
@@ -1787,14 +1822,12 @@ function Log_info($t_head, $tab) {
         type char(10) DEFAULT NULL,
         start_pg char(255) DEFAULT NULL,
         email varchar(255) DEFAULT NULL,
-        PRIMARY KEY (no),
-        KEY no (no)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        PRIMARY KEY (no) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1822,7 +1855,7 @@ function Point($t_head, $tab) {
     ";
     $result = sql_query( $SQL );
     if( !$result ){
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1832,7 +1865,7 @@ function Visit($t_head, $tab) {
     $SQL = "
         CREATE TABLE ".$t_head."visit (
         vi_id int(11) auto_increment NOT NULL,
-        vi_ip varchar(255) NOT NULL DEFAULT '',
+        vi_ip varchar(255) NOT NULL,
         vi_date date NOT NULL DEFAULT '0000-00-00',
         vi_time time NOT NULL DEFAULT '00:00:00',
         vi_referer text DEFAULT NULL,
@@ -1848,7 +1881,7 @@ function Visit($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1860,22 +1893,188 @@ function Ap_bbs($t_head, $tab) {
         `seqno` bigint(20) NOT NULL AUTO_INCREMENT,
         `infor` bigint(20) NOT NULL,
         `email` varchar(100) DEFAULT NULL,
-        `subject` varchar(60) NOT NULL,
-        `content` text NOT NULL,
+        `subject` varchar(100) NOT NULL,
+        `content` longblob NOT NULL,
         `up_day` datetime DEFAULT current_timestamp(),
         `reg_date` int(11) DEFAULT NULL,
 		`host` varchar(100) DEFAULT NULL,
+		`aboard_tab_enm` varchar(50) DEFAULT NULL,
+		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
+		`kapp_server` varchar(100) DEFAULT NULL,
         PRIMARY KEY (`seqno`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
 }
+function Ap_bbs_curl($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE `".$t_head."ap_bbs_curl` (
+        `seqno` bigint(20) NOT NULL AUTO_INCREMENT,
+        `infor` bigint(20) NOT NULL,
+        `email` varchar(100) DEFAULT NULL,
+        `subject` varchar(100) NOT NULL,
+        `content` longblob NOT NULL,
+        `up_day` datetime DEFAULT current_timestamp(),
+        `reg_date` int(11) DEFAULT NULL,
+		`host` varchar(100) DEFAULT NULL,
+		`aboard_tab_enm` varchar(50) DEFAULT NULL,
+		`aboard_tab_hnm` varchar(50) DEFAULT NULL,
+		`kapp_server` varchar(100) DEFAULT NULL,
+		`hash_block_ab` longblob DEFAULT NULL
+		, PRIMARY KEY (`seqno`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
+function My_schedule($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."my_schedule (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `id` varchar(50) DEFAULT NULL,
+		  `year` char(4) DEFAULT NULL,
+		  `month` char(2) DEFAULT NULL,
+		  `day` char(2) DEFAULT NULL,
+		  `lyear` char(4) DEFAULT NULL,
+		  `lmonth` char(2) DEFAULT NULL,
+		  `lday` char(2) DEFAULT NULL,
+		  `comment` varchar(250) DEFAULT NULL,
+		  `uptime` int(10) DEFAULT NULL,
+		  `sday` timestamp DEFAULT current_timestamp(),
+		  `uselunar` char(1) DEFAULT NULL,
+		  `lnm` char(5) DEFAULT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function My_everlasting_schedule($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."my_everlasting_schedule (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `id` varchar(50) DEFAULT NULL,
+		  `month` char(2) DEFAULT NULL,
+		  `day` char(2) DEFAULT NULL,
+		  `um_month` char(2) DEFAULT NULL,
+		  `um_day` char(2) DEFAULT NULL,
+		  `comment` varchar(250) DEFAULT NULL,
+		  `uptime` int(10) DEFAULT NULL,
+		  `sday` datetime DEFAULT current_timestamp(),
+		  `uselunar` char(1) DEFAULT NULL,
+		  `yundal` char(5) DEFAULT NULL,
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
+function Income($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."income (
+		  `num` int(11)  auto_increment NOT NULL,
+		  `userid` varchar(50) NOT NULL,
+		  `incomeinfo` varchar(150) NOT NULL,
+		  `income_code` char(30) NOT NULL,
+		  `money` int(11) NOT NULL DEFAULT 0,
+		  `memo` varchar(255) NOT NULL,
+		  `incomedate` date DEFAULT NULL,
+		  `day` datetime DEFAULT current_timestamp()
+        , primary key(num) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Income_code($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."income_code (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `income_code` char(30) NOT NULL,
+		  `incomeinfo` char(150) NOT NULL,
+		  `day` datetime DEFAULT current_timestamp(),
+		  `userid` char(50) NOT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Pay($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."pay (
+		  `num` int(11)  auto_increment NOT NULL,
+		  `userid` varchar(50) NOT NULL,
+		  `payinfo` varchar(150) NOT NULL,
+		  `pay_code` char(30) NOT NULL,
+		  `money` int(11) NOT NULL DEFAULT 0,
+		  `memo` varchar(255) NOT NULL,
+		  `paydate` date DEFAULT NULL,
+		  `day` datetime DEFAULT current_timestamp()
+        , primary key(num) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+function Pay_code($t_head, $tab) {
+    $tab = $t_head.$tab;
+    $SQL = "
+        CREATE TABLE ".$t_head."pay_code (
+		  `seqno` int(11)  auto_increment NOT NULL,
+		  `pay_code` char(30) NOT NULL,
+		  `payinfo` char(150) NOT NULL,
+		  `day` datetime DEFAULT current_timestamp(),
+		  `userid` char(50) NOT NULL
+        , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    ";
+    $result = sql_query( $SQL );
+    if( !$result ){
+        m_("$tab Table Create Invalid query: " . $SQL);
+        echo "Please check if the $tab table already exists. <br>";
+    } else {
+        echo " - Create  Success : $tab";
+    }
+}
+
 function E_list($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
@@ -1892,7 +2091,7 @@ function E_list($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1930,7 +2129,7 @@ function Pri_contect($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         //m_("Create Success : $tab");
         $query = "
@@ -1971,7 +2170,7 @@ function Project($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -1981,13 +2180,13 @@ function Tkher_content($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
     CREATE TABLE `".$t_head."tkher_content` (
-    `co_id` varchar(50) NOT NULL DEFAULT '',
+    `co_id` varchar(50)  auto_increment NOT NULL,
     `co_html` tinyint(4) NOT NULL DEFAULT 0,
-    `co_subject` varchar(255) NOT NULL DEFAULT '',
+    `co_subject` varchar(255) NOT NULL,
     `co_content` longtext NOT NULL,
     `co_mobile_content` longtext NOT NULL,
-    `co_skin` varchar(255) NOT NULL DEFAULT '',
-    `co_mobile_skin` varchar(255) NOT NULL DEFAULT '',
+    `co_skin` varchar(255) NOT NULL,
+    `co_mobile_skin` varchar(255) NOT NULL,
     `co_tag_filter_use` tinyint(4) NOT NULL DEFAULT 0,
     `co_hit` int(11) NOT NULL DEFAULT 0,
     `co_include_head` varchar(255) NOT NULL,
@@ -1998,7 +2197,7 @@ function Tkher_content($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
@@ -2029,11 +2228,12 @@ function Pri_maintenance($t_head, $tab) {
     $result = sql_query( $SQL );
     if( !$result ){
         m_("$tab Table Create Invalid query: " . $SQL);
-        m_("Please check if the $tab table already exists.");
+        echo "Please check if the $tab table already exists. <br>";
     } else {
         echo " - Create  Success : $tab";
     }
 }
+
 	function encryptA($_data, $_salt, $_iv) {
 		$key = openssl_digest($_salt, 'sha256', true);
 		$encrypt_jsonData = json_encode($_data);
