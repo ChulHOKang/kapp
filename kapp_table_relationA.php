@@ -108,9 +108,12 @@
 	function Relation_SQL_Key_Set_func(){
 		var relation_num = document.getElementById('relation_num').value;
 		if ( makeform.relation_type_SQL[0].checked == true ) { // 중복허락한 Insert이다 key가 필요없다.
-			document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
-			key_type = document.getElementById('relation_key_old_'+relation_num).value;
-			if( key_type=='') document.getElementById('relation_key_old_'+relation_num).value = 'Insert' + ':' + ':' + ':';
+			//document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
+			Key_data = 'Insert' + ':' + ':' + ':';
+			//key_type = document.getElementById('relation_key_old_'+relation_num).value;
+			//if( key_type=='') document.getElementById('relation_key_old_'+relation_num).value = 'Insert' + ':' + ':' + ':';
+			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
+			document.getElementById('relation_key').value= Key_data;
 		} else {
 			var relation_pg_codeS = makeform.relation_pg_codeS.value;
 			var Rtab_hnmS = makeform.Rtab_hnmS.value;
@@ -435,6 +438,7 @@
 		}
 		//sendDataToPHP('relation_project_nmS', pnmS);
 		document.getElementById('mode').value = 'Project_Search';
+		document.getElementById('relation_num').value = '0';
 		document.makeform.action="kapp_table_relationA.php";
 		document.makeform.submit();	//location.replace(location.href);
 	}
@@ -451,6 +455,7 @@
 		document.getElementById('tab_enm').value = pgcodeS[2];
 		document.getElementById('tab_hnm').value = pgcodeS[3];
 		document.getElementById('mode').value = 'pg_codeS_Search';
+		document.getElementById('relation_num').value = '0';
 		//sendDataToPHP('relation_pg_codeS', pcdS);
 		document.makeform.action="kapp_table_relationA.php";
 		document.makeform.submit();

@@ -85,12 +85,12 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="./logo/land25.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 <link href="./include/css/admin.css" rel="stylesheet" type="text/css">
@@ -112,32 +112,28 @@
 		}
 	}
 	function getfname(str) {
-		if (str.indexOf("]") > 0) {
+		if( str.indexOf("]") > 0) {
 			frealname = str.substring(0, str.indexOf("]")+1)
 			str = str.substr(str.indexOf("]")+2)
 		}
 		return str
 	}
-
 	function upItem() {
 		var tmpValue, tmpText
 		var selectIndex = makeform.column_list.selectedIndex;
-	 
-		if (selectIndex > 0) {
+		if( selectIndex > 0) {
 			tmpValue = makeform.column_list[selectIndex -1].value;
 			tmpText  = makeform.column_list[selectIndex -1].text;
 			i = selectIndex -1;
 			tmpiftype = document.makeform["if_type[" + i + "]"].value;
 			tmpifdata = document.makeform["if_data[" + i + "]"].value;
 			tmppopdata = document.makeform["popdata[" + i + "]"].value;
-
 			document.makeform["popdata[" + i + "]"].value = document.makeform["popdata[" + selectIndex + "]"].value;
 			document.makeform["if_data[" + i + "]"].value = document.makeform["if_data[" + selectIndex + "]"].value;
 			document.makeform["if_type[" + i + "]"].value = document.makeform["if_type[" + selectIndex + "]"].value;
 			document.makeform["popdata[" + selectIndex + "]"].value   = tmppopdata;
 			document.makeform["if_data[" + selectIndex + "]"].value   = tmpifdata;
 			document.makeform["if_type[" + selectIndex + "]"].value    = tmpiftype;
-
 			makeform.column_list[selectIndex-1].value = makeform.column_list[selectIndex].value;
 			makeform.column_list[selectIndex-1].text  = makeform.column_list[selectIndex].text;
 			makeform.column_list[selectIndex].value   = tmpValue;
@@ -146,11 +142,11 @@
 		}
 		var obj = document.getElementById("column_list");
 		var str_array = '';
-		for (i = 0; i < obj.length; i++) {
-				var str_val = makeform.column_list.options[i].value;
-				var str_txt = makeform.column_list.options[i].text;
-				st = str_val.split("|");
-				str_array += st[0] + '|' + st[1] + '|' + str_txt +  '|' + st[3] + '@'; 
+		for( i = 0; i < obj.length; i++) {
+			var str_val = makeform.column_list.options[i].value;
+			var str_txt = makeform.column_list.options[i].text;
+			st = str_val.split("|");
+			str_array += st[0] + '|' + st[1] + '|' + str_txt +  '|' + st[3] + '@'; 
 		}
 		makeform.item_array.value = str_array;
 	}
@@ -161,18 +157,15 @@
 			tmpValue = makeform.column_list[selectIndex +1].value;
 			tmpText  = makeform.column_list[selectIndex +1].text;
 			i = selectIndex +1;
-
 			tmppopdata = document.makeform["popdata[" + i + "]"].value;
 			tmpifdata = document.makeform["if_data[" + i + "]"].value;
 			tmpiftype = document.makeform["if_type[" + i + "]"].value;
-
 			document.makeform["popdata[" + i + "]"].value	= document.makeform["popdata[" + selectIndex + "]"].value;
 			document.makeform["if_data[" + i + "]"].value	= document.makeform["if_data[" + selectIndex + "]"].value;
 			document.makeform["if_type[" + i + "]"].value		= document.makeform["if_type[" + selectIndex + "]"].value;
 			document.makeform["popdata[" + selectIndex + "]"].value		= tmppopdata;
 			document.makeform["if_data[" + selectIndex + "]"].value		= tmpifdata;
 			document.makeform["if_type[" + selectIndex + "]"].value		= tmpiftype;
-
 			makeform.column_list[selectIndex+1].value = makeform.column_list[selectIndex].value;
 			makeform.column_list[selectIndex+1].text  = makeform.column_list[selectIndex].text;
 			makeform.column_list[selectIndex].value   = tmpValue;
@@ -181,11 +174,11 @@
 		}
 		var obj = document.getElementById("column_list");
 		var str_array = '';
-		for (i = 0; i < obj.length; i++) {
-				var str_val = makeform.column_list.options[i].value;
-				var str_txt = makeform.column_list.options[i].text;
-				st = str_val.split("|");
-				str_array += st[0] + '|' + st[1] + '|' + str_txt +  '|' + st[3] + '@'; 
+		for( i = 0; i < obj.length; i++) {
+			var str_val = makeform.column_list.options[i].value;
+			var str_txt = makeform.column_list.options[i].text;
+			st = str_val.split("|");
+			str_array += st[0] + '|' + st[1] + '|' + str_txt +  '|' + st[3] + '@'; 
 		}
 		makeform.item_array.value = str_array;
 	}
@@ -216,7 +209,7 @@
 		if( !resp ) return false; 
 		var selind = 0
 		selind = makeform.column_list.selectedIndex
-		var item_cnt = makeform.column_list.options.length;	 // table item 수.
+		var item_cnt = makeform.column_list.options.length;
 		var str_array="";
 		for (i = selind+1; i < item_cnt; i++) {
 				makeform.column_list[i-1].value = makeform.column_list[i].value;
@@ -236,12 +229,10 @@
 		document.makeform.target='table_main';
 		document.makeform.submit();
 	}
-
-	function pg_dup_check()
-	{
+	function pg_dup_check(){
 		pg_name = document.makeform.pg_name.value;
 		var item_cnt = makeform.pg_codeS.options.length; 
-		for (i = 0; i < item_cnt; i++) {
+		for( i = 0; i < item_cnt; i++) {
 				var str_val = makeform.pg_codeS.options[i].value;
 				var pgnm = makeform.pg_codeS.options[i].text;
 				if(pg_name == pgnm){
@@ -399,27 +390,23 @@
 		tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
 		tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
 		tmpiftypeJ = document.makeform["if_type[" + j + "]"].value;
-
 		tmppopdataK = document.makeform["popdata[" + i + "]"].value;
 		tmpifdataK = document.makeform["if_data[" + i + "]"].value;
 		tmpiftypeK = document.makeform["if_type[" + i + "]"].value;
-
 		document.makeform["popdata[" + i + "]"].value= document.makeform["popdata[" + j + "]"].value;
 		document.makeform["if_data[" + i + "]"].value= document.makeform["if_data[" + j + "]"].value;
 		document.makeform["if_type[" + i + "]"].value = document.makeform["if_type[" + j + "]"].value;
 		document.makeform["popdata[" + j + "]"].value= tmppopdataK;
 		document.makeform["if_data[" + j + "]"].value= tmpifdataK;
 		document.makeform["if_type[" + j + "]"].value = tmpiftypeK;
-
 		tmpValueJ = colnm[j].value;
 		tmpValueI = colnm[i].value;
-
 		document.getElementById('column_list'+j).value = tmpValueI;
 		document.getElementById('column_list'+i).value = tmpValueJ;
 		tmpValueJ = document.getElementById('column_list'+j).value;
 		tmpValueI = document.getElementById('column_list'+i).value;
 		var str_array = '';
-		for (k = 0; k < colnm.length; k++) {
+		for( k = 0; k < colnm.length; k++) {
 			colnm_value = colnm[k].value;
 			st = colnm_value.split('|');
 			str_array += st[0] + '|' + st[1] + '|' + st[2] + '|' + st[3] + '@'; 
@@ -428,11 +415,10 @@
 		makeform.item_array.value = str_array;
 		document.getElementById('column_list'+i).checked=true;
 		document.makeform.column_index.value = i; // click point set
-
 	}
 	function upItemA() {
 		var j = document.makeform.column_index.value;
-		if ( j < 0 ){
+		if( j < 0 ){
 			alert(' Please select a column! ' );
 			return false;
 		}
@@ -442,7 +428,7 @@
 		var tmpValue, tmpText
 		var top_line = 0;
 		var end_line = len -1;
-		if (j == top_line ) {
+		if( j == top_line ) {
 			alert('top_line j:' + j);
 			return false; // down은 마지막 컬럼이면 return false
 		}
@@ -454,7 +440,6 @@
 		tmppopdataJ = document.makeform["popdata[" + j + "]"].value;
 		tmpifdataJ = document.makeform["if_data[" + j + "]"].value;
 		tmpiftypeJ = document.makeform["if_type[" + j + "]"].value;
-
 		tmppopdataK = document.makeform["popdata[" + i + "]"].value;
 		tmpifdataK = document.makeform["if_data[" + i + "]"].value;
 		tmpiftypeK = document.makeform["if_type[" + i + "]"].value;
@@ -464,7 +449,6 @@
 		document.makeform["popdata[" + j + "]"].value= tmppopdataK;
 		document.makeform["if_data[" + j + "]"].value= tmpifdataK;
 		document.makeform["if_type[" + j + "]"].value = tmpiftypeK;
-
 		tmpValueJ = colnm[j].value;
 		tmpValueI = colnm[i].value;
 		document.getElementById('column_list'+j).value = tmpValueI;
@@ -497,16 +481,14 @@
 		}
 		resp = confirm(' Be careful when deleting columns! \n Are you sure you want to exclude columns?'); // \n 컬럼을 제외 하시겠습니까?
 		if( !resp ) return false; 
-
 		var colnm = document.getElementsByName('column_list');
 		var item_cnt = colnm.length;
 		var end_line = colnm.length-1;
 		var colnm_value='';
 		var str_array="";
 		var chk = 0;
-
-		for(var i=0, j=1; i < colnm.length; i++, j++){
-				colnm_value = colnm[i].value;
+		for( var i=0, j=1; i < colnm.length; i++, j++){
+			colnm_value = colnm[i].value;
 			if( colnm[i].checked ){
 				if( i == end_line ){
 					document.makeform.column_name_change.value = '';
@@ -559,13 +541,9 @@
 	function ifcheck_onclickA( r, seq) {
 		col_attr_old = document.makeform.col_attr_old.value; // old attribute
 		if( col_attr_old=='') col_attr_old=0;
-
 		var column_index = document.makeform.column_index.value; // colunm index
 		var selind = column_index;
 		var if_line = document.makeform.if_line.value; // formula set and back colunm index
-		//alert("ifcheck_onclickA r: " + r + ", column_index: " + column_index + ", if_line: " + if_line);
-		//ifcheck_onclickA r: 13, column_index: 1, if_line: 0
-
 		if( column_index == '' ){
 			var selind = document.makeform.if_line.value; // formula set and back colunm index
 			if( selind == '' ) {
@@ -577,7 +555,6 @@
 		var pg = document.makeform.pg_codeS.value; 
 		var tab = document.makeform.tab_hnmS.value;
 		var pg_name = document.makeform.pg_name.value;
-		
 		if( !pg_name) {
 			alert(' Please select or enter program name!' );
 			document.makeform.pg_name.focus();
@@ -590,17 +567,14 @@
 		document.makeform.if_line.value = selind;
 		var colnm = document.getElementsByName('column_list');
 		var colnm_value = colnm[selind].value; 
-
 		st = colnm_value.split('|');
 		var col_len = st[4];
 		var new_column = st[0]+"|"+st[1]+"|"+st[2]+"|"+st[3]+"|" + "255";
 		document.makeform.if_column.value = st[1];
 		document.makeform.sellist.value = new_column;
-
 		var obj1 = document.makeform.ifcheck.value; 
 		var obj2 = document.makeform.column_attribute.value;
 		var obj3 = document.makeform.column_name_change.value; 
-
 		switch( r ) {
 			case 0: //	msge="General Input";
 				document.makeform.column_attribute.value		= '';
@@ -743,8 +717,8 @@
 				});
 			});
 		} else {
-			alert(' ERROR - Data type is not string! The image name must be a string and must be at least 100 characters long.');
-			return false; //이미지 이름은 문자열이어야 합니다 그리고 길이기 충분하게 100이상이어야합니다
+			alert(' ERROR - Data type is not string! The image name must be a string and must be at least 100 characters long.');//이미지 이름은 문자열이어야 합니다 그리고 길이기 충분하게 100이상이어야합니다
+			return false; 
 		}
 	}
 	function Apply_button() {
@@ -779,16 +753,13 @@
 			if(ii==1) msg='1:radio button';
 			else if(ii==3) msg='3:check box';
 			else if(ii==5) msg='5:list box';
-			if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
-			{
-				alert(' You used a special character that is not allowed. \n Please enter it again.');
-				// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
+			if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 ){
+				alert(' You used a special character that is not allowed. \n Please enter it again.');	// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
 				return false;
 			}
 			document.makeform["if_data[" + selind + "]"].value = chgStr;
-			document.makeform["if_type[" + selind + "]"].value = ii;	//alert( colnm_hnm + ' , ' + msg + ', label=' +chgStr );
+			document.makeform["if_type[" + selind + "]"].value = ii;
 			alert(' OK! ' );
-
 		} else {
 			alert(' Please enter a property! 1:radio button or 3:check box or 5:listbox Only' );// 1:radio button or 3:check box or 5:listbox 만적용한다.
 			return false;
@@ -796,30 +767,24 @@
 	}
 	function titlechange_btncfm_onclickA() {
 		var chgStr = makeform.column_name_change.value;
-		if( chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 )
-		{
-			alert(' You used a special character that is not allowed. \n Please enter it again.');
-			// \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
+		if( chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("%")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0 || chgStr.indexOf("$")>=0 || chgStr.indexOf("@")>=0 || chgStr.indexOf("&")>=0 || chgStr.indexOf("*")>=0 || chgStr.indexOf("~")>=0 || chgStr.indexOf("(")>=0 || chgStr.indexOf(")")>=0 || chgStr.indexOf("#")>=0 || chgStr.indexOf("!")>=0 || chgStr.indexOf("`")>=0 || chgStr.indexOf(";")>=0 ){
+			alert(' You used a special character that is not allowed. \n Please enter it again.'); // \n 허용이 안 되는 특수문자를 사용하셨습니다. \n 다시 입력하시기 바랍니다.
 			return false;
 		}
-
 		var j = document.makeform.column_index.value;
 		if ( j < 0){	// column 선택 확인.
 			alert(' Select column!');
 			return;
 		}
-
 		var colnm_value = "";
 		var colnm = document.getElementsByName('column_list');
 		var col_attr = "";
 		var new_column = "";
-
-		for(var i = 0, j=0; i < colnm.length; i++, j++){
+		for( var i = 0, j=0; i < colnm.length; i++, j++){
 			colnm_value = colnm[i].value;
 			col_attr = colnm_value.split('|'); //val:275|fld_2|작업공정|CHAR|10
 			fld_hnm = col_attr[2];
-			// 같은 name check?
-			if (chgStr == fld_hnm ) {
+			if( chgStr == fld_hnm ) {
 				alert("This name already exists.");
 				return false;
 			}
@@ -840,8 +805,7 @@
 		document.makeform.item_array.value = str_array;
 		return;
 	}
-	function Save_and_Run( pg)
-	{
+	function Save_and_Run( pg){
 		pg_name = document.makeform.pg_name.value;
 		if( !pg_name ) {
 			alert(" Please select a program! ");
@@ -860,14 +824,12 @@
 		var st = "";
 		var item_cnt = colnm.length;
 		var str_array= "";
-
 		for( i = 0; i < item_cnt; i++) {
 			colnm_value = colnm[i].value;
 			st = colnm_value.split('|');
 			str_array = str_array + st[0] +'|'+ st[1] +'|'+ st[2] +'|'+ st[3]+'|'+ st[4]+'@';	
 		} 
 		document.makeform.item_array.value = str_array;
-		
 		if( mode_session == "POPUP" || mode_session == "Formula") {
 			if( mode_session_ok == 'end') {
 				document.makeform.mode.value = 'Pg_Upgrade';
@@ -880,7 +842,6 @@
 		document.makeform.target='_blank';
 		document.makeform.submit();
 	}
-
 	// no use
 	function sendDataToPHP( projectnmS, pnmdataS ) {
 		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
@@ -1008,20 +969,16 @@
     <td height="30" style="font-size:21px;background-color:#666666;color:cyan;text-align:center;" title='kapp_pg_Upgrade.php'>Program Upgrade<br>
 	<input type='hidden' name='project_name' value="<?=$project_name?>" readonly >
 	<input type='text' id='pg_name' name='pg_name' value='<?=$pg_name?>' style="display:none;" ><br>
-
-		Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="background-color:#666666;color:yellow;width:50%; height:30px;">
+	Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="background-color:#666666;color:yellow;width:50%; height:30px;">
 <?php 
 		if( $mode=='Project_Search' || isset( $_POST['project_nmS']) ) echo "<option value='$project_nmS' selected >$project_name</option>";
 		else echo "<option value=''>1.Select Project</option>";
-
 		$result= sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " ); 
 		while( $rs = sql_fetch_array($result)) {
 ?>
 			<option value='<?=$rs['group_code']?>:<?=$rs['group_name']?>' <?php if( $project_code==$rs['group_code']) echo ' selected '; ?> ><?=$rs['group_name']?></option>
 <?php	} ?>
 		</SELECT>
-
-		
 		<br>Program:<SELECT id='pg_codeS' name='pg_codeS' onchange="change_program_func(this.value);" style="background-color:#666666;color:yellow;width:45%; height:30px;" >
 <?php
 		echo "<option value=''>2.Select program</option>";
@@ -1033,7 +990,6 @@
 			<option value="<?=$rs['pg_code']?>:<?=$rs['pg_name']?>:<?=$rs['tab_enm']?>:<?=$rs['tab_hnm']?>:<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php if( $pg_code==$rs['pg_code']) echo " selected ";?> title="pg_code:<?=$rs['pg_code']?>" ><?=$rs['pg_name']?></option>
 <?php   } ?>
 		</SELECT>
-
 </td>
 </tr>
 			  <tr>
@@ -1147,7 +1103,6 @@
 					else $itemR   = "";
 					if( isset($pop_data) && $pop_data!=='' ) $popdataR= explode("^", $pop_data ); 
 					else $popdataR= "";
-
 					for( $i=0, $j=1; $i < $item_cnt; $i++, $j++){
 						if( isset($iftypeR[$j]) && $iftypeR[$j] !=='' ) $ifT = $iftypeR[$j];
 						else $ifT	= "";

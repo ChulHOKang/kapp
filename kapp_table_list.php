@@ -381,7 +381,7 @@ $(function () {
 		document.table_list.submit();
 	}
 	function run_back( mode, data, page){
-		document.table_list.group_code.value='';
+		//document.table_list.group_code.value='';
 		document.table_list.mode.value		='';
 		document.table_list.data.value		=data;
 		document.table_list.page.value		=page;

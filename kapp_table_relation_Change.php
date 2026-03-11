@@ -111,7 +111,7 @@
 		var relation_num = document.getElementById('relation_num').value;
 		//alert("relation_num: " + relation_num);
 		if( makeform.relation_type_SQL[0].checked === true ) {
-			alert(" Insert set OK");
+			alert( "relation number: " + relation_num+ ", Insert set OK");
 
 			//document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
 			//key_type = document.getElementById('relation_key_old_'+relation_num).value;
@@ -122,17 +122,6 @@
 			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
 
 		} else {
-			alert(" Update set OK");
-			var relation_pg_codeS = makeform.relation_pg_codeS.value;
-			var Rtab_hnmS = makeform.Rtab_hnmS.value;
-			if(!relation_pg_codeS){
-				alert(' Select the program for which you want to set the relationship!');
-				return false;
-			}
-			if(!Rtab_hnmS){
-				alert(' Please select a table of relations!');
-				return false;
-			}
 			var fld1e = document.makeform.pg_tab_column.value;
 			var fld2e = document.makeform.re_tab_column.value;
 			if( !fld1e ) {
@@ -142,6 +131,21 @@
 			if( !fld2e ) {
 				alert(' Select a column in the relational table!');
 				return false; 
+			}
+
+			resp = confirm(' Do you want to Save relation key column: ' + fld2e +' ?');
+			if( !resp ) return false;
+
+			alert(" Update set OK");
+			var relation_pg_codeS = makeform.relation_pg_codeS.value;
+			var Rtab_hnmS = makeform.Rtab_hnmS.value;
+			if( !relation_pg_codeS){
+				alert(' Select the program for which you want to set the relationship!');
+				return false;
+			}
+			if( !Rtab_hnmS){
+				alert(' Please select a table of relations!');
+				return false;
 			}
 			fld1ex = fld1e.split(":");	 
 			var Kfld1e = fld1ex[0]; 
@@ -159,8 +163,8 @@
 			} else document.makeform.relation_Key_fld_type.value  = "CHAR";
 			
 			Key_data = 'Update' +':'+Kfld1e+':'+Kfld2e+':' + document.getElementById('relation_Key_fld_type').value;
+			alert("Key_data: " + Key_data);
 			document.getElementById('relation_key').value= Key_data;
-			//relation_num = document.getElementById('relation_num').value;
 			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
 		}
 		r_t_k = document.makeform.relation_type_key.value;
@@ -602,18 +606,18 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 	<!-- relation_type_key(all) --><textarea id='relation_type_key' name='relation_type_key' rows='3' cols='84' style="display:none;"><?=$relation_type_key?></textarea>
 
 	<!-- relation_data(now) --><textarea id='relation_data' name='relation_data' rows='3' cols='84' style="display:none;"><?=$relation_data?></textarea>
-	<!-- relation_key(now) --><textarea id='relation_key'   name='relation_key'  rows='3' cols='84' style="display:none;"><?=$relation_key?></textarea>
+	<!-- relation_key(now) --><textarea id='relation_key'   name='relation_key'  rows='3' cols='84' style="display:;"><?=$relation_key?></textarea>
 
 	<!-- relation_data_old_0 --><textarea id='relation_data_old_0' name='relation_data_old_0' rows='3' cols='84' style="display:none;"><?=$relation_data_old_0?></textarea>
-	<!-- relation_key_old_0 --><textarea id='relation_key_old_0' name='relation_key_old_0' rows='1' cols='84' style="display:none;"><?=$relation_key_old_0?></textarea>
+	<!-- relation_key_old_0 --><textarea id='relation_key_old_0' name='relation_key_old_0' rows='1' cols='84' style="display:;"><?=$relation_key_old_0?></textarea>
 	<!-- item_array_0 --><textarea id='item_array_0' name='item_array_0' rows='3' cols='84' style="display:none;"><?=$item_array_0?></textarea>
 
 	<!-- relation_data_old_1 --><textarea id='relation_data_old_1' name='relation_data_old_1' rows='3' cols='84' style="display:none;"><?=$relation_data_old_1?></textarea>
-	<!-- relation_key_old_1 --><textarea id='relation_key_old_1' name='relation_key_old_1' rows='1' cols='84' style="display:none;"><?=$relation_key_old_1?></textarea>
+	<!-- relation_key_old_1 --><textarea id='relation_key_old_1' name='relation_key_old_1' rows='1' cols='84' style="display:;"><?=$relation_key_old_1?></textarea>
 	<!-- item_array_1 --><textarea id='item_array_1' name='item_array_1' rows='3' cols='84' style="display:none;"><?=$item_array_1?></textarea>
 	
 	<!-- relation_data_old_2 --><textarea id='relation_data_old_2' name='relation_data_old_2' rows='3' cols='84' style="display:none;"><?=$relation_data_old_2?></textarea>
-	<!-- relation_key_old_2 --><textarea id='relation_key_old_2' name='relation_key_old_2' rows='1' cols='84' style="display:none;"><?=$relation_key_old_2?></textarea>
+	<!-- relation_key_old_2 --><textarea id='relation_key_old_2' name='relation_key_old_2' rows='1' cols='84' style="display:;"><?=$relation_key_old_2?></textarea>
 	<!-- item_array_2 --><textarea id='item_array_2' name='item_array_2' rows='3' cols='84' style="display:none;"><?=$item_array_2?></textarea>
 	
 	<input type='hidden' id='nmxh' name='nmxh' maxlength='250' size='30'  value=''>
@@ -669,10 +673,10 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 				//m_("relation_data: " . $relation_data . ", relation_key: " . $relation_key);
 				//relation_data: dao_1766735120:ABCYY$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT@@, relation_key: Insert:::@@
 				$data_R    = explode("^", $rsPG['relation_data'] );
-				$type_R    = explode("^", $relation_key ); 
-				//m_("relation_key: $relation_key");
+				$type_R    = explode("^", $relation_key ); //m_("relation_key: $relation_key");
 				//relation_key: Update:fld_1:fld_1:CHAR@@^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^^
-				if(isset($data_R[0]) && $data_R[0]!=''){
+				
+				if( isset( $data_R[0]) && $data_R[0]!=''){
 					$relation_data_old_0 = $data_R[0];
 					$relation_data_old_1 = $data_R[1];
 					$relation_data_old_2 = $data_R[2];
@@ -680,12 +684,14 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 			/* 
 					Update:fld_1:fld_1:CHAR@@^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^^
 			*/
-					$key_arrayA = $type_R[0];
-					if( isset($type_R[0]) ) {
-						$key_arrayA = explode("@", $key_arrayA );
-						$relation_key_old_0 = $key_arrayA[0];
-						$relation_key_old_1 = $key_arrayA[1];
-						$relation_key_old_2 = $key_arrayA[2];
+					if( isset( $type_R[0] ) && $type_R[0]!='' ) {
+						$key_arrayA = explode("@", $type_R[0] ); //$key_arrayA = $type_R[0];
+						if( isset( $key_arrayA[0]) ) $relation_key_old_0 = $key_arrayA[0];
+						else $relation_key_old_0 = '';
+						if( isset( $key_arrayA[1]) ) $relation_key_old_1 = $key_arrayA[1];
+						else $relation_key_old_1 = '';
+						if( isset( $key_arrayA[2]) ) $relation_key_old_2 = $key_arrayA[2];
+						else $relation_key_old_2 = '';
 					} else {
 						$relation_key_old_0 = '';
 						$relation_key_old_1 = '';
@@ -697,7 +703,6 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					else $item_array_1 = '';
 					if( isset($type_R[3]) ) $item_array_2 = $type_R[3];
 					else $item_array_2 = '';
-
 				}
 				if( isset($data_R[$relation_num]) && $data_R[$relation_num] !='' && isset($type_R[$relation_num]) && $type_R[$relation_num] !='' ){
 					$data_R_num = explode("$", $data_R[$relation_num] ); //relation_num:0,1,2로하고 화면에는 1,2,3으로 표시만 중요.
@@ -715,10 +720,10 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 						$relation_move_data = '';
 						//$relation_data = '';
 				} else { // reset이 아니면 여기를 탄다.
-					for( $i=1; isset($data_R_num) && $i < count( $data_R_num); $i++ ) { //$data_R_num[0] i==0 -> relation table
+					for( $i=1; isset( $data_R_num[$i]) && $i < count( $data_R_num); $i++ ) { //$data_R_num[0] i==0 -> relation table
 						$re_data = $data_R_num[$i];
 						$rrr = explode("|", $re_data);
-						$pg_fld = explode(":", $rrr[0]); //$rrr[1] 연결 식 =, +, -, * 
+						$pg_fld = explode(":", $rrr[0]); // [1] : =, +, -, * 
 						$re_fld = explode(":", $rrr[2]);
 						$pg_rel[$i-1] = $pg_fld[1];
 						$re_rel[$i-1] = $re_fld[1];
@@ -826,17 +831,23 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		$relation_data_old_0 = $_POST['relation_data_old_0'];
 		$relation_data_old_1 = $_POST['relation_data_old_1'];
 		$relation_data_old_2 = $_POST['relation_data_old_2'];
+		
 		$relation_key_old_0 = $_POST['relation_key_old_0'];
 		$relation_key_old_1 = $_POST['relation_key_old_1'];
 		$relation_key_old_2 = $_POST['relation_key_old_2'];
+		
 		$item_array_0 = $_POST['item_array_0'];
 		$item_array_1 = $_POST['item_array_1'];
 		$item_array_2 = $_POST['item_array_2'];
 
 		$relation_data = $relation_data_old_0 . "^" . $relation_data_old_1. "^" . $relation_data_old_2;
+		
 		$relation_T = $relation_key_old_0 . "@" . $relation_key_old_1. "@" . $relation_key_old_2;
+		
 		$array_R = $item_array_0 . "^" . $item_array_1 . "^" . $item_array_2;
+		
 		$relation_type = $relation_T . "^" . $array_R;
+
 		$query = "UPDATE {$tkher['table10_pg_table']} SET relation_type='$relation_type', relation_data='$relation_data' WHERE userid='$H_ID' and pg_code='$pg_code' ";
 		$ret = sql_query($query);
 		if( $ret ) m_("Save, Complete the relationship. pg_code:".$pg_code);
