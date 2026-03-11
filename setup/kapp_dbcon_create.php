@@ -1337,7 +1337,8 @@ function Table10_pg($t_head, $tab) {
         del varchar(1) DEFAULT NULL,
         grant_write int(3) DEFAULT 0,
         grant_view int(3) DEFAULT 0,
-        del_date datetime DEFAULT NULL
+        del_date datetime DEFAULT NULL,
+        relation_type_memo blob DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
