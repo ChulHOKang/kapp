@@ -50,19 +50,18 @@
 		$list			= explode("@", $item_array);
 		$upfileX = "";
 
-		$query			= " UPDATE $tab_enm SET  ";
+		$SQL = " UPDATE $tab_enm SET  ";
+		$SQL = $SQL . "kapp_userid= '" . $H_ID . "' , ";
 		for( $i=0, $j=1; $list[$i] != ""; $i++,$j++ ){
 			$ddd  = $list[$i];
-			if( isset($if_type[$j]) ) $typeX = $if_type[$j];
+			if( isset( $if_type[$j]) ) $typeX = $if_type[$j];
 			else $typeX = '';
 			$fld = explode("|", $ddd);
 			$fld_enm= $fld[1];
 			IF( $i==($item_cnt-1) ) { // 마지막 컬럼 체크 "," 처리를 위해...sql a=1, b=2 
-
 				if( $typeX=='3' ) {
 					$aa = @implode(",",$_POST[$fld[1]]);
-					$query = $query . $fld[1] . "= '" . $aa . "' ";
-
+					$SQL = $SQL . $fld[1] . "= '" . $aa . "' ";
 				} else if( $typeX=='9' ) { // add file
 					$nm = $fld[1]; 
 					$upfileX = $_FILES["$nm"]["name"]; 
@@ -71,7 +70,7 @@
 					if( isset($upfile_name) && $upfile_name !='' ) {
 						$upfile_name = str_replace(" ", "", $upfile_name);
 						$upfile_name = $H_ID . "_" . time() ."_" . $upfile_name;
-						$query = $query . $fld[1] ."= '" .$upfile_name. "' ";
+						$SQL = $SQL . $fld[1] ."= '" .$upfile_name. "' ";
 						if( $_FILES["$nm"]["error"] > 0){ // error check
 							echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>"; // fld_3
 						} else { // none error
@@ -80,18 +79,18 @@
 						}
 					}
 				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
-						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
+						$SQL = $SQL . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
 				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP") {
-						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
+						$SQL = $SQL . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
+				} ELSE IF( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL" ) { 
+						$SQL = $SQL . $fld[1] . "= " . $_POST[$fld[1]] . " ";
 				} ELSE {
-						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . " ";
+						$SQL = $SQL . $fld[1] . "= '" . $_POST[$fld[1]] . "' ";
 				}
 			} ELSE {
-
 				if( $typeX=='3' ) {				// 3: checkbox
 					$aa = @implode("," , $_POST[$fld[1]] ); 
-					$query = $query . $fld[1] . "= '" . $aa . "', ";
-
+					$SQL = $SQL . $fld[1] . "= '" . $aa . "', ";
 				} else if( $typeX=='9' ) { 
 					$nm = $fld[1]; 
 					$upfileX = $_FILES["$nm"]["name"]; 
@@ -100,31 +99,46 @@
 					if( isset($upfile_name) && $upfile_name !='' ) {
 						$upfile_name = str_replace(" ", "", $upfile_name);
 						$upfile_name = $H_ID . "_" . time() ."_" . $upfile_name;
-						$query = $query . $fld[1] ."= '" .$upfile_name. "', ";
+						$SQL = $SQL . $fld[1] ."= '" .$upfile_name. "', ";
 						if( $_FILES["$nm"]["error"] > 0){ // error check
 							echo "tkher_program_data_update nm:$nm, Return Code: " . $_FILES["$nm"]["error"] . "<br>";
 						} else { // none error
 							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path.$upfile_name );
 						}
 					}
-
 				} ELSE IF( $fld[3] == "CHAR" || $fld[3] == "VARCHAR" || $fld[3] == "TEXT") {
-						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
+						$SQL = $SQL . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
 				} ELSE IF( $fld[3] == "DATE" || $fld[3] == "TIME" || $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP") {
-						$query = $query . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
+						$SQL = $SQL . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
+				} ELSE IF( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL" ) { 
+						$SQL = $SQL . $fld[1] . "= " . $_POST[$fld[1]] . ", ";
 				} ELSE {
-						$query = $query . $fld[1] . "= " . $_POST[$fld[1]] . ", ";
+						$SQL = $SQL . $fld[1] . "= '" . $_POST[$fld[1]] . "', ";
 				}
 			}	// $i
 		}	// for
-		$query = $query . " where seqno=$seqno ";
-		$ret = sql_query( $query ) or die ("tkher_program_data_update.php Error sql:" . $query);
+		if( $H_LEV >= 7 ) $SQL = $SQL . " where seqno=$seqno ";
+		else $SQL = $SQL . " where seqno=$seqno and kapp_userid='" .$H_ID. "' ";
+		$ret = sql_query( $SQL ) or die ("tkher_program_data_update.php Error sql:" . $SQL);
 		if( $ret ) {
 			m_(" Change completed! ");
 			if( isset($_POST['up_file']) ) {
 				$up_file = $_POST['up_file'];
 				if( $upfileX !='' && $up_file && $up_file !='' ) exec ("rm $up_file");// 첨부화일이 있으면 기존화일을 삭제
 			} else $up_file = '';
+
+		
+			/*if( $relation_data !='' ) {
+				$rdata = explode("^", $relation_data);
+				$rtype = explode("^", $relation_type);
+				$rt = explode("@", $rtype[0]);
+				for( $i=0; $i < count( $rdata); $i++ ){
+					if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
+						relation_func( $rdata[$i], $pg_code, $rt[$i] );
+					}
+				}
+			}*/
+		
 		} else m_(" Change Error! ");
 	}
 ?>
@@ -134,12 +148,14 @@
 <center>
 
 <?php
-$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
-if( ($result = sql_query( $SQLX ) )===false ) {
-		printf("SQLX Invalid query: %s\n", $SQLX);
+if( $H_LEV >= 7) $SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
+else $SQLX = " SELECT * from $tab_enm where seqno=$seqno and kapp_userid='" .$H_ID. "' ";
+//if( ($result = sql_query( $SQLX ) )===false ) {
+if(( $row = sql_fetch( $SQLX ) )===false ) {
+		printf("SQLX Invalid QUERY: %s\n", $SQLX);
 		exit();
 } else {
-		$row	= sql_fetch_array($result);
+		//$row= sql_fetch_array($result);
 
 		$cur='B';
 		include_once "./menu_run.php"; 
@@ -170,6 +186,7 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		$kkk3 = array();
 		$kkk5 = 1;
 
+		$pg_mid = $rsPG['userid'];
 		$pg_name	= $rsPG['pg_name'];
 		$tab_enm	= $rsPG['tab_enm'];
 		$tab_hnm	= $rsPG['tab_hnm'];
@@ -182,18 +199,19 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		$if_type		= explode("|", $iftypeX);
 		$if_data		= explode("|", $ifdataX);
 		$pop_dataPG	= $rsPG['pop_data'];
-		$relation_dataPG = $rsPG['relation_data'];
-		$relation_typePG = $rsPG['relation_type'];
 		$popdata	= explode("^", $pop_dataPG);
-		$pg_mid			= $rsPG['userid'];
-		$_SESSION['iftype_db']		= $iftypeX;
+
+		$relation_data = $rsPG['relation_data'];//$relation_data =get_session("relation_dataPG");
+		$relation_type = $rsPG['relation_type'];//$relation_type =get_session("relation_typePG"); 
+
+		/*$_SESSION['iftype_db']		= $iftypeX;
 		$_SESSION['ifdata_db']		= $ifdataX;
 		$_SESSION['if_dataPG']		= $ifdataX;	
 		$_SESSION['pop_dataPG']		= $pop_dataPG;
-		$_SESSION['relation_dataPG']	= $relation_dataPG;
-		$_SESSION['relation_typePG']	= $relation_typePG;
+		$_SESSION['relation_dataPG']	= $relation_data;
+		$_SESSION['relation_typePG']	= $relation_type;
 		$_SESSION['pg_name']			= $pg_name;
-		$_SESSION['pg_code']			= $pg_code;
+		$_SESSION['pg_code']			= $pg_code;*/
 ?>
 		<form name='makeform' action='' method='post' enctype="multipart/form-data">
 					<input type="hidden" name='mode'			value='' />
@@ -212,144 +230,37 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 					<input type="hidden" name='iftypeX'		value='<?=$iftypeX?>' />
 					<input type="hidden" name='if_type'			value='<?=$if_type?>' />
 					<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
-					<input type="hidden" name='relation_data'	value='<?=$relation_dataPG?>' />
-					<input type="hidden" name='relation_type'	value='<?=$relation_typePG?>' />
+					<input type="hidden" name='relation_data'	value='<?=$relation_data?>' />
+					<input type="hidden" name='relation_type'	value='<?=$relation_type?>' />
 				<input type="hidden" name='data_mid'	value='<?=$data_mid?>' />
 
 <?php
-		$list= explode("@", $item_array);
-		for ( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
-				if( isset($if_type[$j])  && $if_type[$j] !='') $typeX	= $if_type[$j];
-				else $typeX	= '';
-				if( isset($if_data[$j]) && $if_data[$j] !='' ) $dataX	= $if_data[$j];
-				else $dataX	= '';
-				if( isset($popdata[$j]) && $popdata[$j] !='' ) $popX	= $popdata[$j]; 
-				else $popX	= '';
-				if( isset($if_data[$j]) && $if_data[$j] !='') $if_fld= explode(":", $if_data[$j]);
-				else $if_fld	= '';
-				$ddd		= $list[$i];
-				$fld = explode("|", $ddd);
-				$fldenm= $fld[1];
-				$fldhnm= $fld[2];
-				if ( $fld[3] == "TEXT" ) {
-					echo"<p>$fldhnm</p>";
-					echo " <div class='menu1Area' ><textarea name='$fld[1]' placeholder='Please enter your $fld[2]!' style='width:$Xwidth;height:$Text_height;'>$row[$fldenm]</textarea></div>";
-					echo " <div class='blankA'> </div> ";
-				} else if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ) { 
+	$list= explode("@", $item_array);
+	for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
+		if( isset($if_type[$j])  && $if_type[$j] !='') $typeX	= $if_type[$j];
+		else $typeX	= '';
+		if( isset($if_data[$j]) && $if_data[$j] !='' ) $dataX	= $if_data[$j];
+		else $dataX	= '';
+		if( isset($popdata[$j]) && $popdata[$j] !='' ) $popX	= $popdata[$j]; 
+		else $popX	= '';
+		if( isset($if_data[$j]) && $if_data[$j] !='') $if_fld= explode(":", $if_data[$j]);
+		else $if_fld	= '';
+		$ddd		= $list[$i];
+		$fld = explode("|", $ddd);
+		$fldenm= $fld[1];
+		$fldhnm= $fld[2];
+		if( $fld[3] == "TEXT" ) {
+			echo"<p>$fldhnm</p>";
+			echo " <div class='menu1Area' ><textarea name='$fld[1]' placeholder='Please enter your $fld[2]!' style='width:$Xwidth;height:$Text_height;'>$row[$fldenm]</textarea></div>";
+			echo " <div class='blankA'> </div> ";
+		} else if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "BIGINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ) { 
 
-						if ( $typeX == '5' ) {	// list box
-									echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-									echo " <div class='ListBox1A'>";
-									echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
-									
-								for( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
-									if( $if_fld[$k] == $row[$fldenm] )
-											echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
-									else	echo "<OPTION >$if_fld[$k]</OPTION>";
-								}
-									echo "</SELECT>";
-									echo " </div> ";
-									echo " <div class='blankA'> </div> ";
-						} else if( $typeX == '3' ) {	// check box
-									echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-									echo " <div class='radio1A'><span>";
-								$ck = explode(",", $row[$fldenm] );
-								$kk = count($ck);
-								for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
-									$mm = " ";
-									for($ii=0;$ii<$kk;$ii++) {
-										if( $if_fld[$k] == $ck[$ii] ) $mm=" checked ";
-									}
-									echo	"<input type='Checkbox' name='" . $fld[1] .  "[]' value='" . $if_fld[$k] . "' " . $mm ." >" . $if_fld[$k] . " &nbsp;";
-								}
-									echo " </span></div> ";
-									echo " <div class='blankA'> </div> ";
-						} else if( $typeX == '1' ) {	// radio 버턴.
-									echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-									echo " <div class='radio1A'><span>";
-								for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
-									if( $if_fld[$k] == $row[$fldenm] )
-											echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' checked >" . $if_fld[$k] . " &nbsp;";
-									else	echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "'>" . $if_fld[$k] . " &nbsp;";
-								}
-									echo " </span></div> ";
-									echo " <div class='blankA'> </div> ";
-						} else if( $typeX == "11" ) { // calc
-							$kkk=$fld[1];
-							$idata = explode(":", $dataX);
-							$datax = $idata[1];
-							$datay = $idata[0];
-							$ff = explode(" ", $datay);
-							$f0 = $ff[0];
-							$f1 = $ff[1];
-							$f2 = $ff[2];
-							$f3 = $ff[3];
-							$f4 = $ff[4];
-							
-							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
-							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
-							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
-							else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
-							$kkk3[$kkk5] = $f3;
-
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><span><input type=number name='$fld[1]' onClick='FUNC_$kkk5()' title='FUNC_$kkk5()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
-							$kkk5++; // = $func_cnt;
-						} else {
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><input type=number name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
-						}
-						echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '13' ) {	// popup window
-						$fld_session = $i;	// popup column 
-						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-						echo " <div class='menu1A'><input type=text name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$ifdataX', '$pop_dataPG', '$i')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
-						echo " <div class='blankA'> </div> ";
-
-				} else if ( $typeX == '9' ) {	// add file
-					if( $row[$fldenm] != '' ) {
-							$upfile = KAPP_PATH_T_ . "/file/" . $tab_mid . "/" . $tab_enm . "/". $row[$fldenm];
-							echo "<input type='hidden' name='up_file' value='$upfile' >"; // delete - use
-							$ifile = explode( ".", $row[$fldenm] );
-							$image_size = @GetImageSize( $upfile );
-							$im = "./file/" . $tab_mid. "/" . $tab_enm . "/". $row[$fldenm];
-							if( strtolower($ifile[1]) == 'jpg' || strtolower($ifile[1]) == 'png' || strtolower($ifile[1]) == 'gif' ) {
-								echo"<p>$fldhnm</p>";
-								echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='400' height='300' border=0></a> </div>";
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='File1A'>";
-								echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fld[2].' style='width:$Xwidth;height:$Xheight;'> ";
-								echo " </div> ";
-								echo " <div class='blankA'> </div> ";
-							} else {
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='data1A'><a href='./file/$tab_mid/$tab_enm/$row[$fldenm]'><img src=./icon/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
-								echo " <div class='blankA'> </div> ";
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='File1A'>";
-								echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fldenm.' style='width:$Xwidth;height:$Xheight;'> ";
-								echo " </div> ";
-								echo " <div class='blankA'> </div> ";
-							}
-					} else {
-								echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='File1A'>";
-								echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fldenm.' style='width:$Xwidth;height:$Xheight;'> ";
-								echo " </div> ";
-								echo " <div class='blankA'> </div> ";
-					}
-
-				} else if ( $typeX == '7' ) {	// password
-							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><input type=PASSWORD name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
-							echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '5' ) {	// list box
-
+				if( $typeX == '5' ) {	// list box
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='ListBox1A'>";
 							echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
 							
-						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
+						for( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
 							if( $if_fld[$k] == $row[$fldenm] )
 									echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
 							else	echo "<OPTION >$if_fld[$k]</OPTION>";
@@ -357,7 +268,7 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 							echo "</SELECT>";
 							echo " </div> ";
 							echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '3' ) {	// check box
+				} else if( $typeX == '3' ) {	// check box
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
 						$ck = explode(",", $row[$fldenm] );
@@ -371,7 +282,7 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 						}
 							echo " </span></div> ";
 							echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '1' ) {	// radio .
+				} else if( $typeX == '1' ) {	// radio 버턴.
 							echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='radio1A'><span>";
 						for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
@@ -381,19 +292,123 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 						}
 							echo " </span></div> ";
 							echo " <div class='blankA'> </div> ";
-				} else if ( $typeX == '0' ) {	//
+				} else if( $typeX == "11" ) { // calc
+					$kkk=$fld[1];
+					$idata = explode(":", $dataX);
+					$datax = $idata[1];
+					$datay = $idata[0];
+					$ff = explode(" ", $datay);
+					$f0 = $ff[0];
+					$f1 = $ff[1];
+					$f2 = $ff[2];
+					$f3 = $ff[3];
+					$f4 = $ff[4];
+					
+					$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
+					$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
+					if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
+					else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
+					$kkk3[$kkk5] = $f3;
+
+					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+					echo " <div class='menu1A'><span><input type='number' name='$fld[1]' onClick='FUNC_$kkk5()' title='FUNC_$kkk5()' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></span></div> ";
+					$kkk5++; // = $func_cnt;
+				} else {
+					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+					echo " <div class='menu1A'><input type='number' name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].' class=autom_subj></div> ";
+				}
+				echo " <div class='blankA'> </div> ";
+		} else if( $typeX == '13' ) {	// popup window
+				$fld_session = $i;	// popup column 
+				echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+				echo " <div class='menu1A'><input type='text' name='$fldenm' value='$row[$fldenm]' onclick=\"javascript:popup_call('$ifdataX', '$pop_dataPG', '$i')\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
+				echo " <div class='blankA'> </div> ";
+
+		} else if ( $typeX == '9' ) {	// add file
+			if( $row[$fldenm] != '' ) {
+					$upfile = KAPP_PATH_T_ . "/file/" . $tab_mid . "/" . $tab_enm . "/". $row[$fldenm];
+					echo "<input type='hidden' name='up_file' value='$upfile' >"; // delete - use
+					$ifile = explode( ".", $row[$fldenm] );
+					$image_size = @GetImageSize( $upfile );
+					$im = "./file/" . $tab_mid. "/" . $tab_enm . "/". $row[$fldenm];
+					if( strtolower($ifile[1]) == 'jpg' || strtolower($ifile[1]) == 'png' || strtolower($ifile[1]) == 'gif' ) {
+						echo"<p>$fldhnm</p>";
+						echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='400' height='300' border=0></a> </div>";
 						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-						echo " <div class='menu1A'><input type='$fld[3]' name='$fldenm' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fldenm.'></div> ";
+						echo " <div class='File1A'>";
+						echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fld[2].' style='width:$Xwidth;height:$Xheight;'> ";
+						echo " </div> ";
 						echo " <div class='blankA'> </div> ";
-				} else {	// typeX
+					} else {
 						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-						echo " <div class='menu1A'><input type='$fld[3]' name='$fldenm' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fldenm.'></div> ";
+						echo " <div class='data1A'><a href='./file/$tab_mid/$tab_enm/$row[$fldenm]'><img src=./icon/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 						echo " <div class='blankA'> </div> ";
-				}	//if
-			} //  for
+						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
+						echo " <div class='File1A'>";
+						echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fldenm.' style='width:$Xwidth;height:$Xheight;'> ";
+						echo " </div> ";
+						echo " <div class='blankA'> </div> ";
+					}
+			} else {
+						echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
+						echo " <div class='File1A'>";
+						echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fldenm.' style='width:$Xwidth;height:$Xheight;'> ";
+						echo " </div> ";
+						echo " <div class='blankA'> </div> ";
+			}
+		} else if( $typeX == '7' ) {	// password
+					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+					echo " <div class='menu1A'><input type='PASSWORD' name='$fld[1]' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
+					echo " <div class='blankA'> </div> ";
+		} else if( $typeX == '5' ) {	// list box
+					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+					echo " <div class='ListBox1A'>";
+					echo	"<SELECT NAME='$fld[1]' SIZE='1' style='border-style:;height:25;'>";
+				for( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
+					if( $if_fld[$k] == $row[$fldenm] )
+							echo "<OPTION SELECTED>$if_fld[$k]</OPTION>";
+					else	echo "<OPTION >$if_fld[$k]</OPTION>";
+				}
+					echo "</SELECT>";
+					echo " </div> ";
+					echo " <div class='blankA'> </div> ";
+		} else if( $typeX == '3' ) {	// check box
+					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+					echo " <div class='radio1A'><span>";
+				$ck = explode(",", $row[$fldenm] );
+				$kk = count($ck);
+				for ( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
+					$mm = " ";
+					for($ii=0;$ii<$kk;$ii++) {
+						if( $if_fld[$k] == $ck[$ii] ) $mm=" checked ";
+					}
+					echo "<input type='Checkbox' name='" . $fld[1] .  "[]' value='" . $if_fld[$k] . "' " . $mm ." >" . $if_fld[$k] . " &nbsp;";
+				}
+					echo " </span></div> ";
+					echo " <div class='blankA'> </div> ";
+		} else if( $typeX == '1' ) {	// radio .
+					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
+					echo " <div class='radio1A'><span>";
+				for( $k=0; isset($if_fld[$k]) && $if_fld[$k] != ""; $k++ ){
+					if( $if_fld[$k] == $row[$fldenm] )
+							echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "' checked >" . $if_fld[$k] . " &nbsp;";
+					else	echo	"<input type = 'radio' name='" . $fld[1] . "' value='" . $if_fld[$k] . "'>" . $if_fld[$k] . " &nbsp;";
+				}
+					echo " </span></div> ";
+					echo " <div class='blankA'> </div> ";
+		} else if( $typeX == '0' ) {	//
+				echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
+				echo " <div class='menu1A'><input type='$fld[3]' name='$fldenm' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fldenm.'></div> ";
+				echo " <div class='blankA'> </div> ";
+		} else {	// typeX
+				echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
+				echo " <div class='menu1A'><input type='$fld[3]' name='$fldenm' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fldenm.'></div> ";
+				echo " <div class='blankA'> </div> ";
+		}	//if
+	} //  for
 
 ?>
-				<input type="hidden" name='upfile'		value='<?=$upfile?>' />
+				<!-- <input type="hidden" name='upfile'		value='<?=$upfile?>' /> -->
 				<div class="viewHeader">
 					<a href="javascript:record_modify('<?=$seqno?>');" class="btn_bo02"> Submit </a>
 					<a href="javascript:tab_pg_list();" class="btn_bo02">List</a>
@@ -404,7 +419,7 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		$day	= date("Y-m-d");
 		$up_day = date("Y-m-d h:i:s");
 
-}  //query false
+}  //QUERY false
 ?>
 </body>
 

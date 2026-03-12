@@ -10,7 +10,6 @@
 	 */
 	$H_ID= get_session("ss_mb_id");
 	$ip = $_SERVER['REMOTE_ADDR'];
-
 	if( !isset($H_ID) ){
 		m_("You need to login.");
 		$url= KAPP_URL_T_;
@@ -21,13 +20,10 @@
 	else $H_LEV = 0;
 	if( isset($member['mb_email']) ) $H_EMAIL =$member['mb_email'];
 	else $H_EMAIL = '';
-
 	if( isset($_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode='';
-
 	if( isset($_POST['old_tab_enm']) ) $old_tab_enm= $_POST['old_tab_enm'];
 	else $old_tab_enm='';
-
 	if( $mode == 'Project_Search'){
 		$project_nmS = $_POST['project_nmS'];
 		$pcd_nm = explode(":", $project_nmS );
@@ -49,7 +45,6 @@
 			$project_code= '';
 		}
 	}
-
 	if( $mode == 'SearchTAB' ) {
 		$tab_hnmS =$_POST['tab_hnmS'];
 		$tab_R = explode(":", $tab_hnmS);
@@ -74,10 +69,8 @@
 			$new_tab_hnm = '';
 		}
 	}
-
-		$uid = explode('@', $H_ID);
-		$new_tab_enm = $uid[0] . "_" . time();
-
+	$uid = explode('@', $H_ID);
+	$new_tab_enm = $uid[0] . "_" . time();
 	if( isset($_POST['line_set']) ) $line_set = $_POST['line_set'];
 	else $line_set = 10;
 	if( isset($_POST['del_mode']) ) $del_mode = $_POST['del_mode'];
@@ -85,14 +78,14 @@
 	if( isset($_POST['pg_mode']) ) $pg_mode = $_POST['pg_mode'];
 	else $pg_mode = '';
 ?>
-
 <html>
 <head>
-<TITLE>K-APP. Made in Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
 	<style>
@@ -133,44 +126,23 @@
 </script>
 
 <script language=javascript>
-	/*function table_name_change(){ // add 2023-09-08 kan
-		tab_hnmS = document.insert.tab_hnmS.value;
-		da = tab_hnmS.split(":");
-		hnm=da[1];
-		enm=da[0];
-		tabhnm = document.insert.tab_hnm.value;
-		if( tab_hnmS == "Select table" || !tabhnm ){
-			alert("table none name or table select please!");
-			return;
-		} else {
-			var ins = window.confirm("Do you want to change it? name:" + tabhnm);
-			if (ins)
-			{
-				document.insert.mode.value = 'table_name_change';
-				document.insert.action="kapp_table30m_A.php";
-				document.insert.submit();
-			}
-		}
-	}*/
-
 	function column_modify_mode_func( no,  table_yn, colunm_cnt ) {
 		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
 		if( fld_hnm == "seqno"){
-			alert(' Can not use column name seqno.');// \n 컬럼명 seqno를 사용할수 없습니다.
+			alert(' Can not use column name seqno.');
 			return false;
 		}
 		for( var k=1; k < colunm_cnt; k++ ){
 				knm = document.insert["fld_hnm[" + k + "]"].value;
 				if( fld_hnm == knm) {
 					if( k != no ) {
-						alert(' Column name '+ fld_hnm +' can not be used as a duplicate.');//중복으로 사용할수 없습니다.
+						alert(' Column name '+ fld_hnm +' can not be used as a duplicate.');
 						return false;
 					}
 				}
 		}
-		msg = " Modify " + fld_hnm + " entry? "; //컬럼을 변경할까요?
-		if ( window.confirm( msg ) )
-		{
+		msg = " Modify " + fld_hnm + " entry? "; 
+		if( window.confirm( msg ) ){
 			document.insert.del_mode.value		="column_modify_mode";
 			document.insert.mode.value			="SearchTAB";
 			document.insert.table_yn.value = table_yn;
@@ -184,29 +156,27 @@
 			document.insert.submit();
 		}
 	}
-
 	function column_add_mode_func( no,  table_yn, column_cnt) {
 		if( document.insert["fld_enm[" + no + "]"].value == '' ) {
-			alert(" Define columns! "); //column을 정의 하세요!
+			alert(" Define columns! "); 
 			document.insert["fld_enm[" + no + "]"].focus();
 			return false;
 		} else if ( document.insert["fld_hnm[" + no + "]"].value == ''){
-			alert(" Define column name!"); //column name을 정의 하세요!
+			alert(" Define column name!");
 			document.insert["fld_hnm[" + no + "]"].focus();
 			return false;
 		} else if ( document.insert["fld_len[" + no + "]"].value == ''){
-			alert(" Define the column length!"); //column 길이를 정의 하세요!
+			alert(" Define the column length!");
 			document.insert["fld_len[" + no + "]"].focus();
 			return false;
 		}
 		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
 		if( fld_hnm == 'seqno'){
-			alert(' Can not use column name seqno.');//컬럼명 seqno를 사용할수 없습니다.
+			alert(' Can not use column name seqno.');
 			return false;
 		}
-		msg = " Add " + fld_hnm + " entry? ";//컬럼을 추가할까요?
-		if ( window.confirm( msg ) )
-		{
+		msg = " Add " + fld_hnm + " entry? ";
+		if ( window.confirm( msg ) ){
 			document.insert.del_mode.value		="column_add_mode";
 			document.insert.mode.value			="SearchTAB";
 			document.insert.table_yn.value = table_yn;
@@ -219,11 +189,9 @@
 			document.insert.submit();
 		}
 	}
-
 	function delete_column_func(seqnoA, fld_hnmA, fld_enmA, i) {
-		msg = " Delete " + fld_hnmA + " entry? ";//컬럼을 삭제할까요?
-		if ( window.confirm( msg ) )
-		{
+		msg = " Delete " + fld_hnmA + " entry? ";
+		if ( window.confirm( msg ) ){
 			document.insert.del_mode.value		="Delete_column_mode";
 			document.insert.mode.value			="SearchTAB";
 			document.insert.pg_mode.value		="on";
@@ -234,13 +202,12 @@
 			document.insert.submit();
 		}
 	}
-	function Save_Update(cnt){ // Modification Registration - 수정등록
+	function Save_Update(cnt){ 
 		tab = document.insert.tab_hnmS.value;
 		tabA = tab.split(":");
-		//alert("tab: " + tab);
 		document.insert.old_tab_enm.value = tabA[0];
-		msg = " The data in the table is deleted. Want to regenerate? table is " + tab + " "; //테이블의 데이터가 삭제됩니다. 재생성 할까요?
-		if ( window.confirm( msg ) ){
+		msg = " The data in the table is deleted. Want to regenerate? table is " + tab + " ";
+		if( window.confirm( msg ) ){
 			document.insert.mode.value='table_update_remake';
 			document.insert.del_mode.value		="";
 			document.insert.action="kapp_table30m_A.php";
@@ -250,7 +217,6 @@
 			return false;
 		}
 	}
-
 	function type_set_func(i, v) {
 		if( i==0 ) {
 			alert('Can not be changed because it is a key.' );
@@ -269,10 +235,12 @@
 		else if( document.insert["fld_type["+i+"]"].value == "VARCHAR")   document.insert["fld_len["+i+"]"].value = '15';
 		else if( document.insert["fld_type["+i+"]"].value == "TEXT")      document.insert["fld_len["+i+"]"].value = '255';
 		else if( document.insert["fld_type["+i+"]"].value == "LONGBLOB")  document.insert["fld_len["+i+"]"].value = '255';
+		else if( document.insert["fld_type["+i+"]"].value == "BLOB")  document.insert["fld_len["+i+"]"].value = '255';
 		else if( document.insert["fld_type["+i+"]"].value == "DATE")      document.insert["fld_len["+i+"]"].value = '15';
 		else if( document.insert["fld_type["+i+"]"].value == "DATETIME")  document.insert["fld_len["+i+"]"].value = '20';
 		else if( document.insert["fld_type["+i+"]"].value == "TIMESTAMP")  document.insert["fld_len["+i+"]"].value = '20';
 		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8';
+		else if( document.insert["fld_type["+i+"]"].value == "YEAR")      document.insert["fld_len["+i+"]"].value = '4';
 	}
 	function line_set_func(cnt) {
 			document.insert.mode.value='line_set';
@@ -280,23 +248,20 @@
 			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 	}
-
 	function sendCon(form){
 		f_nm = document.insert["fld_enm[0]"].value;
-		if ( f_nm == "" ) {
-			window.alert("An unentered field remains.");//입력 되지 않은 필드가 남아 있습니다.\n모두 입력하신 후에 계속등록하십시요.
+		if( f_nm == "" ) {
+			window.alert("An unentered field remains.");
 		} else {
 			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
-
 	function table_create_func(line){
 		if( !document.insert.userid.value) {
 			alert(' Please login! ');
 			return false;
-		}
-		else if( !document.insert.new_tab_hnm.value) {
+		} else if( !document.insert.new_tab_hnm.value) {
 			alert(' Please enter a table name! ');
 			return false;
 		}
@@ -305,20 +270,18 @@
 			fnm = document.insert["fld_hnm[" + i + "]"].value;
 			if( !len) {
 				if( fnm ) {
-					alert('Check the column length input! ');// 컬럼 길이 입력을 확인 하세요!
+					alert('Check the column length input! ');
 					return false;
 				}
 			}
 		}
-		var ins = window.confirm("Register and create the table. ");//테이블을 등록및 생성합니다.
-		if (ins)
-		  {
+		var ins = window.confirm("Register and create the table. ");
+		if( ins) {
 			document.insert.mode.value='table_create';
 			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
-		  }
+		}
 	}
-	
 	function sql_func(){
 		window.open( 'table_sql.php' , '_self', '');
 		return;
@@ -327,7 +290,6 @@
 		window.open( 'kapp_table30m_A.php?mode=Reset' , '_self', '');
 		return;
 	}
-
 	function Newtable_save(cnt){
 		new_table_name = document.insert.new_tab_hnm.value;
 		tab = document.insert.tab_hnmS.value;
@@ -337,7 +299,7 @@
 		document.insert.project_code.value=da[2];
 		document.insert.project_name.value=da[3];
 		if( new_table_name == hnm ) {
-			alert('Change the table name! ');//테이블명을 변경하세요!
+			alert('Change the table name! ');
 			document.insert.tab_hnm.focus();
 			return false;
 		} else {
@@ -347,14 +309,13 @@
 				tt = tabA.split(":");
 				t = tt[1];
 				if( new_table_name == t ) {
-					alert('Table name is duplicate.' );//Table명이 중복입니다.
+					alert('Table name is duplicate.' );
 					insert.tab_hnm.focus();
 					return false;
 				}
 			}
-			msg = " Do you want to save the new table name as " + new_table_name + "? ";//새로운 테이블명 " +new_table_name + "으로 생성할까요?
-			if ( window.confirm( msg ) )
-			{
+			msg = " Do you want to save the new table name as " + new_table_name + "? ";
+			if ( window.confirm( msg ) ){
 					document.insert.old_tab_enm.value=enm;
 					document.insert.mode.value='table_new_copy';
 					document.insert.action="kapp_table30m_A.php";
@@ -363,7 +324,6 @@
 			} else return false;
 		}
 	}
-
 	function Save_Update_Insert(line){
 		if( !document.insert.userid.value) {
 			alert(' Please login! ');
@@ -378,21 +338,19 @@
 			fnm = document.insert["fld_hnm[" + i + "]"].value;
 			if( !len) {
 				if( fnm ) {
-					alert('Check the column length input! ' + fnm); //컬럼 길이 입력을 확인 하세요!
+					alert('Check the column length input! ' + fnm);
 					return false;
 				}
 			}
 		}
 		var ins = window.confirm("Register the table. ");
-		if (ins)
-		{
+		if (ins){
 			document.insert.mode.value='table_create_reaction';
 			document.insert.action="kapp_table30m_A.php";
 			document.insert.submit();
 		}
 	}
-
-	function create_after_run(tab_enm, tab_hnm, mode){ // Add column alert(" ----- kapp_pg_curl_ajax");
+	function create_after_run(tab_enm, tab_hnm, mode){
 		var selectIndex = document.insert.tab_hnmS.selectedIndex;
 		tab_hnmS=tab_enm + ":" + tab_hnm;
 		document.insert.tab_hnmS[selectIndex].value = tab_hnmS;
@@ -433,10 +391,10 @@ jQuery(document).ready(function ($) {
 		document.insert.no.value=no;
 		fld_hnm = document.insert["fld_hnm[" + no + "]"].value;
 		if( fld_hnm == "seqno"){
-			alert(' Can not use column name seqno.');// \n 컬럼명 seqno를 사용할수 없습니다.
+			alert(' Can not use column name seqno.');
 			return false;
 		}
-		window.open('./fld_select.php?no='+no,'','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');//pg_list_select_menu.php
+		window.open('./fld_select.php?no='+no,'','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');
 	}
 	var	fld_enmV, fld_hnmV, fld_typeV, fld_lenV, memoV,	seqnoV, Aif_lineV, Aif_typeV, Aif_dataV, Arelation_dataV;
 
@@ -485,7 +443,7 @@ jQuery(document).ready(function ($) {
 		if ( i > 0) {
 			up_bakup(j);   // 윗라인 데이터 보관
 			up_move(i, j);    // 현재라인 데이터 윗 라인으로 이동
-			up_recover(i); // 보관한 윗라인 데이터 현재라인으로 이동
+			up_recover(i); 
 		} else {
 			return;
 		}
@@ -497,19 +455,18 @@ jQuery(document).ready(function ($) {
 	}
     function down_func(){
 		var i = document.insert.line_index.value;
-		var j = i*1 +1; // 아랫 라인 //alert('down_func i:' + i + ', j:' +j);
+		var j = i*1 +1;
 
 		fld_enmV  = document.insert["fld_enm[" + j + "]"].value;
-		fld_hnmV  = document.insert["fld_hnm[" + j + "]"].value; //alert('fld_enmV i:' + fld_enmV + ', fld_hnmV:' +fld_hnmV);
-
+		fld_hnmV  = document.insert["fld_hnm[" + j + "]"].value;
 		if( fld_enmV == '' || fld_hnmV == '' ){
-			alert('이동할 위치에 대이터가 존재하지 않습니다.');
+			alert('move column none');
 			return;
 		}
-		if ( i > 0) {
-			up_bakup(j);   // 아랫 라인 데이터 보관
-			up_move(i, j);    // 현재라인 데이터 아랫 라인으로 이동
-			up_recover(i); // 보관한 윗라인 데이터 현재라인으로 이동
+		if( i > 0) {
+			up_bakup(j);
+			up_move(i, j);
+			up_recover(i);
 		} else {
 			return;
 		}
@@ -541,7 +498,6 @@ jQuery(document).ready(function ($) {
 	}
 	function change_project_func(pnmS){
 		//sendDataToPHP('project_nmS', pnmS);
-		//location.href="kapp_table30m_A.php?mode=Project_Search";
 		document.insert.mode.value="Project_Search";
 		document.insert.action="kapp_table30m_A.php";
 		document.insert.submit();
@@ -587,13 +543,13 @@ jQuery(document).ready(function ($) {
 				$fld_enm		= $rs['fld_enm'];
 				$fld_hnm		= $rs['fld_hnm'];
 			if($rs['fld_enm'] == 'seqno' )	{
-				$userid				= $rs['userid']; // 한번만 처리하기.
+				$userid				= $rs['userid']; 
 				$project_code		= $rs['group_code'];
 				$project_name		= $rs['group_name'];
 				$tab_enm			= $rs['tab_enm'];
 				$tab_hnm			= $rs['tab_hnm'];
 				$table_yn			= $rs['table_yn'];
-				$disno				= $rs['disno'];//	m_("000 disno:" . $disno);
+				$disno				= $rs['disno'];
 				$Aseqno[0]			= $rs['seqno'];
 				$Afld_enm[0]		= $rs['fld_enm'];
 				$Afld_hnm[0]		= $rs['fld_hnm'];
@@ -601,7 +557,7 @@ jQuery(document).ready(function ($) {
 				$Afld_len[0]		= $rs['fld_len'];
 				$Amemo[0]			= $rs['memo'];
 			}else {
-				$table_yn			= $rs['table_yn']; // add 2023-08-18
+				$table_yn			= $rs['table_yn'];
 				$ARR++;
 				$Aseqno[$ARR]		= $rs['seqno'];
 				$Afld_enm[$ARR]		= $rs['fld_enm'];
@@ -629,7 +585,6 @@ jQuery(document).ready(function ($) {
 				$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$tab_hnm', pg_code='$tab_enm', pg_name='$tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', relation_type='',relation_data='', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
 				sql_query($query);
 				$link_ = KAPP_URL_T_ . "kapp_table30m_A.php";
-				//insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10_pg@table30m' ); //PG create point
 			}
 			$pg_mode="";
 		}
@@ -643,7 +598,7 @@ jQuery(document).ready(function ($) {
 				$fld_enm		= $rs['fld_enm'];
 				$fld_hnm		= $rs['fld_hnm'];
 			if( $rs['fld_enm'] == 'seqno' )	{
-				$userid				= $rs['userid']; // 한번만 처리하기.
+				$userid				= $rs['userid'];
 				$tab_enm			= $rs['tab_enm'];
 				$tab_hnm			= $rs['tab_hnm'];
 				$table_yn			= $rs['table_yn'];
@@ -717,10 +672,6 @@ jQuery(document).ready(function ($) {
 <?php	} ?>
 		</SELECT>
 		</span>
-
-
-
-
 </ul>
 <ul>
 	<span bgcolor='#f4f4f4' <?php echo "title='Select a table from the list of registered tables.' "; ?>>Table Name</span>
@@ -739,19 +690,12 @@ jQuery(document).ready(function ($) {
 		}
 ?>
 		</SELECT>
-		
 		</span>
-
-		<!-- <span bgcolor='#f4f4f4'><input type='button' onclick="javascript:table_name_change();" value='Name Change' style='height:25px;background-color:cyan;border-radius:20px;border:1 solid black' <?php echo "title='name change of table' "; ?> ></span> -->
 </ul>
 </div>
 
-<!-- <div>
-<input type='button' value='SQL to Table' onclick="sql_func()" style='height:25px;background-color:black;color:white;border-radius:20px;border:1 solid white' title='You can SQL to Table.'>
-</div> -->
-
 <div>
-	  New Table Code:<?=$tab_enm?>, Column Count : <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>><!--  \n등록할 라인수를 설정합니다. -->
+	  New Table Code:<?=$tab_enm?>, Column Count : <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>>
 		<option value="<?php echo $line_set ?>" selected ><?php if($mode=='SearchTAB') echo $record_cnt; else echo $line_set; ?> </option>
 		  <option value="10" >10</option>
 		  <option value="15" >15 </option>
@@ -915,23 +859,27 @@ jQuery(document).ready(function ($) {
 				  <option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> value="DOUBLE" <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
 				  <option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
 				  <option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
-				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if($fld_type == 'TIME') echo " selected ";  ?>>TIME</option><!-- 2024-01-04 kan -->
+				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if( $fld_type == 'TIME') echo " selected ";  ?>>TIME</option><!-- 2024-01-04 kan -->
+
+				  <option <?php echo "title='YEAR Date and time combination, 0000 through 2026 Wanted.' "; ?> value="YEAR" <?php if($fld_type == 'YEAR') echo " selected ";  ?>>YEAR</option><!-- 2026-03-12 kan -->
 				  
 				  <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";?> >TIMESTAMP</option>
 
 				  <option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option>
+				  
+				  <option <?php echo "title='BLOB Length Maximum data size: 65,535Byte' "; ?> value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 				  <!-- 데이터 최대크기 4GiB -->
 			  </select>
 		</td>
 		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 <?php
-				if ( $fld_enm=='seqno' or $i==0) { echo "value='13' readonly"; } else { echo " value='$fld_len' ";}
+				if( $fld_enm=='seqno' or $i==0) { echo "value='13' readonly"; } else { echo " value='$fld_len' ";}
 ?>  >
 		</td>
 		<td align='left'>
 			<input type='text' name="memo[<?=$i?>]"  style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 			<?php
-				if ($fld_enm=='seqno' or $i==0) {
+				if( $fld_enm=='seqno' or $i==0) {
 					echo " value='AUTO_INCREMENT , Key : Can not change' title='Can not change' readonly";
 				} else {
 					echo " value='$memo' ";
@@ -939,7 +887,7 @@ jQuery(document).ready(function ($) {
 			?> >
 	   </td>
 	<?php
-		if($mode=='SearchTAB') {
+		if( $mode=='SearchTAB') {
 	?>
 			<td align='left'>
 	<?php
@@ -950,8 +898,6 @@ jQuery(document).ready(function ($) {
 					echo " <div id='manager_".$i.">' class='manager_".$i."' style='display: ;' > ";
 
 					echo " <input type='button' name='del' onclick=\"javascript:delete_column_func('$seqno', '$fld_hnm', '$fld_enm', '$i');\"  value='delete' style='height:22px;background-color:red;color:yellow;border-radius:20px;border:1 solid black'  title=' Delete a column.'>";
-					// 변경버턴 막아둔다 20230920 - echo " <input type='button' name='modify' onclick=\"javascript:column_modify_mode_func('$i', '$table_yn', '$dis_cnt');\"  value='modify' style='height:22px;background-color:blue;color:yellow;border:1 solid black' title=' Modify a column.'>";
-
 					echo "</div>";
 				}
 			} else {
@@ -1014,7 +960,7 @@ jQuery(document).ready(function ($) {
 		if( $table_yn =='y' ) {
 			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL";
-			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
+			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' || $fld_type =='DECIMAL' ) {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
 			} else {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type ;
@@ -1026,7 +972,7 @@ jQuery(document).ready(function ($) {
 			}
 			else {
 				printf(" sql:%s ", $query);
-				m_(" column modify 실패------------!! ");
+				m_(" column modify error------------!! ");
 			}
 		} else {
 			$sql = "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len=$fld_len, userid='$H_ID', memo='$fld_memo', disno=$dis ";
@@ -1050,7 +996,7 @@ jQuery(document).ready(function ($) {
 		if( $table_yn =='y' ) {
 			if( $fld_type== 'CHAR' || $fld_type== 'VARCHAR' ) {
 				$query = "ALTER TABLE ". $tab_enm . " ADD COLUMN " . $fld_enm . " " . $fld_type . "(". $fld_len .") DEFAULT NULL ";
-			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='DECIMAL' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' ) {
+			} else if( $fld_type== 'INT' || $fld_type =='BIGINT' || $fld_type =='TINYINT' || $fld_type =='SMALLINT' || 'MEDIUMINT' || $fld_type =='FLOAT' || $fld_type =='DOUBLE' || $fld_type =='DECIMAL' ) {
 				$query = "ALTER TABLE ". $tab_enm . " ADD COLUMN " . $fld_enm . " " . $fld_type . " DEFAULT 0 ";
 			} else {
 				$query = "ALTER TABLE $tab_enm ADD COLUMN $fld_enm $fld_type ";
@@ -1061,7 +1007,7 @@ jQuery(document).ready(function ($) {
 				m_(" column add OK!! ");
 			}
 			else {
-				echo " sql:" . $query; m_(" column add 실패------------!! ");	
+				echo " sql:" . $query; m_(" column add error------------!! ");	
 			}
 		} else {
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', userid='$H_ID', memo='$fld_memo', disno=$dis " );
@@ -1081,8 +1027,8 @@ jQuery(document).ready(function ($) {
 	if( $mode == "table_create_reaction" ){
 		create_reaction_func(); // line reset
 	} else if( $mode == "table_update_remake" ){
-		$view_set=1; // update_pg_func()에서 참고 내용을 1번만 출력 하도록 한다.
-		$tab_enm = $_POST['old_tab_enm'];		//m_("tab_enm: " . $tab_enm);
+		$view_set=1;
+		$tab_enm = $_POST['old_tab_enm'];
 		update_remake_func( $tab_enm ); // drop and remake
 	} else if( $mode == "table_create" ) {
 		create_func();
@@ -1093,7 +1039,6 @@ jQuery(document).ready(function ($) {
 
 	//$tabData['data'][][] = array();
 	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
-		//m_("start --- TAB_curl_sendA ");
 		global $H_ID, $H_EMAIL, $project_code, $project_name;
 		global $kapp_mainnet;
 		$tabData['data'][][] = array();
@@ -1171,7 +1116,7 @@ jQuery(document).ready(function ($) {
 		$tabData['data'][$cnt]['item_array'] = $item_array;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 
-		$url_ = $kapp_mainnet . '/_Curl/pg_curl_get_ailinkapp.php'; // 전송할 대상 URL fation
+		$url_ = $kapp_mainnet . '/_Curl/pg_curl_get_ailinkapp.php';
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -1204,6 +1149,7 @@ jQuery(document).ready(function ($) {
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_memo` BLOB,';
 		$cnt = 1;
 		$item_array = "";
 		$if_type = "";
@@ -1227,16 +1173,19 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='TINYINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='SMALLINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
-				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='FLOAT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='CHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='BLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
@@ -1244,8 +1193,6 @@ jQuery(document).ready(function ($) {
 					//echo "sql: " . $sql; exit;
 				}
 				$Asqltable=''; $if_lineA=0; $if_typeA=''; $if_dataA=''; $relation_dataA='';
-				// table_create --- curl array -------------- no use
-				//TAB_curl_move( $tab_enm, $tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
 				$cnt++;
 			}
 		}
@@ -1270,10 +1217,8 @@ jQuery(document).ready(function ($) {
 		
 		$rets = sql_query($query);
 		if( $rets ){
-			//m_("PG Create OK! table10_pg_table  insert ");//OK table10_pg_table - insert  -- 
-			$Tret = TAB_curl_sendA( $new_tab_enm, $new_tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); // table_create
+			$Tret = TAB_curl_sendA( $new_tab_enm, $new_tab_hnm, 0, $item_list, 0, '', '', '', $item_array );
 			if( $Tret ) {
-				//m_("TAB_curl_sendA -- OK, Tret:" . $Tret);
 				$sys_link = KAPP_URL_T_ . "/tkher_program_data_list.php?pg_code=" . $new_tab_enm; 
 				$Pret = PG_curl_sendA( $line_set , $item_array, $if_type, $if_data, '', $sys_link, '' , '' );
 			} else  m_("TAB_curl_sendA -- Error");
@@ -1298,6 +1243,7 @@ jQuery(document).ready(function ($) {
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_memo` BLOB,';
 		$item_array = "";
 		$if_type = "";
 		$if_data = "";
@@ -1318,23 +1264,25 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='TINYINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='SMALLINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
-				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='FLOAT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='CHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='BLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 				$cnt++;
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', memo='$item_array', sqltable='$item_list' " );//memo='key column'
+		sql_query( "INSERT INTO {$tkher['table10_table']} set  group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', memo='$item_array', sqltable='$item_list' " );
 		$line_set = $cnt;
 		$mq3 = sql_query( $item_list );
 		if( !$mq3 ) {
@@ -1352,7 +1300,6 @@ jQuery(document).ready(function ($) {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$new_tab_hnm', pg_code='$tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$cnt, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
 			$link_ = KAPP_URL_T_ . "/kapp_table30m_A.php";
-			//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );//PG create point
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' ,  '$mode' );</script>";
 	}
@@ -1366,8 +1313,9 @@ jQuery(document).ready(function ($) {
 
 		$item_list  = " create table ". $new_tab_enm . " ( ";
 		$item_list  = $item_list . " `seqno` int(11) auto_increment not null, ";
-		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; 
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_memo` BLOB,';
 		$cnt = 1;
 		$item_array = "";
 			$if_type = "";
@@ -1390,22 +1338,25 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='TINYINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='SMALLINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
-				else if( $fld_type =='DECIMAL' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='FLOAT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='BLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' " );
 				$cnt++;
 			}
 		}
 		$item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-		sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$item_array', sqltable='$item_list' " );//memo='key column'
+		sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='seqno', fld_hnm='seqno', fld_type='INT', fld_len='10', disno=$cnt, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$item_array', sqltable='$item_list' " );
 		$line_set = $cnt;
 		$fld_enm  = "fld_" . $ARR;
 		$mq1 = sql_query( $item_list );
@@ -1419,7 +1370,7 @@ jQuery(document).ready(function ($) {
 		}
 		$old_tab_enm= $_POST['old_tab_enm'];
 		//new_table_name: ABC_CCC_New, tab: dao_1757214499:ABC:dao_1755421034:Project59
-		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$old_tab_enm."' ";// old table copy pg
+		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$old_tab_enm."' ";
 		$resultPG	= sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
@@ -1428,7 +1379,6 @@ jQuery(document).ready(function ($) {
 			sql_query($query);
 		} else {
 			m_(" Copy ERROR : mode:".$mode.", old pg tab_enm: $tab_enm pg_code:".$new_tab_enm );
-			//new_table_name: ABCYY_New, tab: dao_1766735120:ABCYY:dao_1755421034:Project59
 		}
 		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 	}
@@ -1447,6 +1397,7 @@ jQuery(document).ready(function ($) {
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
+		$item_list = $item_list . ' `kapp_memo` BLOB,';
 
 		$item_array = '';
 		$if_type = '';
@@ -1457,7 +1408,6 @@ jQuery(document).ready(function ($) {
 			$fld_typeO	=	$_POST["Afld_type"][$ARR];
 			$fld_lenO	=	$_POST["Afld_len"][$ARR];
 			$fld_O      = "|". $fld_enmO ."|". $fld_hnmO  ."|". $fld_typeO ."|". $fld_lenO . "@";
-			//$memoO		=	$_POST["Amemo"][$ARR]; //Afld_memo
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 			if( $fld_hnm !='' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
@@ -1473,7 +1423,7 @@ jQuery(document).ready(function ($) {
 				$Asqltable = '';
 				$i_data = "|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$item_array = $item_array . "|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
-				if( $fld_enm !== $fld_enmO ) update_pg_func($fld_enm, $fld_enmO, $i_data, $fld_O); // 컬럼명이 변경 되었을 때, 사용된 테이블 관련된 프로그램의 컬럼명을 변경한다.
+				if( $fld_enm !== $fld_enmO ) update_pg_func($fld_enm, $fld_enmO, $i_data, $fld_O);
 				$if_type = $if_type . "|" . "0";
 				$if_data = $if_data . "|" . "";
 				if( $fld_type =='INT' )					$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
@@ -1481,22 +1431,21 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='TINYINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='SMALLINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
-				else if( $fld_type =='DECIMAL' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='FLOAT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='BLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
-
-				// table_update_remake --- curl array ----- no use
-				//TAB_curl_move( $tab_enm, $new_tab_hnm, $fld_enm, $fld_hnm, $fld_type, $fld_len, $ARR, $memo, $Asqltable, $if_lineA, $if_typeA, $if_dataA, $relation_dataA);
 				$cnt++;
 			}
 		} // for
@@ -1522,13 +1471,9 @@ jQuery(document).ready(function ($) {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$new_tab_hnm', pg_code='$tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 			sql_query($query);
 				$link_ = KAPP_URL_T_ . "/kapp_table30m_A.php";
-				//insert_point_app( $H_ID, $config['kapp_comment_point'], $link_, 'table10_pg@table30m' );
 		}
-		//echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 		echo "<script>location.replace(location.href)</script>";
 	}
-	//----------------------------------------------------------------------
-	//컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요
 	function update_pg_func($fld_enm, $fld_enmO, $i_data, $fld_O){
 		global $H_ID, $tab_enm, $mode, $view_set;
 		global $config;
@@ -1548,7 +1493,7 @@ jQuery(document).ready(function ($) {
 		}
 		if( $chg == 1 && $view_set){
 			m_( $table10_pg . ": Program - " . $rs['pg_code'] . ":" . $rs['pg_name'] . ", If you have settings for calculation formulas, pop-up windows, and relational expressions, you may need to check them. " . $item_array);
-			$view_set = 0; //계산식, 팝업창, 관계식에 대한 설정 있다면 확인이 필요할 수 있습니다.
+			$view_set = 0;
 		}
 	}
 ?>

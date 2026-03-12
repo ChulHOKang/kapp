@@ -73,7 +73,7 @@
 						$post_fld = "";
 						$aa = " ";
 					}
-					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ){
+					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL" ){
 						if( $i==0 )	$SQL = $SQL . $nm . " = " . $aa . " ";
 						else	    $SQL = $SQL . " , " .  $nm . " = " . $aa . " ";
 					} else {
@@ -114,7 +114,7 @@
 					if( $i==0 )	$SQL = $SQL . $nm ." = '" . $upfile_name . "' ";
 					else	$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
 				} else {
-					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" ){
+					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL"){
 						if( !$post_fld || $post_fld == '') $post_fld = 0;
 						if( $i==0 )	$SQL = $SQL . $nm . " = " . $post_fld . " ";
 						else	    $SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";

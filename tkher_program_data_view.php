@@ -20,6 +20,7 @@
 		$H_LEV = $member['mb_level'];
 		$H_POINT= $member['mb_point'];
 	} else {
+		$H_ID = 'Guest';
 		$H_LEV = 1;
 		$H_POINT=0;
 	}
@@ -80,9 +81,13 @@
 		popwin.document.write('<title>K-APP</title><body bgcolor="white" topmargin=0 leftmargin=0 marginheight=0 marginwidth=0><a href="javascript:window.close()"><img src="'+imagesrc+'" border=0></a></body>')
 		popwin.document.close()
 	}
-	function data_delete(uid, seqno){
-		if( !document.form_view.Hid.value ) {
-			alert('Login Please!'); return false;
+	function data_delete(hid, seqno){
+		if( hid=='Guest'){
+			alert("Guests cannot make changes");
+			return;
+		}
+		if( document.form_view.Hid.value =='Guest') {
+			alert('Guests cannot delete!'); return false;
 		}
 		if( confirm("Are you sure you want to delete? ") ) {
 			document.form_view.mode.value="data_delete";
@@ -91,9 +96,14 @@
 			document.form_view.submit();
 		}
 	}
-	function record_update(){
-		if( !document.form_view.Hid.value ) {
-			alert('Login Please!'); return false;
+	function record_update(hid){
+		if( hid=='Guest'){
+			alert("Guests cannot make changes");
+			return;
+		}
+		if( document.form_view.Hid.value =='Guest') {
+			alert("Guests cannot make changes");
+			return false;
 		}
 		document.form_view.mode.value='modify';
 		document.form_view.action='tkher_program_data_update.php';
@@ -107,7 +117,7 @@
 
 	}
 	function tkher_source_create($coin, seq){
-		if( !document.form_view.Hid.value ) {
+		if( document.form_view.Hid.value == 'Guest' ) {
 			alert('Login Please!'); return false;
 		}
 		if( $coin < 1000 ) {
@@ -128,12 +138,11 @@
 <body bgcolor='#ffffff'>
 <center>
 <?php
-$data_mid = '';
-$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
-if ( ($row = sql_fetch( $SQLX ) )==false ){
-		m_( "Error $tab_enm , seqno:$seqno" );
-		exit();
-} else {
+	$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
+	if( ($row = sql_fetch( $SQLX ) )==false ){
+			m_( "Error $tab_enm , seqno:$seqno" );
+			exit();
+	} else {
 		if( isset($row['kapp_userid']) ) $data_mid = $row['kapp_userid'];
 		else $data_mid = '';
 ?>
@@ -201,10 +210,10 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 				$fld = explode("|", $ddd); 
 				$fldenm= $fld[1];
 				$fldhnm= $fld[2];
-				if ( $fld[3] == "TEXT" ) {
+				if( $fld[3] == "TEXT" ) {
 					echo "<p>$fldhnm</p>";
 					echo "<div class='viewWriteBox' ><textarea name='$fldenm' >$row[$fldenm]</textarea></div>";
-				} else if ( $typeX == '9' ) { // add file
+				} else if( $typeX == '9' ) { // add file
 						if( $row[$fldenm] != '' ) {
 								$ifile = explode( ".", $row[$fldenm] );
 								$row_fnm = $row[$fldenm];
@@ -219,7 +228,7 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 									echo " <div class='data1A'><a href='./file/$tab_mid/$tab_enm/$row[$fldenm]' target='_BLANK'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
 									echo " <div class='blankA'> </div> ";
 								}
-						}else{
+						} else {
 								echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 								echo " <div class='data1A'> <img src='./icon/file/default.gif' border='0'> </div> ";
 								echo " <div class='blankA'> </div> ";
@@ -233,11 +242,11 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 ?>
 					<div class="viewBtn">
 <?php
-		if( $H_ID == $pg_mid || $H_ID == $data_mid ){ //쓰기권한 
+		if( $H_ID == $pg_mid || $H_ID == $data_mid || $H_LEV >= $H_LEV ){ //쓰기권한 
 ?>
-			<input type='button' value='Modify' onclick="javascript:record_update();" class="btn_bo02" title="grant write:<?=$grant_write?>:<?=$H_LEV?>">
+			<input type='button' value='Modify' onclick="javascript:record_update('<?=$H_ID?>');" class="btn_bo02" title="grant write:<?=$grant_write?>:<?=$H_LEV?>">
 			<input type='button' value='Delete' onclick="javascript:data_delete('<?=$H_ID?>', <?=$row['seqno']?>);" class="btn_bo02">
-<?php } ?>
+<?php	} ?>
 			<input type='button' value='List' onclick="javascript:tab_pg_view();" class="btn_bo02">
 			<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>', '<?=$seqno?>')" class="kapp_btn_bo02" title='Download the source.'>
 					</div>
@@ -246,9 +255,7 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 			</div>
 		</div>
 <?php
-		$day	= date("Y-m-d");
-		$up_day = date("Y-m-d h:i:s");
-}  //query false
+	}  //query false
 ?>
 
 </div>
