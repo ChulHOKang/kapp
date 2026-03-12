@@ -118,11 +118,55 @@ Development of an artificial intelligence system using program generation code i
 
 Program generation information can be generated on the blockchain.
 The design for program generation is the same for all programs. Designed data can be generated in any language and provided as source code. - This is a future plan. We need to standardize the programming languages ​​we want to create. We desperately need your cooperation and donations to enable us to work on each programming language.
-
 If you encounter any issues, please email solpakan@naver.com and we'll check. Since we don't always check our emails, it may take some time.
-
 We're all working hard until everyone can create and utilize programs.
-
 -- Donations --- The development of this system requires the cooperation and donations of interested parties. If this system is helpful to you, please donate. If you can afford a donation of $12 per year, it will be a great help in the development of the K-APP system.
-
 Thank you.
+
+--- JAPAN ---
+K-APPシステムの特徴。 K-APPとは。インターネットウェブ上でコーディングを行わずにウェブプログラムを製作する開発ツールだ。 Webソースコードを自動生成する
+
+K-APP Features?
+The K-APP System is a development tool that allows you to create web programs without coding on the Internet. It automatically generates web source code.
+--- オペレーティングサーバー環境 --- サーバー文字セット: UTF-8 Unicode (utf8) Web サーバー: Apache データベース: MariaDB PHP バージョン: 7.3.33 phpMyAdmin: バージョン情報: 5.1.1
+
+--- K-APP システム機能 --- コーディングを行わず、カラム情報のみ入力すれば簡単にウェブ用プログラムを製作します。 CRUD type program 誰でも、専門家でなくても簡単で手軽にプログラムを生成してすぐに活用できるようにすることが目的です。
+
+時間を飛ばすと隙間作業をしてみると作業時間がかかります。
+
+このシステムは、PHPプログラムを生成するWebサーバーApacheベースのプログラム制作ツールです。
+
+機能は単純です DB Table 列の情報を登録するとテーブルが生成されます。 CRUD Program create データ入力列の属性を Check Box、List Box、Radio Button、Popup Window 設定、計算式設定などができます。データの登録、照会、修正、削除などができるプログラムを生成します。
+
+レコード登録時にテーブルや1次元テーブルのRelationship設定などができます。生成したソースコードをダウンロードしてサーバーにアップロードしてインストールする機能もあります。
+
+DB設定、table create、PHP実行ソースをサーバーにアップロードして実行可能。
+ソースをダウンロードするにはポイントが必要です。ポイントは制作活動を通じて獲得することができます。プログラム生成情報は他のサーバーと連動して他人が活用可能にしました。プログラム生成情報は、今後のブロックチェーンで生成されるようにしたいと思います。プログラム生成タスクはすべてコード化され、DBに保存されます。今後、AI DATASETを構成し、精密なプログラムを自動生成できるようにし、さらに発展させたいと思います。
+
+--- Tree Menuを作成できます。
+
+作成したプログラムをURLにリンクしてすぐに実行できます。
+
+---掲示板を作成できます。
+
+プログラムを生成するために設計はすべて同じです。設計されたデータセット情報は、さまざまなプログラミング言語で生成して提供することができます。 - 今後の補完発展事項です。作成したいプログラム言語固有の標準化タスクが必要です。プログラミング言語固有の作業を行うためには、協力と寄付が切実に必要です。
+
+--- インストール方法 --- インストールする方法は setup ディレクトリを実行すればいいです。 DB関連情報と管理者のメールと秘密だけを設定すると、セットアップが完了します。ログインはセットアップ時のメールとビーバンを入力すればログインできます。
+
+--- サーバーにアップロード --- サーバーにアップロードする際にディレクトリ名は kapp を生成してアップロードしてください。もちろん、他の早いものを使用することもできます。
+
+---背景画像を自由に変更できます。左の最初のアイコンのB3。 Main Image Insert, B4. Main Image Listメニュー項目を参照してください。
+
+---将来の発展計画：
+
+プログラム生成コード情報を活用した人工知能システムの制作。
+プログラム生成情報をブロックチェーン生成。
+プログラムを生成するために設計はすべて同じです。設計されたデータは、すべての言語を生成してソースを提供できます。 - 今後の希望事項です。作成したいプログラム言語固有の標準化タスクが必要です。プログラム言語固有の作業を行うために、協力と寄付が切実です。
+
+問題が発生した場合は、solpakan@naver.com にメールでご連絡ください。メールを常に確認しないので時間がかかることもあります。
+
+誰もがプログラムを制作して活用できるその日までのファイティングです。
+
+---寄付---このシステムの発展には、関心のある人々の協力と寄付が必要です。このシステムがあなたに役立つ場合は、寄付をしてください。年間$12寄付が負担されない場合。 K-APPシステムの発展に大きな助けになります。
+
+ありがとうございます。
