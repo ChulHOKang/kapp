@@ -41,7 +41,7 @@
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !=''){
 		$item_array = $rsPG['item_array'];
 		$if_data = $rsPG['if_data'];
-		$iftype = $rsPG['if_type'];
+		$if_type = $rsPG['if_type'];
 		$tab_enm = $rsPG['tab_enm'];
 		$tab_hnm = $rsPG['tab_hnm'];
 		$item_cnt = $rsPG['item_cnt'];
@@ -343,9 +343,9 @@ $(function () {
 	$fld_len	= array();
 	$list		= array();
 	$item		= array(); 
-	$ddd		= "";
+	$ddd		= "";	//$in_day= date("Y-m-d H:i");
 	$list		= explode("@", $item_array);
-	for ( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){
+	for( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){
 		$ddd				= $list[$i];
 		$item				= explode("|", $ddd);
 		$fld_enm[$i]	= $item[1];
@@ -358,17 +358,11 @@ $(function () {
 	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
-	$in_day		= date("Y-m-d H:i");
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!="" ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
 	$page_cnt	= 10;
-?>
-			<br>
-			<div>
-				<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
-			</div>
-<?php
+
 	$total_count = 0;
 	$view_msg ='';
 	if( $H_LEV >= $grant_view || $pg_mid == $H_ID ) {
@@ -398,12 +392,16 @@ $(function () {
 		$view_msg ='You do not have permission to view this material. <br>The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
 	}
 ?>
-		<form name='view_form' method='post' enctype="multipart/form-data" >
-			<div style='width:99%;'>
-				<div class="fl">
-						<tr>
-							<td align='left'>
-								<script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
+<br>
+<div>
+	<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
+</div>
+<script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
+<FORM name='view_form' method='post' enctype="multipart/form-data" >
+<div style='width:99%;'>
+	<div class="fl">
+		<tr>
+			<td align='left'>
 			<P align="left" style="margin-top: 0px" title='pg: Project List '>
 			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 							<option value=''>Select Project</option>
@@ -475,15 +473,15 @@ $(function () {
 if( $H_ID==$pg_mid ) {
 ?>
 					<span>
-						<strong title='Set data view level'>View: </strong>
-						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view('<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;'>
+						<strong title='Click to change properties'>View: </strong>
+						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view('<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
 							<option value='1' <?php if($grant_view=='0'||$grant_view=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_view=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_view=='3')  echo " selected"; ?> >For creators only</option>
 							<option value='8' <?php if($grant_view=='8')  echo " selected"; ?> >Only system manager</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
-						<strong title='Set data write level'>Write: </strong>
-						<select id='grant_write' name='grant_write' onChange="Change_grant_write('<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;'>
+						<strong title='Click to change properties'>Write: </strong>
+						<select id='grant_write' name='grant_write' onChange="Change_grant_write('<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
 							<option value='1' <?php if($grant_write=='0'||$grant_write=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_write=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_write=='3')  echo " selected"; ?> >For creators only</option>
@@ -524,12 +522,12 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='search_choice'		value='<?=$search_choice?>' />
 						<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
 <?php
-				for( $i=0;$i<$item_cnt;$i++){
+				//for( $i=0;$i<$item_cnt;$i++){
 ?>
-						<input type='hidden' name="iftype[<?=$i?>]" value='<?=$iftype[$i]?>' >
-						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' > 
+						<!-- <input type='hidden' name="iftype[<?=$i?>]" value='<?=$iftype[$i]?>' >
+						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' >  -->
 <?php
-				}
+				//}
 ?>
 	<table class='listTableT' width='99%'>
 		<thead id='tit_et'>
@@ -597,38 +595,35 @@ if( $H_ID==$pg_mid ) {
 ?>
 		</tbody>
 	</table>				
-			<div class="fl">
-
-						<select id='c_sel' name='c_sel' onChange='Change_Csel2(this.options[this.selectedIndex].value)' style='height:30;' >
+	<div class="fl">
+		<select id='c_sel' name='c_sel' onChange='Change_Csel2(this.options[this.selectedIndex].value)' style='height:30;' >
 <?php
-					for( $i=0; $i < $fld_cnt; $i++ ){
-						$fff		= $fld_enm[$i];
-						$hhh		= $fld_hnm[$i];
-						$search_fld_type = $fld_type[$i];
-						echo " <option value='$fff' ";
-						if($search_fld == $fff) echo " selected >$hhh</option>";
-						else echo ">$hhh</option>";
-					}
+		for( $i=0; $i < $fld_cnt; $i++ ){
+			$fff		= $fld_enm[$i];
+			$hhh		= $fld_hnm[$i];
+			$search_fld_type = $fld_type[$i];
+			echo " <option value='$fff' ";
+			if( $search_fld == $fff) echo " selected >$hhh</option>";
+			else echo ">$hhh</option>";
+		}
 ?>
-						</select>
-						<select id='c_sel3' name='c_sel3' onChange='Change_Csel3(this.options[this.selectedIndex].value)' style='height:30;'>
-							<option value='like' <?php if($search_choice=='like' ) echo " selected " ?> >like</option>
-							<option value='=' <?php if($search_choice=='=' ) echo " selected " ?> >=</option>
-							<option value='>' <?php if($search_choice=='>') echo " selected" ?> >></option>
-							<option value='<' <?php if($search_choice=='<') echo " selected" ?> ><</option>
-						</select>
+		</select>
+		<select id='c_sel3' name='c_sel3' onChange='Change_Csel3(this.options[this.selectedIndex].value)' style='height:30;'>
+				<option value='like' <?php if($search_choice=='like' ) echo " selected " ?> >like</option>
+				<option value='=' <?php if($search_choice=='=' ) echo " selected " ?> >=</option>
+				<option value='>' <?php if($search_choice=='>') echo " selected" ?> >></option>
+				<option value='<' <?php if($search_choice=='<') echo " selected" ?> ><</option>
+		</select>
+				<input type="text" name='searchT' id='searchT'  value='<?=$searchT?>' style='height:30;' />
+				<a href="#" class="search_btn">Search</a>
+				<br>
+					<div class="fr">
+					<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='table_pg70_write'>
 
-						<input type="text" name='searchT' id='searchT'  value='<?=$searchT?>' style='height:30;' />
-
-						<a href="#" class="search_btn">Search</a>
-						<br>
-							<div class="fr">
-							<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='table_pg70_write'>
-
-						<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="kapp_btn_bo02" title=' Download data as an Excel file'>
-						<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
-					</form>
-			</div> 
+				<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="kapp_btn_bo02" title=' Download data as an Excel file'>
+				<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
+	</div> 
+</form>
 <?php
 	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
 ?> 

@@ -440,8 +440,8 @@ View Line:
 	<td TD <?=$bcolor?> width='5%' title='Data List program run'>
 		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
 	</td>
-		<td <?=$bcolor?> width='1%'><?=$gr?></td>
-		<td <?=$bcolor?> width='1%'><?=$gw?></td>
+		<td <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gr?></td>
+		<td <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gw?></td>
 	<TD <?=$bcolor?> width='5%'><?=substr($rs['upday'], 0,10)?></td>
 	<TD <?=$bcolor?> width='15%' align='center'>
 	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>>

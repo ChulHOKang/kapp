@@ -36,6 +36,7 @@
 	if( isset($_POST['if_data']) ) $if_data=$_POST['if_data'];
 	$tab_hnm		=	$_POST['tab_hnm'];
 	$tab_enm		=	$_POST['tab_enm'];
+	$data_mid		= $_POST['data_mid'];
 
 	if( $mode == 'CHG_MODE' ){
 		$pg_mid		= $_POST['pg_mid'];
@@ -126,19 +127,6 @@
 			} else $up_file = '';
 		} else m_(" Change Error! ");
 	}
-
-	$SQL = " SELECT * from {$tkher['table10_table']} where tab_enm='$tab_enm' and fld_enm='seqno' ";
-	if( ($result = sql_query( $SQL ) )===false ){
-		printf("11111  Invalid query: %s\n", $SQL);
-		exit();
-	} else {
-		$row = sql_fetch_array($result);
-		$tab_hnm		= $row['tab_hnm'];
-		$grant_write	= $row['grant_write'];
-		$grant_view	= $row['grant_view'];
-		$tab_mid				= $row['userid'];
-		$pg_title		= $tab_hnm;
-	} 
 ?>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 
@@ -160,17 +148,6 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 <div>
 	<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle02AX" title='pg:<?=$pg_code?>, tab:<?=$tab_enm?> '><?=$pg_name?></P>
 </div>
-			<form name='tkher_form' action='tkher_program_data_update.php' method='post' enctype="multipart/form-data" onsubmit='return check(this)'>
-				<input type="hidden" name='mode'		value='' />
-				<input type="hidden" name='tab_enm'	value='<?=$tab_enm?>' />
-				<input type="hidden" name='tab_hnm'	value='<?=$tab_hnm?>' />
-				<input type="hidden" name='seqno'			value='<?=$seqno?>' />
-				<input type="hidden" name='pg_name'		value='<?=$pg_name?>' />
-				<input type="hidden" name='pg_code'		value='<?=$pg_code?>' />
-				<input type="hidden" name='page'			value='<?=$page?>' />
-				<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
-			</form>
-
 	<div class="boardViewX">
 		<div class="viewHeader">
 			<span title='tab_update_pg70'>Date : <?=date("Y-m-d H:i:s" ); ?></span>
@@ -235,6 +212,9 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 					<input type="hidden" name='iftypeX'		value='<?=$iftypeX?>' />
 					<input type="hidden" name='if_type'			value='<?=$if_type?>' />
 					<input type="hidden" name='grant_write'	value='<?=$grant_write?>' />
+					<input type="hidden" name='relation_data'	value='<?=$relation_dataPG?>' />
+					<input type="hidden" name='relation_type'	value='<?=$relation_typePG?>' />
+				<input type="hidden" name='data_mid'	value='<?=$data_mid?>' />
 
 <?php
 		$list= explode("@", $item_array);
@@ -450,9 +430,9 @@ if( ($result = sql_query( $SQLX ) )===false ) {
 		}
 	}
 	function tab_pg_list() {
-		document.tkher_form.action='tkher_program_data_list.php';
-		document.tkher_form.target='_top';
-		document.tkher_form.submit();
+		document.makeform.action='tkher_program_data_list.php';
+		document.makeform.target='_top';
+		document.makeform.submit();
 	}
 	function Change_Csel_(c_sel){
 		document.makeform.c_sel.value=c_sel;

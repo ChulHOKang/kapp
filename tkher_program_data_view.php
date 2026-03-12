@@ -15,37 +15,6 @@
 <meta name="robots" content="ALL">
 </head>
 <?php
-	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
-	else if( isset($_POST['page']) )  $page = $_POST['page'];
-	else $page='';
-	if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
-	else if( isset($_POST['pg_code']) )  $pg_code = $_POST['pg_code'];
-	else $pg_code='';
-
-	if( isset($_REQUEST['tab_enm']) ) $tab_enm = $_REQUEST['tab_enm'];
-	else if( isset($_POST['tab_enm']) )  $tab_enm = $_POST['tab_enm'];
-	else $tab_enm='';
-
-	if( isset($_REQUEST['data_mid']) ) $data_mid = $_REQUEST['data_mid'];
-	else if( isset($_POST['data_mid']) )  $data_mid = $_POST['data_mid'];
-	else $data_mid='';
-
-	if( $pg_code =='' || $tab_enm =='' ) {
-			m_(" ERROR : pg_code:$pg_code , tab_enm:$tab_enm ");exit;
-	}
-		$pg_mid	= '';
-		$tab_mid= '';
-	$SQL = " SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
-	if( ($rowPG = sql_fetch( $SQL ) )==false ){
-		m_("tkher_program_data_view Error ");
-		exit();
-	} else {
-		//$row = sql_fetch_array($result);
-		$grant_write= $rowPG['grant_write'];
-		$grant_view	= $rowPG['grant_view'];
-		$pg_mid	= $rowPG['userid'];
-		$tab_mid= $rowPG['tab_mid'];
-	} 
 	$H_ID= get_session("ss_mb_id");   
 	if( $H_ID != '' ){
 		$H_LEV = $member['mb_level'];
@@ -54,27 +23,52 @@
 		$H_LEV = 1;
 		$H_POINT=0;
 	}
+	if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
+	else if( isset($_POST['pg_code']) )  $pg_code = $_POST['pg_code'];
+	else $pg_code='';
+	if( $pg_code =='' ) {
+			m_(" ERROR : pg_code:$pg_code , tab_enm:$tab_enm ");exit;
+	}
+	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_POST['page']) )  $page = $_POST['page'];
+	else $page='';
+	if( isset($_REQUEST['data_mid']) ) $data_mid = $_REQUEST['data_mid'];
+	else if( isset($_POST['data_mid']) ) $data_mid = $_POST['data_mid'];
+	else $data_mid='';
+
+ 	$if_dataR= array();
+	$if_typeR= array();
+	$SQL = " SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
+	if( ($rowPG = sql_fetch( $SQL ) )==false ){
+		m_("tkher_program_data_view Error ");
+		exit();
+	} else {
+		$grant_write= $rowPG['grant_write'];
+		$grant_view	= $rowPG['grant_view'];
+		$pg_mid	= $rowPG['userid'];
+		$tab_mid= $rowPG['tab_mid'];
+		$tab_enm= $rowPG['tab_enm'];
+		$tab_hnm= $rowPG['tab_hnm'];
+		$if_dataR= $rowPG['if_data'];
+		$if_typeR= $rowPG['if_type'];
+		$pg_name= $rowPG['pg_name'];
+	}
 	if( $H_LEV >= $grant_view || $H_ID == $pg_mid || $H_ID == $data_mid) {
 	} else {
 		m_("You need to view level: $H_LEV, grant: $grant_view ");
-		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$pg_code."'>";exit;
+		echo "<script>table_data_list('$pg_code'); </script>";
+		exit;
 	}
-	$mode		= $_POST['mode'];
-	$seqno		= $_POST['seqno'];
-	$tab_hnm	= $_POST['tab_hnm'];
- 	$if_data		= array();
-	$if_type		= array();
-	if( isset($_POST['if_data']) ) $if_data	= $_POST['if_data'];
-	if( isset($_POST['if_type']) ) $if_type	= $_POST['if_type'];
-	$item_cnt	= $_POST['item_cnt'];
-	$pg_name	= $_POST['pg_name'];
-	$line_cnt	= $_POST['line_cnt'];
+	if( isset($_POST['mode']) ) $mode		= $_POST['mode'];
+	if( isset($_POST['seqno']) ) $seqno		= $_POST['seqno'];
+	if( isset($_POST['item_cnt']) ) $item_cnt	= $_POST['item_cnt'];
+	if( isset($_POST['line_cnt']) ) $line_cnt	= $_POST['line_cnt'];
 ?>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 
 <script type="text/javascript">
 	
-	function table_data_list(tab) {
+	function table_data_list(pg_code) {
 		document.form_view.action="tkher_program_data_list.php";
 		document.form_view.target='_self';
 		document.form_view.submit();
@@ -163,10 +157,10 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 				<input type="hidden" name='grant_write' value='<?=$grant_write?>' />
 				<input type="hidden" name='pg_name'	value='<?=$pg_name?>' />
 				<input type="hidden" name='pg_code'	value='<?=$pg_code?>' />
-				<input type="hidden" name='line_cnt'	value='<?=$line_cnt?>' />
-				<input type="hidden" name='item_cnt'	value='<?=$item_cnt?>' />
-				<input type="hidden" name='if_type'			value='<?=$if_type?>' />
-				<input type="hidden" name='if_data'			value='<?=$if_data?>' />
+				<input type="hidden" name='line_cnt' value='<?=$line_cnt?>' />
+				<input type="hidden" name='item_cnt' value='<?=$item_cnt?>' />
+				<input type="hidden" name='if_type' value='<?=$if_typeR?>' />
+				<input type="hidden" name='if_data' value='<?=$if_dataR?>' />
 			</form>
 
 	<div class="boardViewX">
@@ -185,7 +179,7 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 			} else {
 				m_("Delete OK!");
 				$rungo = "tkher_program_data_list.php";
-				echo "<script>table_data_list('$tab_hnm'); </script>";
+				echo "<script>table_data_list('$pg_code'); </script>";
 			}
 		}
 ?>
@@ -196,10 +190,8 @@ if ( ($row = sql_fetch( $SQLX ) )==false ){
 				$qqq = "";
 				$item_array= $rowPG['item_array'];
 				$list			= explode("@", $item_array);
-				$iftypeX		= $rowPG['if_type'];
-				$ifdataX		= $rowPG['if_data'];
-				$if_type		= explode("|", $iftypeX);
-				$if_data		= explode("|", $ifdataX);
+				$if_type		= explode("|", $if_typeR);
+				$if_data		= explode("|", $if_dataR);
 			for ( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
 				if( isset($if_type[$j]) ) $typeX= $if_type[$j];
