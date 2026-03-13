@@ -141,6 +141,7 @@ $(function () {
 	} 
 	function home_func(pg_code){
 		document.view_form.mode.value='home_func';
+		document.view_form.target="_self";
 		document.view_form.action='tkher_program_data_list.php';
 		document.view_form.submit();
 	}

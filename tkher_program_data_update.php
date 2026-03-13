@@ -126,37 +126,19 @@
 				$up_file = $_POST['up_file'];
 				if( $upfileX !='' && $up_file && $up_file !='' ) exec ("rm $up_file");// 첨부화일이 있으면 기존화일을 삭제
 			} else $up_file = '';
-
-		
-			/*if( $relation_data !='' ) {
-				$rdata = explode("^", $relation_data);
-				$rtype = explode("^", $relation_type);
-				$rt = explode("@", $rtype[0]);
-				for( $i=0; $i < count( $rdata); $i++ ){
-					if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
-						relation_func( $rdata[$i], $pg_code, $rt[$i] );
-					}
-				}
-			}*/
-		
 		} else m_(" Change Error! ");
 	}
 ?>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
-
 <body bgcolor='#ffffff'>
 <center>
-
 <?php
 if( $H_LEV >= 7) $SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
 else $SQLX = " SELECT * from $tab_enm where seqno=$seqno and kapp_userid='" .$H_ID. "' ";
-//if( ($result = sql_query( $SQLX ) )===false ) {
 if(( $row = sql_fetch( $SQLX ) )===false ) {
 		printf("SQLX Invalid QUERY: %s\n", $SQLX);
 		exit();
 } else {
-		//$row= sql_fetch_array($result);
-
 		$cur='B';
 		include_once "./menu_run.php"; 
 ?>
@@ -200,18 +182,8 @@ if(( $row = sql_fetch( $SQLX ) )===false ) {
 		$if_data		= explode("|", $ifdataX);
 		$pop_dataPG	= $rsPG['pop_data'];
 		$popdata	= explode("^", $pop_dataPG);
-
-		$relation_data = $rsPG['relation_data'];//$relation_data =get_session("relation_dataPG");
-		$relation_type = $rsPG['relation_type'];//$relation_type =get_session("relation_typePG"); 
-
-		/*$_SESSION['iftype_db']		= $iftypeX;
-		$_SESSION['ifdata_db']		= $ifdataX;
-		$_SESSION['if_dataPG']		= $ifdataX;	
-		$_SESSION['pop_dataPG']		= $pop_dataPG;
-		$_SESSION['relation_dataPG']	= $relation_data;
-		$_SESSION['relation_typePG']	= $relation_type;
-		$_SESSION['pg_name']			= $pg_name;
-		$_SESSION['pg_code']			= $pg_code;*/
+		$relation_data = $rsPG['relation_data'];
+		$relation_type = $rsPG['relation_type'];
 ?>
 		<form name='makeform' action='' method='post' enctype="multipart/form-data">
 					<input type="hidden" name='mode'			value='' />
@@ -249,6 +221,7 @@ if(( $row = sql_fetch( $SQLX ) )===false ) {
 		$fld = explode("|", $ddd);
 		$fldenm= $fld[1];
 		$fldhnm= $fld[2];
+
 		if( $fld[3] == "TEXT" ) {
 			echo"<p>$fldhnm</p>";
 			echo " <div class='menu1Area' ><textarea name='$fld[1]' placeholder='Please enter your $fld[2]!' style='width:$Xwidth;height:$Text_height;'>$row[$fldenm]</textarea></div>";

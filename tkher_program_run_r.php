@@ -52,7 +52,7 @@
 
 	$SQL = " INSERT " . $tab_enm . " SET ";
 	$SQL = $SQL . "kapp_userid= '" . $H_ID . "' , ";
-	$SQL = $SQL . "kapp_pg_code= '" . $pg_code . "', ";
+	$SQL = $SQL . "kapp_pg_code= '" . $pg_code . "' ";
 	
 	for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 			if( isset($iftype[$j]) ) $typeX = $iftype[$j]; 
@@ -74,11 +74,13 @@
 						$aa = " ";
 					}
 					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL" ){
-						if( $i==0 )	$SQL = $SQL . $nm . " = " . $aa . " ";
-						else	    $SQL = $SQL . " , " .  $nm . " = " . $aa . " ";
+						//if( $i==0 )	$SQL = $SQL . $nm . " = " . $aa . " ";
+						//else	    $SQL = $SQL . " , " .  $nm . " = " . $aa . " ";
+						$SQL = $SQL . " , " .  $nm . " = " . $aa . " ";
 					} else {
-						if( $i==0 )	$SQL = $SQL . $nm . " = '" . $aa . "' ";
-						else	    $SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
+						//if( $i==0 )	$SQL = $SQL . $nm . " = '" . $aa . "' ";
+						//else	    $SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
+						$SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
 					}
 				} else if( $typeX=='9' ) {
 					$f_path= '';
@@ -108,19 +110,22 @@
 						if( file_exists( $f_path . $upfile_name)) {
 							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $upfile_name );
 						} else {
-							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $upfile_name );	//echo "Stored in: " . $f_path . $upfile_name . "<br>";
+							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $upfile_name );
 						}
 					}
-					if( $i==0 )	$SQL = $SQL . $nm ." = '" . $upfile_name . "' ";
-					else	$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
+					//if( $i==0 )	$SQL = $SQL . $nm ." = '" . $upfile_name . "' ";
+					//else	$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
+					$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
 				} else {
-					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "DECIMAL" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL"){
+					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL"){
 						if( !$post_fld || $post_fld == '') $post_fld = 0;
-						if( $i==0 )	$SQL = $SQL . $nm . " = " . $post_fld . " ";
-						else	    $SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";
+						//if( $i==0 )	$SQL = $SQL . $nm . " = " . $post_fld . " ";
+						//else	    $SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";
+						$SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";
 					} else {
-						if( $i==0 )	$SQL = $SQL . $nm . " = '" . $post_fld . "' ";
-						else	    $SQL = $SQL . " , " .  $nm . " = '" . $post_fld . "' ";
+						//if( $i==0 )	$SQL = $SQL . $nm . " = '" . $post_fld . "' ";
+						//else	    $SQL = $SQL . " , " .  $nm . " = '" . $post_fld . "' ";
+						$SQL = $SQL . " , " .  $nm . " = '" . $post_fld . "' ";
 					}
 				}
 		}
