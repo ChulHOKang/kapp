@@ -143,18 +143,22 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			//- relation_record_update - table: dao_1766822184, update_key_data: , up_key: fld_1, dd_key: fld_1, r_type: Update, rtype: Update:fld_1:fld_1:CHAR
 			exit;
 		}
-		$SQLA = "select seqno from `" . $r_table . "` ";
+		$SQLA = "select seqno, kapp_memo from `" . $r_table . "` ";
 		if( $ty_key == "CHAR" ) $whereQ =" where " . $dd_key . " = '" .$update_key_data. "' ";	
 		else if( $ty_key == "INT" ) $whereQ = " where " . $dd_key . " = " .$update_key_data. " ";	
 		else $whereQ = " where " . $dd_key . " = '" .$update_key_data. "' ";	// default char type.
+
 		//$whereQ = $whereQ . " AND kapp_userid= '" . $H_ID . "' ";
 		$SQLA = $SQLA . $whereQ;
 		$retA = sql_fetch( $SQLA ); // record confirm
-		if( $r_type == 'Update'){
+		
 			$ip = $_SERVER['REMOTE_ADDR'];
 			$day = date("Y-m-d H:i:s", time());
+		if( $r_type == 'Update'){
+		
+			$kapp_memo = $retA['kapp_memo'] . "\n|DELETE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
 			$SQLR = "UPDATE " . $r_table . " SET ";
-			$SQLR = $SQLR . " kapp_memo = kapp_memo + '" . $day.":".$H_ID. ":" . $ip . ":" . "' ";
+			$SQLR = $SQLR . " kapp_memo = '" . $kapp_memo . "' ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
 				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
@@ -205,6 +209,8 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		else $dd_key = '';
 		if( isset( $r_t[3]) && $r_t[3]!='' ) $ty_key = $r_t[3];	// $r_t[3] relation field key data type CHAR or INT
 		else $ty_key = '';
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$day = date("Y-m-d H-i-s", time());
 		if( $r_type == 'Update'){
 			if( isset($_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
 			else $update_key_data = "";
@@ -213,16 +219,16 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				//- relation_record_update - table: dao_1766822184, update_key_data: , up_key: , dd_key: , r_type: Insert, rtype: Insert:::
 				exit;
 			}
-			$SQLA = "select seqno from `" . $r_table . "` ";
-			if( $ty_key == "CHAR" ) $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	
-			else if( $ty_key == "INT" ) $SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
+			$SQLA = "select seqno, kapp_memo from `" . $r_table . "` ";
+			if( $ty_key == "INT" || $ty_key == "TINYINT" || $ty_key == "BIGINT" || $ty_key == "SMALLINT" || $ty_key == "MEDIUMINT" || $ty_key == "DECIMAL" || $ty_key == "FLOAT" || $ty_key == "DOUBLE")
+				$SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
 			else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
 			$retA = sql_fetch( $SQLA );
 
-			$ip = $_SERVER['REMOTE_ADDR'];
-			$day = date("Y-m-d H:i:s", time());
+			$kapp_memo = $retA['kapp_memo'] . "\n|UPDATE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
+
 			$SQLR = "UPDATE " . $r_table . " SET ";
-			$SQLR = $SQLR . " kapp_memo = kapp_memo + '" . $day.":".$H_ID. ":" . $ip . ":" . "' ";
+			$SQLR = $SQLR . " kapp_memo = '$kapp_memo' ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
 				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
@@ -255,8 +261,11 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 					echo "relation table error - SQLR: " . $SQLR; exit;
 				}
 			} else {
+				$kapp_memo = "UPDATE-TYPE-INSERT, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
+
 				$SQLAR = "INSERT INTO " . $r_table . " SET ";
 				$SQLAR = $SQLAR . "kapp_userid= '" . $H_ID . "' , ";
+				$SQLAR = $SQLAR . "kapp_memo= '" . $kapp_memo . "' , ";
 				$SQLAR = $SQLAR . "kapp_pg_code= '" . $pg_code . "' ";
 				for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 					$r_fld		= $r_data[$i];
@@ -289,8 +298,11 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				}
 			}
 		} else { // insert - relation
+			$kapp_memo = "INSERT-TYPE-INSERT, " . $pg_code.":".$day.":".$H_ID. ":" . $ip;
+
 			$SQLR = "INSERT INTO " . $r_table . " SET ";
 			$SQLR = $SQLR . "kapp_userid= '" . $H_ID . "' , ";
+			$SQLR = $SQLR . "kapp_memo= '" . $kapp_memo . "' , ";
 			$SQLR = $SQLR . "kapp_pg_code= '" . $pg_code . "' ";
 			for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
 				$r_fld		= $r_data[$i];
