@@ -74,7 +74,7 @@
 		return;
 	}
 	function relation_save_ALL_func() {
-		if( makeform.relation_type_SQL[0] === false && makeform.relation_type_SQL[1] === false){
+		if( makeform.relation_type_SQL[0].checked === false && makeform.relation_type_SQL[1].checked === false){
 			alert(" The relation is Update. Please select a key field and click the 'SQL Save' button to save it! ");
 			return false;
 		}
@@ -107,7 +107,7 @@
 	}
 	function Relation_SQL_Key_Set_func(){
 		var relation_num = document.getElementById('relation_num').value;
-		if ( makeform.relation_type_SQL[0].checked == true ) { // 중복허락한 Insert이다 key가 필요없다.
+		if ( makeform.relation_type_SQL[0].checked === true ) { // 중복허락한 Insert이다 key가 필요없다.
 			//document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
 			Key_data = 'Insert' + ':' + ':' + ':';
 			//key_type = document.getElementById('relation_key_old_'+relation_num).value;
@@ -270,6 +270,17 @@
 			R_t = R_typeA.split('^');	//alert("R_t 0: " + R_t[0]);  //R_t 0: Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Insert:::
 			R_type = R_t[0].split('@');
 			document.getElementById('relation_key').value= R_type[pg];
+
+			R_type_pg = R_type[pg];	//alert("R_type_pg: " + R_type_pg);			//R_type_pg: Update:fld_1:fld_2:CHAR
+			document.getElementById('relation_key_column').value = R_type_pg; 
+			R_k = R_type_pg.split(':');
+			if( R_k[0] == 'Insert' ) {
+				document.getElementById('relation_type_SQL[0]').checked=true;
+				document.getElementById('relation_type_SQL[1]').checked=false;
+			} else {
+				document.getElementById('relation_type_SQL[1]').checked=true;
+				document.getElementById('relation_type_SQL[0]').checked=false;
+			}
 		}
 		dt = document.getElementById('relation_key_old_'+pg).value; 
 		dd = document.getElementById('relation_data_old_'+pg).value;
@@ -529,6 +540,7 @@
 	$item_array_2='';
 	$relation_num = 0;
 	$relation_type_memo ='';
+	$relation_key_column ='';
 
 	if( $mode == 'Delete_Check' ) {
 		$pg_code = $_POST['pg_code'];
@@ -638,6 +650,7 @@
 		$typeAR  = explode("^", $relation_type_key); //relation_type=Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR^^^
 		$type_R  = explode("@", $typeAR[$relation_num]);
 		if( isset($type_R[$relation_num]) && $type_R[$relation_num]!=''){
+			$relation_key_column = $type_R[$relation_num];
 			$type_R_num = explode(":", $type_R[$relation_num] );
 			if( $type_R_num[0]=='Insert' ) $rel_cA = 'cyan';
 			else if( $type_R_num[0]=='Update' ) $rel_cB = 'cyan';
@@ -673,7 +686,7 @@
 			<input type="hidden" name="program_Key_fld" id="program_Key_fld" value="">
 			<input type="hidden" name="program_Key_nm" id="program_Key_nm" value="">
 			<input type="hidden" name="relation_type_memo" id="relation_type_memo" value="<?=$relation_type_memo?>">
-			$relation_type_memo =
+
 		  <tr>
 			<td align="center" <?php echo" title='\n(work order)\n1:Select program \n2:Select Relation Number \n3:Select relation table \n4:Select relation column \n5:Select relational expression \n6:Apply button \n7:Select SQL Type \n8:SQL Save button click \n9:Save button click' "; ?> style="border-style:;background-color:#666666;color:cyan;width:160px; height:33px;font-size:15;">
 			Relational settings(<?=$H_ID?>)
@@ -806,12 +819,14 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					  <tr><!-- SQL Key Type - Insert or Update. -->
 						<td title='SQL Type distinguishes whether to change or register.'>SQL Key Type:
  <?php echo "<label style='background-color:$rel_cA;' title='Insert does not require a key column.'>"; ?>
- <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL' name='relation_type_SQL' value='Insert' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Insert') echo 'checked'; ?> >Insert</label>
+ <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL[0]' name='relation_type_SQL[0]' value='Insert' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Insert') echo 'checked'; ?> >Insert</label>
  <?php echo "<label style='background-color:$rel_cB;' title='Update must set the key column.' >"; ?>
- <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL' name='relation_type_SQL' value='Update' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Update') echo 'checked'; ?> >Update</label>
+ <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL[1]' name='relation_type_SQL[1]' value='Update' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Update') echo 'checked'; ?> >Update</label>
 						
 <?php
  echo "<input id='sqlsave_button' type='button' value=' SQL Key Set ' onClick='Relation_SQL_Key_Set_func();' style='height:30px;font-size:15; border-radius:20px;border:1 solid white;' title='If the sql type is update, you need to set the key column.'  >";
+
+ echo "<br>Key Column:<input id='relation_key_column' name='relation_key_column' type='text' value='$relation_key_column' readonly>";
 ?>
 <br>
 	<input width='' id='relation_move_data' name='relation_move_data' maxlength='250' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>

@@ -50,8 +50,11 @@
 	$ddd = "";
 	$list = explode("@", $item);	
 
+	$kapp_memo = "PG_CODE:" . $pg_code.":".$day.":".$H_ID. ":" . $ip;
+
 	$SQL = " INSERT " . $tab_enm . " SET ";
 	$SQL = $SQL . "kapp_userid= '" . $H_ID . "' , ";
+	$SQL = $SQL . "kapp_memo= '" . $kapp_memo . "' , ";
 	$SQL = $SQL . "kapp_pg_code= '" . $pg_code . "' ";
 	
 	for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){

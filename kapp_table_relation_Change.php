@@ -92,6 +92,16 @@
 			alert(" After setting the relational expression, click the 'save' button!");
 			return false; 
 		}
+		if( document.makeform.relation_key_column.value ==''){ 
+			alert(" After setting the relational key column expression, click the 'save' button!");
+			return false; 
+		}
+		key_col = document.makeform.relation_key_column.value;
+		k_col = key_col.split(":");
+		if( k_col[0] =='' ||k_col[1] =='' ||k_col[2] =='' ||k_col[3] ==''){
+			alert(" The key column is not set!");
+			return false; 
+		}
 		resp = confirm(' Do you want to Save relation '+relation_num +' ?');
 		if( !resp ) return false;
 		//makeform.relation_reset.value = '';
@@ -108,13 +118,13 @@
 	}
 	function Relation_SQL_Key_Set_func(){
 		var Key_data = '';
-		var relation_num = document.getElementById('relation_num').value;
 		if( makeform.relation_type_SQL[0].checked === true ) {
-			alert( "relation number: " + relation_num+ ", Insert set OK");
-			Key_data = 'Insert' + ':' + ':' + ':';
-			document.getElementById('relation_key').value= Key_data;
-			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
+			Key_data = 'Insert';// + ':' + ':' + ':';
+			//alert( "relation number: " + relation_num+ ", Insert set OK");
 		} else {
+			Key_data = 'Update'; 
+			//alert( "relation number: " + relation_num+ ", Update set OK");
+		}
 			var fld1e = document.makeform.pg_tab_column.value;
 			var fld2e = document.makeform.re_tab_column.value;
 			if( !fld1e ) {
@@ -125,9 +135,7 @@
 				alert(' Select a column in the relational table!');
 				return false; 
 			}
-			resp = confirm(' Do you want to Save relation key column: ' + fld2e +' ?');
-			if( !resp ) return false;
-			alert(" Update set OK");
+
 			var relation_pg_codeS = makeform.relation_pg_codeS.value;
 			var Rtab_hnmS = makeform.Rtab_hnmS.value;
 			if( !relation_pg_codeS){
@@ -138,6 +146,10 @@
 				alert(' Please select a table of relations!');
 				return false;
 			}
+			resp = confirm(' Relation SQl Type: '+ Key_data + '\n Do you want to Save \n relation key column: ' + fld2e +' ?');//Do you want to Save relation key column: fld_1:상품:VARCHAR ?
+			if( !resp ) return false;
+
+		var relation_num = document.getElementById('relation_num').value;
 			fld1ex = fld1e.split(":");	 
 			var Kfld1e = fld1ex[0]; 
 			var Kfld1h = fld1ex[1]; 
@@ -153,10 +165,10 @@
 				document.makeform.relation_Key_fld_type.value  = "INT";
 			} else document.makeform.relation_Key_fld_type.value  = "CHAR";
 			
-			Key_data = 'Update' +':'+Kfld1e+':'+Kfld2e+':' + document.getElementById('relation_Key_fld_type').value;
+			Key_data = Key_data +':'+Kfld1e+':'+Kfld2e+':' + document.getElementById('relation_Key_fld_type').value;
 			document.getElementById('relation_key').value= Key_data;
 			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
-		}
+			document.getElementById('relation_key_column').value = Key_data;
 	}
 
 	function relation_move_set(){
@@ -365,6 +377,7 @@
 	$relation_data_old_2 = '';
 	$relation_key_old_2 = '';
 	$item_array_2='';
+	$relation_key_column='';
 
 	if( isset($_POST['mode']) && $_POST['mode'] == 'Reset_Check' || $modeRun == 'Relation_SearchTAB') {
 		$mode =$_POST['mode'];
@@ -383,7 +396,6 @@
 		if( isset($_POST['item_array_2']) ) $item_array_2 = $_POST['item_array_2'];
 
 		if( isset($_POST['relation_data_tab']) ) $relation_data_tab = $_POST['relation_data_tab'];
-		if( isset($_POST['relation_type_key']) ) $relation_type_key = $_POST['relation_type_key'];
 		if( isset($_POST['project_code']) ) $project_code = $_POST['project_code'];
 		if( isset($_POST['project_name']) ) $project_name = $_POST['project_name'];
 		if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
@@ -391,6 +403,17 @@
 		if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
 		if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
 		if( isset($_POST['item_array']) ) $item_array = $_POST['item_array'];
+		if( isset($_POST['relation_type_key']) ) {
+			$relation_type_key = $_POST['relation_type_key'];
+			$relation_type_key = explode("^", $_POST['relation_type_key']);
+			$relation_type = explode("@", $relation_type_key[0]);
+			$relation_key_column = $relation_type[$relation_num];
+			//m_("relation_type_key: $relation_type_key[0]");
+			//relation_type_key: Insert:::@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR
+			//Insert:::@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR
+			//relation_type_key: Insert:::@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
+		}
+		//if( isset($_POST['relation_key_column']) ) $relation_key_column = $relation_type[$relation_num]; //$_POST['relation_key_column'];
 	}
 
 	if( isset( $_POST['relation_project_nmS']) ) $relation_project_nmS = $_POST['relation_project_nmS'];
@@ -447,7 +470,7 @@
 			<input type="hidden" name="program_Key_nm" id="program_Key_nm" value="">
 			<input type="hidden" name="relation_num" id="relation_num" value="<?=$relation_num?>">
 		  <tr>
-			<td align="center" <?php echo" title='\n(work order)\n1:Select program \n2:Select Relation Number \n3:Select relation table \n4:Select relation column \n5:Select relational expression \n6:Apply button \n7:Select SQL Type \n8:SQL Save button click \n9:Save button click' "; ?> style="border-style:;background-color:#666666;color:cyan;width:160px; height:33px;font-size:15;">
+			<td align="center" <?php echo" title='\n(work order)\n1:Select program \n2:Select Relation Number \n3:Select relation table \n4:Select relation column \n5:Select relational expression \n6:Apply button \n7:Select Relation SQL Type and Relation Key column set \n8:SQL Save button click \n9:Save button click' "; ?> style="border-style:;background-color:#666666;color:cyan;width:160px; height:33px;font-size:15;">
 			Relational Resettings(<?=$H_ID?>)
 		<br>Project:<?=$project_name?>
 			<input type="hidden" name="relation_project_nmS" id="relation_project_nmS" value="<?=$relation_project_nmS?>">
@@ -546,7 +569,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
                       </td>
                      </tr>
 					  <tr><!-- SQL Type은 변경을 할것인지 또는 등록을 할것인지를 구분하는 것이다. -->
-						<td title='SQL Type distinguishes whether to change or register.'>SQL Key Type:
+						<td title='SQL Type distinguishes whether to change or register.'>Relation SQL Type:
  <?php echo "<label style='background-color:$rel_cA;' title='Insert does not require a key column.'>"; ?>
  <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL' name='relation_type_SQL' value='Insert' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Insert') echo 'checked'; ?> >Insert</label>
  <?php echo "<label style='background-color:$rel_cB;' title='Update must set the key column.' >"; ?>
@@ -554,6 +577,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 						
 <?php
  echo "<input id='sqlsave_button' type='button' value=' SQL Key Set ' onClick='Relation_SQL_Key_Set_func();' style='height:30px;font-size:15; border-radius:20px;border:1 solid white;' title='If the sql type is update, you need to set the key column. However, insert does not require a key column.'  >";
+ echo "<br>Relation Key Column:<input id='relation_key_column' name='relation_key_column' type='text' value='' readonly>";
 ?>
 	<br>
 	<input width='' id='relation_move_data' name='relation_move_data' maxlength='250' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
@@ -567,15 +591,15 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 	<!-- relation_type_memo --><textarea id='relation_type_memo'   name='relation_type_memo'  rows='3' cols='84' style="display:none;"><?=$relation_type_memo?></textarea>
 
 	<!-- relation_data_old_0 --><textarea id='relation_data_old_0' name='relation_data_old_0' rows='3' cols='84' style="display:none;"><?=$relation_data_old_0?></textarea>
-	<!-- relation_key_old_0 --><textarea id='relation_key_old_0' name='relation_key_old_0' rows='1' cols='84' style="display:;"><?=$relation_key_old_0?></textarea>
+	<!-- relation_key_old_0 --><textarea id='relation_key_old_0' name='relation_key_old_0' rows='1' cols='84' style="display:none;"><?=$relation_key_old_0?></textarea>
 	<!-- item_array_0 --><textarea id='item_array_0' name='item_array_0' rows='3' cols='84' style="display:none;"><?=$item_array_0?></textarea>
 
 	<!-- relation_data_old_1 --><textarea id='relation_data_old_1' name='relation_data_old_1' rows='3' cols='84' style="display:none;"><?=$relation_data_old_1?></textarea>
-	<!-- relation_key_old_1 --><textarea id='relation_key_old_1' name='relation_key_old_1' rows='1' cols='84' style="display:;"><?=$relation_key_old_1?></textarea>
+	<!-- relation_key_old_1 --><textarea id='relation_key_old_1' name='relation_key_old_1' rows='1' cols='84' style="display:none;"><?=$relation_key_old_1?></textarea>
 	<!-- item_array_1 --><textarea id='item_array_1' name='item_array_1' rows='3' cols='84' style="display:none;"><?=$item_array_1?></textarea>
 	
-	<!-- relation_data_old_2 --><textarea id='relation_data_old_2' name='relation_data_old_2' rows='3' cols='84' style="display:none;"><?=$relation_data_old_2?></textarea>
-	<!-- relation_key_old_2 --><textarea id='relation_key_old_2' name='relation_key_old_2' rows='1' cols='84' style="display:;"><?=$relation_key_old_2?></textarea>
+	<!-- relation_data_old_2 --><textarea id='relation_data_old_2' name='relation_data_old_2' rows='3' cols='84' style="display:none;none"><?=$relation_data_old_2?></textarea>
+	<!-- relation_key_old_2 --><textarea id='relation_key_old_2' name='relation_key_old_2' rows='1' cols='84' style="display:none;"><?=$relation_key_old_2?></textarea>
 	<!-- item_array_2 --><textarea id='item_array_2' name='item_array_2' rows='3' cols='84' style="display:none;"><?=$item_array_2?></textarea>
 	
 	<input type='hidden' id='nmxh' name='nmxh' maxlength='250' size='30'  value=''>

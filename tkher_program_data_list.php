@@ -570,22 +570,23 @@ if( $H_ID==$pg_mid ) {
 				while( $row = sql_fetch_array($result)  ) {
 					$no++;
 					$row_seqno = $row['seqno'];
+					$kapp_memo = $row['kapp_memo'];
 					if( isset($row['kapp_userid']) ) $data_mid = $row['kapp_userid'];
 					else $data_mid = '';//$H_ID;
 ?>
 					<tr>
-						<td style="width:30px; height:100%px;text-align:center">
+						<td style="width:30px; height:100%px;text-align:center" title='<?=$row_seqno?>, <?=$kapp_memo?>'>
 						 <a href="javascript:pg_record_view('<?=$row_seqno?>', '<?=$data_mid?>');" ><?=$no?></a></td>
 <?php
 						for( $i=0; $i < $fld_cnt; $i++){
 							$fenm = $fld_enm[$i];
 							if( $fld_type[$i]=='INT' || $fld_type[$i]=='BIGINT' ){
 								$num = number_format( $row[$fenm] );
-								echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >$num</a></td> ";
+								echo " <td class='cell03' title='$row_seqno, $kapp_memo'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >$num</a></td> ";
 							} else if( $fld_type[$i]=='TEXT' ){
-								echo " <td class='cell04'>$row[$fenm]</td> ";
-							}
-							else echo " <td class='cell03'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >".$row[$fenm]."</a></td> ";
+								echo " <td class='cell04' title='$row_seqno, $kapp_memo'>$row[$fenm]</td> ";
+							} else
+								echo " <td class='cell03' title='$row_seqno, $kapp_memo'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >".$row[$fenm]."</a></td> ";
 						}
 ?>
 					</tr>
