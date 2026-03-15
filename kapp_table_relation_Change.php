@@ -299,7 +299,7 @@
 		}
 		tb = ptbS.split(':');
 		document.getElementById('item_array_'+no).value = tb[2];
-		sendDataToPHP('Rtab_hnmS', ptbS);
+		//sendDataToPHP('Rtab_hnmS', ptbS);
 		document.getElementById('modeRun').value = 'Relation_SearchTAB';
 		document.makeform.action="kapp_table_relation_Change.php";
 		document.makeform.submit();
@@ -324,8 +324,7 @@
 <?php
 
 	if( isset($_POST['relation_num']) ) $relation_num = $_POST['relation_num'];
-	else $relation_num = '0';
-
+	else $relation_num = 0;	//m_("relation_num: $relation_num");
 	if( isset($_POST['relation_type_memo']) ) $relation_type_memo = $_POST['relation_type_memo'];
 	else $relation_type_memo = '';
 
@@ -403,19 +402,15 @@
 		if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
 		if( isset($_POST['tab_hnm']) ) $tab_hnm = $_POST['tab_hnm'];
 		if( isset($_POST['item_array']) ) $item_array = $_POST['item_array'];
-		if( isset($_POST['relation_type_key']) ) {
+		if( isset($_POST['relation_type_key']) && $_POST['relation_type_key'] !='' ) {
 			$relation_type_key = $_POST['relation_type_key'];
-			$relation_type_key = explode("^", $_POST['relation_type_key']);
-			$relation_type = explode("@", $relation_type_key[0]);
+			//m_("relation_type_key: $relation_type_key");
+			//relation_type_key: Insert:fld_7:fld_7:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
+			$relation_type_ = explode("^", $relation_type_key);
+			$relation_type = explode("@", $relation_type_[$relation_num]);
 			$relation_key_column = $relation_type[$relation_num];
-			//m_("relation_type_key: $relation_type_key[0]");
-			//relation_type_key: Insert:::@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR
-			//Insert:::@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR
-			//relation_type_key: Insert:::@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
 		}
-		//if( isset($_POST['relation_key_column']) ) $relation_key_column = $relation_type[$relation_num]; //$_POST['relation_key_column'];
 	}
-
 	if( isset( $_POST['relation_project_nmS']) ) $relation_project_nmS = $_POST['relation_project_nmS'];
 	else $relation_project_nmS = '';
 	if( isset($_POST['relation_pg_codeS']) ) $relation_pg_codeS =$_POST['relation_pg_codeS'];
