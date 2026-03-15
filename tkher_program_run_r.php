@@ -50,6 +50,8 @@
 	$ddd = "";
 	$list = explode("@", $item);	
 
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$day = date("Y-m-d H:i:s", time());
 	$kapp_memo = "PG_CODE:" . $pg_code.":".$day.":".$H_ID. ":" . $ip;
 
 	$SQL = " INSERT " . $tab_enm . " SET ";
