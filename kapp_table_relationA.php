@@ -273,16 +273,24 @@
 
 			R_type_pg = R_type[pg];	//alert("R_type_pg: " + R_type_pg);			//R_type_pg: Update:fld_1:fld_2:CHAR
 			document.getElementById('relation_key_column').value = R_type_pg; 
-			R_k = R_type_pg.split(':');
+			R_Key_A = R_type_pg.split('|');
+			key_cnt = R_Key_A.length;
+
+			R_k = R_Key_A[0].split(':'); // R_type_pg.split(':');
+
 			if( R_k[0] == 'Insert' ) {
 				document.getElementById('relation_type_SQL[0]').checked=true;
 				document.getElementById('relation_type_SQL[1]').checked=false;
-			} else {
+			} else if( R_k[0] == 'Update' ) {
 				document.getElementById('relation_type_SQL[1]').checked=true;
+				document.getElementById('relation_type_SQL[0]').checked=false;
+			} else {
+				document.getElementById('relation_type_SQL[1]').checked=false;
 				document.getElementById('relation_type_SQL[0]').checked=false;
 			}
 		}
 		dt = document.getElementById('relation_key_old_'+pg).value; 
+		//alert( pg+", dt: " + dt);	//1, dt: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		dd = document.getElementById('relation_data_old_'+pg).value;
 		var selectIndex = document.makeform.Rtab_hnmS.selectedIndex; //alert( selectIndex+ ", pg: " + pg+ ", dt: " + dt + ", R_typeA: " + R_typeA);
 		if( dd !=''){
@@ -310,60 +318,99 @@
 		//relation_column: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
 		//relation_column: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
 		//relation_column: dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
-		//relation_column: dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
+		
+		//relation_column: dao_1766812390:ABCYY_FFF_New:
+		|fld_1|fld1|VARCHAR|15
+		@|fld_2|fld2|VARCHAR|15
+		@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
+		$fld_1:fld1|=|fld_5:product:VARCHAR
+		$fld_7:날짜|=|fld_1:날짜:TIMESTAMP
+		$fld_5:fld5|+|fld_6:total_count:INT
+		$fld_6:fld6|+|fld_7:tottal_price:BIGINT
+
+		rd0 = rdata[0]
+		rdata0: dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+
+		relation_column: 
+		dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		$fld_1:fld1|=|fld_5:product:VARCHAR
+		$fld_7:날짜|=|fld_1:날짜:DATE$fld_4:수량|+|fld_6:total_count:INT$fld_6:금액|+|fld_7:tottal_price:BIGINT
+
+		keyf: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		
+		tcol2: |fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		//alert("rd0: "+rd0);
+		//rd0: dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		//tcol2: |fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
 */
 	function r_func(relation_column, keyf){
-		rt = keyf.split(':'); //Update:fld_1:fld_1:CHAR
-		rdata = relation_column.split('$'); //alert("rdata0: "+rdata[0]);
+		rk = keyf.split('|'); // dt keyf: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		key_count = rk.length;
+		
+		rdata = relation_column.split('$'); 
 		len = rdata.length;
-		rd0 =rdata[0];
+		rd0 = rdata[0];
 		tcol =rd0.split(':');
 		rtab =tcol[2].split('@');
-		rlen = rtab.length;		//alert("rlen: " + rlen);
+		rlen = rtab.length;
 		ss="";
-		relation_move_data="";
+		relation_move_data ="";
 		here_relation.innerHTML=ss;
-		for( j=0; rtab[j]!='' && j<=rlen; j++){
-			rj = rtab[j].split('|');
 				ck = "";
-			for( i=1; i<len; i++){
-				rr = rdata[i].split('|');
-				pg = rr[0]; // program field
+		for( j=0; rtab[j]!='' && j<=rlen; j++){ // relation table column |fld_1|날짜|DATE|15
+			rj = rtab[j].split('|');
+			ck = "";
+			for( i=1; i<len; i++){        // relation column
+				rr = rdata[i].split('|'); //$fld_7:날짜|=|fld_1:날짜:DATE
+				pg = rr[0];               // program field
 				pgnm = pg.split(':');
 				pg_enm = pgnm[0];
 				pg_hnm = pgnm[1];
-				sk = rr[1]; // sik
-				re = rr[2]; // relation table field
-				fn = re.split(':');
+				sk = rr[1];          // sik
+				col = rr[2];
+				reA = rr[2];         // relation table field
+				fn = reA.split(':'); //alert("reA: " + reA); //reA: fld_5:product:VARCHAR
 				re_enm = fn[0];
 				re_hnm = fn[1];
 
+				st = " style='background-color:white;' ";
+				tt = rtab[j];
 				if( rj[1] == re_enm ){
 					st = " style='background-color:cyan;' ";
 					tt = rdata[i];
-					if( rt[2] == re_enm) { // rt2 = Update:fld_1:fld_5:
+					key_yn = key_col_func( keyf, re_enm);
+					if( key_yn == 'yes' ) {
+						st = " style='background-color:blue;' ";
 						ck = " checked ";
 						tt = " key " + tt;
 					} 
-					//else {
-						relation_move_data = relation_move_data + pg_hnm + sk + re_hnm + ',';
-						//if( relation_move_data == '') relation_move_data = pg_hnm + sk + re_hnm + ',';
-						//else relation_move_data = ',' + pg_hnm + sk + re_hnm;
-					//}
+					relation_move_data = relation_move_data + pg_hnm + sk + re_hnm + ',';
 					break;
 				} else {
-					re_hnm = rj[2];
-					re = rj[1] + ':'+ rj[2];
+					col = rj[1] + ':'+ rj[2];
 					st = " style='background-color:white;' ";
 					tt = rtab[j];
+					ck = "";
 				}
-
-			}
-				ss+="<label " +st+ " title='"+ tt +"'><input type='radio' "+ck+" id='re_tab_column' name='re_tab_column' onclick='re_col_func(this.value)' title='"+ re+"' value='"+ re+"'>"+re_hnm+"</label><br>";
-		}
+			}//for
+				ss+="<label " +st+ " title='"+ col +"'><input type='radio' "+ck+" id='re_tab_column' name='re_tab_column' onclick='re_col_func(this.value)' title='"+ col+"' value='"+ col+"'>"+rj[2]+"</label><br>";
+		}//for
 		here_relation.innerHTML=ss;
 		return relation_move_data; //document.makeform.relation_move_data.value = relation_move_data;
 	} 
+	function key_col_func(keyf, re_enm){
+		chk = '';
+		rk = keyf.split('|'); // dt keyf: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		key_count = rk.length;
+		for( i=0; i<key_count && rk[i]!=''; i++){
+			rt = rk[i].split(':');
+			if( rt[1] == re_enm ){
+				chk = 'yes';
+				break;
+			}
+		}
+		return chk;
+	}
 	function pg_relation(relation_column, keyf) {
 		rt = keyf.split(':'); //Update:fld_1:fld_1:CHAR
 		rdata = relation_column.split('$'); //alert("rdata0: "+rdata[0]);
@@ -506,7 +553,7 @@
 	$pg_rel = array(); // program relation set column
 	$re_rel = array(); // relation table   set column
 	$data_R_num = array();
-	$type_R_num = array();
+	$type_R_num = array(); // ^, [0] @, | 
 
 	$rel_cA = 'white';
 	$rel_cB = 'white';
@@ -648,10 +695,21 @@
 	}
 	if( $relation_type_key !=''){
 		$typeAR  = explode("^", $relation_type_key); //relation_type=Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR^^^
-		$type_R  = explode("@", $typeAR[$relation_num]);
+		//m_("typeAR0: " . $typeAR[0]);
+		//typeAR0: Insert:fld_1:상품:VARCHAR|@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|@Update:fld_1:년도:YEAR|:fld_2:상품:VARCHAR|
+
+		$type_R  = explode("@", $typeAR[0]); //$typeAR[$relation_num]);
 		if( isset($type_R[$relation_num]) && $type_R[$relation_num]!=''){
-			$relation_key_column = $type_R[$relation_num];
-			$type_R_num = explode(":", $type_R[$relation_num] );
+			$relation_key_column = $type_R[$relation_num];	//m_("relation_key_column: " . $relation_key_column);
+			$typeR_ = $type_R[$relation_num];		//m_("typeR_: " . $typeR_); //typeR_: Insert:fld_1:상품:VARCHAR|
+			$type_R_ = explode("|", $typeR_ ); //Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+			$relation_key_count = count( $type_R_);
+			$type_R_num = explode(":", $type_R_[0] ); 
+			//m_("type_R_0: " . $type_R_[0] . ", type_R_num 0: " . $type_R_num[0] . ", 1:" . $type_R_num[1]);
+			//type_R_0: Insert:fld_1:상품:VARCHAR, type_R_num 0: Insert, 1:fld_1
+			//$type_R_num = explode(":", $type_R[$relation_num] );
+
+
 			if( $type_R_num[0]=='Insert' ) $rel_cA = 'cyan';
 			else if( $type_R_num[0]=='Update' ) $rel_cB = 'cyan';
 		}
@@ -826,7 +884,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 <?php
  echo "<input id='sqlsave_button' type='button' value=' SQL Key Set ' onClick='Relation_SQL_Key_Set_func();' style='height:30px;font-size:15; border-radius:20px;border:1 solid white;' title='If the sql type is update, you need to set the key column.'  >";
 
- echo "<br>Key Column:<input id='relation_key_column' name='relation_key_column' type='text' value='$relation_key_column' readonly>";
+ echo "<br>Key Column:<input id='relation_key_column' name='relation_key_column' type='text' style='width:500px;' value='$relation_key_column' readonly>";
 ?>
 <br>
 	<input width='' id='relation_move_data' name='relation_move_data' maxlength='250' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
@@ -870,7 +928,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		global $data_R, $type_R;
 		global $tab_enmR, $tab_hnmR;
 		global $rel_cA, $rel_cB;
-		global $type_R_num, $data_R_num, $pg_rel, $re_rel;
+		global $type_R_num, $data_R_num, $pg_rel, $re_rel; //$type_R_num = explode(":", $type_R_[0] );
 		global $tkher;
 			$relation_move_data = '';
 			$relation_data = '';
@@ -904,6 +962,8 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 				$relation_key = $rsPG['relation_type'];
 				$data_R    = explode("^", $rsPG['relation_data'] );
 				$type_R    = explode("^", $relation_key ); 
+				$key_arrayA = $type_R[0];
+				$type_R    = explode("@", $key_arrayA ); 
 				if( isset( $data_R[0]) && $data_R[0]!=''){
 					$relation_data_old_0 = $data_R[0];
 					$relation_data_old_1 = $data_R[1];
@@ -918,7 +978,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					/* 
 					Update:fld_1:fld_1:CHAR@@^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^^
 					*/
-					$key_arrayA = $type_R[0];
+//					$key_arrayA = $type_R[0];
 					if( isset($type_R[0]) ) {
 						$key_arrayA = explode("@", $key_arrayA );
 						$relation_key_old_0 = $key_arrayA[0];
@@ -939,7 +999,14 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 				}
 				if( isset( $data_R[$relation_num]) && $data_R[$relation_num] !='' && isset($type_R[$relation_num]) && $type_R[$relation_num] !='' ){
 					$data_R_num = explode("$", $data_R[$relation_num] );
-					$type_R_num = explode(":", $type_R[$relation_num] );
+
+					$typeR_ = $type_R[$relation_num];		//m_("typeR_: " . $typeR_); //typeR_: Insert:fld_1:상품:VARCHAR|
+					$type_R_ = explode("|", $typeR_ ); //Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+					$relation_key_count = count( $type_R_);
+
+					$type_R_num = explode(":", $type_R_[0]); // $type_R[$relation_num] );
+					//m_("type_R-$relation_num: " . $type_R[$relation_num] . ", type_R_num0: " . $type_R_num[0]);
+
 					$tab_ = $data_R_num[0]; // 0:Relatio Table
 					$tab_R    = explode(":", $data_R_num[0] );
 					$tab_enmR = $tab_R[0];
@@ -978,8 +1045,9 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 			$col_ = explode( "@", $item_array );
 			for( $i=0; $i < count($col_)-1; $i++) {
 				$_col = explode("|", $col_[$i]);
-				if( isset( $type_R_num[1]) && isset($_col[1]) && $type_R_num[1] == $_col[1] ) $ck = ' checked';
-				else $ck = '';
+				//if( isset( $type_R_num[1]) && isset($_col[1]) && $type_R_num[1] == $_col[1] ) $ck = ' checked';
+				//else 
+				$ck = '';
 				$pg_col_chk=0;
 				$sel_color='white';
 				for( $j=0; $j < count($pg_rel); $j++ )	if( $pg_rel[$j]==$_col[2] ) $pg_col_chk=1;
@@ -992,22 +1060,34 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		global $tkher, $H_ID;
 		global $type_R_num, $re_rel;
 		global $rel_cA,$rel_cB;
+		global $relation_num, $type_R;
 		$sql = "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enmR' order by disno asc";
 		$result = sql_query($sql);
 		if( isset($re_rel) ) $rcnt = count( $re_rel);
 		else $rcnt = 0;
 		$Rdata='';
+
+		$typeR_ = $type_R[$relation_num];
+		$type_R_ = explode("|", $typeR_ ); //Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		$relation_key_count = count( $type_R_);
 		while( $rsP = sql_fetch_array($result)) {
 			if( $rsP['fld_enm'] =='seqno' )	{
 				continue;
 			}
-			if( isset($type_R_num[2]) && $type_R_num[2] == $rsP['fld_enm'] ) {
-				$ck = ' checked';
-				$rel_cA = 'white'; $rel_cB = 'cyan';
-			} else { 
-				$ck = ''; 
-				$rel_cA = 'white'; $rel_cB = 'white';
+			$ck = ''; 
+			$rel_cA = 'white'; $rel_cB = 'white';
+			for( $i=0; isset( $type_R_[$i]) && $type_R_[$i]!='' && $i<$relation_key_count; $i++){
+				$type_R_num = explode(":", $type_R_[$i] );
+				if( isset( $type_R_num[1]) && $type_R_num[1] == $rsP['fld_enm'] ) {
+					$ck = ' checked';
+					$rel_cA = 'white'; $rel_cB = 'cyan';
+				}
 			}
+				/*if( isset($type_R_num[1]) && $type_R_num[1] == $rsP['fld_enm'] ) {
+					$ck = ' checked';
+					$rel_cA = 'white'; $rel_cB = 'cyan';
+				}*/
+
 			$pg_col_chk=0;
 			$sel_color='white';
 			for( $j=0; $j < count( $re_rel); $j++ ){
@@ -1016,7 +1096,6 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					$sel_color ='cyan';
 				} 
 			}
-			//echo "<label style='background-color:".$sel_color.";' title='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."'><input type='radio' onclick='re_col_func(this.value)' id='re_tab_column' name='re_tab_column' value='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."' ".$ck.">".$rsP['fld_hnm']."</label><br>";
 			$Rdata= $Rdata .  "<label style='background-color:".$sel_color.";' title='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."'><input type='radio' onclick='re_col_func(this.value)' id='re_tab_column' name='re_tab_column' value='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."' ".$ck.">".$rsP['fld_hnm']."</label><br>";
 		}//while
 		return $Rdata;
@@ -1028,7 +1107,9 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 
 		if( isset($data_R[$relation_num]) && $data_R[$relation_num] !='' && isset($type_R[$relation_num]) && $type_R[$relation_num] !='' ){
 			$data_R_num = explode("$", $data_R[$relation_num] );
+			
 			$type_R_num = explode(":", $type_R[$relation_num] );
+
 			$tab_ = $data_R_num[0];
 			$tab_R    = explode(":", $data_R_num[0] );
 			$tab_enmR = $tab_R[0];
