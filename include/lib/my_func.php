@@ -60,42 +60,61 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		relation type : 'Insert'
 		relation table record delete - relation type: 'Insert'
 		*/
-		$r_data = explode("$", $rdata);
-		$r_tab = $r_data[0];
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$day = date("Y-m-d H-i-s", time());
+		global $H_ID;
+		$r_data = explode("$", $rdata); 
+		$r_tab = $r_data[0]; // table + data of table, $r_data[1] = relation data
 		$tab_r = explode(":", $r_tab);
-		$r_table = $tab_r[0];          // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
+		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
 		$Rtabhnm = $tab_r[1];
+		$dataT   = $tab_r[2]; // main table column
 
-		$r_t = explode(":", $rtype); 
-		if( isset( $r_t[0]) && $r_t[0]!='' ) $r_type = $r_t[0];	// $r_t[0] = 'Update' or 'Insert'
-		else $r_type = '';	
-		if( isset( $r_t[1]) && $r_t[1]!='' ) $up_key = $r_t[1];	// $r_t[1] program field ,  Update Key field 
-		else $up_key = '';
-		if( isset( $r_t[2]) && $r_t[2]!='' ) $dd_key = $r_t[2];	// $r_t[2] relation table,  Update Key field 
-		else $dd_key = '';
-		if( isset( $r_t[3]) && $r_t[3]!='' ) $ty_key = $r_t[3];	// $r_t[3] relation field key data type CHAR or INT
-		else $ty_key = '';
+		$r_tA = explode("|", $rtype);     //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		$key_count = count($r_tA);
+		$r_t = explode(":", $r_tA[0]); 
+		$r_type = $r_t[0];
+		
+		$SQLA = "DELETE FROM " . $r_table;
+		$WR = '';
+		for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
+			$r_t = explode(":", $r_tA[$i]); //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+			$key_fld  = $r_t[1];
+			$key_type = $r_t[3];
+			$f_num = data_number_check( $key_type );
+			for( $j=1; isset($r_data[$j]) && $r_data[$j] !=""; $j++) {
+				$r_fld		= $r_data[$j];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
+				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
+				$fld_r1	= $fld_r[0];
+				$fld_sik= $fld_r[1];  // =, -, +
+				$fld_r2	= $fld_r[2];
+				
+				$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
+				$f_enm	= $fld1[0];
+				
+				$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
+				$r_enm	= $fld2[0];
+				$r_type	= $fld2[2];
 
-		//m_("rdata: $rdata");//Update:fld_1:fld_1:CHAR           // Update:::@@^^^
-		//rdata: dao_1766822184:ABC_AAA:|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
-		//$fld_1:fld1|=|fld_1:상품:VARCHAR$fld_2:fld2|=|fld_2:원산지:VARCHAR$fld_3:fld3|=|fld_3:단위:VARCHAR
-		//$fld_4:수량|=|fld_4:수량:INT$fld_5:단가|=|fld_5:단가:INT	$fld_6:금액|=|fld_6:금액:INT$fld_7:날짜|=|fld_7:날짜:DATE
-
-		$whereQ = '';
-		if( isset( $_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
-		else $update_key_data = "";
-		if( $update_key_data == '' ) {
-			m_("KEY DATA NULL ERROR- relation_record - table: $r_table, update_key_data: $update_key_data, up_key: $up_key, dd_key: $dd_key, r_type: $r_type, rtype: $rtype");
-			//- relation_record_update - table: dao_1766822184, update_key_data: , up_key: fld_1, dd_key: fld_1, r_type: Update, rtype: Update:fld_1:fld_1:CHAR
-			exit;
+				if( $key_fld == $r_enm ){
+					if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
+					else $update_key_data = "";
+					$f_num = data_number_check( $r_type );
+					if( $i == 0 ) {
+						if( $f_num )
+							 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
+						else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+					} else if( $i > 0 ){
+						if( $f_num )
+							$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
+						else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+					}
+				}
+			}
 		}
-		$SQLR = "DELETE FROM " . $r_table;
-		if( data_number_check( $ty_key ) )
-			$whereQ = " where " . $dd_key . " = " .$update_key_data. " ";	
-		else $whereQ =" where " . $dd_key . " = '" .$update_key_data. "' ";
-		$SQLR = $SQLR . $whereQ;
-		$ret  = sql_query( $SQLR);
-		if( $ret ) {
+		$SQLA = $SQLA . $WR;	//	echo "SQLA: " . $SQLA; exit;
+		$retA = sql_query( $SQLA );
+		if( $retA ) {
 			m_("relation table: $Rtabhnm, record Delete OK");
 		} else{
 			echo "DELETE ERROR, relation table: $r_table, Delete error - SQLR: " . $SQLR; exit;
@@ -107,40 +126,79 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		relation type : 'Insert'
 		relation table update - number colomn '-' , '+'
 		*/
-		global $H_ID;
-		$r_data = explode("$", $rdata);
-		$r_tab = $r_data[0];
-		$tab_r = explode(":", $r_tab);
-		$r_table = $tab_r[0];									// $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
-		$Rtabhnm = $tab_r[1];
-		$r_t = explode(":", $rtype);							//Update:fld_1:fld_1:CHAR // Update:::@@^^^
-		if( isset( $r_t[0]) && $r_t[0]!='' ) $r_type = $r_t[0];	// $r_t[0] = 'Update' or 'Insert'
-		else $r_type = '';	
-		if( $r_type != 'Update'){
-			m_("ERROR relation type: ". $r_type); //ERROR relation type: Update
-			return false;
-		}
-
-		if( isset( $r_t[1]) && $r_t[1]!='' ) $up_key = $r_t[1];	// $r_t[1] program field ,  Update Key field 
-		else $up_key = '';
-		if( isset( $r_t[2]) && $r_t[2]!='' ) $dd_key = $r_t[2];	// $r_t[2] relation table,  Update Key field 
-		else $dd_key = '';
-		if( isset( $r_t[3]) && $r_t[3]!='' ) $ty_key = $r_t[3];	// $r_t[3] relation field key data type CHAR or INT
-		else $ty_key = '';
-		if( isset( $_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
-		else $update_key_data = "";
-		if( $update_key_data == '' ) {
-			m_("KEY DATA NULL ERROR - relation_record_update - table: $r_table, update_key_data: $update_key_data, up_key: $up_key, dd_key: $dd_key, r_type: $r_type, rtype: $rtype");//- relation_record_update - table: dao_1766822184, update_key_data: , up_key: fld_1, dd_key: fld_1, r_type: Update, rtype: Update:fld_1:fld_1:CHAR
-			exit;
-		}
-		$SQLA = "select seqno, kapp_memo from `" . $r_table . "` ";
-		if( data_number_check( $ty_key ) )
-			$whereQ = " where " . $dd_key . " = " .$update_key_data. " ";	
-		else $whereQ = " where " . $dd_key . " = '" .$update_key_data. "' ";	// default char type.
-		$SQLA = $SQLA . $whereQ;
-		$retA = sql_fetch( $SQLA ); // record confirm
 		$ip = $_SERVER['REMOTE_ADDR'];
-		$day = date("Y-m-d H:i:s", time());
+		$day = date("Y-m-d H-i-s", time());
+		global $H_ID;
+		/*
+rdata: dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+$fld_1:fld1|=|fld_5:product:VARCHAR
+$fld_7:날짜|=|fld_1:날짜:DATE
+$fld_4:수량|+|fld_6:total_count:INT
+$fld_6:금액|+|fld_7:tottal_price:BIGINT,
+
+rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+*/
+		$r_data = explode("$", $rdata); 
+		$r_tab = $r_data[0]; // table + data of table, $r_data[1] = relation data
+		$tab_r = explode(":", $r_tab);
+		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
+		$Rtabhnm = $tab_r[1];
+		$dataT   = $tab_r[2]; // main table column
+
+		$r_tA = explode("|", $rtype);     //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		$key_count = count($r_tA);
+		$r_t = explode(":", $r_tA[0]); 
+		$r_type = $r_t[0]; // Update
+		
+		$SQLA = "select seqno, kapp_memo from `" . $r_table . "` ";
+		$WR = '';
+		$sw='';
+		for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
+			$r_t = explode(":", $r_tA[$i]); //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+			$key_fld  = $r_t[1];
+			$key_type = $r_t[3];
+			for( $j=1; isset($r_data[$j]) && $r_data[$j] !=""; $j++) {
+				$r_fld		= $r_data[$j];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
+				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
+				$fld_r1	= $fld_r[0];
+				$fld_sik= $fld_r[1];  // =, -, +
+				$fld_r2	= $fld_r[2];
+				
+				$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
+				$f_enm	= $fld1[0];
+				
+				$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
+				$r_enm	= $fld2[0];
+				$r_tp	= $fld2[2];
+
+				if( $key_fld == $r_enm ){
+					//m_("key_fld: $key_fld , r_enm: $r_enm");
+					//key_fld: fld_1 , r_enm: fld_1
+					//key_fld: fld_5 , r_enm: fld_5
+					if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
+					else {
+						m_("ERROR-delete-update, r_table:$r_table, key data - key_fld: $key_fld, r_enm: $r_enm, f_enm: $f_enm");	//$update_key_data = "";
+						echo "where WR: " . $WR . ", " . "ERROR r_table:$r_table, key data - key_fld: $key_fld, r_enm: $r_enm, f_enm: $f_enm"; exit;
+					}
+					//$f_num = data_number_check( $r_tp );
+					$f_num = data_number_check( $key_type );
+					if( $sw == '' ) {
+						if( $f_num )
+							 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
+						else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+						$sw ='on';
+					} else if( $sw == 'on' ){
+						if( $f_num )
+							$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
+						else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+					}
+					break;
+				}
+			}
+		}
+		$SQLA = $SQLA . $WR;			//if( $Rtabhnm == 'ABCYY') echo "SQLA: " . $SQLA; exit;
+		//SQLA: select seqno, kapp_memo from `dao_1766735120` where fld_5 = '무우'
+		$retA = sql_fetch( $SQLA );
 		if( $retA ) {
 			$kapp_memo = $retA['kapp_memo'] . "\n|DELETE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
 			$SQLR = "UPDATE " . $r_table . " SET ";
@@ -155,12 +213,12 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				$f_enm	= $fld1[0];
 				$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
 				$r_enm	= $fld2[0];
-				$r_type	= $fld2[2];
+				$r_tp	= $fld2[2];
 				
 				if( isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 				else $post_enm = "";
 				if( $fld_sik == '=' ) {
-					if( data_number_check( $r_type ) )
+					if( data_number_check( $r_tp ) )
 						$SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
 					else 
 						$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
@@ -173,7 +231,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 					$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
 				}
 			}//for
-			$SQLR = $SQLR . $whereQ;
+			$SQLR = $SQLR . $WR;	//	echo "SQLA: " . $SQLA; exit;
 			$ret  = sql_query($SQLR);
 			if( $ret ) {
 				m_("relation table: $Rtabhnm, Update OK");
@@ -190,57 +248,113 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		/*
 		main table record - 'Write'
 		relation type : 'Update'
+		dao_1766822184:ABC_AAA:
+		|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
+		$fld_1:fld1|=|fld_1:상품:VARCHAR
+		$fld_2:fld2|=|fld_2:원산지:VARCHAR
+		$fld_3:fld3|=|fld_3:단위:VARCHAR
+		$fld_4:수량|=|fld_4:수량:INT
+		$fld_5:단가|=|fld_5:단가:INT
+		$fld_6:금액|=|fld_6:금액:INT
+		$fld_7:날짜|=|fld_7:날짜:DATE
+
+		Insert:fld_1:상품:VARCHAR|
+		@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		@Update:fld_1:년도:YEAR|:fld_2:상품:VARCHAR|
+		^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
+		^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
 		*/
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$day = date("Y-m-d H-i-s", time());
 		global $H_ID;
-		$r_data = explode("$", $rdata);
-		$r_tab = $r_data[0];
+		$r_data = explode("$", $rdata); 
+		$r_tab = $r_data[0]; // table + data of table, $r_data[1] = relation data
 		$tab_r = explode(":", $r_tab);
 		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
 		$Rtabhnm = $tab_r[1];
-		$r_t = explode(":", $rtype); //m_("rtype: $rtype"); //Update:fld_1:fld_1:CHAR  // Update:::@@^^^
-		if( isset( $r_t[0]) && $r_t[0]!='' ) $r_type = $r_t[0];	// $r_t[0] = 'Update' or 'Insert'
-		else $r_type = '';	
-		if( isset( $r_t[1]) && $r_t[1]!='' ) $up_key = $r_t[1];	// $r_t[1] program field ,  Update Key field 
-		else $up_key = '';
-		if( isset( $r_t[2]) && $r_t[2]!='' ) $dd_key = $r_t[2];	// $r_t[2] relation table,  Update Key field 
-		else $dd_key = '';
-		if( isset( $r_t[3]) && $r_t[3]!='' ) $ty_key = $r_t[3];	// $r_t[3] relation field key data type CHAR or INT
-		else $ty_key = '';
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$day = date("Y-m-d H-i-s", time());
+		$dataT   = $tab_r[2]; // main table column
+
+		$r_tA = explode("|", $rtype);     //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		$key_count = count($r_tA);
+		$r_t = explode(":", $r_tA[0]); 
+		$r_type = $r_t[0];
+		
 		if( $r_type == 'Update'){
-			if( isset($_POST[$up_key]) && $_POST[$up_key] !='' ) $update_key_data = $_POST[$up_key];
-			else $update_key_data = "";
-			if( $update_key_data == '' ) {
-				m_("- relation_record_update - table: $r_table, update_key_data: $update_key_data, up_key: $up_key, dd_key: $dd_key, r_type: $r_type, rtype: $rtype");
-				//- relation_record_update - table: dao_1766822184, update_key_data: , up_key: , dd_key: , r_type: Insert, rtype: Insert:::
-				exit;
-			}
 			$SQLA = "select seqno, kapp_memo from `" . $r_table . "` ";
-			if( data_number_check( $ty_key ) )
-				$SQLA = $SQLA . " where " . $dd_key . " = " .$update_key_data. " ";	
-			else $SQLA = $SQLA . " where " . $dd_key . " = '" .$update_key_data. "' ";	// default 문자열로 처리.
+			$WR = '';
+			$sw='';
+			for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
+				$r_t = explode(":", $r_tA[$i]); //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+				$key_fld  = $r_t[1];
+				$key_type = $r_t[3];
+				$f_num = data_number_check( $key_type );
+				for( $j=1; isset($r_data[$j]) && $r_data[$j] !=""; $j++) {
+					$r_fld		= $r_data[$j];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
+					$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
+					$fld_r1	= $fld_r[0];
+					$fld_sik= $fld_r[1];  // =, -, +
+					$fld_r2	= $fld_r[2];
+					
+					$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
+					$f_enm	= $fld1[0];
+					
+					$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
+					$r_enm	= $fld2[0];
+					$r_tp	= $fld2[2];
+
+					if( $key_fld == $r_enm ){
+						if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
+						else $update_key_data = "";
+						$f_num = data_number_check( $r_tp );
+						if( $sw =='' ) {
+							if( $f_num )
+								 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
+							else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+							$sw ='on';
+						} else if( $sw =='on'){
+							if( $f_num )
+								$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
+							else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+						}
+					}
+				}
+			}
+			$SQLA = $SQLA . $WR;	//	echo "SQLA: " . $SQLA; exit;
+			/*
+					if( $Rtabhnm == 'ABCYY') {
+						m_("Rtabhnm: " . $Rtabhnm);
+						echo "<br>SQLA: ". $SQLA; 
+						//SQLA: select * from `dao_1766735120` where fld_1 = '2026-03-17 12:29' and fld_5 = '무우'
+						//SQLA: select * from `dao_1773304478` where fld_1 = '2026-03-17 12:33' and fld_2 = '무우'
+						//exit;
+					}*/
+
 			$retA = sql_fetch( $SQLA );
 			if( $retA ) {
 				$kapp_memo = $retA['kapp_memo'] . "\n|UPDATE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
 				$SQLR = "UPDATE " . $r_table . " SET ";
 				$SQLR = $SQLR . " kapp_memo = '$kapp_memo' ";
+
 				for( $i=1; isset($r_data[$i]) && $r_data[$i] !=""; $i++) {
-					$r_fld		= $r_data[$i];
+					$r_fld		= $r_data[$i];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
 					$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
 					$fld_r1	= $fld_r[0];
 					$fld_sik= $fld_r[1];  // =, -, +
 					$fld_r2	= $fld_r[2];
+					
 					$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
 					$f_enm	= $fld1[0];
+					
 					$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
 					$r_enm	= $fld2[0];
-					$r_type	= $fld2[2];
+					$r_tp	= $fld2[2];
 
 					if( isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 					else $post_enm = "";
+
 					if( $fld_sik == '=' ) {
-						if( data_number_check( $r_type ) )
+						if( data_number_check( $r_tp ) )
 							$SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
 						else 
 							$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
@@ -251,9 +365,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 						$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 					}
 				}
-				if( data_number_check( $ty_key ) )
-					$SQLR = $SQLR . " where " . $dd_key . " = " .$update_key_data. " ";	
-				else $SQLR = $SQLR . " where " . $dd_key . " = '" .$update_key_data. "' ";
+				$SQLR = $SQLR . $WR;
 				$ret  = sql_query($SQLR);
 				if( $ret ) {
 					m_("relation table: $Rtabhnm Update");
@@ -277,28 +389,26 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 					$f_enm	= $fld1[0];
 					$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
 					$r_enm	= $fld2[0];
-					$r_type	= $fld2[2];
+					$r_tp	= $fld2[2];
 
 					if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 					else $post_enm = "";
 					/* When inserting, all calculation expressions are processed as '='. , insert일때 계산식은 모두 '=' 처리한다.  */
 					if( $fld_sik == '=' ) {
-						if( data_number_check( $r_type ) )
+						if( data_number_check( $r_tp ) )
 							$SQLAR = $SQLAR . " , "  . $r_enm . " = " . $post_enm . " ";
 						else 
 							$SQLAR = $SQLAR . " , "  . $r_enm . " = '" . $post_enm . "' ";
 						
 					} else if( $fld_sik == '+' ) { // If there is no record when the relation type is 'Update': relation type이 'Update' 일때 record가 없으면
-						//$SQLAR = $SQLAR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
 						$SQLAR = $SQLAR . " , " . $r_enm . "=" . $post_enm . " ";
 					} else if( $fld_sik == '-' ) {
-						//$SQLAR = $SQLAR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 						$SQLAR = $SQLAR . " , " . $r_enm . "=" . $post_enm . " ";
 					}
 				}
 				$ret =sql_query($SQLAR);
 				if( $ret ) { 
-					m_("relation table: $Rtabhnm, Insert OK!");
+					m_("relation table: $Rtabhnm, Insert OK! - WR: ");
 				}else{
 					echo "relation table error - SQLAR: " . $SQLAR; exit;
 					m_("Error --- relation table: $Rtabhnm Insert error");
@@ -322,11 +432,12 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				$f_enm	= $fld1[0];
 				$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
 				$r_enm	= $fld2[0];
+				$r_tp	= $fld2[2];
 				if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
 				else $post_enm = "";
 				/* When inserting, all calculation expressions are processed as '='. , insert일때 계산식은 모두 '=' 처리한다.  */
 				if( $fld_sik == '=' ) { 
-					if( data_number_check( $r_type ) )
+					if( data_number_check( $r_tp ) )
 						$SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
 					else $SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
 				}
