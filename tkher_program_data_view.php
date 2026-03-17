@@ -58,8 +58,6 @@
 		$relation_dataPG= $rowPG['relation_data'];
 		$relation_typePG= $rowPG['relation_type'];
 	}
-	//m_("pg_code: $pg_code, relation_dataPG: $relation_dataPG");	//pg_code: dao_1766822184, relation_dataPG: 
-
 	if( $H_LEV >= $grant_view || $H_ID == $pg_mid || $H_ID == $data_mid) {
 	} else {
 		m_("You need to view level: $H_LEV, grant: $grant_view ");
@@ -112,7 +110,8 @@
 			return false;
 		}
 		if( RelTs_hnm !='' ){
-			alert("A table relation has been established. \n It cannot be changed. \n table name is: "+RelTs_hnm)
+			alert("A table relation has been established. \n It cannot be changed. \n table name is: "+RelTs_hnm);
+			return false;
 		}
 		document.form_view.mode.value='modify';
 		document.form_view.action='tkher_program_data_update.php';
@@ -187,6 +186,7 @@
 		<div class="viewSubjX"><span title='(pg_mid:<?=$pg_mid?>:data_mid:<?=$data_mid?>:<?=$pg_code?>:<?=$tab_enm?>)'><?=$pg_name?></span> </div>
 		<div class='blankA'> </div>
 <?php
+/*
 //m_("$i, Rdata: " . $rdata[$i] . ", Rtype: " . $rt[$i]);
 //Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_2:CHAR
 //^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
@@ -198,68 +198,78 @@
 //$fld_2:fld2|=|fld_2:원산지:VARCHAR
 //$fld_3:fld3|=|fld_3:단위:VARCHAR$fld_4:수량|+|fld_4:수량:INT$fld_5:단가|=|fld_5:단가:INT$fld_6:금액|+|fld_6:금액:INT
 //$fld_7:날짜|=|fld_7:날짜:DATE
-//^dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR
+//^dao_1766735120:ABCYY:|fld_1|날짜|DATE|15
+//@|fld_2|yyyy|CHAR|15
+//@|fld_3|mm|CHAR|15
+//@|fld_4|dd|CHAR|15
+//@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR
 //$fld_7:날짜|=|fld_1:날짜:DATE$fld_4:수량|+|fld_6:total_count:INT$fld_6:금액|+|fld_7:tottal_price:BIGINT
 //^dao_1773304478:ABC_년도별_판매실적:|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@$fld_1:fld1|=|fld_2:상품:VARCHAR
 //$fld_7:날짜|=|fld_1:년도:YEAR$fld_4:수량|+|fld_3:수량:INT$fld_6:금액|+|fld_4:금액:INT$fld_2:fld2|=|fld_5:메모:TEXT
+*/
+	if( $mode=="data_delete" ) {
+		$SQL = " delete from $tab_enm where seqno=$seqno ";
+		if(( $result = sql_query( $SQL ) )==false ){
+			echo "table: $tab_enm - delete  Invalid query! SQL: ". $SQL; exit;
+		} else {
+			$relation_data =$relation_dataPG;
+			$relation_type =$relation_typePG; 
+			if( $relation_data !='' ) {
+				$rdata = explode("^", $relation_data);
+				$rtype = explode("^", $relation_type);
+				$rtA = explode("@", $rtype[0]);	//$rt = explode("|", $rtA[0]);
+				$data_cnt = count( $rdata);			//m_(" data_cnt: " . $data_cnt ); // data_cnt: 3
+				for( $i=0; $i < $data_cnt && isset($rdata[$i]) && $rdata[$i] !=""; $i++ ){
+					if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
+						$reldata = $rdata[$i];
+						$reltype = $rtype[$i];
+						$rtab = explode(":", $rdata[$i] );
+						$rt = explode("|", $rtA[$i]);
+						$ktype = explode(":", $rt[0] );
+						//echo "rt0:" . $rt[0] . ", i:$i, rdata: ". $rdata[$i] .", rtA: " . $rtA[$i];
+						//m_("$i, rt0:" . $rt[0] . ", rdata: ". $rdata[$i] .", rtA: " . $rtA[$i] );
+						//1, rt0:Update:fld_1:날짜:DATE, 
+						//rdata: dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:DATE$fld_4:수량|+|fld_6:total_count:INT$fld_6:금액|+|fld_7:tottal_price:BIGINT,
+						//rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+						//0, rt0:Insert:fld_1:상품:VARCHAR, 
+						//rdata: dao_1766822184:ABC_AAA:|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@$fld_1:fld1|=|fld_1:상품:VARCHAR$fld_2:fld2|=|fld_2:원산지:VARCHAR$fld_3:fld3|=|fld_3:단위:VARCHAR$fld_4:수량|=|fld_4:수량:INT$fld_5:단가|=|fld_5:단가:INT$fld_6:금액|=|fld_6:금액:INT$fld_7:날짜|=|fld_7:날짜:DATE,
+						//rtA: Insert:fld_1:상품:VARCHAR|
 
-		if( $mode=="data_delete" ) {
-			$SQL = " delete from $tab_enm where seqno=$seqno ";
-			if(( $result = sql_query( $SQL ) )==false ){
-				echo "table: $tab_enm - delete  Invalid query! SQL: ". $SQL; exit;
-			} else {
-				$relation_data =$relation_dataPG;
-				$relation_type =$relation_typePG; 
-				if( $relation_data !='' ) {
-					$rdata = explode("^", $relation_data);
-					$rtype = explode("^", $relation_type);
-					$rt = explode("@", $rtype[0]);
-					for( $i=0; $i < count( $rdata); $i++ ){
-						if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
-							$reldata = $rdata[$i];
-							$reltype = $rtype[$i];
-							$rtab = explode(":", $rdata[$i] );
-							$ktype = explode(":", $rt[$i] );
-							if( $ktype[0] == 'Insert' ) relation_record_delete( $rdata[$i], $pg_code, $rt[$i] );
-							else if( $ktype[0] == 'Update' ) relation_record_update( $rdata[$i], $pg_code, $rt[$i] );
-							//relation_del_func( $rdata[$i], $pg_code, $rt[$i] );
-						}
+						if( $ktype[0] == 'Insert' ) relation_record_delete( $rdata[$i], $pg_code, $rtA[$i] );
+						else if( $ktype[0] == 'Update' ) relation_record_update( $rdata[$i], $pg_code, $rtA[$i] );
 					}
 				}
-
-				m_("Delete OK!");
-				$rungo = "tkher_program_data_list.php";
-				echo "<script>table_data_list('$pg_code'); </script>";
 			}
+			$rungo = "tkher_program_data_list.php";
+			echo "<script>table_data_list('$pg_code'); </script>";
 		}
+	}
+	$list = array();
+	$relationA = array();
+	$relationT1 = array();
+	$relationT2 = array();
+	$relationT3 = array();
+	$ddd = "";
+	$qqq = "";
+	if( $relation_dataPG != ''){
+		$relationA= explode("^", $relation_dataPG);
+		$relationT1= explode(":", $relationA[0]);
+		$relationT2= explode(":", $relationA[1]);
+		$relationT3= explode(":", $relationA[2]);
+		if( $relationT1[1] !='') $relationT = $relationT1[1] . ', ' . $relationT2[1] . ', ' . $relationT3[1];
+		else $relationT = '';
+	} else $relationT = '';
 
-		$list = array();
-		$relationA = array();
-		$relationT1 = array();
-		$relationT2 = array();
-		$relationT3 = array();
-		$ddd = "";
-		$qqq = "";
-		//$relation_data= $relation_dataPG; //$rowPG['relation_data']; 		m_("relation_data: $relation_data");
-		if( $relation_dataPG != ''){
-			$relationA= explode("^", $relation_dataPG);
-			$relationT1= explode(":", $relationA[0]);
-			$relationT2= explode(":", $relationA[1]);
-			$relationT3= explode(":", $relationA[2]);
-			if( $relationT1[1] !='') $relationT = $relationT1[1] . ', ' . $relationT2[1] . ', ' . $relationT3[1];
-			else $relationT = '';
-		} else $relationT = '';
-
-		$item_array= $rowPG['item_array'];
-		$list			= explode("@", $item_array);
-		$if_type		= explode("|", $if_typeR);
-		$if_data		= explode("|", $if_dataR);
-		$kkk="off";
-		$kkk0 = array();
-		$kkk1 = array();
-		$kkk2 = array();
-		$kkk3 = array();
-		$kkk5 = 1;
+	$item_array= $rowPG['item_array'];
+	$list			= explode("@", $item_array);
+	$if_type		= explode("|", $if_typeR);
+	$if_data		= explode("|", $if_dataR);
+	$kkk="off";
+	$kkk0 = array();
+	$kkk1 = array();
+	$kkk2 = array();
+	$kkk3 = array();
+	$kkk5 = 1;
 
 	for( $i=0,$j=1; $list[$i] != ""; $i++, $j++ ){
 		if( isset($if_type[$j])  && $if_type[$j] !='') $typeX	= $if_type[$j];
@@ -429,36 +439,6 @@
 				echo " <div class='menu1A'><input type='$fld[3]' name='$fldenm' value='$row[$fldenm]' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fldenm.' readonly></div> ";
 				echo " <div class='blankA'> </div> ";
 		}	//if
-				/* 2026-03-13 field change input type readonly
-				if( $fld[3] == "TEXT" ) {
-					echo "<p>$fldhnm</p>";
-					echo "<div class='viewWriteBox' ><textarea name='$fldenm' >$row[$fldenm]</textarea></div>";
-				} else if( $typeX == '9' ) { // add file
-						if( $row[$fldenm] != '' ) {
-								$ifile = explode( ".", $row[$fldenm] );
-								$row_fnm = $row[$fldenm];
-								$im = "./file/" . $tab_mid . "/". $tab_enm . "/" . $row_fnm;
-								$imP= KAPP_PATH_T_ . "/file/" . $tab_mid . "/". $tab_enm . "/" . $row_fnm;
-								$image_size = @GetImageSize( $imP );
-								if( strtolower($ifile[1]) == 'jpg' or strtolower($ifile[1]) == 'png' or strtolower($ifile[1]) == 'gif' ) {
-									echo"<p>$fldhnm</p>";
-									echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimage('$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im' width='400' height='300' border='0'></a> </div>";
-								} else {
-									echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-									echo " <div class='data1A'><a href='./file/$tab_mid/$tab_enm/$row[$fldenm]' target='_BLANK'><img src=./icon/file/default.gif border=0>&nbsp;$row[$fldenm] </a></div> ";
-									echo " <div class='blankA'> </div> ";
-								}
-						} else {
-								echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-								echo " <div class='data1A'> <img src='./icon/file/default.gif' border='0'> </div> ";
-								echo " <div class='blankA'> </div> ";
-						}
-				} else {
-					echo " <div class='menu1T' align='center'><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
-					echo " <div class='data1A'>$row[$fldenm]</div> ";
-					echo " <div class='blankA'> </div> ";
-				}	//if
-				*/
 	} // while // for
 ?>
 					<div class="viewBtn">

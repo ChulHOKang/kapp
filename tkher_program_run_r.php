@@ -79,12 +79,8 @@
 						$aa = " ";
 					}
 					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL" ){
-						//if( $i==0 )	$SQL = $SQL . $nm . " = " . $aa . " ";
-						//else	    $SQL = $SQL . " , " .  $nm . " = " . $aa . " ";
 						$SQL = $SQL . " , " .  $nm . " = " . $aa . " ";
 					} else {
-						//if( $i==0 )	$SQL = $SQL . $nm . " = '" . $aa . "' ";
-						//else	    $SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
 						$SQL = $SQL . " , " .  $nm . " = '" . $aa . "' ";
 					}
 				} else if( $typeX=='9' ) {
@@ -118,25 +114,34 @@
 							move_uploaded_file($_FILES["$nm"]["tmp_name"], $f_path . $upfile_name );
 						}
 					}
-					//if( $i==0 )	$SQL = $SQL . $nm ." = '" . $upfile_name . "' ";
-					//else	$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
 					$SQL = $SQL . " , " . $nm ." = '" . $upfile_name . "' ";
 				} else {
 					if( $fld[3] == "INT" || $fld[3] == "TINYINT" || $fld[3] == "SMALLINT" || $fld[3] == "MEDIUMINT" || $fld[3] == "BIGINT" || $fld[3] == "FLOAT" || $fld[3] == "DOUBLE" || $fld[3] == "DECIMAL"){
 						if( !$post_fld || $post_fld == '') $post_fld = 0;
-						//if( $i==0 )	$SQL = $SQL . $nm . " = " . $post_fld . " ";
-						//else	    $SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";
 						$SQL = $SQL . " , " .  $nm . " = " . $post_fld . " ";
 					} else {
-						//if( $i==0 )	$SQL = $SQL . $nm . " = '" . $post_fld . "' ";
-						//else	    $SQL = $SQL . " , " .  $nm . " = '" . $post_fld . "' ";
 						$SQL = $SQL . " , " .  $nm . " = '" . $post_fld . "' ";
 					}
 				}
 		}
 	}
-	$rtype = '';
-	$rdata = '';
+	$rtype = array();
+	$rdata = array();
+	$rt = array();
+	/*
+	dao_1766822184:ABC_AAA:|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@$fld_1:fld1|=|fld_1:상품:VARCHAR$fld_2:fld2|=|fld_2:원산지:VARCHAR$fld_3:fld3|=|fld_3:단위:VARCHAR$fld_4:수량|=|fld_4:수량:INT$fld_5:단가|=|fld_5:단가:INT$fld_6:금액|=|fld_6:금액:INT$fld_7:날짜|=|fld_7:날짜:DATE
+	^dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:DATE$fld_4:수량|+|fld_6:total_count:INT$fld_6:금액|+|fld_7:tottal_price:BIGINT
+	^dao_1773304478:ABC_년도별_판매실적:|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@$fld_7:날짜|=|fld_1:년도:YEAR$fld_1:fld1|=|fld_2:상품:VARCHAR$fld_4:수량|+|fld_3:수량:INT$fld_6:금액|+|fld_4:금액:INT$fld_2:fld2|=|fld_5:메모:TEXT
+
+		Insert:fld_1:상품:VARCHAR|
+		@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		@Update:fld_1:년도:YEAR|:fld_2:상품:VARCHAR|
+		^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
+		^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
+
+		 syntax to use near ' fld_7 = '2026-03-17 13:17:40'' 
+	*/
 	$mq2 = sql_query($SQL);
 	if( $mq2 ) { 
 		$relation_data =get_session("relation_dataPG");
@@ -145,7 +150,8 @@
 			$rdata = explode("^", $relation_data);
 			$rtype = explode("^", $relation_type);
 			$rt = explode("@", $rtype[0]);
-			for( $i=0; $i < count( $rdata); $i++ ){
+			$data_cnt = count( $rdata);	//m_(" data_cnt: " . $data_cnt );
+			for( $i=0; $i < $data_cnt && isset($rdata[$i]) && $rdata[$i] !=""; $i++ ){
 				if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
 					relation_func( $rdata[$i], $pg_code, $rt[$i] );
 				}

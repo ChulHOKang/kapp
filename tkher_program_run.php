@@ -147,7 +147,7 @@
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$day' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 				} else if( $fld[3] == "DATETIME" || $fld[3] == "TIMESTAMP" ) { 
-							$day=date("Y-m-d H:i");
+							$day=date("Y-m-d H:i:s");
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
 							echo " <div class='menu1A'><input type='$fld[3]' name='$fld[1]' value='$day' style='width:$Xwidth;height:$Xheight;' placeholder='Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";

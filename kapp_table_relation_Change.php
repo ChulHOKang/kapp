@@ -686,25 +686,25 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
                       </td>
                      </tr>
 					  <tr><!-- SQL Type은 변경을 할것인지 또는 등록을 할것인지를 구분하는 것이다. -->
-						<td title='SQL Type distinguishes whether to change or register.'>Relation SQL Type:
- <?php echo "<label style='background-color:$rel_cA;' title='Insert does not require a key column.'>"; ?>
+						<td title='SQL Type distinguishes whether to change or register.'>
+	<input id='relation_move_data' name='relation_move_data' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
+<br>Relation SQL Type:
+<?php echo "<label style='background-color:$rel_cA;' title='Insert does not require a key column.'>"; ?>
  <input type='radio' onclick="radio_box_func(<?=$relation_num?>,this.value)" id='relation_type_SQL' name='relation_type_SQL' value='Insert' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Insert') echo 'checked'; ?> >Insert</label>
- <?php echo "<label style='background-color:$rel_cB;' title='Update must set the key column.' >"; ?>
+<?php echo "<label style='background-color:$rel_cB;' title='Update must set the key column.' >"; ?>
  <input type='radio' onclick="radio_box_func(<?=$relation_num?>,this.value)" id='relation_type_SQL' name='relation_type_SQL' value='Update' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Update') echo 'checked'; ?> >Update</label>
 						
 <?php
  echo "<input id='sqlsave_button' type='button' value=' SQL Key Save ' onClick='Relation_SQL_Key_Set_func();' style='height:30px;font-size:15; border-radius:20px;border:1 solid white;' title='If the sql type is update, you need to set the key column. However, insert does not require a key column.'  >";
  echo "<br>Relation Key Column:<input id='relation_key_column' name='relation_key_column' type='text' style='width:600px;height:33px;' value='' readonly>";
 ?>
-	<br>
-	<input id='relation_move_data' name='relation_move_data' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
 
 	<!-- display:none -->
-	<!-- relation_data_tab(all) --><textarea id='relation_data_tab' name='relation_data_tab' rows='3' cols='84' style="display:;"><?=$relation_data_tab?></textarea>
-	<!-- relation_type_key(all) --><textarea id='relation_type_key' name='relation_type_key' rows='3' cols='84' style="display:;"><?=$relation_type_key?></textarea>
+	<!-- relation_data_tab(all) --><textarea id='relation_data_tab' name='relation_data_tab' rows='3' cols='84' style="display:none;"><?=$relation_data_tab?></textarea>
+	<!-- relation_type_key(all) --><textarea id='relation_type_key' name='relation_type_key' rows='3' cols='84' style="display:none;"><?=$relation_type_key?></textarea>
 
-	<!-- relation_data(now) --><textarea id='relation_data' name='relation_data' rows='3' cols='84' style="display:;"><?=$relation_data?></textarea>
-	<!-- relation_key(now) --><textarea id='relation_key'   name='relation_key'  rows='3' cols='84' style="display:;"><?=$relation_key?></textarea>
+	<!-- relation_data(now) --><textarea id='relation_data' name='relation_data' rows='3' cols='84' style="display:none;"><?=$relation_data?></textarea>
+	<!-- relation_key(now) --><textarea id='relation_key'   name='relation_key'  rows='3' cols='84' style="display:none;"><?=$relation_key?></textarea>
 
 	<!-- relation_type_memo --><textarea id='relation_type_memo'   name='relation_type_memo'  rows='3' cols='84' style="display:none;"><?=$relation_type_memo?></textarea>
 
@@ -712,8 +712,8 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 	<!-- relation_key_old_0 --><textarea id='relation_key_old_0' name='relation_key_old_0' rows='1' cols='84' style="display:none;"><?=$relation_key_old_0?></textarea>
 	<!-- item_array_0 --><textarea id='item_array_0' name='item_array_0' rows='3' cols='84' style="display:none;"><?=$item_array_0?></textarea>
 
-	<!-- relation_data_old_1 --><textarea id='relation_data_old_1' name='relation_data_old_1' rows='3' cols='84' style="display:;"><?=$relation_data_old_1?></textarea>
-	<!-- relation_key_old_1 --><textarea id='relation_key_old_1' name='relation_key_old_1' rows='1' cols='84' style="display:;"><?=$relation_key_old_1?></textarea>
+	<!-- relation_data_old_1 --><textarea id='relation_data_old_1' name='relation_data_old_1' rows='3' cols='84' style="display:none;"><?=$relation_data_old_1?></textarea>
+	<!-- relation_key_old_1 --><textarea id='relation_key_old_1' name='relation_key_old_1' rows='1' cols='84' style="display:none;"><?=$relation_key_old_1?></textarea>
 	<!-- item_array_1 --><textarea id='item_array_1' name='item_array_1' rows='3' cols='84' style="display:none;"><?=$item_array_1?></textarea>
 	
 	<!-- relation_data_old_2 --><textarea id='relation_data_old_2' name='relation_data_old_2' rows='3' cols='84' style="display:none;none"><?=$relation_data_old_2?></textarea>
