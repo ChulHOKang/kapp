@@ -73,7 +73,7 @@
 		}
 		return;
 	}
-	function relation_save_ALL_func() {
+	function relation_save_ALL_funcXXX() {
 		if( makeform.relation_type_SQL[0].checked === false && makeform.relation_type_SQL[1].checked === false){
 			alert(" The relation is Update. Please select a key field and click the 'SQL Save' button to save it! ");
 			return false;
@@ -88,6 +88,44 @@
 		makeform.mode.value="table_relation_save";
 		makeform.action="kapp_table_relationA.php";
 		makeform.submit();
+	}
+	function relation_save_ALL_func(relation_num) {
+		if( document.makeform.relation_type_SQL[0] === false && document.makeform.relation_type_SQL[1] === false){
+			alert(" The relation is Update. Please select a key field and click the 'SQL Save' button to save it! ");
+			return false;
+		}
+		if( document.makeform.relation_move_data.value ==''){ 
+			alert(" After setting the relational expression, click the 'save' button!");
+			return false; 
+		}
+		if( document.makeform.relation_key_column.value ==''){ 
+			alert(" After setting the relational key column expression, click the 'save' button!");
+			return false; 
+		}
+		key_col = document.makeform.relation_key_column.value;
+		var colnm = document.getElementsByName('re_key_col'); 
+		var k_cnt = colnm.length;
+		colnm_value = document.getElementById('relation_key_column').value + ":";
+		$k_check = 0;
+		for( i=0; i<k_cnt; i++){
+			if( document.getElementById('re_key_col'+i).checked === true ){
+				if( i ==0 ) colnm_value =  colnm_value + colnm[i].value + "|";
+				else if( i > 0 ) colnm_value =  colnm_value + ":" + colnm[i].value + "|";
+				$k_check++;
+			}
+		}
+		if( $k_check == 0 ){ //key column none clicked
+			alert("key column no clicked"); return false;
+		}
+		document.getElementById('relation_key').value= colnm_value;
+		document.getElementById('relation_key_old_'+relation_num).value = colnm_value;
+		document.getElementById('relation_key_column').value = colnm_value;
+		resp = confirm(' Do you want to Save relation - '+relation_num +' ?');
+		if( !resp ) return false;
+		makeform.relation_reset.value = '';
+		document.makeform.mode.value="table_relation_save";
+		document.makeform.action="kapp_table_relationA.php";
+		document.makeform.submit();
 	}
 
 	function delete_after_run(relation_pg_codeS, pg_code){
@@ -105,13 +143,10 @@
 		document.makeform.action		="kapp_table_relationA.php";
 		document.makeform.submit();
 	}
-	function Relation_SQL_Key_Set_func(){
+	function Relation_SQL_Key_Set_func(){ // no use
 		var relation_num = document.getElementById('relation_num').value;
-		if ( makeform.relation_type_SQL[0].checked === true ) { // 중복허락한 Insert이다 key가 필요없다.
-			//document.makeform.relation_key.value = 'Insert' + ':' + ':' + ':';
+		if ( makeform.relation_type_SQL[0].checked === true ) { // 중복 허락한 Insert이다 key가 필요없다.
 			Key_data = 'Insert' + ':' + ':' + ':';
-			//key_type = document.getElementById('relation_key_old_'+relation_num).value;
-			//if( key_type=='') document.getElementById('relation_key_old_'+relation_num).value = 'Insert' + ':' + ':' + ':';
 			document.getElementById('relation_key_old_'+relation_num).value = Key_data;
 			document.getElementById('relation_key').value= Key_data;
 		} else {
@@ -149,7 +184,6 @@
 			if( Kfld2t.indexOf("INT")>=0 || Kfld2t.indexOf("DECIMAL")>=0 || Kfld2t.indexOf("FLOAT")>=0 || Kfld2t.indexOf("DOUBLE")>=0) {
 				document.makeform.relation_Key_fld_type.value  = "INT";
 			} else document.makeform.relation_Key_fld_type.value  = "CHAR";
-			
 			Key_data = 'Update' +':'+Kfld1e+':'+Kfld2e+':' + document.getElementById('relation_Key_fld_type').value;
 			document.getElementById('relation_key').value= Key_data;
 			relation_num = document.getElementById('relation_num').value;
@@ -173,20 +207,53 @@
 			}
 		}
 	}
-	function radio_box_func(rnum,val){
-		if(val == 'Update'){
-			alert("Select the key column of the relation table and click the 'SQL Key Set' button!"); // relation table 의 key column을 선택후 'SQL Key Set' 버턴을 클릭하세요!
+	function radio_box_func( pg, val){
+		dd = document.getElementById('relation_data_old_'+pg).value;
+		if( dd==''){
+			alert("Please set up the removable data first! type: "+val);//data 이동식을 먼저 설정 하세요! 
+			document.makeform.relation_type_SQL[0].checked = false;
+			document.makeform.relation_type_SQL[1].checked = false
+			return;
 		}
-		sql_v = val+':::@@^^^'; //':::@@^^^'; // Update:fld_1:fld_5:CHAR@@
-		document.getElementById('relation_key_old_'+rnum).value = sql_v; 
+		document.getElementById('relation_key_column').value= val;
+		Rtab_col = document.getElementById('Rtab_col').value; 	
+		RTcol = Rtab_col.split('|');
+		rdata = dd.split('$');
+		st = " style='background-color:cyan;' ";
+		ss='';
+		k=0;
+		for( i=0; RTcol[i] !='' && i<RTcol.length; i++){
+			RTcol_i = RTcol[i];
+			rr_fld = RTcol_i.split(':');
+			re_enm = rr_fld[0]; // enm
+			re_hnm = rr_fld[1]; // hnm
+			re_yp  = rr_fld[2]; // type
+			ck = '';
+			for( j=1; rdata[j] !='' && j<rdata.length; j++){
+				rr = rdata[j].split('|');
+				pg = rr[0]; // program field
+				sk = rr[1]; // sik
+				RF = rr[2]; // relation table field
+				fn = RF.split(':');
+				Renm = fn[0];
+				Rhnm = fn[1];
+				Rtyp = fn[2];
+				Kval = Renm+":"+Rhnm+":"+Rtyp;
+				if( Renm == re_enm) {
+					tt = "Renm:" + Renm+", Rhnm:" + Rhnm+", Rtyp:" + Rtyp;
+					ss+="<label " +st+ " title='"+ tt +"'><input type='checkbox' "+ck+" id='re_key_col"+k+"' name='re_key_col' title='"+ tt+"' value='"+ Kval+"'>"+Rhnm+"</label><br>";
+					k++;
+				}
+			}
+		}
+		here_relation.innerHTML = ss;
+		alert("Now, set the key column!"); // 지금, key column을 설정하세요!
 	}
-
 	function relation_move_set(){
 		var relation_pg_codeS = document.getElementById('relation_pg_codeS').value;
 		var Rtab_hnmS = document.getElementById('Rtab_hnmS').value;
 		var pg_name = document.getElementById('pg_name').value;
 		var tab_hnm = document.getElementById('tab_hnm').value;
-
 		if(!relation_pg_codeS){
 			alert(' Select the program for which you want to set the relationship!');
 			return false;
@@ -241,8 +308,6 @@
 			r_type_key = document.getElementById('relation_type_key').value;
 			Rkey = r_type_key.split("^");
 			relation_type_keyA = document.getElementById('relation_key_old_0').value + '^' +document.getElementById('relation_key_old_1').value + '^' + document.getElementById('relation_key_old_2').value;
-			
-			//Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR^0array^1array^2array
 			relation_type_key = document.getElementById('relation_type_key').value;
 			Rkey = relation_type_key.split("^");
 			if( relation_num == 0) relation_type_key = relation_type_keyA + "^" + "" + "^"+ Rkey[2] + "^"+ Rkey[3];
@@ -251,33 +316,27 @@
 			document.getElementById('relation_type_key').value = relation_type_key;
 		}
 	}
-	// --- relation_num change dao_1755421034 Project59
 	function change_relation_num_func(pg) {
 		R_typeA = document.getElementById('relation_type_key').value;
 		R_dataA = document.getElementById('relation_data_tab').value;
-		//R_typeA: Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR
-		//^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		//^|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
-		//^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		//R_dataA: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
-		//^dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
-		//^dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
 		if( R_dataA!=''){
 			R_data = R_dataA.split('^');
+			if( R_data[pg] == '' ){
+				alert("setting the relation number=" + pg);
+				here_relation.innerHTML='';
+				return false
+			}
 			document.getElementById('relation_data').value= R_data[pg];
 		}
 		if( R_typeA !=''){
-			R_t = R_typeA.split('^');	//alert("R_t 0: " + R_t[0]);  //R_t 0: Update:fld_1:fld_1:CHAR@Update:fld_1:fld_5:CHAR@Insert:::
+			R_t = R_typeA.split('^');	
 			R_type = R_t[0].split('@');
 			document.getElementById('relation_key').value= R_type[pg];
-
-			R_type_pg = R_type[pg];	//alert("R_type_pg: " + R_type_pg);			//R_type_pg: Update:fld_1:fld_2:CHAR
+			R_type_pg = R_type[pg];
 			document.getElementById('relation_key_column').value = R_type_pg; 
 			R_Key_A = R_type_pg.split('|');
 			key_cnt = R_Key_A.length;
-
 			R_k = R_Key_A[0].split(':'); // R_type_pg.split(':');
-
 			if( R_k[0] == 'Insert' ) {
 				document.getElementById('relation_type_SQL[0]').checked=true;
 				document.getElementById('relation_type_SQL[1]').checked=false;
@@ -290,15 +349,14 @@
 			}
 		}
 		dt = document.getElementById('relation_key_old_'+pg).value; 
-		//alert( pg+", dt: " + dt);	//1, dt: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		dd = document.getElementById('relation_data_old_'+pg).value;
-		var selectIndex = document.makeform.Rtab_hnmS.selectedIndex; //alert( selectIndex+ ", pg: " + pg+ ", dt: " + dt + ", R_typeA: " + R_typeA);
+		var selectIndex = document.makeform.Rtab_hnmS.selectedIndex;
 		if( dd !=''){
 			Rdata = dd.split('$');
-			dataT = Rdata[0].split(':'); //Rdata[0] = dao_1766735120:ABCYY
+			dataT = Rdata[0].split(':');
 			tabenm = dataT[0];
 			tabhnm = dataT[1];
-			document.makeform.Rtab_hnmS[selectIndex].value = tabenm+':'+tabhnm; //Rdata[0];//Rdata0: dao_1766812390:ABCYY_FFF_New
+			document.makeform.Rtab_hnmS[selectIndex].value = tabenm+':'+tabhnm;
 			document.makeform.Rtab_hnmS[selectIndex].text = tabhnm;
 			document.getElementById('all_save_button').style.visibility = 'hidden';
 		} else {
@@ -306,21 +364,11 @@
 			document.getElementById('re_tab_column').value = '';
 		}
 		relation_move_data= r_func( dd, dt );
-		//document.makeform.relation_move_data.value = relation_move_data + ' ( ' + R_type[pg] + ' )';
 		document.makeform.relation_move_data.value = relation_move_data;
 		pg_relation( dd, dt );
 		return;
 	}
 /*
-//rdata[0]: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-//rdata0: dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
-//rdata[0]: dao_1766812390:ABCYY_FFF_New:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@
-		//alert("relation_column: "+relation_column);
-		//dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
-		//relation_column: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
-		//relation_column: dao_1766822184:ABC_AAA:|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@$fld_1:fld1|=|fld_1:fld1:VARCHAR$fld_7:날짜|=|fld_7:날짜:TIMESTAMP$fld_5:fld5|+|fld_5:fld5:INT$fld_6:fld6|+|fld_6:fld6:INT
-		//relation_column: dao_1766735120:ABCYY:|fld_1|날짜|TIMESTAMP|20@|fld_2|yyyy|CHAR|4@|fld_3|mm|CHAR|2@|fld_4|dd|CHAR|2@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:TIMESTAMP$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT
-		
 		//relation_column: dao_1766812390:ABCYY_FFF_New:
 		|fld_1|fld1|VARCHAR|15
 		@|fld_2|fld2|VARCHAR|15
@@ -415,29 +463,23 @@
 	}
 	function pg_relation(relation_column, keyf) {
 		rt = keyf.split(':'); //Update:fld_1:fld_1:CHAR
-		rdata = relation_column.split('$'); //alert("rdata0: "+rdata[0]);
+		rdata = relation_column.split('$');
 		len = rdata.length;
 		rd0 =rdata[0];
 		tcol =rd0.split(':');
 		rtab =tcol[2].split('@');
-		rlen = rtab.length;		//alert("rlen: " + rlen);
-
+		rlen = rtab.length;
 		relation_PGdata = document.makeform.relation_pg_codeS.value;
 		pgD=relation_PGdata.split('!');
-		itemA = pgD[3];	//itemA: |fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@|fld_7|날짜|TIMESTAMP|20@
-
+		itemA = pgD[3];
 		prel =itemA.split('@');
-		plen = prel.length;		//alert("rlen: " + rlen);
-
+		plen = prel.length;
 		ss="";
 		here_pgcolumn.innerHTML=ss;
 		for( j=0; prel[j]!='' && j<=plen; j++){ 
 			rj = prel[j].split('|'); //|fld_1|fld1|VARCHAR|15
 				ck = "";
 			for( i=1; i<len; i++){
-				//alert( "len: " + len+ ", i: " +i + ". rdata-i: " + rdata[i]);
-				//len: 5, i: 1. rdata-i: fld_1:fld1|=|fld_5:product:VARCHAR
-				//
 				rr = rdata[i].split('|');
 				pg = rr[0]; // program field
 				pgnm = pg.split(':');
@@ -468,8 +510,6 @@
 				}
 
 			}
-
-//			ss+= "<label " +st+ " title='"+pre+"'><input type='radio' "+ck+" id='pg_tab_column' name='pg_tab_column' title='"+ pre+"' value='"+pre+"' >"+pre_hnm+"</label><br>";
 			ss+= "<label " +st+ " title='"+ tt +"'><input type='radio' "+ck+" id='pg_tab_column' name='pg_tab_column' title='"+ pre+"' value='"+ pre+"'>"+pre_hnm+"</label><br>";
 		}
 		here_pgcolumn.innerHTML=ss;
@@ -503,7 +543,6 @@
 		document.makeform.submit();	//location.replace(location.href);
 	}
 	function change_program_func(pcdS){
-		//pcdS=pg_code:pg_name:tab_enm:tab_hnm:group_code:group_name!relation_data!relation_type!item_array
 		if( pcdS == '') {
 			alert('Select Program!');
 			return false;
@@ -530,7 +569,6 @@
 		}
 		tb = ptbS.split(':');
 		document.getElementById('item_array_'+no).value = tb[2];
-		//sendDataToPHP('Rtab_hnmS', ptbS);
 		document.getElementById('mode').value = 'Relation_SearchTAB';
 		document.makeform.action="kapp_table_relationA.php";
 		document.makeform.submit();
@@ -542,12 +580,18 @@
 </script>
 
 <?php
-
+/*
+Update:fld_1:년도:YEAR|:fld_2:부품:VARCHAR|@@
+^|fld_1|년도|YEAR|4@|fld_2|부품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|매모|TEXT|255@^^
+*/
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
+	if( isset($_POST['relation_type_memo']) ) $relation_type_memo = $_POST['relation_type_memo'];
+	else $relation_type_memo = '';
 	if( $mode == 'table_relation_save' ) {
 		$pg_code = $_POST['pg_code'];
 		$relation_num = $_POST['relation_num'];
+		$relation_num = 0;
 		table_relation_save_func( $pg_code, $relation_num );
 	}
 	$data_R = array();
@@ -588,7 +632,6 @@
 	$relation_key_old_2 = '';
 	$item_array_2='';
 	$relation_num = 0;
-	$relation_type_memo ='';
 	$relation_key_column ='';
 
 	if( $mode == 'Delete_Check' ) {
@@ -633,7 +676,7 @@
 		$project_code	= $pcd_nm[0];
 		$project_name	= $pcd_nm[1]; 
 	}
-	/* relation_pg_codeS ! 와 relation_data ^ 구분 자를 혼돈 하지 마라... 안돤다.
+	/* relation_pg_codeS ! 와 relation_data ^ 구분 자를 혼돈 하지 마라.
 	relation_pg_codeS = pg_code:pg_name:tab_enm:tab_hnm:group_code:group_name!relation_data!relation_type!item_array
 	relation_data=
 	dao_1766735120:ABCYY$fld_1:fld1|=|fld_5:product:VARCHAR$fld_5:fld5|+|fld_6:total_count:INT$fld_6:fld6|+|fld_7:tottal_price:BIGINT$fld_7:날짜|=|fld_1:날짜:TIMESTAMP@@
@@ -643,7 +686,7 @@
 	if( $mode=='pg_codeS_Search' ) {
 		if( isset($_POST['relation_pg_codeS']) && $_POST['relation_pg_codeS']!='' ){
 			$relation_pg_codeS =$_POST['relation_pg_codeS'];
-			$pg_A = explode("!", $relation_pg_codeS); //^ !
+			$pg_A = explode("!", $relation_pg_codeS);
 			$pg_ = explode(":", $pg_A[0]);
 			$pg_code = $pg_[0];
 			$pg_name = $pg_[1];
@@ -653,7 +696,6 @@
 				$relation_dataA = explode("^", $pg_A[1]);
 				$relation_dataT = explode("$", $relation_dataA[0]);
 				$Rtab_hnmS = $relation_dataT[0];
-				
 				if( $relation_dataT[0] !=''){
 					$relation_TAB = explode(":", $relation_dataT[0]);
 					$tab_enmR = $relation_TAB[0];
@@ -663,7 +705,6 @@
 			}
 		}
 	} else if( $mode!='Project_Search' && isset($_POST['relation_pg_codeS']) && $_POST['relation_pg_codeS'] !='' ){
-		//relation_pg_codeS= $pg_code:$pg_name:$tab_enm:$tab_hnm:$group_code:$group_name!relation_data!relation_type!$item_array
 		$relation_pg_codeS =$_POST['relation_pg_codeS'];
 		$pg_A = explode("!", $relation_pg_codeS);
 		$pg_ = explode(":", $pg_A[0]);
@@ -696,22 +737,14 @@
 		}
 	}
 	if( $relation_type_key !=''){
-		$typeAR  = explode("^", $relation_type_key); //relation_type=Update:fld_1:fld_5:CHAR@Update:fld_1:fld_5:CHAR@Update:fld_1:fld_1:CHAR^^^
-		//m_("typeAR0: " . $typeAR[0]);
-		//typeAR0: Insert:fld_1:상품:VARCHAR|@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|@Update:fld_1:년도:YEAR|:fld_2:상품:VARCHAR|
-
-		$type_R  = explode("@", $typeAR[0]); //$typeAR[$relation_num]);
+		$typeAR  = explode("^", $relation_type_key); 
+		$type_R  = explode("@", $typeAR[0]);
 		if( isset($type_R[$relation_num]) && $type_R[$relation_num]!=''){
-			$relation_key_column = $type_R[$relation_num];	//m_("relation_key_column: " . $relation_key_column);
-			$typeR_ = $type_R[$relation_num];		//m_("typeR_: " . $typeR_); //typeR_: Insert:fld_1:상품:VARCHAR|
-			$type_R_ = explode("|", $typeR_ ); //Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+			$relation_key_column = $type_R[$relation_num];
+			$typeR_ = $type_R[$relation_num];
+			$type_R_ = explode("|", $typeR_ );
 			$relation_key_count = count( $type_R_);
 			$type_R_num = explode(":", $type_R_[0] ); 
-			//m_("type_R_0: " . $type_R_[0] . ", type_R_num 0: " . $type_R_num[0] . ", 1:" . $type_R_num[1]);
-			//type_R_0: Insert:fld_1:상품:VARCHAR, type_R_num 0: Insert, 1:fld_1
-			//$type_R_num = explode(":", $type_R[$relation_num] );
-
-
 			if( $type_R_num[0]=='Insert' ) $rel_cA = 'cyan';
 			else if( $type_R_num[0]=='Update' ) $rel_cB = 'cyan';
 		}
@@ -745,8 +778,6 @@
 			<input type="hidden" name="relation_Key_fld_type" id="relation_Key_fld_type"  value="">
 			<input type="hidden" name="program_Key_fld" id="program_Key_fld" value="">
 			<input type="hidden" name="program_Key_nm" id="program_Key_nm" value="">
-			<input type="hidden" name="relation_type_memo" id="relation_type_memo" value="<?=$relation_type_memo?>">
-
 		  <tr>
 			<td align="center" <?php echo" title='\n(work order)\n1:Select program \n2:Select Relation Number \n3:Select relation table \n4:Select relation column \n5:Select relational expression \n6:Apply button \n7:Select SQL Type \n8:SQL Save button click \n9:Save button click' "; ?> style="border-style:;background-color:#666666;color:cyan;width:160px; height:33px;font-size:15;">
 			Relational settings(<?=$H_ID?>)
@@ -862,12 +893,12 @@
 <?php
 if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 	if( $tab_enmR !='' ) {
-		$Rdata = Relation_Table_Display( $tab_enmR );
-		echo $Rdata;
+		$Rtab_col = Relation_Table_Display( $tab_enmR );
 	}
 }
 ?>
 	</div>
+	<input type='hidden' id='Rtab_col' name='Rtab_col' value='<?=$Rtab_col?>'>
 					 </td>
 				   </tr>
 			</table>
@@ -879,11 +910,11 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					  <tr><!-- SQL Key Type - Insert or Update. -->
 						<td title='SQL Type distinguishes whether to change or register.'>
 <input width='' id='relation_move_data' name='relation_move_data' maxlength='250' value='<?=$relation_move_data?>' style="border-style:;background-color:#666666;color:yellow;width:600px;height:33px;font-size:12;" readonly title='relation_move_data:<?=$relation_move_data?>'>
-<br>SQL Key Type:
+<br>Relation SQL Type:
 <?php echo "<label style='background-color:$rel_cA;' title='Insert does not require a key column.'>"; ?>
- <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL[0]' name='relation_type_SQL[0]' value='Insert' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Insert') echo 'checked'; ?> >Insert</label>
+ <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL[0]' name='relation_type_SQL' value='Insert' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Insert') echo 'checked'; ?> >Insert</label>
 <?php echo "<label style='background-color:$rel_cB;' title='Update must set the key column.' >"; ?>
- <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL[1]' name='relation_type_SQL[1]' value='Update' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Update') echo 'checked'; ?> >Update</label>
+ <input type='radio' onclick='radio_box_func(<?=$relation_num?>,this.value)' id='relation_type_SQL[1]' name='relation_type_SQL' value='Update' <?php if( isset($type_R_num[0]) && $type_R_num[0] =='Update') echo 'checked'; ?> >Update</label>
 						
 <?php
  echo "<input id='sqlsave_button' type='button' value=' SQL Key Set ' onClick='Relation_SQL_Key_Set_func();' style='height:30px;font-size:15; border-radius:20px;border:1 solid white;display:none;' title='If the sql type is update, you need to set the key column.'  >";
@@ -898,6 +929,8 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 
 			<!-- relation_data(now) --><textarea id='relation_data' name='relation_data' rows='3' cols='84' style="display:none;"><?=$relation_data?></textarea>
 			<!-- relation_key(now) --><textarea id='relation_key'   name='relation_key'  rows='3' cols='84' style="display:none;"><?=$relation_key?></textarea>
+
+			<!-- relation_type_memo --><textarea id='relation_type_memo'   name='relation_type_memo'  rows='3' cols='84' style="display:none;"><?=$relation_type_memo?></textarea>
 
 			<!-- relation_data_old_0 --><textarea id='relation_data_old_0' name='relation_data_old_0' rows='3' cols='84' style="display:none;"><?=$relation_data_old_0?></textarea>
 			<!-- relation_key_old_0 --><textarea id='relation_key_old_0' name='relation_key_old_0' rows='1' cols='84' style="display:none;"><?=$relation_key_old_0?></textarea>
@@ -915,7 +948,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		  </tr>
 		<tr>
 		  <td align="center" >
-		<input type='button' value=' Save Submit ' id='all_save_button' onclick='relation_save_ALL_func()' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;'>&nbsp;&nbsp;&nbsp;
+		<input type='button' value=' Save Submit ' id='all_save_button' onclick='relation_save_ALL_func(<?=$relation_num?>)' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;'>&nbsp;&nbsp;&nbsp;
 		<input type='button' value=' ReSet ' id='all_reset_button' onclick='reset_confirm()' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;' title='Re-establish the relationship corresponding to the relation number'>&nbsp;&nbsp;&nbsp;
 		<input type='button' value=' Delete All ' id='all_delete_button' onclick='delete_confirm()' style='background-color:cyan;color:black; height:30px;font-size:15; border-radius:20px;border:1 solid white;'>
 			</td>
@@ -945,14 +978,9 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 			$relation_key_old_1 = '';
 			$relation_data_old_2 = '';
 			$relation_key_old_2 = '';
-			//$R_item_array = '';
-
-			//m_("relation_reset:$relation_reset, relation_num: $relation_num, $pg_code");
-			//relation_reset:, relation_num: 0, dao_1757214499
-			//relation_reset:on, relation_num: 0, dao_1757214499
 
 		$sqlPG = "SELECT * from {$tkher['table10_pg_table']} where pg_code='".$pg_code."' ";
-		$resultPG= sql_query($sqlPG);	//$table10_pg	= sql_num_rows($resultPG);
+		$resultPG= sql_query($sqlPG);
 		if( sql_num_rows($resultPG) > 0 ) {
 			$rsPG = sql_fetch_array( $resultPG);
 			$item_array	= $rsPG['item_array'];
@@ -982,7 +1010,6 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					/* 
 					Update:fld_1:fld_1:CHAR@@^|fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@^^
 					*/
-//					$key_arrayA = $type_R[0];
 					if( isset($type_R[0]) ) {
 						$key_arrayA = explode("@", $key_arrayA );
 						$relation_key_old_0 = $key_arrayA[0];
@@ -999,24 +1026,19 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					else $item_array_1 = '';
 					if( isset($type_R[3]) ) $item_array_2 = $type_R[3];
 					else $item_array_2 = '';
-
 				}
 				if( isset( $data_R[$relation_num]) && $data_R[$relation_num] !='' && isset($type_R[$relation_num]) && $type_R[$relation_num] !='' ){
 					$data_R_num = explode("$", $data_R[$relation_num] );
-
-					$typeR_ = $type_R[$relation_num];		//m_("typeR_: " . $typeR_); //typeR_: Insert:fld_1:상품:VARCHAR|
-					$type_R_ = explode("|", $typeR_ ); //Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+					$typeR_ = $type_R[$relation_num];
+					$type_R_ = explode("|", $typeR_ );
 					$relation_key_count = count( $type_R_);
-
-					$type_R_num = explode(":", $type_R_[0]); // $type_R[$relation_num] );
-					//m_("type_R-$relation_num: " . $type_R[$relation_num] . ", type_R_num0: " . $type_R_num[0]);
-
-					$tab_ = $data_R_num[0]; // 0:Relatio Table
+					$type_R_num = explode(":", $type_R_[0]); 
+					$tab_ = $data_R_num[0];
 					$tab_R    = explode(":", $data_R_num[0] );
 					$tab_enmR = $tab_R[0];
 					$tab_hnmR = $tab_R[1];
 				} else {
-					$tab_ = ''; // 0:Relatio Table
+					$tab_ = '';
 					$tab_enmR = '';
 					$tab_hnmR = '';
 				}
@@ -1042,15 +1064,10 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		global $mode;
 		$pg_col_chk=0;
 		$ck = '';
-		//m_("item_array: $item_array, count(pg_rel): " . count($pg_rel));
-		//item_array: |fld_1|fld1|VARCHAR|15@|fld_2|fld2|VARCHAR|15@|fld_3|fld3|VARCHAR|15@|fld_4|fld4|INT|12@|fld_5|fld5|INT|12@|fld_6|fld6|INT|12@|fld_7|날짜|TIMESTAMP|20@, count(pg_rel): 4
-
 		if( isset( $item_array ) && $item_array !='' ){
 			$col_ = explode( "@", $item_array );
 			for( $i=0; $i < count($col_)-1; $i++) {
 				$_col = explode("|", $col_[$i]);
-				//if( isset( $type_R_num[1]) && isset($_col[1]) && $type_R_num[1] == $_col[1] ) $ck = ' checked';
-				//else 
 				$ck = '';
 				$pg_col_chk=0;
 				$sel_color='white';
@@ -1060,20 +1077,50 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 			}//for
 		}//if
 	}
+	function Relation_Table_DisplayX( $tab_enmR ){
+		global $tkher, $H_ID;
+		global $type_R_num, $re_rel;
+		global $rel_cA,$rel_cB;
+		$Rtab_col ='';
+		if( isset($re_rel) ) $rcnt = count( $re_rel);
+		else $rcnt = 0;
+		$sql = "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enmR' order by disno asc";
+		$result = sql_query($sql);
+		while( $rsP = sql_fetch_array($result)) {
+			if( $rsP['fld_enm'] =='seqno' )	{
+				continue;
+			}
+			if( isset($type_R_num[2]) && $type_R_num[2] == $rsP['fld_enm'] ) {
+				$ck = ' checked';
+				$rel_cA = 'white'; $rel_cB = 'cyan';
+			} else { 
+				$ck = ''; 
+				$rel_cA = 'white'; $rel_cB = 'white';
+			}
+			$pg_col_chk=0;
+			$sel_color='white';
+			for( $j=0; $j < count( $re_rel); $j++ ){
+				if( isset($re_rel[$j]) && $re_rel[$j] == $rsP['fld_hnm'] ) {
+					$pg_col_chk=1;
+					$sel_color ='cyan';
+				} 
+			}
+			echo "<label style='background-color:".$sel_color.";' ><input type='radio' id='re_tab_column' name='re_tab_column' value='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."' ".$ck.">".$rsP['fld_hnm']."</label><br>";
+			$Rtab_col=$Rtab_col . $rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."|";
+		}//while
+		return $Rtab_col;
+	}
 	function Relation_Table_Display( $tab_enmR ){
 		global $tkher, $H_ID;
 		global $type_R_num, $re_rel;
 		global $rel_cA,$rel_cB;
 		global $relation_num, $type_R;
+		$Rtab_col ='';
 		$sql = "SELECT * from {$tkher['table10_table']} where userid='$H_ID' and tab_enm='$tab_enmR' order by disno asc";
 		$result = sql_query($sql);
-		if( isset($re_rel) ) $rcnt = count( $re_rel);
-		else $rcnt = 0;
-		$Rdata='';
-
 		if(isset($type_R[$relation_num]) && $type_R[$relation_num]!=''){
 			$typeR_ = $type_R[$relation_num];
-			$type_R_ = explode("|", $typeR_ ); //Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+			$type_R_ = explode("|", $typeR_ );
 			$relation_key_count = count( $type_R_);
 		} else $relation_key_count =0;
 		while( $rsP = sql_fetch_array($result)) {
@@ -1093,45 +1140,40 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 					if( isset( $type_R_num[1]) && $type_R_num[1] == $rsP['fld_enm'] ) {
 						$ck = ' checked';
 						$sel_color='blue';
-						//$rel_cA = 'white'; $rel_cB = 'cyan';
 						break;
 					}
 				}
 			}
-			$Rdata= $Rdata .  "<label style='background-color:".$sel_color.";' title='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."'><input type='radio' onclick='re_col_func(this.value)' id='re_tab_column' name='re_tab_column' value='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."' ".$ck.">".$rsP['fld_hnm']."</label><br>";
+			echo "<label style='background-color:".$sel_color.";' ><input type='radio' id='re_tab_column' name='re_tab_column' value='".$rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."' ".$ck.">".$rsP['fld_hnm']."</label><br>";
+			$Rtab_col=$Rtab_col . $rsP['fld_enm'].":".$rsP['fld_hnm'].":".$rsP['fld_type']."|";
 		}//while
-		return $Rdata;
+		return $Rtab_col;
 	}
 	function relation_array( $relation_num ){
 		global $data_R, $type_R, $tab_enmR, $tab_hnmR;
 		global $relation_move_data, $relation_data;
 		global $pg_rel, $re_rel;
-
 		if( isset($data_R[$relation_num]) && $data_R[$relation_num] !='' && isset($type_R[$relation_num]) && $type_R[$relation_num] !='' ){
 			$data_R_num = explode("$", $data_R[$relation_num] );
-			
 			$type_R_num = explode(":", $type_R[$relation_num] );
-
 			$tab_ = $data_R_num[0];
 			$tab_R    = explode(":", $data_R_num[0] );
 			$tab_enmR = $tab_R[0];
 			$tab_hnmR = $tab_R[1];
 		} else {
-			$tab_ = ''; // 0:Relatio Table
+			$tab_ = ''; 
 			$tab_enmR = '';
 			$tab_hnmR = '';
 		}
 		if( $relation_reset =='on'){
 				$relation_move_data = '';
 				$relation_data = '';
-
-		} else { // reset이 아니면 여기를 탄다.
+		} else { // reset이 아니면 
 			for( $i=1; isset($data_R_num) && $i < count( $data_R_num); $i++ ) {
 				$re_data = $data_R_num[$i];
 				$rrr = explode("|", $re_data);
 				$pg_fld = explode(":", $rrr[0]);
 				$re_fld = explode(":", $rrr[2]);
-				
 				$pg_rel[$i-1] = $pg_fld[1];
 				$re_rel[$i-1] = $re_fld[1];
 				$relation_move_data .= $pg_rel[$i-1]. $rrr[1] . $re_rel[$i-1]. ",";
@@ -1139,7 +1181,7 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 			}
 		}
 	}
-	function table_relation_save_func( $pg_code, $Rno ){
+	function table_relation_save_funcXXX( $pg_code, $Rno ){
 		global $tkher, $H_ID;
 		$relation_data_old_0 = $_POST['relation_data_old_0'];
 		$relation_data_old_1 = $_POST['relation_data_old_1'];
@@ -1150,12 +1192,32 @@ if( $mode !='Project_Search' && $mode !='Delete_Check' ){
 		$item_array_0 = $_POST['item_array_0'];
 		$item_array_1 = $_POST['item_array_1'];
 		$item_array_2 = $_POST['item_array_2'];
-
 		$relation_data = $relation_data_old_0 . "^" . $relation_data_old_1. "^" . $relation_data_old_2;
 		$relation_T = $relation_key_old_0 . "@" . $relation_key_old_1. "@" . $relation_key_old_2;
 		$array_R = $item_array_0 . "^" . $item_array_1 . "^" . $item_array_2;
 		$relation_type = $relation_T . "^" . $array_R;
 		$query = "UPDATE {$tkher['table10_pg_table']} SET relation_type='$relation_type', relation_data='$relation_data' WHERE userid='$H_ID' and pg_code='$pg_code' ";
+		$ret = sql_query($query);
+		if( $ret ) m_("Save, Complete the relationship. pg_code:".$pg_code);
+		else m_("Program UPDATE error! ");
+	}
+	function table_relation_save_func( $pg_code, $Rno ){
+		global $tkher, $H_ID, $relation_type_memo;
+		$relation_data_old_0 = $_POST['relation_data_old_0'];
+		$relation_data_old_1 = $_POST['relation_data_old_1'];
+		$relation_data_old_2 = $_POST['relation_data_old_2'];
+		$relation_key_old_0 = $_POST['relation_key_old_0'];
+		$relation_key_old_1 = $_POST['relation_key_old_1'];
+		$relation_key_old_2 = $_POST['relation_key_old_2'];
+		$item_array_0 = $_POST['item_array_0'];
+		$item_array_1 = $_POST['item_array_1'];
+		$item_array_2 = $_POST['item_array_2'];
+		$relation_data = $relation_data_old_0 . "^" . $relation_data_old_1. "^" . $relation_data_old_2;
+		$relation_T = $relation_key_old_0 . "@" . $relation_key_old_1. "@" . $relation_key_old_2;
+		$array_R = $item_array_0 . "^" . $item_array_1 . "^" . $item_array_2;
+		$relation_type = $relation_T . "^" . $array_R;
+		$relation_type_memo = $relation_type_memo . " , " . date('Y-m-d:H:i:s') . ":" . $H_ID.":" . $relation_type;
+		$query = "UPDATE {$tkher['table10_pg_table']} SET relation_type='$relation_type', relation_data='$relation_data', relation_type_memo='$relation_type_memo' WHERE userid='$H_ID' and pg_code='$pg_code' ";
 		$ret = sql_query($query);
 		if( $ret ) m_("Save, Complete the relationship. pg_code:".$pg_code);
 		else m_("Program UPDATE error! ");
