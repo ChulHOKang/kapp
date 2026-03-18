@@ -950,7 +950,6 @@ jQuery(document).ready(function ($) {
 <?php
 	if( $del_mode == 'column_modify_mode' ){ // column update - no use
 		$table_yn	=$_POST['table_yn'];
-		//$tab_enm	=$_POST['tab_enm'];
 		$fld_enm	=$_POST['add_column_enm'];
 		$fld_hnm	=$_POST['add_column_hnm'];
 		$fld_type	=$_POST['add_column_type'];
@@ -986,7 +985,6 @@ jQuery(document).ready(function ($) {
 
 	} else if( $del_mode == 'column_add_mode' ){
 		$table_yn	=$_POST['table_yn'];
-		//$tab_enm	=$_POST['tab_enm'];
 		$dis		=$_POST['disno'];
 		$fld_enm =$_POST['add_column_enm'];
 		$fld_hnm =$_POST['add_column_hnm'];
@@ -1035,9 +1033,7 @@ jQuery(document).ready(function ($) {
 	} else if( $mode == "table_new_copy" ){	// copy and new.
 		copy_func();
 	}
-	//==========================================================================================
 
-	//$tabData['data'][][] = array();
 	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		global $H_ID, $H_EMAIL, $project_code, $project_name;
 		global $kapp_mainnet;
@@ -1137,13 +1133,11 @@ jQuery(document).ready(function ($) {
 		curl_close($curl);
 		return $response;
 	} // function
-	//==========================================
 	function create_func(){
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
 		global $tkher;
 		global $project_code, $project_name, $new_tab_enm; 
-
 		$new_tab_hnm	= $_POST["new_tab_hnm"];
 		$item_list = " create table ". $new_tab_enm . " ( ";
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
@@ -1161,9 +1155,8 @@ jQuery(document).ready(function ($) {
 				$seqno		=	$_POST["seqno"][$ARR];
 				$fld_enm	=	$_POST["fld_enm"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
-				
-				if( $fld_type == 'CHAR' || $fld_type == 'VARCHAR' && $fld_len=='') $fld_len=15;
-				else $fld_len	=	$_POST["fld_len"][$ARR];
+				if( isset($_POST["fld_len"][$ARR]) && $_POST["fld_len"][$ARR] !='' ) $fld_len	=	$_POST["fld_len"][$ARR];
+				else $fld_len	=	15;
 				$memo		=	$_POST["memo"][$ARR];
 				$item_array = $item_array ."|". $fld_enm ."|". $fld_hnm  ."|". $fld_type ."|". $fld_len . "@";
 				$if_type = $if_type . "|" . "0";
@@ -1190,7 +1183,7 @@ jQuery(document).ready(function ($) {
 				$ret = sql_query( $sql );
 				if( !$ret ) {
 					m_("error --- insert table10_table - $new_tab_enm");
-					//echo "sql: " . $sql; exit;
+					echo "sql: " . $sql; exit;
 				}
 				$Asqltable=''; $if_lineA=0; $if_typeA=''; $if_dataA=''; $relation_dataA='';
 				$cnt++;
@@ -1206,12 +1199,14 @@ jQuery(document).ready(function ($) {
 				m_("error --- insert table10_table - $new_tab_enm");
 				exit;
 			} else {
-				m_("c  Successful creation of the $new_tab_hnm table - $new_tab_enm.");
+				m_("--- Successful creation of the $new_tab_hnm table - $new_tab_enm.");
 				$table_yn = 'y';
 				$link_ = KAPP_URL_T_ . "kapp_table30m_A.php";
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_, 'table10@table30m' );
 			}
-		} else m_("INSERT table10_table ERROR create_func - tab seqno in ");
+		} else {
+			m_("INSERT table10_table ERROR create_func - tab seqno in "); exit;
+		}
 
 		$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$new_tab_enm',tab_hnm='$new_tab_hnm', pg_code='$new_tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
 		
@@ -1241,7 +1236,7 @@ jQuery(document).ready(function ($) {
 		$cnt=0;
 		$item_list = " create table ". $tab_enm . " ( ";
 		$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
-		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),'; // add 20251118
+		$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
 		$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
 		$item_list = $item_list . ' `kapp_memo` BLOB,';
 		$item_array = "";
