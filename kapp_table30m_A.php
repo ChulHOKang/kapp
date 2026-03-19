@@ -236,13 +236,13 @@
 		else if( document.insert["fld_type["+i+"]"].value == "TEXT")      document.insert["fld_len["+i+"]"].value = '255';
 		else if( document.insert["fld_type["+i+"]"].value == "LONGBLOB")  document.insert["fld_len["+i+"]"].value = '255';
 		else if( document.insert["fld_type["+i+"]"].value == "BLOB")  document.insert["fld_len["+i+"]"].value = '255';
-		else if( document.insert["fld_type["+i+"]"].value == "DATE")      document.insert["fld_len["+i+"]"].value = '15';
-		else if( document.insert["fld_type["+i+"]"].value == "DATETIME")  document.insert["fld_len["+i+"]"].value = '20';
-		else if( document.insert["fld_type["+i+"]"].value == "TIMESTAMP")  document.insert["fld_len["+i+"]"].value = '20';
+		else if( document.insert["fld_type["+i+"]"].value == "DATE")      document.insert["fld_len["+i+"]"].value = '10';
+		else if( document.insert["fld_type["+i+"]"].value == "DATETIME")  document.insert["fld_len["+i+"]"].value = '19';
+		else if( document.insert["fld_type["+i+"]"].value == "TIMESTAMP")  document.insert["fld_len["+i+"]"].value = '19';
 		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8';
 		else if( document.insert["fld_type["+i+"]"].value == "YEAR")      document.insert["fld_len["+i+"]"].value = '4';
 	}
-	function line_set_func(cnt) {
+	function line_set_func(cnt) { // 2026-03-19 hh:ii:ss
 			document.insert.mode.value='line_set';
 			document.insert.line_set.value=cnt;
 			document.insert.action="kapp_table30m_A.php";

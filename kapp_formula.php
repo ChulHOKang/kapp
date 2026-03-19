@@ -373,8 +373,10 @@
 		if( $itp == "11" ) {
 			$idt = $idata_[$if_line+1]; // idt = clac_ENM:calc_HNM
 			$cl = explode(":", $idt);   // clac_ENM:calc_HNM
-			$clac_ENM=$cl[0];
-			$calc_HNM=$cl[1];
+			if( isset($cl[0]) ) $clac_ENM=$cl[0];
+			$clac_ENM='';
+			if( isset($cl[1]) ) $calc_HNM=$cl[1];
+			else $calc_HNM='';
 		}
 	}
 	if( $mode=="ResetCALC") { 
