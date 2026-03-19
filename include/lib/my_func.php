@@ -274,8 +274,8 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
 		$Rtabhnm = $tab_r[1];
 		$dataT   = $tab_r[2]; // main table column
-
-		$r_tA = explode("|", $rtype);     //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+//Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|@@^|fld_1|일자|DATE|10@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@^^
+		$r_tA = explode("|", $rtype); //Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|
 		$key_count = count($r_tA);
 		$r_t = explode(":", $r_tA[0]); 
 		$r_type = $r_t[0];
@@ -285,23 +285,24 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 			$WR = '';
 			$sw='';
 			for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
-				$r_t = explode(":", $r_tA[$i]); //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+				$r_t = explode(":", $r_tA[$i]); //Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|
 				$key_fld  = $r_t[1];
-				$key_type = $r_t[3];
+				$key_type = $r_t[3]; // data type
 				$f_num = data_number_check( $key_type );
 				for( $j=1; isset($r_data[$j]) && $r_data[$j] !=""; $j++) {
-					$r_fld		= $r_data[$j];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
-					$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
+					$r_fld		= $r_data[$j];
+					$fld_r		= explode("|", $r_fld);		// $fld_1:일자|=|fld_1:일자:DATE:10
 					$fld_r1	= $fld_r[0];
 					$fld_sik= $fld_r[1];  // =, -, +
-					$fld_r2	= $fld_r[2];
+					$fld_r2	= $fld_r[2];  // fld_1:일자:DATE:10
 					
-					$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
+					$fld1	= explode(":", $fld_r1);  // program column -> fld_1:name|=|fld_1:name
 					$f_enm	= $fld1[0];
 					
-					$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
+					$fld2	= explode(":", $fld_r2);  //fld_1:일자:DATE:10
 					$r_enm	= $fld2[0];
-					$r_tp	= $fld2[2];
+					$r_tp	= $fld2[2];  // data type
+					$r_len	= $fld2[3];  // data length
 
 					if( $key_fld == $r_enm ){
 						if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
@@ -310,26 +311,29 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 						if( $sw =='' ) {
 							if( $f_num )
 								 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
-							else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+							else {
+								if($r_tp =='DATE') {
+									$update_key_data =substr($update_key_data, 0, $r_len);
+									$WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+								} else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+							}
 							$sw ='on';
 						} else if( $sw =='on'){
 							if( $f_num )
 								$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
-							else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+							else {
+								if($r_tp =='DATE') {
+									$update_key_data =substr($update_key_data, 0, $r_len);
+									$WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+								} else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+							}
 						}
 					}
 				}
 			}
-			$SQLA = $SQLA . $WR;	//	echo "SQLA: " . $SQLA; exit;
-			/*
-					if( $Rtabhnm == 'ABCYY') {
-						m_("Rtabhnm: " . $Rtabhnm);
-						echo "<br>SQLA: ". $SQLA; 
-						//SQLA: select * from `dao_1766735120` where fld_1 = '2026-03-17 12:29' and fld_5 = '무우'
-						//SQLA: select * from `dao_1773304478` where fld_1 = '2026-03-17 12:33' and fld_2 = '무우'
-						//exit;
-					}*/
-
+			$SQLA = $SQLA . $WR;		//echo "SQLA: " . $SQLA; exit;
+//SQLA: select seqno, kapp_memo from `dao_1773892202` where fld_1 = '2026-03-19' and fld_2 = 'GPU' and fld_2 = 'GPU'
+//SQLA: select seqno, kapp_memo from `dao_1773892202` and fld_2 = 'NPU'
 			$retA = sql_fetch( $SQLA );
 			if( $retA ) {
 				$kapp_memo = $retA['kapp_memo'] . "\n|UPDATE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
@@ -365,7 +369,8 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 						$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " - " . $post_enm . " ";
 					}
 				}
-				$SQLR = $SQLR . $WR;
+				$SQLR = $SQLR . $WR; //echo "SQLR: " . $SQLR; exit;
+//SQLR: UPDATE dao_1773892202 SET kapp_memo = 'UPDATE-TYPE-INSERT, dao_1768181179:2026-03-19 13-07-03:dao:58.29.102.214 |UPDATE-TYPE-UPDATE, dao_1768181179:2026-03-19 14-06-16:dao:58.29.102.214' , fld_1 = '2026-03-19 14:03:22' , fld_2 = 'GPU' , fld_3=fld_3 + 10 , fld_4=fld_4 + 23000000 , fld_5 = 'tet 10' where fld_1 = '2026-03-19' and fld_2 = 'GPU'
 				$ret  = sql_query($SQLR);
 				if( $ret ) {
 					m_("relation table: $Rtabhnm Update");
