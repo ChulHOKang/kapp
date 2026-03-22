@@ -949,8 +949,10 @@ jQuery(document).ready(function ($) {
 </html>
 <?php
 	if( $del_mode == 'column_modify_mode' ){ // column update - no use
+		if( isset( $_POST['add_column_enm']) ) $fld_enm=$_POST['add_column_enm'];
+		else return;
+		if( !Kcolumn_check($fld_enm) ) return;
 		$table_yn	=$_POST['table_yn'];
-		$fld_enm	=$_POST['add_column_enm'];
 		$fld_hnm	=$_POST['add_column_hnm'];
 		$fld_type	=$_POST['add_column_type'];
 		$fld_len	=$_POST['add_column_len'];
@@ -1023,117 +1025,25 @@ jQuery(document).ready(function ($) {
 		echo "<script>create_after_run( '$tab_enm' , '$tab_hnm' , '$del_mode' );</script>";
 	}
 	if( $mode == "table_create_reaction" ){
-		create_reaction_func(); // line reset
+		KAPP_Table_Create_Reaction_Func(); // line reset
 	} else if( $mode == "table_update_remake" ){
 		$view_set=1;
 		$tab_enm = $_POST['old_tab_enm'];
-		update_remake_func( $tab_enm ); // drop and remake
+		KAPP_Table_Update_Remake_Func( $tab_enm ); // drop and remake
 	} else if( $mode == "table_create" ) {
-		create_func();
+		KAPP_Table_Create_Func();
 	} else if( $mode == "table_new_copy" ){	// copy and new.
-		copy_func();
+		Copy_Table_Func();
 	}
 
-	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
-		global $H_ID, $H_EMAIL, $project_code, $project_name;
-		global $kapp_mainnet;
-		$tabData['data'][][] = array();
-		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
-		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
-		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
-		$tabData['data'][$cnt]['fld_hnm']  = 'seqno';
-		$tabData['data'][$cnt]['fld_type'] = 'INT';
-		$tabData['data'][$cnt]['fld_len']  = '10';
-		$tabData['data'][$cnt]['disno']    = $cnt;
-		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $project_code;
-		$tabData['data'][$cnt]['group_name'] = $project_name;
-		$tabData['data'][$cnt]['memo']       = $memo;
-		$hostname = KAPP_URL_T_; // getenv('HTTP_HOST');
-		$tabData['data'][$cnt]['host']       = $hostname;
-		$tabData['data'][$cnt]['email']      = $H_EMAIL;
-		$tabData['data'][$cnt]['sqltable']   = $item_list;
-		$tabData['data'][$cnt]['if_line']    = $if_line;
-		$tabData['data'][$cnt]['if_type']    = $if_type;
-		$tabData['data'][$cnt]['if_data']    = $if_data;
-		$tabData['data'][$cnt]['relation_data']    = $relation_data;
-		$key = 'appgenerator';
-		$iv = "~`!@#$%^&*()-_=+";
-		$tabData = encryptA( $tabData , $key, $iv);
-		$url_ = $kapp_mainnet . '/_Curl/table_curl_get_ailinkapp.php'; 
-		$curl = curl_init(); //$curl = curl_init( $url_ );
-		curl_setopt( $curl, CURLOPT_URL, $url_);
-		curl_setopt( $curl, CURLOPT_POST, true);
-		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-			'tabData' => json_encode( $tabData , JSON_UNESCAPED_UNICODE),
-			'iv' => $iv
-		));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		$response = curl_exec($curl);
-
-		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-		echo curl_error($curl);
-		echo "curl --- response: " . $response;
-
-		if( $response == false) {
-			echo 'curl Error : ' . curl_error($curl);
-		} else {
-			//echo 'curl OK : ' . $response;
+	function Kcolumn_check($fld_enm){
+		if( $fld_enm =='' || $fld_enm =='seqno' || $fld_enm =='kapp_userid' || $fld_enm =='kapp_pg_code' || $fld_enm =='kapp_memo') {
+			m_(" The column names seqno, kapp_userid, kapp_pg_code, and kapp_memo are K-APP system columns. They must not be used.");
+			return false;
 		}
-		curl_close($curl);
-		return $response;
+		return true;
 	}
-	function PG_curl_sendA( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
-		global $pg_code, $pg_name, $new_tab_enm, $H_ID, $H_EMAIL, $project_code, $project_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
-		global $H_ID, $H_EMAIL; 
-		global $kapp_mainnet;
-
-		$new_tab_hnm	= $_POST["new_tab_hnm"];
-		$pg_code = $new_tab_enm;
-		$pg_name = $new_tab_hnm;
-		$tabData['data'][][] = array();
-		$cnt = 0;
-		$tabData['data'][$cnt]['pg_code']  = $pg_code;
-		$tabData['data'][$cnt]['pg_name']  = $pg_name;
-		$tabData['data'][$cnt]['tab_enm']  = $new_tab_enm;
-		$tabData['data'][$cnt]['tab_hnm']  = $new_tab_hnm;
-		$tabData['data'][$cnt]['userid']     = $H_ID;
-		$tabData['data'][$cnt]['group_code'] = $project_code;
-		$tabData['data'][$cnt]['group_name'] = $project_name;
-		$tabData['data'][$cnt]['host']       = KAPP_URL_T_;
-		$tabData['data'][$cnt]['email']      = $H_EMAIL;
-		$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
-		$tabData['data'][$cnt]['if_type']    = $iftype_db;
-		$tabData['data'][$cnt]['if_data']    = $ifdata_db;
-		$tabData['data'][$cnt]['popdata_db'] = $popdata_db;
-		$tabData['data'][$cnt]['sys_link']   = $sys_link;
-		$tabData['data'][$cnt]['relation_data']   = $rel_data;
-		$tabData['data'][$cnt]['relation_type']   = $rel_type;
-		$tabData['data'][$cnt]['item_array'] = $item_array;
-		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
-
-		$url_ = $kapp_mainnet . '/_Curl/pg_curl_get_ailinkapp.php';
-		$curl = curl_init();
-		curl_setopt( $curl, CURLOPT_URL, $url_);
-		curl_setopt( $curl, CURLOPT_POST, true);
-		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
-			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
-			'iv' => $kapp_iv
-		));
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		$response = curl_exec($curl);
-		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-		echo curl_error($curl);
-		if( $response == false) {
-			//$_ms = "new program curl error : " . curl_error($curl);
-			echo 'curl error PG_curl_send : ' . curl_error($curl);
-		} else {
-			//$_ms = 'new program app_pg50RC curl response : ' . $response;
-		}
-		curl_close($curl);
-		return $response;
-	} // function
-	function create_func(){
+	function KAPP_Table_Create_Func(){
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
 		global $tkher;
@@ -1150,10 +1060,11 @@ jQuery(document).ready(function ($) {
 		$if_data = "";
 		$item_cnt   = 0;
 		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
-			$fld_hnm = $_POST["fld_hnm"][$ARR];
+			if( isset($_POST['fld_enm'][$ARR]) && $_POST['fld_enm'][$ARR]!='' ) $fld_enm = $_POST['fld_enm'][$ARR];
+			else continue;
+			if( !Kcolumn_check($fld_enm) ) continue;
 			if( $fld_hnm !== '' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
-				$fld_enm	=	$_POST["fld_enm"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
 				if( isset($_POST["fld_len"][$ARR]) && $_POST["fld_len"][$ARR] !='' ) $fld_len	=	$_POST["fld_len"][$ARR];
 				else $fld_len	=	15;
@@ -1224,7 +1135,7 @@ jQuery(document).ready(function ($) {
 		exit;
 	}
 
-	function create_reaction_func(){ // line reset
+	function KAPP_Table_Create_Reaction_Func(){ // line reset
 		global $H_ID, $tab_enm, $mode, $project_code, $project_name;
 		global $config;
 		global $tkher;
@@ -1243,6 +1154,9 @@ jQuery(document).ready(function ($) {
 		$if_type = "";
 		$if_data = "";
 		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
+			if( isset($_POST['fld_enm'][$ARR]) && $_POST['fld_enm'][$ARR]!='' ) $fld_enm = $_POST['fld_enm'][$ARR];
+			else continue;
+			if( !Kcolumn_check($fld_enm) ) continue;
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 			if( $fld_hnm !='' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
@@ -1299,7 +1213,7 @@ jQuery(document).ready(function ($) {
 		echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' ,  '$mode' );</script>";
 	}
 	//=============================================================
-	function copy_func(){
+	function Copy_Table_Func(){
 		global $H_ID, $mode, $project_code, $project_name, $tab_enm;
 		global $config;
 		global $tkher;
@@ -1317,6 +1231,9 @@ jQuery(document).ready(function ($) {
 			$if_data = "";
 		$item_cnt   = 0;
 		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
+			if( isset($_POST['fld_enm'][$ARR]) && $_POST['fld_enm'][$ARR]!='' ) $fld_enm = $_POST['fld_enm'][$ARR];
+			else continue;
+			if( !Kcolumn_check($fld_enm) ) continue;
 			$fld_hnm	=	$_POST["fld_hnm"][$ARR];
 			if( $fld_hnm !='' ) {
 				$seqno		=$_POST["seqno"][$ARR];
@@ -1364,7 +1281,6 @@ jQuery(document).ready(function ($) {
 			TAB_curl_sendA( $new_tab_enm, $new_tab_hnm, 0, $item_list, 0, '', '', '', $item_array ); 
 		}
 		$old_tab_enm= $_POST['old_tab_enm'];
-		//new_table_name: ABC_CCC_New, tab: dao_1757214499:ABC:dao_1755421034:Project59
 		$sqlPG		= "SELECT * from {$tkher['table10_pg_table']} where userid='".$H_ID."' and pg_code='".$old_tab_enm."' ";
 		$resultPG	= sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
@@ -1378,7 +1294,7 @@ jQuery(document).ready(function ($) {
 		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 	}
 
-	function update_remake_func( $tab_enm ){
+	function KAPP_Table_Update_Remake_Func( $tab_enm ){
 		global $H_ID, $mode, $project_code, $project_name;
 		global $config;
 		global $tkher;
@@ -1398,6 +1314,9 @@ jQuery(document).ready(function ($) {
 		$if_type = '';
 		$if_data = '';
 		For( $ARR=1; isset($_POST["fld_hnm"][$ARR]) && $_POST["fld_hnm"][$ARR] !='' ; $ARR++ ) {
+			if( isset($_POST['fld_enm'][$ARR]) && $_POST['fld_enm'][$ARR]!='' ) $fld_enm = $_POST['fld_enm'][$ARR];
+			else continue;
+			if( !Kcolumn_check($fld_enm) ) continue;
 			$fld_enmO	=	$_POST["Afld_enm"][$ARR];
 			$fld_hnmO	=	$_POST["Afld_hnm"][$ARR];
 			$fld_typeO	=	$_POST["Afld_type"][$ARR];
