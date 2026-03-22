@@ -537,11 +537,110 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
 		}
 	}
+	// use - kapp_table30m_A.php
+	function TAB_curl_sendA( $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
+		global $H_ID, $H_EMAIL, $project_code, $project_name;
+		global $kapp_mainnet;
+		$tabData['data'][][] = array();
+		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
+		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
+		$tabData['data'][$cnt]['fld_hnm']  = 'seqno';
+		$tabData['data'][$cnt]['fld_type'] = 'INT';
+		$tabData['data'][$cnt]['fld_len']  = '10';
+		$tabData['data'][$cnt]['disno']    = $cnt;
+		$tabData['data'][$cnt]['userid']     = $H_ID;
+		$tabData['data'][$cnt]['group_code'] = $project_code;
+		$tabData['data'][$cnt]['group_name'] = $project_name;
+		$tabData['data'][$cnt]['memo']       = $memo;
+		$hostname = KAPP_URL_T_; // getenv('HTTP_HOST');
+		$tabData['data'][$cnt]['host']       = $hostname;
+		$tabData['data'][$cnt]['email']      = $H_EMAIL;
+		$tabData['data'][$cnt]['sqltable']   = $item_list;
+		$tabData['data'][$cnt]['if_line']    = $if_line;
+		$tabData['data'][$cnt]['if_type']    = $if_type;
+		$tabData['data'][$cnt]['if_data']    = $if_data;
+		$tabData['data'][$cnt]['relation_data']    = $relation_data;
+		$key = 'appgenerator';
+		$iv = "~`!@#$%^&*()-_=+";
+		$tabData = encryptA( $tabData , $key, $iv);
+		$url_ = $kapp_mainnet . '/_Curl/table_curl_get_ailinkapp.php'; 
+		$curl = curl_init(); //$curl = curl_init( $url_ );
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $tabData , JSON_UNESCAPED_UNICODE),
+			'iv' => $iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		echo "curl --- response: " . $response;
+		if( $response == false) {
+			echo 'curl Error : ' . curl_error($curl);
+		} else {
+			//echo 'curl OK : ' . $response;
+		}
+		curl_close($curl);
+		return $response;
+	}
+	// use - kapp_table30m_A.php
+	function PG_curl_sendA( $item_cnt , $item_array, $iftype_db, $ifdata_db, $popdata_db, $sys_link, $rel_data , $rel_type ){
+		global $pg_code, $pg_name, $new_tab_enm, $H_ID, $H_EMAIL, $project_code, $project_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
+		global $H_ID, $H_EMAIL; 
+		global $kapp_mainnet;
+
+		$new_tab_hnm	= $_POST["new_tab_hnm"];
+		$pg_code = $new_tab_enm;
+		$pg_name = $new_tab_hnm;
+		$tabData['data'][][] = array();
+		$cnt = 0;
+		$tabData['data'][$cnt]['pg_code']  = $pg_code;
+		$tabData['data'][$cnt]['pg_name']  = $pg_name;
+		$tabData['data'][$cnt]['tab_enm']  = $new_tab_enm;
+		$tabData['data'][$cnt]['tab_hnm']  = $new_tab_hnm;
+		$tabData['data'][$cnt]['userid']     = $H_ID;
+		$tabData['data'][$cnt]['group_code'] = $project_code;
+		$tabData['data'][$cnt]['group_name'] = $project_name;
+		$tabData['data'][$cnt]['host']       = KAPP_URL_T_;
+		$tabData['data'][$cnt]['email']      = $H_EMAIL;
+		$tabData['data'][$cnt]['item_cnt']   = $item_cnt;
+		$tabData['data'][$cnt]['if_type']    = $iftype_db;
+		$tabData['data'][$cnt]['if_data']    = $ifdata_db;
+		$tabData['data'][$cnt]['popdata_db'] = $popdata_db;
+		$tabData['data'][$cnt]['sys_link']   = $sys_link;
+		$tabData['data'][$cnt]['relation_data']   = $rel_data;
+		$tabData['data'][$cnt]['relation_type']   = $rel_type;
+		$tabData['data'][$cnt]['item_array'] = $item_array;
+		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
+
+		$url_ = $kapp_mainnet . '/_Curl/pg_curl_get_ailinkapp.php';
+		$curl = curl_init();
+		curl_setopt( $curl, CURLOPT_URL, $url_);
+		curl_setopt( $curl, CURLOPT_POST, true);
+		curl_setopt( $curl, CURLOPT_POSTFIELDS, array(
+			'tabData' => json_encode( $sendData , JSON_UNESCAPED_UNICODE),
+			'iv' => $kapp_iv
+		));
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		$response = curl_exec($curl);
+		curl_setopt($curl, CURLOPT_FAILONERROR, true);
+		echo curl_error($curl);
+		if( $response == false) {
+			//$_ms = "new program curl error : " . curl_error($curl);
+			echo 'curl error PG_curl_send : ' . curl_error($curl);
+		} else {
+			//$_ms = 'new program app_pg50RC curl response : ' . $response;
+		}
+		curl_close($curl);
+		return $response;
+	} // function
 	function TAB_curl_send( $curl_snm, $tab_enm, $tab_hnm, $cnt , $item_list, $if_line, $if_type, $if_data, $relation_data, $memo ){
 		// use: kapp_tabel_create.php , table30m_A.php
 		global $H_ID, $H_EMAIL, $group_code, $group_name, $config, $kapp_iv, $kapp_key, $tkher;
 		$tabData['data'][][] = array();
-//		$tabData['data'][$cnt]['hash_block_table']  = $config['hash_block_table'];
+		//$tabData['data'][$cnt]['hash_block_table']  = $config['hash_block_table'];
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
 		$tabData['data'][$cnt]['tab_hnm']  = $tab_hnm;
 		$tabData['data'][$cnt]['fld_enm']  = 'seqno';
@@ -562,9 +661,7 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		$tabData['data'][$cnt]['if_data']    = $if_data;
 		$tabData['data'][$cnt]['relation_data']    = $relation_data;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
-
 		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
-
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -590,7 +687,7 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		global $pg_code, $pg_name, $tab_enm, $tab_hnm, $H_ID, $H_EMAIL, $group_code, $group_name, $hostnameA, $config, $kapp_iv,$kapp_key;      
 		$tabData['data'][][] = array();
 		$cnt = 0;
-//		$tabData['data'][$cnt]['hash_block_pg']  = $config['hash_block_pg'];
+		//$tabData['data'][$cnt]['hash_block_pg']  = $config['hash_block_pg'];
 		$tabData['data'][$cnt]['pg_code']  = $pg_code;
 		$tabData['data'][$cnt]['pg_name']  = $pg_name;
 		$tabData['data'][$cnt]['tab_enm']  = $tab_enm;
@@ -609,7 +706,6 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		$tabData['data'][$cnt]['relation_type']   = $rel_type;
 		$tabData['data'][$cnt]['item_array'] = $item_array;
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
-
 		$url_ = $curl_snm . '/_Curl/pg_curl_get_ailinkapp.php';
 		$curl = curl_init();
 		curl_setopt( $curl, CURLOPT_URL, $url_);
@@ -635,10 +731,8 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 	function TAB_curl_send_tabData( $curl_snm, $tabData ){
 		// use: table_curl_get_ailinkapp.php
 		global $kapp_iv, $kapp_key, $config;
-
 		$sendData = encryptA( $tabData , $kapp_key, $kapp_iv);
 		$url_ = $curl_snm . '/_Curl/table_curl_get_ailinkapp.php'; 
-
 		$curl = curl_init(); //$curl = curl_init( $url_ );
 		curl_setopt( $curl, CURLOPT_URL, $url_);
 		curl_setopt( $curl, CURLOPT_POST, true);
@@ -677,7 +771,7 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
 		echo curl_error($curl);
 		if( $response == false) {
-			$_ms = "PG_curl_send_tabData curl error : " . curl_error($curl);
+			//$_ms = "PG_curl_send_tabData curl error : " . curl_error($curl);
 			echo 'PG_curl_send_tabData curl error : ' . curl_error($curl);
 		} else {
 			//$_ms = 'new PG_curl_send_tabData curl response : ' . $response;
@@ -744,7 +838,7 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 					if( Link_Table_curl_send( $kapp_theme0, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day ) ) {
 						if( $kapp_theme1 ) Link_Table_curl_send( $kapp_theme1, $sys_subtit, $sys_link, $jong, $from_session_url, $ip, $memo, $up_day );
 					}
-					m_("job_link_table --- insert ok");
+					//m_("job_link_table --- insert ok");
 				}
 				return true;
 			} else {
