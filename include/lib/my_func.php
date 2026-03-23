@@ -468,6 +468,13 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		} else return false;
 	}
 
+	function Kcolumn_check($fld_enm){
+		if( $fld_enm =='' || $fld_enm =='seqno' || $fld_enm =='kapp_userid' || $fld_enm =='kapp_pg_code' || $fld_enm =='kapp_memo') {
+			m_(" The column names seqno, kapp_userid, kapp_pg_code, and kapp_memo are K-APP system columns. They must not be used.");
+			return false;
+		}
+		return true;
+	}
 	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
 		// use - program_list)ai.php, kapp_program_list_adm_ai.php
 		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
