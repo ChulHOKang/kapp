@@ -214,7 +214,7 @@ body {
 			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_Sql_to_Table.php' target='run_menu' >
 			<img src='<?=KAPP_URL_T_?>/logo/pizza.png' style='width:24px;height:22px;'>.SQL to Table</a></li>
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;' title='table design for high level'>
-			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_relationA.php' target='run_menu'>
+			<a onclick="run_on();" href='<?=KAPP_URL_T_?>/kapp_table_relation10.php' target='run_menu'>
 			<img src='<?=KAPP_URL_T_?>/logo/seed.png' style='width:24px;height:22px;'>.Table Relationship</a></li>
 
 			<li style='font-size:18;color:#666666;height:18px;line-height:1; text-align:left;'>
