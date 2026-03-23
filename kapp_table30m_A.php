@@ -241,6 +241,7 @@
 		else if( document.insert["fld_type["+i+"]"].value == "TIMESTAMP")  document.insert["fld_len["+i+"]"].value = '19';
 		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8';
 		else if( document.insert["fld_type["+i+"]"].value == "YEAR")      document.insert["fld_len["+i+"]"].value = '4';
+		//else if( document.insert["fld_type["+i+"]"].value == "MONTH")     document.insert["fld_len["+i+"]"].value = '6';
 	}
 	function line_set_func(cnt) { // 2026-03-19 hh:ii:ss
 			document.insert.mode.value='line_set';
@@ -845,31 +846,46 @@ jQuery(document).ready(function ($) {
 			<?php if ( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_hnm ){ echo " value='$fld_hnm' ";} ?>
 			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title="column:<?=$fld_enm?>"> </td>
 		<td align='left'>
-			  <select type='text' name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
-				  <option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> value="CHAR" <?php if($fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
-				  <option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> value="VARCHAR" <?php if($fld_type == 'VARCHAR') echo " selected ";  ?> >VARCHAR</option>
-				  <option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> value="TEXT" <?php if($fld_type == 'TEXT') echo " selected ";  ?>>TEXT</option>
-				  <option <?php echo "title='INT The range of 4-byte integer types is 2147483647 with -2,147,483,647 when there is a sign, and 4,294,967,295 when there is no sign.' "; ?> value="INT" <?php if ( $i==0 ) { echo "selected"; } ?> <?php if($fld_type == 'INT') echo " selected ";  ?> >INT</option>
-				  <option <?php echo "title='TINYINT The range of a 1-byte integer type is from -128 to 127 when it is signed, and from 0 to 255 when it is not signed.' "; ?> value="TINYINT" <?php if($fld_type == 'TINYINT') echo " selected ";  ?> >TINYINT</option>
-				  <option <?php echo "title='SMALLINT The range of a 2-byte integer is -32,768 to 32,767 if signed and 0 to 65,355 if unsigned.' "; ?> value="SMALLINT" <?php if($fld_type == 'SMALLINT') echo " selected ";  ?> >SMALLINT</option>
-				  <option <?php echo "title='MEDIUMINT The range of 3-byte integers is -8388608 to 8388607 if signed, and 0 to 16,777,215 if not signed.' "; ?> value="MEDIUMINT" <?php if($fld_type == 'MEDIUMINT') echo " selected ";  ?> >MEDIUMINT</option>
-				  <option <?php echo "title='BIGINT An 8-byte integer type range is from -9,223,372,036,854,775,808 to +9,223,372,036,854,775,808 when there is a sign, and 18,446,744,073,709,551,615 when there is no sign.' "; ?> value="BIGINT" <?php if($fld_type == 'BIGINT') echo " selected ";  ?>>BIGINT</option>
-				  <option <?php echo "title='DECIMAL Fixed-point number (M, D): The maximum number of digits (M) is 65 (default is 10) and the maximum number of decimal places (D is 30)' "; ?> value="DECIMAL" <?php if($fld_type == 'DECIMAL') echo " selected ";  ?>>DECIMAL</option>
-				  <option <?php echo "title='FLOAT A small floating-point number, acceptable values are -3.402823466E + 38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E + 38.' "; ?> value="FLOAT" <?php if($fld_type == 'FLOAT') echo " selected ";  ?>>FLOAT</option>
-				  <option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> value="DOUBLE" <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
-				  <option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
-				  <option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
-				  <option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> value="TIME" <?php if( $fld_type == 'TIME') echo " selected ";  ?>>TIME</option><!-- 2024-01-04 kan -->
+<select type='text' name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
+<option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> 
+value="CHAR" <?php if($fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
+<option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> 
+value="VARCHAR" <?php if($fld_type == 'VARCHAR') echo " selected ";  ?> >VARCHAR</option>
+<option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> 
+value="TEXT" <?php if($fld_type == 'TEXT') echo " selected ";  ?>>TEXT</option>
+<option <?php echo "title='INT The range of 4-byte integer types is 2147483647 with -2,147,483,647 when there is a sign, and 4,294,967,295 when there is no sign.' "; ?> 
+value="INT" <?php if ( $i==0 ) { echo "selected"; } ?> <?php if($fld_type == 'INT') echo " selected ";  ?> >INT</option>
+<option <?php echo "title='TINYINT The range of a 1-byte integer type is from -128 to 127 when it is signed, and from 0 to 255 when it is not signed.' "; ?> 
+value="TINYINT" <?php if($fld_type == 'TINYINT') echo " selected ";  ?> >TINYINT</option>
+<option <?php echo "title='SMALLINT The range of a 2-byte integer is -32,768 to 32,767 if signed and 0 to 65,355 if unsigned.' "; ?> value="SMALLINT" <?php if($fld_type == 'SMALLINT') echo " selected ";  ?> >SMALLINT</option>
+<option <?php echo "title='MEDIUMINT The range of 3-byte integers is -8388608 to 8388607 if signed, and 0 to 16,777,215 if not signed.' "; ?> value="MEDIUMINT" <?php if($fld_type == 'MEDIUMINT') echo " selected ";  ?> >MEDIUMINT</option>
+<option <?php echo "title='BIGINT An 8-byte integer type range is from -9,223,372,036,854,775,808 to +9,223,372,036,854,775,808 when there is a sign, and 18,446,744,073,709,551,615 when there is no sign.' "; ?> 
+value="BIGINT" <?php if($fld_type == 'BIGINT') echo " selected ";  ?>>BIGINT</option>
+<option <?php echo "title='DECIMAL Fixed-point number (M, D): The maximum number of digits (M) is 65 (default is 10) and the maximum number of decimal places (D is 30)' "; ?> 
+value="DECIMAL" <?php if($fld_type == 'DECIMAL') echo " selected ";  ?>>DECIMAL</option>
+<option <?php echo "title='FLOAT A small floating-point number, acceptable values are -3.402823466E + 38 to -1.175494351E-38, 0, and 1.175494351E-38 to 3.402823466E + 38.' "; ?> 
+value="FLOAT" <?php if($fld_type == 'FLOAT') echo " selected ";  ?>>FLOAT</option>
+<option <?php echo "title='DOUBLE precision floating point numbers, acceptable values are -1.7976931348623157E + 308 to -2.2250738585072014E-308, 0, And from 2.2250738585072014E-308 to 1.7976931348623157E + 308.' "; ?> 
+value="DOUBLE" <?php if($fld_type == 'DOUBLE') echo " selected ";  ?>>DOUBLE</option>
+<option <?php echo "title='DATE Date types 1000-01-01 through 9999-12-31 are available.' "; ?> 
+value="DATE" <?php if($fld_type == 'DATE') echo " selected ";  ?>>DATE</option>
+<option <?php echo "title='DATETIME Date and time combination, 1000-01-01 00:00:00 through 9999-12-31 23:59:59 Wanted.' "; ?> 
+value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETIME</option><!-- 2023-07-18 kan -->
+<option <?php echo "title='TIME Date and time combination, 00:00:00 through 23:59:59 Wanted.' "; ?> 
+value="TIME" <?php if( $fld_type == 'TIME') echo " selected ";  ?>>TIME</option>
+<option <?php echo "title='YEAR Date and time combination, 0000 through 2026 Wanted.' "; ?> 
+value="YEAR" <?php if($fld_type == 'YEAR') echo " selected ";  ?>>YEAR</option>
+<!-- <option <?php echo "title='MONTH Date and time combination, yyyy-mm through 2026 Wanted.' "; ?> 
+value="MONTH" <?php if($fld_type == 'MONTH') echo " selected ";  ?>>MONTH</option> -->
 
-				  <option <?php echo "title='YEAR Date and time combination, 0000 through 2026 Wanted.' "; ?> value="YEAR" <?php if($fld_type == 'YEAR') echo " selected ";  ?>>YEAR</option><!-- 2026-03-12 kan -->
-				  
-				  <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";?> >TIMESTAMP</option>
-
-				  <option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option>
-				  
-				  <option <?php echo "title='BLOB Length Maximum data size: 65,535Byte' "; ?> value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
-				  <!-- 데이터 최대크기 4GiB -->
-			  </select>
+<option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> 
+value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";?> >TIMESTAMP</option>
+<option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> 
+value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option>
+<option <?php echo "title='BLOB Length Maximum data size: 65,535Byte' "; ?> 
+value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
+<!-- 데이터 최대크기 4GiB -->
+</select>
 		</td>
 		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 <?php
@@ -966,7 +982,7 @@ jQuery(document).ready(function ($) {
 			} else {
 				$query = "ALTER TABLE ". $tab_enm . " MODIFY " . $fld_enm . " " . $fld_type ;
 			}
-			$mq1	=sql_query($query);
+			$mq1=sql_query($query);
 			if( $mq1 ) {
 				sql_query( "UPDATE {$tkher['table10_table']} set  fld_hnm= '$fld_hnm', fld_type= '$fld_type', fld_len=$fld_len, memo='$fld_memo' where seqno=$seqno " );
 				m_(" column update OK!! ");
@@ -1036,13 +1052,6 @@ jQuery(document).ready(function ($) {
 		Copy_Table_Func();
 	}
 
-	function Kcolumn_check($fld_enm){
-		if( $fld_enm =='' || $fld_enm =='seqno' || $fld_enm =='kapp_userid' || $fld_enm =='kapp_pg_code' || $fld_enm =='kapp_memo') {
-			m_(" The column names seqno, kapp_userid, kapp_pg_code, and kapp_memo are K-APP system columns. They must not be used.");
-			return false;
-		}
-		return true;
-	}
 	function KAPP_Table_Create_Func(){
 		global $H_ID, $H_EMAIL, $table_yn, $mode, $line_set;
 		global $config;
@@ -1084,12 +1093,13 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='VARCHAR' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='BLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='BLOB' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
+				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
@@ -1185,7 +1195,9 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='DATETIME' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 				$cnt++;
 			}
@@ -1212,7 +1224,6 @@ jQuery(document).ready(function ($) {
 		}
 		echo "<script>create_after_run( '$tab_enm' , '$new_tab_hnm' ,  '$mode' );</script>";
 	}
-	//=============================================================
 	function Copy_Table_Func(){
 		global $H_ID, $mode, $project_code, $project_name, $tab_enm;
 		global $config;
@@ -1262,7 +1273,9 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+
 				sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' " );
 				$cnt++;
 			}
@@ -1293,7 +1306,6 @@ jQuery(document).ready(function ($) {
 		}
 		echo "<script>create_after_run( '$new_tab_enm' , '$new_tab_hnm' , '$mode' );</script>";
 	}
-
 	function KAPP_Table_Update_Remake_Func( $tab_enm ){
 		global $H_ID, $mode, $project_code, $project_name;
 		global $config;
@@ -1357,7 +1369,8 @@ jQuery(document).ready(function ($) {
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
-				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
 
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 				$cnt++;
