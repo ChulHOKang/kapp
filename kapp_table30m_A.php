@@ -60,8 +60,8 @@
 			$tab_enm = $tab_R[0];
 			$tab_hnm = $tab_R[1];
 			$new_tab_hnm = $tab_R[1];
-			$project_code = $tab_R[2];
-			$project_name = $tab_R[3];
+			//$project_code = $tab_R[2];
+			//$project_name = $tab_R[3];
 		} else {
 			$tab_hnmS = '';
 			$tab_enm = '';
@@ -241,7 +241,7 @@
 		else if( document.insert["fld_type["+i+"]"].value == "TIMESTAMP")  document.insert["fld_len["+i+"]"].value = '19';
 		else if( document.insert["fld_type["+i+"]"].value == "TIME")      document.insert["fld_len["+i+"]"].value = '8';
 		else if( document.insert["fld_type["+i+"]"].value == "YEAR")      document.insert["fld_len["+i+"]"].value = '4';
-		//else if( document.insert["fld_type["+i+"]"].value == "MONTH")     document.insert["fld_len["+i+"]"].value = '6';
+		else if( document.insert["fld_type["+i+"]"].value == "MONTH")     document.insert["fld_len["+i+"]"].value = '7';
 	}
 	function line_set_func(cnt) { // 2026-03-19 hh:ii:ss
 			document.insert.mode.value='line_set';
@@ -875,8 +875,8 @@ value="DATETIME" <?php if($fld_type == 'DATETIME') echo " selected ";  ?>>DATETI
 value="TIME" <?php if( $fld_type == 'TIME') echo " selected ";  ?>>TIME</option>
 <option <?php echo "title='YEAR Date and time combination, 0000 through 2026 Wanted.' "; ?> 
 value="YEAR" <?php if($fld_type == 'YEAR') echo " selected ";  ?>>YEAR</option>
-<!-- <option <?php echo "title='MONTH Date and time combination, yyyy-mm through 2026 Wanted.' "; ?> 
-value="MONTH" <?php if($fld_type == 'MONTH') echo " selected ";  ?>>MONTH</option> -->
+<option <?php echo "title='MONTH Year and month combination, yyyy-mm.' "; ?> 
+value="MONTH" <?php if($fld_type == 'MONTH') echo " selected ";  ?>>MONTH</option>
 
 <option <?php echo "title='TIMESTAMP timestamp format 1970-01-01 00:00:01 UTC to 2038-01-09 03:14:07 UTC Until EPOCH (1970-01-01 00:00:00 UTC), the elapsed time in seconds since the number.' "; ?> 
 value="TIMESTAMP" <?php if($fld_type == 'TIMESTAMP') echo " selected ";?> >TIMESTAMP</option>
@@ -933,7 +933,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 		if( $mode=="SearchTAB") {
 ?>
 			<input title='Delete the created table and register the changes.' type='button' id='upd' onclick="javascript:Save_Update('<?=$line_set?>');"
-			value="Save Change" style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'>&nbsp;&nbsp;&nbsp;
+			value=" Save Change " style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'>&nbsp;&nbsp;&nbsp;
 			<input title='Save as a new table. table code:<?=$new_tab_enm?>' type='button' id='Newset' onclick="javascript:Newtable_save('<?=$line_set?>');"
 			value="Copy New Table" style='height:30px;background-color:cyan;color:blue;border-radius:20px;border:1 solid white'>&nbsp;&nbsp;&nbsp;
 			<input title='Change to the table registration screen.' type='button' name='reset' onclick="javascript:resetgo();"
@@ -1072,6 +1072,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 			if( isset($_POST['fld_enm'][$ARR]) && $_POST['fld_enm'][$ARR]!='' ) $fld_enm = $_POST['fld_enm'][$ARR];
 			else continue;
 			if( !Kcolumn_check($fld_enm) ) continue;
+			$fld_hnm = $_POST['fld_hnm'][$ARR];
 			if( $fld_hnm !== '' ) {
 				$seqno		=	$_POST["seqno"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
@@ -1099,7 +1100,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
-				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
+				else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  ' VARCHAR (' . $fld_len . '),';
 				$sql = "INSERT INTO {$tkher['table10_table']} set  tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' ";
 				$ret = sql_query( $sql );
 				if( !$ret ) {
@@ -1196,7 +1197,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
-				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  ' VARCHAR (' . $fld_len . '),';
 				
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 				$cnt++;
@@ -1274,7 +1275,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
-				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  ' VARCHAR (' . $fld_len . '),';
 
 				sql_query( "INSERT INTO {$tkher['table10_table']} set tab_enm='$new_tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', group_code='$project_code', group_name='$project_name', memo='$memo' " );
 				$cnt++;
@@ -1370,7 +1371,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
-				//else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  ' VARCHAR (' . $fld_len . '),';
 
 				sql_query( "INSERT INTO {$tkher['table10_table']} set group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm', tab_hnm='$new_tab_hnm', fld_enm='$fld_enm', fld_hnm='$fld_hnm', fld_type='$fld_type', fld_len='$fld_len', disno=$ARR, userid='$H_ID', table_yn='y', memo='$memo' " );
 				$cnt++;
@@ -1392,7 +1393,7 @@ value="BLOB" <?php if( $fld_type=='BLOB') echo " selected ";?> >BLOB</option>
 		$resultPG = sql_query($sqlPG);
 		$table10_pg = sql_num_rows($resultPG);
 		if( $table10_pg ) {
-			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', item_cnt=$line_set, item_array='$item_array', tab_mid='$H_ID' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
+			$query="UPDATE {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', pg_name='$new_tab_hnm', tab_hnm='$new_tab_hnm', item_cnt=$line_set, item_array='$item_array', tab_mid='$H_ID' WHERE userid='$H_ID' and pg_code='$tab_enm' ";
 			sql_query($query);
 		} else {
 			$query="INSERT INTO {$tkher['table10_pg_table']} SET group_code='$project_code', group_name='$project_name', tab_enm='$tab_enm',tab_hnm='$new_tab_hnm', pg_code='$tab_enm', pg_name='$new_tab_hnm', item_array='$item_array', if_type='$if_type', if_data='$if_data', item_cnt=$line_set, userid='$H_ID', tab_mid='$H_ID' ";
