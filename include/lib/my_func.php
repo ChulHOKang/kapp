@@ -77,6 +77,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		
 		$SQLA = "DELETE FROM " . $r_table;
 		$WR = '';
+		$sw='';
 		for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
 			$r_t = explode(":", $r_tA[$i]); //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 			$key_fld  = $r_t[1];
@@ -94,20 +95,31 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 				
 				$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
 				$r_enm	= $fld2[0];
-				$r_type	= $fld2[2];
+				$r_tp	= $fld2[2];
+				$r_len	= $fld2[3];
 
 				if( $key_fld == $r_enm ){
-					if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
-					else $update_key_data = "";
-					$f_num = data_number_check( $r_type );
+					if( isset( $_POST[$f_enm]) && $_POST[$f_enm] !='' ) $post_enm = $_POST[$f_enm];
+					else $post_enm = "";
+					$f_num = data_number_check( $r_tp );
 					if( $i == 0 ) {
-						if( $f_num )
-							 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
-						else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+						if( $f_num ) $WR = " where " . $key_fld . " = " .$post_enm. " ";	
+						else {
+							//$WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+							if( $r_tp =='DATE' || $r_tp =='MONTH') {
+								$post_enm =substr( $post_enm, 0, $r_len);
+								$WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+							} else $WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+						}
 					} else if( $i > 0 ){
-						if( $f_num )
-							$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
-						else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+						if( $f_num ) $WR = $WR . " and " . $key_fld . " = " .$post_enm. " ";	
+						else {
+							//$WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
+							if( $r_tp =='DATE' || $r_tp =='MONTH') { // MONTH len=7, DATE len=10
+								$post_enm =substr( $post_enm, 0, $r_len);
+								$WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
+							} else $WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
+						}
 					}
 				}
 			}
@@ -130,35 +142,34 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$day = date("Y-m-d H-i-s", time());
 		global $H_ID;
 		/*
-rdata: dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
-$fld_1:fld1|=|fld_5:product:VARCHAR
-$fld_7:날짜|=|fld_1:날짜:DATE
-$fld_4:수량|+|fld_6:total_count:INT
-$fld_6:금액|+|fld_7:tottal_price:BIGINT,
-
-rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
-*/
+		rdata: dao_1766735120:ABCYY:|fld_1|날짜|DATE|15
+		@|fld_2|yyyy|CHAR|15
+		@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+		$fld_1:fld1|=|fld_1:상품:VARCHAR:15
+		$fld_2:fld2|=|fld_2:원산지:VARCHAR:15
+		rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		*/
 		$r_data = explode("$", $rdata); 
-		$r_tab = $r_data[0]; // table + data of table, $r_data[1] = relation data
+		$r_tab = $r_data[0];                // table + data of table, $r_data[1] = relation data
 		$tab_r = explode(":", $r_tab);
 		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
 		$Rtabhnm = $tab_r[1];
-		$dataT   = $tab_r[2]; // main table column
+		$dataT   = $tab_r[2];               // main table column
 
-		$r_tA = explode("|", $rtype);     //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+		$r_tA = explode("|", $rtype);       // $rtype=@Update:fld_1:날짜:DATE:10|:fld_5:product:VARCHAR:15|
 		$key_count = count($r_tA);
-		$r_t = explode(":", $r_tA[0]); 
-		$r_type = $r_t[0]; // Update
+		$r_t = explode(":", $r_tA[0]);      // $r_tA[0]=Update:fld_1:날짜:DATE:10
+		$r_type = $r_t[0];                  // $r_t[0]=Update
 		
 		$SQLA = "select seqno, kapp_memo from `" . $r_table . "` ";
 		$WR = '';
 		$sw='';
 		for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
-			$r_t = explode(":", $r_tA[$i]); //@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
+			$r_t = explode(":", $r_tA[$i]);
 			$key_fld  = $r_t[1];
 			$key_type = $r_t[3];
 			for( $j=1; isset($r_data[$j]) && $r_data[$j] !=""; $j++) {
-				$r_fld		= $r_data[$j];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
+				$r_fld		= $r_data[$j];              // $fld_1:fld1|=|fld_1:상품:VARCHAR:15
 				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
 				$fld_r1	= $fld_r[0];
 				$fld_sik= $fld_r[1];  // =, -, +
@@ -170,34 +181,43 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 				$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
 				$r_enm	= $fld2[0];
 				$r_tp	= $fld2[2];
+				$r_len	= $fld2[3];
 
 				if( $key_fld == $r_enm ){
-					//m_("key_fld: $key_fld , r_enm: $r_enm");
-					//key_fld: fld_1 , r_enm: fld_1
-					//key_fld: fld_5 , r_enm: fld_5
-					if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
+					if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $post_enm = $_POST[$f_enm];
 					else {
-						m_("ERROR-delete-update, r_table:$r_table, key data - key_fld: $key_fld, r_enm: $r_enm, f_enm: $f_enm");	//$update_key_data = "";
+						m_("ERROR-delete-update, r_table:$r_table, key data - key_fld: $key_fld, r_enm: $r_enm, f_enm: $f_enm");
 						echo "where WR: " . $WR . ", " . "ERROR r_table:$r_table, key data - key_fld: $key_fld, r_enm: $r_enm, f_enm: $f_enm"; exit;
 					}
-					//$f_num = data_number_check( $r_tp );
-					$f_num = data_number_check( $key_type );
+					$f_num = data_number_check( $r_tp ); // $key_type
 					if( $sw == '' ) {
-						if( $f_num )
-							 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
-						else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+						/*if( $f_num ) $WR = " where " . $key_fld . " = " .$post_enm. " ";	
+						else $WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+						$sw ='on';*/
+						if( $f_num ) $WR = " where " . $key_fld . " = " .$post_enm. " ";	
+						else {
+							if( $r_tp =='DATE' || $r_tp =='MONTH') {
+								$post_enm =substr( $post_enm, 0, $r_len);
+								$WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+							} else $WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+						}
 						$sw ='on';
 					} else if( $sw == 'on' ){
-						if( $f_num )
-							$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
-						else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+						/*if( $f_num ) $WR = $WR . " and " . $key_fld . " = " .$post_enm. " ";	
+						else $WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";*/
+						if( $f_num ) $WR = $WR . " and " . $key_fld . " = " .$post_enm. " ";	
+						else {
+							if( $r_tp =='DATE' || $r_tp =='MONTH') {
+								$post_enm =substr( $post_enm, 0, $r_len);
+								$WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
+							} else $WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
+						}
 					}
 					break;
 				}
 			}
 		}
-		$SQLA = $SQLA . $WR;			//if( $Rtabhnm == 'ABCYY') echo "SQLA: " . $SQLA; exit;
-		//SQLA: select seqno, kapp_memo from `dao_1766735120` where fld_5 = '무우'
+		$SQLA = $SQLA . $WR; //SQLA: select seqno, kapp_memo from `dao_1766735120` where fld_5 = '무우'
 		$retA = sql_fetch( $SQLA );
 		if( $retA ) {
 			$kapp_memo = $retA['kapp_memo'] . "\n|DELETE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
@@ -207,22 +227,26 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 				$r_fld		= $r_data[$i];
 				$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
 				$fld_r1	= $fld_r[0];
-				$fld_sik= $fld_r[1];  // =, -, +
+				$fld_sik= $fld_r[1];                    // =, -, +
 				$fld_r2	= $fld_r[2];
 				$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
 				$f_enm	= $fld1[0];
 				$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
 				$r_enm	= $fld2[0];
 				$r_tp	= $fld2[2];
+				$r_len	= $fld2[3];
 				
-				if( isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
+				if( isset($f_enm) && isset($_POST[$f_enm]) && $_POST[$f_enm]!='' )  $post_enm = $_POST[$f_enm];
 				else $post_enm = "";
 				if( $fld_sik == '=' ) {
-					if( data_number_check( $r_tp ) )
-						$SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
-					else 
-						$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
-					
+					if( data_number_check( $r_tp ) ) $SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
+					else {
+						//$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+						if( $r_tp =='DATE' || $r_tp =='MONTH') {
+							if( $post_enm !='') $post_enm =substr( $post_enm, 0, $r_len); // MONTH len=7, DATE len=10
+							$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+						} else $SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+					}
 					/* When the main record is deleted, the record processing in the relation table changes '+' to '-'.
 					,main record를 delete하면 relation table의 record 처리는 '+' 는 '-' 처리한다. */
 				} else if( $fld_sik == '+' ) { 
@@ -248,34 +272,22 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 		/*
 		main table record - 'Write'
 		relation type : 'Update'
-		dao_1766822184:ABC_AAA:
-		|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
-		$fld_1:fld1|=|fld_1:상품:VARCHAR
-		$fld_2:fld2|=|fld_2:원산지:VARCHAR
-		$fld_3:fld3|=|fld_3:단위:VARCHAR
-		$fld_4:수량|=|fld_4:수량:INT
-		$fld_5:단가|=|fld_5:단가:INT
-		$fld_6:금액|=|fld_6:금액:INT
-		$fld_7:날짜|=|fld_7:날짜:DATE
-
-		Insert:fld_1:상품:VARCHAR|
-		@Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
-		@Update:fld_1:년도:YEAR|:fld_2:상품:VARCHAR|
-		^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
-		^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
-		^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
+		dao_1766822184:ABC_AAA:|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
+		$fld_1:fld1|=|fld_1:상품:VARCHAR:15
+		$fld_2:fld2|=|fld_2:원산지:VARCHAR:15
+		$fld_3:fld3|=|fld_3:단위:VARCHAR:15$fld_4:수량|=|fld_4:수량:INT:12$fld_5:단가|=|fld_5:단가:INT:12$fld_6:금액|=|fld_6:금액:INT:12$fld_7:날짜|=|fld_7:날짜:DATE:15^dao_1766735120:ABCYY:|fld_1|날짜|DATETIME|20@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR:15$fld_7:날짜|=|fld_1:날짜:DATETIME:20$fld_4:수량|+|fld_6:total_count:INT:12$fld_6:금액|+|fld_7:tottal_price:BIGINT:15^dao_1773304478:ABC_년도별_판매실적:|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@$fld_7:날짜|=|fld_1:년도:YEAR:4$fld_1:fld1|=|fld_2:상품:VARCHAR:15$fld_4:수량|+|fld_3:수량:INT:12$fld_6:금액|+|fld_4:금액:INT:12^^^^^^^		- relation type key -
+		Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|@@^
 		*/
 		$ip = $_SERVER['REMOTE_ADDR'];
 		$day = date("Y-m-d H-i-s", time());
 		global $H_ID;
 		$r_data = explode("$", $rdata); 
-		$r_tab = $r_data[0]; // table + data of table, $r_data[1] = relation data
+		$r_tab = $r_data[0];                // table + data of table, $r_data[1] = relation data
 		$tab_r = explode(":", $r_tab);
 		$r_table = $tab_r[0];               // $tab_r[0]:tab_enm, [1]:tab_hnm, [2]:table item_array
 		$Rtabhnm = $tab_r[1];
-		$dataT   = $tab_r[2]; // main table column
-//Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|@@^|fld_1|일자|DATE|10@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@^^
-		$r_tA = explode("|", $rtype); //Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|
+		$dataT   = $tab_r[2];               // main table column
+		$r_tA = explode("|", $rtype);       // Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|
 		$key_count = count($r_tA);
 		$r_t = explode(":", $r_tA[0]); 
 		$r_type = $r_t[0];
@@ -285,55 +297,51 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 			$WR = '';
 			$sw='';
 			for( $i=0; $i<$key_count && $r_tA[$i]!=''; $i++){
-				$r_t = explode(":", $r_tA[$i]); //Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|
+				$r_t = explode(":", $r_tA[$i]);             //Update:fld_1:일자:DATE:10|:fld_2:상품:VARCHAR:15|
 				$key_fld  = $r_t[1];
-				$key_type = $r_t[3]; // data type
+				$key_type = $r_t[3];                        // data type
 				$f_num = data_number_check( $key_type );
 				for( $j=1; isset($r_data[$j]) && $r_data[$j] !=""; $j++) {
 					$r_fld		= $r_data[$j];
 					$fld_r		= explode("|", $r_fld);		// $fld_1:일자|=|fld_1:일자:DATE:10
 					$fld_r1	= $fld_r[0];
-					$fld_sik= $fld_r[1];  // =, -, +
-					$fld_r2	= $fld_r[2];  // fld_1:일자:DATE:10
+					$fld_sik= $fld_r[1];                    // =, -, +
+					$fld_r2	= $fld_r[2];                    // fld_1:일자:DATE:10
 					
-					$fld1	= explode(":", $fld_r1);  // program column -> fld_1:name|=|fld_1:name
+					$fld1	= explode(":", $fld_r1);        // program column -> fld_1:name|=|fld_1:name
 					$f_enm	= $fld1[0];
 					
-					$fld2	= explode(":", $fld_r2);  //fld_1:일자:DATE:10
+					$fld2	= explode(":", $fld_r2);        //fld_1:일자:DATE:10
 					$r_enm	= $fld2[0];
-					$r_tp	= $fld2[2];  // data type
-					$r_len	= $fld2[3];  // data length
+					$r_tp	= $fld2[2];                     // data type
+					$r_len	= $fld2[3];                     // data length
 
 					if( $key_fld == $r_enm ){
-						if( isset($_POST[$f_enm]) && $_POST[$f_enm] !='' ) $update_key_data = $_POST[$f_enm];
-						else $update_key_data = "";
+						if( isset( $_POST[$f_enm]) && $_POST[$f_enm] !='' ) $post_enm = $_POST[$f_enm];
+						else $post_enm = "";
 						$f_num = data_number_check( $r_tp );
 						if( $sw =='' ) {
-							if( $f_num )
-								 $WR = " where " . $key_fld . " = " .$update_key_data. " ";	
+							if( $f_num ) $WR = " where " . $key_fld . " = " .$post_enm. " ";	
 							else {
-								if($r_tp =='DATE') {
-									$update_key_data =substr($update_key_data, 0, $r_len);
-									$WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
-								} else $WR = " where " . $key_fld . " = '" .$update_key_data. "' ";
+								if( $r_tp =='DATE' || $r_tp =='MONTH') {
+									$post_enm =substr( $post_enm, 0, $r_len);
+									$WR = " where " . $key_fld . " = '" .$post_enm. "' ";
+								} else $WR = " where " . $key_fld . " = '" .$post_enm. "' ";
 							}
 							$sw ='on';
 						} else if( $sw =='on'){
-							if( $f_num )
-								$WR = $WR . " and " . $key_fld . " = " .$update_key_data. " ";	
+							if( $f_num ) $WR = $WR . " and " . $key_fld . " = " .$post_enm. " ";	
 							else {
-								if($r_tp =='DATE') {
-									$update_key_data =substr($update_key_data, 0, $r_len);
-									$WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
-								} else $WR = $WR . " and " . $key_fld . " = '" .$update_key_data. "' ";
+								if( $r_tp =='DATE' || $r_tp =='MONTH') {
+									$post_enm =substr( $post_enm, 0, $r_len);                    // MONTH len=7, DATE len=10
+									$WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
+								} else $WR = $WR . " and " . $key_fld . " = '" .$post_enm. "' ";
 							}
 						}
 					}
 				}
 			}
 			$SQLA = $SQLA . $WR;		//echo "SQLA: " . $SQLA; exit;
-//SQLA: select seqno, kapp_memo from `dao_1773892202` where fld_1 = '2026-03-19' and fld_2 = 'GPU' and fld_2 = 'GPU'
-//SQLA: select seqno, kapp_memo from `dao_1773892202` and fld_2 = 'NPU'
 			$retA = sql_fetch( $SQLA );
 			if( $retA ) {
 				$kapp_memo = $retA['kapp_memo'] . "\n|UPDATE-TYPE-UPDATE, ". $pg_code.":".$day.":".$H_ID. ":" . $ip;
@@ -344,7 +352,7 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 					$r_fld		= $r_data[$i];              // $fld_1:fld1|=|fld_1:상품:VARCHAR
 					$fld_r		= explode("|", $r_fld);		// fld_1:name|=|fld_1:name
 					$fld_r1	= $fld_r[0];
-					$fld_sik= $fld_r[1];  // =, -, +
+					$fld_sik= $fld_r[1];                    // =, -, +
 					$fld_r2	= $fld_r[2];
 					
 					$fld1	= explode(":", $fld_r1);		// program table -> fld_1:name|=|fld_1:name
@@ -353,16 +361,20 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 					$fld2	= explode(":", $fld_r2);		// rellation table -> fld_1:name|=|fld_1:name
 					$r_enm	= $fld2[0];
 					$r_tp	= $fld2[2];
+					$r_len	= $fld2[3];
 
-					if( isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
+					if( isset($f_enm) && isset($_POST[$f_enm]) && $_POST[$f_enm]!='' )  $post_enm = $_POST[$f_enm];
 					else $post_enm = "";
 
 					if( $fld_sik == '=' ) {
-						if( data_number_check( $r_tp ) )
-							$SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
-						else 
-							$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
-						
+						if( data_number_check( $r_tp ) ) $SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
+						else {
+							//$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+							if( $r_tp =='DATE' || $r_tp =='MONTH') {
+								if( $post_enm !='') $post_enm =substr( $post_enm, 0, $r_len); // MONTH len=7, DATE len=10
+								$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+							} else $SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+						}
 					} else if( $fld_sik == '+' ) {
 						$SQLR = $SQLR . " , " . $r_enm . "=" . $r_enm . " + " . $post_enm . " ";
 					} else if( $fld_sik == '-' ) {
@@ -370,7 +382,7 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 					}
 				}
 				$SQLR = $SQLR . $WR; //echo "SQLR: " . $SQLR; exit;
-//SQLR: UPDATE dao_1773892202 SET kapp_memo = 'UPDATE-TYPE-INSERT, dao_1768181179:2026-03-19 13-07-03:dao:58.29.102.214 |UPDATE-TYPE-UPDATE, dao_1768181179:2026-03-19 14-06-16:dao:58.29.102.214' , fld_1 = '2026-03-19 14:03:22' , fld_2 = 'GPU' , fld_3=fld_3 + 10 , fld_4=fld_4 + 23000000 , fld_5 = 'tet 10' where fld_1 = '2026-03-19' and fld_2 = 'GPU'
+				//SQLR: UPDATE dao_1773892202 SET kapp_memo = 'UPDATE-TYPE-INSERT, dao_1768181179:2026-03-19 13-07-03:dao:58.29.102.214 |UPDATE-TYPE-UPDATE, dao_1768181179:2026-03-19 14-06-16:dao:58.29.102.214' , fld_1 = '2026-03-19 14:03:22' , fld_2 = 'GPU' , fld_3=fld_3 + 10 , fld_4=fld_4 + 23000000 , fld_5 = 'tet 10' where fld_1 = '2026-03-19' and fld_2 = 'GPU'
 				$ret  = sql_query($SQLR);
 				if( $ret ) {
 					m_("relation table: $Rtabhnm Update");
@@ -395,16 +407,20 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 					$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
 					$r_enm	= $fld2[0];
 					$r_tp	= $fld2[2];
+					$r_len	= $fld2[3];
 
-					if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
-					else $post_enm = "";
-					/* When inserting, all calculation expressions are processed as '='. , insert일때 계산식은 모두 '=' 처리한다.  */
+					if( isset($f_enm) && isset($_POST[$f_enm]) && $_POST[$f_enm]!='' )  $post_enm = $_POST[$f_enm];
+					else $post_enm = '';
 					if( $fld_sik == '=' ) {
-						if( data_number_check( $r_tp ) )
-							$SQLAR = $SQLAR . " , "  . $r_enm . " = " . $post_enm . " ";
-						else 
-							$SQLAR = $SQLAR . " , "  . $r_enm . " = '" . $post_enm . "' ";
-						
+						if( data_number_check( $r_tp ) ) $SQLAR = $SQLAR . " , "  . $r_enm . " = " . $post_enm . " ";
+						else {
+							//$SQLAR = $SQLAR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+							if( $r_tp =='DATE' || $r_tp =='MONTH') {
+								if( $post_enm !='') $post_enm =substr( $post_enm, 0, $r_len); // MONTH len=7, DATE len=10
+								$SQLAR = $SQLAR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+							} else $SQLAR = $SQLAR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+						}
+					/* When inserting, all calculation expressions are processed as '='. , insert일때 계산식은 모두 '=' 처리한다.  */
 					} else if( $fld_sik == '+' ) { // If there is no record when the relation type is 'Update': relation type이 'Update' 일때 record가 없으면
 						$SQLAR = $SQLAR . " , " . $r_enm . "=" . $post_enm . " ";
 					} else if( $fld_sik == '-' ) {
@@ -438,14 +454,20 @@ rtA: Update:fld_1:날짜:DATE|:fld_5:product:VARCHAR|
 				$fld2		= explode(":", $fld_r2);		// fld_1:상품|=|fld_1:상품
 				$r_enm	= $fld2[0];
 				$r_tp	= $fld2[2];
-				if( isset($f_enm) && isset($_POST[$f_enm]) )  $post_enm = $_POST[$f_enm];
-				else $post_enm = "";
-				/* When inserting, all calculation expressions are processed as '='. , insert일때 계산식은 모두 '=' 처리한다.  */
+				$r_len	= $fld2[3];
+				if( isset($f_enm) && isset($_POST[$f_enm]) && $_POST[$f_enm]!='' )  $post_enm = $_POST[$f_enm];
+				else $post_enm = '';
 				if( $fld_sik == '=' ) { 
-					if( data_number_check( $r_tp ) )
-						$SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
-					else $SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+					if( data_number_check( $r_tp ) ) $SQLR = $SQLR . " , "  . $r_enm . " = " . $post_enm . " ";
+					else {
+						//$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+						if( $r_tp =='DATE' || $r_tp =='MONTH') {                        // MONTH len=7, DATE len=10
+							if( $post_enm !='') $post_enm =substr( $post_enm, 0, $r_len);
+							$SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+						} else $SQLR = $SQLR . " , "  . $r_enm . " = '" . $post_enm . "' ";
+					}
 				}
+				/* When inserting, all calculation expressions are processed as '='. , insert일때 계산식은 모두 '=' 처리한다.  */
 				else if( $fld_sik == '+' ) $SQLR = $SQLR . " , " . $r_enm . "=" . $post_enm . " ";
 				else if( $fld_sik == '-' ) $SQLR = $SQLR . " , " . $r_enm . "=" . $post_enm . " ";
 				
