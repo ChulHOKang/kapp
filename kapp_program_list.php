@@ -437,14 +437,13 @@ View Line:
 	<TD <?=$bcolor?> width='3%'><?=$rs['userid']?> </td>
 	<TD <?=$bcolor?> width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
 	<TD <?=$bcolor?> width='5%'><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td TD <?=$bcolor?> width='5%' title='Data List program run'>
-		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a>
-	</td>
-		<td <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gr?></td>
-		<td <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gw?></td>
-	<TD <?=$bcolor?> width='5%'><?=substr($rs['upday'], 0,10)?></td>
-	<TD <?=$bcolor?> width='15%' align='center'>
-	<input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>>
+	<TD <?=$bcolor?> width='5%' title='Data List program run'>
+		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gr?></td>
+	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gw?></td>
+	<TD <?=$bcolor?> width='3%'><?=substr($rs['upday'], 0,10)?></td>
+	<TD <?=$bcolor?> width='5%' align='center'>
+	<!-- <input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>> -->
 <?php if( $H_ID == $rs['userid'] ) { ?>
 	<input type='button' onclick="program_del_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>', '<?=$H_ID?>', '<?=$rs['userid']?>')" value='Delete' style='height:22px;width:60px;background-color:red;color:white;border-radius:20px;border:1 solid black'  <?php echo "title=' Delete of ".$rs['pg_name']."' ";?>>
 	&nbsp;
