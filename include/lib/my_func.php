@@ -605,7 +605,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		$response = curl_exec($curl);
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
 		echo curl_error($curl);
-		echo "curl --- response: " . $response;
+		//echo "curl --- response: " . $response;
 		if( $response == false) {
 			echo 'curl Error : ' . curl_error($curl);
 		} else {
@@ -978,7 +978,7 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		$response = curl_exec($curl);
 		curl_setopt($curl, CURLOPT_FAILONERROR, true);
-		echo curl_error($curl);	//echo "curl --- response: " . $response;
+		//echo curl_error($curl);	//echo "curl --- response: " . $response;
 		if( $response == false) {
 			$_ms = "cratreebook_make_create_menu curl Fail : " . curl_error($curl);
 			echo 'curl Fail : ' . curl_error($curl);		//m_(" ------------ : " . $_ms);
