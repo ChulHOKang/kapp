@@ -269,7 +269,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 
 		x = document.tx_editor_form;
 		if(x.nameA.value==''){
-			alert('Please enter a name! ');
+			alert('Please enter a name! '); //Please enter a title! 
 			x.nameA.focus();
 			return false;
 		}
@@ -291,7 +291,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 			return false;
 		}
 		if(x.auto_check.value==''){
-			alert('Please enter an auto-prevention character! ');
+			alert('Please enter an auto-prevention character! '); //Please enter an auto-prevention character! 
 			x.auto_check.focus();
 			return false;
 		}
@@ -330,7 +330,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 			}
 		}
 		Editor.save();
-		formA.submit();
+		//formA.submit();
 		return true;
 
 	}

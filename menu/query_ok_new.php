@@ -33,8 +33,6 @@
 		$H_EMAIL= $member['mb_email'];
 	}
 
-	include "./infor.php";
-
 	if( isset($_POST['search_choice'])) $search_choice=$_POST["search_choice"]; 
 	else $search_choice ='';
 	if( isset($_POST['search_text'])) $search_text=$_POST["search_text"]; 
@@ -69,25 +67,27 @@
 	if( isset($_POST['no'])) $no= $_POST['no'];
 	else $no ='';
 
-	
-	switch( $mf_infor[47] ){ // 47:grant_write
-		case '0': break;
-		case '1': break;
-		case '2':
-			if( !$H_ID || $H_LEV < 2 ) { 
-				m_("null You do not have permission to write."); 
-				echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
-			} else break;
-		case '3': 
-			if( $H_ID != $mf_infor[53] ) { 
-				m_("user You do not have permission to write."); 
-				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
-			} else break;
-		case '8': 
-			if( $H_LEV < 8 ) { 
-				m_("manager You do not have permission to write."); 
-				echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
-			} else break;
+	if( isset($infor) && $infor !='' ) {
+		include "./infor.php";
+		switch( $mf_infor[47] ){ // 47:grant_write
+			case '0': break;
+			case '1': break;
+			case '2':
+				if( !$H_ID || $H_LEV < 2 ) { 
+					m_("null You do not have permission to write."); 
+					echo "<script>window.open('list1.php?infor=".$infor."','_top','')</script>";exit;
+				} else break;
+			case '3': 
+				if( $H_ID != $mf_infor[53] ) { 
+					m_("user You do not have permission to write."); 
+					echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
+				} else break;
+			case '8': 
+				if( $H_LEV < 8 ) { 
+					m_("manager You do not have permission to write."); 
+					echo "<script>window.open('list1.php?infor=$infor','_self','')</script>";exit;
+				} else break;
+		}
 	}
 
 	if( $mode == "ADD_create_board_list3" || $mode == "ADD_create_board_list_my" || $mode == "ADD_create_board_list_adm" || $mode == "board_list3m"){
@@ -111,7 +111,8 @@
 			$fileup = 1;
 		} else {
 			m_("Error query_ok_new - Board type : " . $_POST['sellist_index'] );
-			echo "<script>history.back(-1);</script>"; exit;
+			//echo "<script>history.back(-1);</script>"; exit;
+			echo "<meta http-equiv='refresh' content=0;url='".$_POST['run_pg']."?page=$page'>";
 		}
 		$query = "create table aboard_" .$table_name. " (
 		no int(11) NOT NULL auto_increment,
@@ -222,14 +223,16 @@
 					if ( !@mkdir( $f_path1, 0755 ) ) {
 						echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
 						m_("query_ok_new.php Error: f_path1 : " . $f_path1 );
-						echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
+						//echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
+						echo "<meta http-equiv='refresh' content=0;url='".$_POST['run_pg']."?page=$page'>";
 					}
 				}
 				if ( !is_dir($f_path2) ) {
 					if ( !@mkdir( $f_path2, 0755 ) ) {
 						echo " Error: f_path2 : " . $f_path2;
 						m_("query_ok_new.php Error: f_path2 : " . $f_path2);
-						echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
+						//echo "<meta http-equiv='refresh' content=0;url='board_list3.php?page=$page'>";
+						echo "<meta http-equiv='refresh' content=0;url='".$_POST['run_pg']."?page=$page'>";
 					}
 				}
 			} else {
@@ -242,8 +245,10 @@
 				job_link_table_add( $board_num, $name, $link_name, $table_name, $job_group, $name, $jong );
 				insert_point_app( $H_ID, $config['kapp_write_point'], $link_name, 'aboard@query_ok_new', $name, $table_name, $table_name);
 				echo "<script>alert( 'name:" . $name . " : " . $table_name . ", infor: " .$board_num ."- The bulletin board has been created.');</script>";
+				//name:관심 동영상 모음방 : dao1774493801, infor: 26- The bulletin board has been created.
 			}
-			echo "<script>history.back(-1);</script>"; exit;
+			//echo "<script>history.back(-1);</script>";		exit;
+			echo "<meta http-equiv='refresh' content=0;url='".$_POST['run_pg']."'?infor=$board_num>";
 		} else {
 			m_(" Table Create ERROR --------");
 			echo "create sql: " . $query; exit;

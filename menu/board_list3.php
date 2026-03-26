@@ -398,6 +398,7 @@ $(function () {
 	else $fld_code_asc = '';
 ?>
 <form name="makeform" method="post" action="query_ok_new.php">
+			<input type="hidden" name="run_pg"      value="<?=KAPP_URL_T_?>/menu/board_list3.php" >
 			<input type="hidden" name="infor"       value="" >
 			<input type="hidden" name="no" 	        value="" >
 			<input type="hidden" name="new_insert" 	value="" >
@@ -502,7 +503,7 @@ $(function () {
 
 	</table>
 	</div>
-	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Board Creat &nbsp;▼ &nbsp;</a></span>
+	<div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Board Create &nbsp;▼ &nbsp;</a></span>
 	</div>
 </div>
 

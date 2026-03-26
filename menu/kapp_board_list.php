@@ -383,6 +383,7 @@ $(function () {
 	include_once( KAPP_PATH_T_ . "/menu_run.php");
 ?>
 <form name="makeform" method="post" action="query_ok_new.php">
+			<input type="hidden" name="run_pg"      value="<?=KAPP_URL_T_?>/menu/kapp_board_list.php" >
 			<input type="hidden" name="infor"       value="" >
 			<input type="hidden" name="no" 	        value="" >
 			<input type="hidden" name="new_insert" 	value="" >
@@ -435,7 +436,7 @@ $(function () {
 								  <table cellspacing="0" cellpadding="0" width="100" align="center" border="0">
 									<tr>
 									  <td align="middle">
-										 <input type='button' value='ADD->' onclick="javascript:New_Create()" title=' Create a bulletin board. Please select the type of bulletin board left! '>
+										 <input type='button' value=' ADD-> ' onclick="javascript:New_Create()" title=' Create a bulletin board. Please select the type of bulletin board left! '>
 									  </td>
 									</tr>
 								 </table>

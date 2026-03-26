@@ -155,8 +155,9 @@
 			document.view_form.page.value = page;
 			//search_choice= document.view_form.search_choice.value;
 			//search_text	= document.view_form.search_text.value;
-			call_pg = 'detailD.php';
-			url = "detail_delete_password.php?infor=" + infor + "&mode=detail_deleteTT" + "&list_no=" + list_no + "&page=" +page+ "&call_pg=" + call_pg+ "&menu_mode=" + menu_mode;
+			call_pg = 'listD.php';
+			back_pg = 'detailD.php';
+			url = "detail_delete_password.php?infor=" + infor + "&mode=detail_deleteTT" + "&list_no=" + list_no + "&page=" +page+ "&call_pg=" + call_pg+ "&back_pg=" + back_pg+ "&menu_mode=" + menu_mode;
 			window.open(url,"newB","width=600,height=300,scrollbars=no");
 			return true;
 
@@ -192,7 +193,6 @@
 	$mf_46 = $mf_infor[46];
 	$line_cnt	= $mf_infor[16];
 	$orderby		= " order by target desc , step ";
-//	$where_		= " where subject like '%$search_text%' or context like '%$search_text%' ";
 	$where_		= " where subject like '%$search_text%' ";
 	$whereA		= " where no >= $list_no ";
 	$SQL1		= " SELECT * from aboard_" . $mf_infor[2];
@@ -201,7 +201,7 @@
 	else				$SQL1 = $SQL1 . $orderby;
 	if( ($result = sql_query( $SQL1 ) )==false ){
 		printf("Invalid query: %s\n", $SQL1);
-		my_msg(" no found data Select Error ");
+		m_(" no found data Select Error ");
 		$total_count = 0;
 	} else {
 		$total_count = sql_num_rows($result);

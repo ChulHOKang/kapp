@@ -30,6 +30,10 @@
 	else if( isset($_REQUEST['call_pg']) ) $call_pg =$_REQUEST['call_pg'];
 	else  $call_pg ='';
 
+	if( isset($_POST['back_pg']) ) $back_pg =$_POST['back_pg'];
+	else if( isset($_REQUEST['back_pg']) ) $back_pg =$_REQUEST['back_pg'];
+	else  $back_pg ='';
+
 	if( isset($_POST['menu_mode']) ) $menu_mode =$_POST['menu_mode'];
 	else if( isset($_REQUEST['menu_mode']) ) $menu_mode =$_REQUEST['menu_mode'];
 	else  $menu_mode ='';
@@ -104,7 +108,7 @@
 
 <?php
 	if( $mode=='back' ){
-			$rungo = $call_pg . "?infor=" . $infor . "&page=".$page;
+			$rungo = $back_pg . "?infor=" . $infor . "&page=".$page;
 			echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 			echo "<script>cl();</script>";
 			exit;
@@ -190,10 +194,15 @@
 				$del_ok =sql_query($sql);
 			}
 			
-			m_("--- delete ok!");
+			//m_("--- delete ok!");
+			echo "<script>alert('delete ok! '); window.opener.location.href='listD.php?infor=$infor&page=$page&menu_mode=$menu_mode&search_choice=$search_choice&search_text=$search_text';</script>";
 			//echo "<script>alert('delete ok! '); location.href='listD.php?infor=$infor&page=$page&menu_mode=$menu_mode&search_choice=$search_choice&search_text=$search_text';</script>";
-			echo "<script>cl();</script>";
-			exit;
+			//$rungo = $call_pg . "?infor=" . $infor . "&page=".$page;
+			//echo "<script>parent.window.open( '$rungo' , '_top', ''); </script>";
+			//window.opener.location.href = '부모창이_이동할_URL.php'; // 부모창 이동
+			//window.close(); // 팝업창 닫기
+
+			echo "<script>cl();</script>";	exit;
 
 
 		} else {

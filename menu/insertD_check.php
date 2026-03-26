@@ -3,8 +3,8 @@
 	/*
 	  insertD_check.php - insertD.php
 	*/
+	//	m_("infor: $infor, --- special_chk -  ");//infor: 29, --- special_chk -  
 	include_once('./infor.php');
-
 	if( !isset($infor) || $infor =='' ) {
 		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page&search_choice=$search_choice&search_text=$search_text'>";
 		exit; 
@@ -32,13 +32,15 @@
 			$password= $_POST['password'];
 		}
 	}
-
-	function special_chk ($input) { // 특수문자 제거. "'"만 제거한다.
-		if( is_array($input)) { //m_("---1");
+//special_chk---insertD_check.php---321---확인필요test AAAspecial_chk---- p노코드툴기반채무자상담및법률서류자동화웹개발
+	function special_chk ($input) { // 특수문자 제거. "'"만 제거 X 한다. 2026-03-26
+		if( is_array($input)) {
 			return array_map('special_chk', $input); 
-		} else if ( is_scalar($input)) { //m_("---2");
-				return preg_replace("/'/i", "", $input); //return preg_replace("/[ #\/\\\:;,'\"`<>()]/i", "", $input);
-		} else { //m_("---3");
+		} else if ( is_scalar($input)) { // 여기를 탄다....
+			return preg_replace("/'/i", "\'", $input);
+			//$input = "special_chk --- insertD_check.php,--- 321 --- 확인 필요 test \n " . $input;
+			//return preg_replace("/[ #\/\\\:;,'\"`<>()]/i", "", $input);
+		} else {
 			return $input; 
 		} 
 	}
