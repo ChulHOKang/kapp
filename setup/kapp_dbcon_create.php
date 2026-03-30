@@ -1980,7 +1980,7 @@ function My_everlasting_schedule($t_head, $tab) {
 		  `uptime` int(10) DEFAULT NULL,
 		  `sday` datetime DEFAULT current_timestamp(),
 		  `uselunar` char(1) DEFAULT NULL,
-		  `yundal` char(5) DEFAULT NULL,
+		  `yundal` char(5) DEFAULT NULL
         , primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     ";
     $result = sql_query( $SQL );
@@ -2180,7 +2180,7 @@ function Tkher_content($t_head, $tab) {
     $tab = $t_head.$tab;
     $SQL = "
     CREATE TABLE `".$t_head."tkher_content` (
-    `co_id` varchar(50)  auto_increment NOT NULL,
+    `co_id` varchar(50)  NOT NULL,
     `co_html` tinyint(4) NOT NULL DEFAULT 0,
     `co_subject` varchar(255) NOT NULL,
     `co_content` longtext NOT NULL,
