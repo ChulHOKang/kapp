@@ -280,7 +280,8 @@
 	
 	fwrite($fsi,"					<p>Table created. You can delete the table and regenerate it. </p>      \r\n");
 	fwrite($fsi,"<?php		} else if( $"."connect_dbcheck != 'dberror' ) { ?>			\r\n");
-	fwrite($fsi,"<?php			if( $"."_POST['mode'] != 'db_recreate' ) {  \r\n");
+//	fwrite($fsi,"<?php			if( $"."_POST['mode'] != 'db_recreate' ) {  \r\n");
+	fwrite($fsi,"<?php			if( $"."mode != 'db_recreate' ) {  \r\n");
 	fwrite($fsi,"					$"."hostnm = KAPP_MYSQL_HOST;          \r\n");
 	fwrite($fsi,"					$"."dbnm = KAPP_MYSQL_DB;              \r\n");
 	fwrite($fsi,"					$"."usernm = KAPP_MYSQL_USER;          \r\n");
@@ -291,7 +292,8 @@
 	fwrite($fsi,"          <?php }  ?>  \r\n");
 	fwrite($fsi,"					<input type='button' value='Table Create' onclick=\"javascript:table_create('".$tab_enm."');\" class='kapp_btn_bo02'  title='Create a table : $tab_enm' ><br>   \r\n");
 	fwrite($fsi,"<?php		}  \r\n");
-	fwrite($fsi,"		    if ( $"."_POST['mode'] == \"db_recreate\" ) {  \r\n"); 
+//	fwrite($fsi,"		    if ( $"."_POST['mode'] == \"db_recreate\" ) {  \r\n"); 
+	fwrite($fsi,"		    if ( $"."mode == \"db_recreate\" ) {  \r\n"); 
 	fwrite($fsi,"				$"."hostnm = KAPP_MYSQL_HOST;  \r\n");
 	fwrite($fsi,"				$"."dbnm = KAPP_MYSQL_DB;  \r\n");
 	fwrite($fsi,"				$"."usernm = KAPP_MYSQL_USER;  \r\n");

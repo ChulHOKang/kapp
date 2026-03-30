@@ -110,14 +110,14 @@
 
 		$iftypeX = "";
 		$ifdataX = "";
-		$item_array = "";
-		$item_array = $rsPG['item_array'];
+		$table_item_array = "";
+		$table_item_array = $rsPG['item_array'];
 		$iftypeX	= $rsPG['if_type'];
 		$ifdataX	= $rsPG['if_data'];
 		$iftype		= explode("|", $iftypeX);
 		$ifdata		= explode("|", $ifdataX);
 		$popdata	= explode("^", $pop_dataPG);
-		if( isset($item_array) ) $list = explode("@", $item_array);
+		if( isset($table_item_array) ) $list = explode("@", $table_item_array);
 		else  $list = '';
 		for( $i=0,$j=1; isset($list[$i]) && $list[$i] != ""; $i++, $j++ ){
 				$ddd  = $list[$i];
@@ -264,12 +264,13 @@
 ?>
 		<input type='text' name='iftype' value='<?=$iftypeX?>' style="display:none;">
 		<input type='text' name='ifdata' value='<?=$ifdataX?>' style="display:none;">
-		<input type='hidden' name='mode'			value=''>
+		<input type='hidden' name='pg_call'		value=''>
+		<input type='hidden' name='mode'		value=''>
 		<input type='hidden' name='pg_name'		value='<?=$pg_name?>'>
 		<input type='hidden' name='pg_code'		value='<?=$pg_code?>'>
 		<input type="hidden" name="tab_enm"		value="<?=$tab_enm?>">
 		<input type="hidden" name="tab_hnm"		value="<?=$tab_hnm?>">
-		<input type="hidden" name="item_array"	value="<?=$item_array?>">
+		<input type="hidden" name="table_item_array"	value="<?=$table_item_array?>">
 		<input type="hidden" name="item_cnt"		value="<?=$item_cnt?>">
 		<input type='hidden' name='pop_data'		value='<?=$pop_dataPG?>'>
 		<input type='hidden' name='relation_data'	value='<?=$relation_dataPG?>'>
@@ -283,7 +284,7 @@
 		<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" 
 		title='Program source creation and Download the data registration program source. You need to download the table before you can run the program. Database creation is also included there. To download a table, click Program Creation Menu->Table Search->Table Name and click the Source Download button.' title='point:<?=$H_POINT?>'>
 <?php
-		echo "<input type='button' value='Excel_Upload' onclick=\"excel_upload_func('".$tab_enm."','".$tab_hnm."')\" class='kapp_btn_bo02' title='Batch upload of data to excel file'>"
+		echo "<input type='button' value='Excel_Upload' onclick=\"excel_upload_func('".$tab_enm."','".$tab_hnm."')\" class='kapp_btn_bo03' title='Batch upload of data to excel file'>"
 ?>
 		<input type='button' value='List' onclick="javascript:table_data_list('<?=$pg_code?>');" class="kapp_btn_bo02">
 </form>
@@ -338,6 +339,8 @@
 		document.makeform.submit();
 	}
 	function excel_upload_func(tab_enm, tab_hnm){
+		pg_code = document.makeform.pg_code.value;
+		document.makeform.pg_call.value="tkher_program_data_list.php?pg_code="+pg_code;
 		document.makeform.mode.value="Upload_mode_table10i";
 		document.makeform.tab_enm.value=tab_enm;
 		document.makeform.tab_hnm.value=tab_hnm;

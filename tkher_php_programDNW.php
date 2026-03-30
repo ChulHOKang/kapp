@@ -45,7 +45,7 @@
 	$group_code	= $rsPG['group_code'];
 	$group_name	= $rsPG['group_name'];
 	$item_cnt	= $rsPG['item_cnt'];
-	$item_array = $rsPG['item_array'];
+	$table_item_array = $rsPG['item_array'];
 	$if_typePG	= $rsPG['if_type'];
 	$if_dataPG	= $rsPG['if_data']; 
 	$pop_dataPG	= $rsPG['pop_data'];
@@ -54,7 +54,7 @@
 	if( $mode !='write_r') {
 		m_("tkher_php_programDNW write_r : Error, "); exit;
 	}
-	$list		= explode("@", $item_array);
+	$list		= explode("@", $table_item_array);
 	$search_fld = '';
 	for ( $i=0; $list[$i] != ""; $i++ ){
 		$ddd			= $list[$i];
@@ -127,7 +127,7 @@ fwrite($fsi,"	$"."relation_typePG = '" . $relation_typePG . "'; \r\n");
 fwrite($fsi,"	$"."if_typePG  = '" . $if_typePG . "'; \r\n");
 fwrite($fsi,"	$"."if_dataPG  = '" . $if_dataPG . "'; \r\n");
 fwrite($fsi,"	$"."pop_dataPG = '" . $pop_dataPG . "'; \r\n");
-fwrite($fsi,"	$"."item_array		= '" . $item_array . "';    \r\n");
+fwrite($fsi,"	$"."table_item_array		= '" . $table_item_array . "';    \r\n");
 fwrite($fsi,"	$"."_SESSION['if_typePG'] = $"."if_typePG;\r\n");
 fwrite($fsi,"	$"."_SESSION['if_dataPG'] = $"."if_dataPG; \r\n");
 fwrite($fsi,"	$"."_SESSION['pop_dataPG']= $"."pop_dataPG; \r\n");
@@ -279,12 +279,12 @@ fwrite($fsi,"		<input type='hidden' name='mode'			value=''>   \r\n");
 fwrite($fsi,"		<input type='hidden' name='tab_hnm'			value=''>   \r\n");
 fwrite($fsi,"		<input type='hidden' name='tab_enm'			value=''>   \r\n");
 fwrite($fsi,"		<input type='hidden' name='return_pg_code'	value=''>   \r\n");
-fwrite($fsi,"				<input type='hidden' name='item_array'	value='<?=$"."item_array?>'>   \r\n");
+fwrite($fsi,"		<input type='hidden' name='table_item_array'	value='<?=$"."table_item_array?>'>   \r\n");
 
 //fwrite($fsi,"		<input type='button' value='submit' onclick=\"program_run_pg('".$i."','".$if_type."')\" class='Btn_List01A'>   \r\n");
 fwrite($fsi,"		<input type='button' value='submit' onclick=\"program_run_pg('".$i."','".$if_typePG."')\" class='kapp_btn_bo02'>   \r\n");
 fwrite($fsi,"		<input type='reset' value='reset' class='kapp_btn_bo02'>   \r\n");
-fwrite($fsi,"		<input type='button' value='Excel_Upload' onclick=\"excel_upload_func('".$tab_enm."','".$tab_hnm."')\" class='kapp_btn_bo02' title='Batch upload of data to excel file'>     \r\n");
+fwrite($fsi,"		<input type='button' value='Excel_Upload' onclick=\"excel_upload_func('".$tab_enm."','".$tab_hnm."')\" class='kapp_btn_bo03' title='Batch upload of data to excel file'>     \r\n");
 
 fwrite($fsi,"       <input type='button' value='List' onclick=\"javascript:table_data_list();\" class='kapp_btn_bo02'> \r\n");
 fwrite($fsi,"      </form>                    \r\n");
@@ -319,28 +319,29 @@ fwrite($fsi,"			}   \r\n");
 fwrite($fsi,"		}   \r\n");
 fwrite($fsi,"		return true;   \r\n");
 fwrite($fsi,"	}   \r\n");
+
 fwrite($fsi,"	function program_run_pg(item_cnt,iftype) {   \r\n");
 fwrite($fsi,"		document.makeform.mode.value='Tkher_write';   \r\n");
 fwrite($fsi,"		document.makeform.action='./" . $runF2r . "';   \r\n");	// write_r php
 fwrite($fsi,"		document.makeform.target='_self';   \r\n");
 fwrite($fsi,"		document.makeform.submit();   \r\n");
 fwrite($fsi,"	}   \r\n");
-fwrite($fsi,"	function table_data_list() {   \r\n");
 
+fwrite($fsi,"	function table_data_list() {   \r\n");
 fwrite($fsi,"		document.makeform.action='./".$runF1."';   \r\n");	// list php
 fwrite($fsi,"		document.makeform.submit();   \r\n");
 fwrite($fsi,"	}   \r\n");
 
 fwrite($fsi,"	function excel_upload_func(tab_enm, tab_hnm) {   \r\n");
 fwrite($fsi,"		document.makeform.mode.value='Upload_mode';   \r\n");
-fwrite($fsi,"				document.makeform.tab_enm.value	=tab_enm;   \r\n");
-fwrite($fsi,"				document.makeform.tab_hnm.value	=tab_hnm;   \r\n");
-fwrite($fsi,"				document.makeform.return_pg_code.value	='" . $runF1. "';   \r\n"); // $runF1 =$pg_code + '_run.php' 
-
-fwrite($fsi,"				document.makeform.action		=\"excel_upload_user.php\";   \r\n");
+fwrite($fsi,"		document.makeform.tab_enm.value	=tab_enm;   \r\n");
+fwrite($fsi,"		document.makeform.tab_hnm.value	=tab_hnm;   \r\n");
+fwrite($fsi,"		document.makeform.return_pg_code.value	='" . $runF1. "';   \r\n"); // $runF1 =$pg_code + '_run.php' 
+fwrite($fsi,"		document.makeform.action		=\"excel_upload_user.php\";   \r\n");
 fwrite($fsi,"		document.makeform.target='_self';   \r\n");
 fwrite($fsi,"		document.makeform.submit();   \r\n");
 fwrite($fsi,"	}   \r\n");
+
 fwrite($fsi," //-->                                \r\n");
 fwrite($fsi," </script>                                \r\n");
 

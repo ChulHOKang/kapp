@@ -16,7 +16,7 @@
 	if($mode=='data_list') {
 		if( $H_ID != 'dao' ) coin_minus_func($H_ID, 1000);
 	}
-	$table_item_array = $_POST['item_array'];
+	$table_item_array = $_POST['table_item_array'];
 	$tab_enm    = $_POST['tab_enm'];
 
 	$mid = $H_ID;
@@ -162,10 +162,20 @@
 	fwrite($fsr,"		document.view_form.action='".$runF2."';                \r\n");
 	fwrite($fsr,"		document.view_form.submit(); \r\n");
 	fwrite($fsr,"	} \r\n");
+
 	fwrite($fsr,"	function excel_down(){ \r\n");
 	fwrite($fsr,"		document.view_form.mode.value = 'excel_create'; \r\n");
-
 	fwrite($fsr,"		document.view_form.action='excel_download_user.php'; \r\n");
+	fwrite($fsr,"		document.view_form.submit(); \r\n");
+	fwrite($fsr,"	} \r\n");
+
+	fwrite($fsr,"	function excel_upload_func(tab_enm, tab_hnm){ \r\n");
+	fwrite($fsr,"		document.view_form.mode.value = 'Upload_mode'; \r\n");
+	fwrite($fsr,"		document.view_form.tab_enm.value=tab_enm; \r\n");
+	fwrite($fsr,"		document.view_form.tab_hnm.value=tab_hnm; \r\n");
+	fwrite($fsr,"		document.view_form.return_pg_code.value	='".$runF1."';   \r\n");
+	fwrite($fsr,"		document.view_form.action='excel_upload_user.php'; \r\n");
+	fwrite($fsr,"		document.view_form.target='_self';   \r\n");
 	fwrite($fsr,"		document.view_form.submit(); \r\n");
 	fwrite($fsr,"	} \r\n");
 
@@ -229,7 +239,7 @@
 	$table10_pg = sql_num_rows($resultPG);
 	if( $table10_pg > 0 )	 {
 		$rsPG			= sql_fetch_array($resultPG);
-		$item_array = $rsPG['item_array'];
+		$table_item_array = $rsPG['item_array'];
 		$if_data		= $rsPG['if_data'];
 		$iftype		= $rsPG['if_type'];
 		$tab_enm	= $rsPG['tab_enm'];
@@ -247,7 +257,7 @@
 	$list		= array();
 	$item		= array(); 
 	$ddd		= "";
-	$list		= explode("@", $item_array);
+	$list		= explode("@", $table_item_array);
 	for ( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){ 
 		$ddd			= $list[$i];
 		$item			= explode("|", $ddd);
@@ -329,12 +339,13 @@ fwrite($fsr,"						<input type='hidden' name='seqno'		value='' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='page'		value='<?=$"."page?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='tab_enm'		value='<?=$"."tab_enm?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='tab_hnm'		value='<?=$"."tab_hnm?>' />    \r\n");
-fwrite($fsr,"						<input type='hidden' name='item_array'	value='<?=$"."item_array?>'>    \r\n");
-fwrite($fsr,"						<input type='hidden' name='table_item_array'	value='".$table_item_array."'>    \r\n");
+fwrite($fsr,"						<input type='hidden' name='table_item_array'	value='<?=$"."table_item_array?>'>    \r\n");
+//fwrite($fsr,"						<input type='hidden' name='table_item_array'	value='".$table_item_array."'>    \r\n");
 fwrite($fsr,"						<input type='hidden' name='item_cnt'	value='<?=$"."item_cnt?>'>    \r\n");
 fwrite($fsr,"						<input type='hidden' name='list_no'		value='' />    \r\n");
 
-fwrite($fsr,"						<input type='hidden' name='pg_code'		value='<?=$"."pg_code?>' />    \r\n");
+fwrite($fsr,"						<input type='hidden' name='return_pg_code'	value='".$pg_code."' />    \r\n");
+fwrite($fsr,"						<input type='hidden' name='pg_code'		value='".$pg_code."' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='search_fld'	value='<?=$"."search_fld?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='search_choice' value='<?=$"."search_choice?>' />    \r\n");
 fwrite($fsr,"						<input type='hidden' name='line_cnt'	value='<?=$"."line_cnt?>' />    \r\n");
@@ -414,7 +425,8 @@ fwrite($fsr,"						<td><input type='button' value='Search' onclick=\"javascript:
 fwrite($fsr,"						<td title='tkher_program_data_listDN'>    \r\n");
 fwrite($fsr,"							<input type='button' value='Write' onclick=\"javascript:table_record_write('table_pg70_write');\" class='kapp_btn_bo02'></td>    \r\n");
 fwrite($fsr,"						<td title='Create and download the data as an Excel file.'>    \r\n");
-fwrite($fsr,"							<input type='button' value='Excel Down' onclick=\"javascript:excel_down();\" class='kapp_btn_bo02'></td>    \r\n");
+fwrite($fsr,"							<input type='button' value='Excel Down' onclick=\"javascript:excel_down();\" class='kapp_btn_bo02'>    \r\n");
+fwrite($fsr,"							<input type='button' value='Excel Upload' onclick=\"javascript:excel_upload_func('".$tab_enm."','".$tab_hnm."');\" class='kapp_btn_bo03'></td>    \r\n");
 
 fwrite($fsr,"					</tr>    \r\n");
 fwrite($fsr,"					</table>    \r\n");

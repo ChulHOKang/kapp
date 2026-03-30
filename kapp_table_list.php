@@ -267,6 +267,7 @@ $(function () {
 		window.open('/','_top','');
 	}
 	function excel_upload_func(tab_enm, tab_hnm){
+		document.table_list.pg_call.value ="kapp_table_list.php";
 		document.table_list.mode.value		="Upload_mode_table10i";
 		document.table_list.tab_enm.value	=tab_enm;
 		document.table_list.tab_hnm.value	=tab_hnm;
@@ -427,6 +428,7 @@ $(function () {
 
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
+	<input type="hidden" name="pg_call"  value="">
 	<input type="hidden" name="mode" value="<?=$mode?>">
 	<input type="hidden" name="mid" >
 	<input type='hidden' name='page' value="<?=$page?>">

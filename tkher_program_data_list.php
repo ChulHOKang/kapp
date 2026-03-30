@@ -39,7 +39,7 @@
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !=''){
-		$item_array = $rsPG['item_array'];
+		$table_item_array = $rsPG['item_array'];
 		$if_data = $rsPG['if_data'];
 		$if_type = $rsPG['if_type'];
 		$tab_enm = $rsPG['tab_enm'];
@@ -186,6 +186,15 @@ $(function () {
 		}
 		document.view_form.mode.value = 'excel_create';
 		document.view_form.action='down_excel_file.php';
+		document.view_form.submit();
+	}
+	function excel_upload_func(tab_enm, tab_hnm){
+		pg_code = document.view_form.pg_code.value;
+		document.view_form.pg_call.value="tkher_program_data_list.php?pg_code="+pg_code;
+		document.view_form.mode.value="Upload_mode_table10i";
+		document.view_form.tab_enm.value=tab_enm;
+		document.view_form.tab_hnm.value=tab_hnm;
+		document.view_form.action="excel_load.php";
 		document.view_form.submit();
 	}
 	function Change_line_cnt( $pg_code, $line){
@@ -345,7 +354,7 @@ $(function () {
 	$list		= array();
 	$item		= array(); 
 	$ddd		= "";	//$in_day= date("Y-m-d H:i");
-	$list		= explode("@", $item_array);
+	$list		= explode("@", $table_item_array);
 	for( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){
 		$ddd				= $list[$i];
 		$item				= explode("|", $ddd);
@@ -494,13 +503,14 @@ if( $H_ID==$pg_mid ) {
 		echo "<br><p style='font-size:25px;'>".$view_msg . "</p><br>";
 ?>
 				</div>
+						<input type="hidden" name='pg_call'			value='' />
 						<input type="hidden" name='mode'			value='<?=$mode?>' />
 						<input type="hidden" name='fld_code_pg'		value='<?=$fld_code_pg?>' />
 						<input type="hidden" name='fld_code_asc_pg'	value='<?=$fld_code_asc_pg?>' />
 						<input type="hidden" name='page'			value='<?=$page?>' />
 						<input type="hidden" name='tab_enm'		value='<?=$tab_enm?>' />
 						<input type="hidden" name='tab_hnm'		value='<?=$tab_hnm?>' />
-						<input type="hidden" name="item_array"	value="<?=$item_array?>">
+						<input type="hidden" name="table_item_array"	value="<?=$table_item_array?>">
 						<input type="hidden" name="item_cnt"		value="<?=$item_cnt?>">
 						<input type="hidden" name='pg_title'		value='<?=$tit?>' />
 						<input type="hidden" name='seqno'			value='' />
@@ -622,6 +632,7 @@ if( $H_ID==$pg_mid ) {
 					<div class="fr">
 					<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='table_pg70_write'>
 
+				<input type='button' value='Excel_Upload' onclick="excel_upload_func('<?=$tab_enm?>','<?=$tab_hnm?>')" class='kapp_btn_bo03' title='Batch upload of data to excel file'>
 				<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="kapp_btn_bo02" title=' Download data as an Excel file'>
 				<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
 	</div> 
