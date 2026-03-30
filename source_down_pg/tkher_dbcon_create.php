@@ -1,6 +1,7 @@
 <?php
-	include "urllink_db_lib.php";  
+	include "tkher_db_lib.php";  
 	/*
+	include "urllink_db_lib.php";  
         tkher_dbcon_create.php
 		call : setup.php에서 call한다. 
 		out  : tkher_dbcon.php를 생성한다.
@@ -8,7 +9,7 @@
 	$mode= $_POST['mode'];
 	$tab_enm= $_POST['tab_enm'];
 	$db_id= $_POST['db_id'];
-	echo "<script>alert('mode:".$mode.", db_id:' + ".$db_id."); </script>";  
+	echo "<script>alert('mode:".$mode.", db_id:' + ".$db_id."); </script>";  //mode: - Error
 	if( $mode=='db_create' or $mode== 'urllink_db_recreate_action') { //, db_recreate_action
 		$db_name 		= $_POST['db_name'];
 		$db_id 			= $_POST['db_id'];

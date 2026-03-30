@@ -27,6 +27,17 @@ table{border:0;border-collapse:collapse;table-layout:fixed;}
 	background:#d01d27;
 	margin-right: 10px;
 }
+.kapp_btn_bo03 {
+	width:120px;
+	height:33px;
+	display:inline-block;
+	line-height:33px;
+	text-align:center;
+	color:#fff;
+	font-size:14px;
+	background:#d01d27;
+	margin-right: 10px;
+}
 
 .btn_bo02T{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}  
 .btn_bo03T{width:84px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}  

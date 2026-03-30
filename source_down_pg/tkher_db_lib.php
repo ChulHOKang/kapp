@@ -86,14 +86,6 @@ if (!defined('KAPP_SET_TIME_LIMIT')) define('KAPP_SET_TIME_LIMIT', 0);
 //==============================================================================
 // SQL Injection 등으로 부터 보호를 위해 sql_escape_string() 적용
 //------------------------------------------------------------------------------
-// magic_quotes_gpc 에 의한 backslashes 제거
-if (get_magic_quotes_gpc()) {
-    $_POST		= array_map_deep('stripslashes',  $_POST);
-    $_GET		= array_map_deep('stripslashes',  $_GET);
-    $_COOKIE	= array_map_deep('stripslashes',  $_COOKIE);
-    $_REQUEST = array_map_deep('stripslashes',  $_REQUEST);
-}
-
 	@extract($_GET);      
 	@extract($_POST);      
 	@extract($_SERVER);      

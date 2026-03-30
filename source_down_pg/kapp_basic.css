@@ -356,6 +356,17 @@ radio1A {
 	background:#d01d27;
 	margin-right: 10px;
 }
+.kapp_btn_bo03 {
+	width:120px;
+	height:33px;
+	display:inline-block;
+	line-height:33px;
+	text-align:center;
+	color:#fff;
+	font-size:14px;
+	background:#d01d27;
+	margin-right: 10px;
+}
 
 .viewHeaderT{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;} /* right*/
 .viewHeaderT span{left:0;top:1px;font-size:14px;color:#686868;} /*position:absolute; top:12 */

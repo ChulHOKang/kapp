@@ -11,7 +11,7 @@ define('KAPP_BOARD_VER_', '3.1');
 define('KAPP_PROGRAM_VER_', '3.5');
 define('KAPP_URLLINKCOIN_VER_', '3.5');
 define('KAPP_BATCOIN_VER_', '3.1');
-define('_KAPP_', true);
+//define('_KAPP_', true);
 
 if (PHP_VERSION >= '5.1.0') {
     if (function_exists("date_default_timezone_set")) date_default_timezone_set("Asia/Seoul");
@@ -49,6 +49,7 @@ define('KAPP_MOBILE_DIR',     'mobile');
 define('KAPP_SESSION_DIR',    '');
 
 // URL 은 브라우저상에서의 경로 (도메인으로 부터의)
+/*
 if (KAPP_DOMAIN) {
     define('KAPP_URL', KAPP_DOMAIN);
 } else {
@@ -57,7 +58,7 @@ if (KAPP_DOMAIN) {
     else
         define('KAPP_URL', '');
 }
-
+*/
 if (isset($tkher_path['path'])) {
     define('KAPP_PATH', $tkher_path['path']);
 } else {
@@ -129,7 +130,7 @@ define('KAPP_STRING_ENCRYPT_FUNCTION', 'sql_password');
 
 // SQL 에러를 표시할 것인지 지정
 // 에러를 표시하려면 TRUE 로 변경, FALSE
-define('KAPP_DISPLAY_SQL_ERROR', TRUE);
+//define('KAPP_DISPLAY_SQL_ERROR', TRUE);
 
 // escape string 처리 함수 지정
 // addslashes 로 변경 가능
@@ -149,7 +150,7 @@ define('KAPP_THUMB_PNG_COMPRESS', 5);
 define('KAPP_IS_MOBILE_DHTML_USE', false);
 
 // MySQLi 사용여부를 설정합니다.
-define('KAPP_MYSQLI_USE', true);
+//define('KAPP_MYSQLI_USE', true);
 
 // Browscap 사용여부를 설정합니다.
 define('KAPP_BROWSCAP_USE', true);
