@@ -173,9 +173,9 @@ h1 {margin:0 0 30px;text-align:center}
 			return false;
 		} else {
 			if( confirm("Are you want to K-APP Setup? ") ) {
-				//document.form_view.mode.value	= 'urllink_kapp_dbcon_create_func';
 				document.form_view.action		= 'kapp_dbcon_create.php';   // create table 'urllink_member' 생성 - 중요!
 				document.form_view.submit();
+				ret = window.open('../progressbar.php?kapp_delay_time=6','','width=600,height=300, toolbar=no,scrollbars=yes,resizable=no');
 			}
 		}
 		return false;
