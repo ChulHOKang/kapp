@@ -75,7 +75,8 @@ function Back($pg_code) {
         <div class='boardViewX'>
             <div class='viewHeader'>
                 <span title='tab_update_pg70'>Date:<?=date("Y-m-d H:i:s" ); ?></span>
-                <input type=button value='Back' onclick="javascript:Back();" class='Btn_List01A'>
+                <input type='button' title='K-APP DB Table List' value='Back' onclick="javascript:Back();" class='Btn_List01A'>
+				<input type='button' title='next change' value='Enter next' onclick="Next_input()" class="Btn_List01B">
             </div>
             <div class='viewSubjX'><span>kapp_config_v1</span> </div>
             <div class='blankA'> </div>
@@ -235,7 +236,7 @@ function Back($pg_code) {
 
             </form>
         </div>
-                        <input type=button value='Enter next' onclick="Next_input()"  class="Btn_List02A">
+        <!-- <input type='button' value='Enter next' onclick="Next_input()" class="Btn_List02A"> -->
 <?php   
 	}  //query false   
 ?>
