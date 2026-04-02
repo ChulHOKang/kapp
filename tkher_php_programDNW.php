@@ -24,6 +24,7 @@
 	$runF2	= $pg_code . "_write.php";
 	$runF2r	= $pg_code . "_write_r.php";
 	$insfile	= $path . $H_ID . "/" . $pg_code . "_write.php";
+	//fopen(/home1/appgenerator/public_html/kapp/file/solpakan_naver/solpakan_naver_1775103224_write.php)
 	$fsi		= fopen("$insfile","w+");
 	$fld_enm	= array();
 	$fld_hnm	= array();
@@ -402,9 +403,18 @@ fwrite($fsw,"		$"."f_path = './' . $"."ff_nm;   // dir add     \r\n");
 			if( $fld[1] != "seqno") {
 					$nm = $fld[1]; 
 					if( $typeX=='3' ) {	// 3:checkbox
-						fwrite($fsw,"    $"."aa = @implode(\",\",$"."_POST[" .$fld[1]. "]);   \r\n");
-						if( $i==0 )	$SQL = $SQL . $nm . " = '$"."aa' ";
-						else	$SQL = $SQL . " , " .  $nm . " = '$"."aa' ";
+						fwrite($fsw,"					$"."aa = @implode(\",\",$"."_POST['" .$fld[1]. "']);   \r\n");
+						if( $i==0 )	{
+							if( data_number_check( $fld[3] ) )
+								$SQL = $SQL . $nm . " = $"."aa ";
+							else
+								$SQL = $SQL . $nm . " = '$"."aa' ";
+						} else {
+							if( data_number_check( $fld[3] ) )
+								$SQL = $SQL . " , " .  $nm . " = $"."aa ";
+							else
+								$SQL = $SQL . " , " .  $nm . " = '$"."aa' ";
+						}
 					} else if( $typeX=='9' ) {	// 9:addfile
 
 fwrite($fsw,"		                $". $nm . " = '';  \r\n");
@@ -424,8 +434,20 @@ fwrite($fsw,"						}  \r\n");
 						if( $i==0 )	$SQL = $SQL . $nm ." = '$".$nm."' ";
 						else	$SQL = $SQL . " , " . $nm ." = '$".$nm."' ";
 					} else {
-						if( $i==0 )	$SQL = $SQL . $nm . " = '$" . "_POST[" . $fld[1]. "]' ";
-						else	$SQL = $SQL . " , " . $nm ." = '$"."_POST[" .$fld[1]. "]' ";
+						if( $i==0 )	{
+							if( data_number_check( $fld[3] ) )
+								$SQL = $SQL . $nm . " = \".$" . "_POST['" . $fld[1]. "'].\" ";
+							else
+								$SQL = $SQL . $nm . " = '\".$" . "_POST['" . $fld[1]. "'].\"' ";
+						} else {
+								//$SQL = $SQL . " , " . $nm ." = '\".$"."_POST['" .$fld[1]. "'].\"' ";
+							if( data_number_check( $fld[3] ) )
+								$SQL = $SQL . " , " . $nm ." = \".$"."_POST['" .$fld[1]. "'].\" ";
+							else
+								$SQL = $SQL . " , " . $nm ." = '\".$"."_POST['" .$fld[1]. "'].\"' ";
+						}
+						//if( $i==0 )	$SQL = $SQL . $nm . " = '$" . "_POST[" . $fld[1]. "]' ";
+						//else	$SQL = $SQL . " , " . $nm ." = '$"."_POST[" .$fld[1]. "]' ";
 					}
 			}
 	}

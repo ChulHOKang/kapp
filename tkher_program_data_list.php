@@ -13,7 +13,6 @@
 		https://tkher.com/t/t_login.php?pg_code=dao_1537317833
 	---------------------------------------------------------------------- */
 	include "./table_paging.php";
-
 	$H_ID  = get_session("ss_mb_id"); 
 	if( isset($H_ID) && $H_ID !='' ) {
 		$H_LEV = $member['mb_level']; 

@@ -25,6 +25,15 @@
 	$day = date("Y-m-d H:i:s");
 
 	if( $mode_insert === 'project_insert'){
+				$f_path1	= KAPP_PATH_T_ . "/file/" . $H_ID;
+				if ( !is_dir($f_path1) ) {
+					if ( !@mkdir( $f_path1, 0755 ) ) {
+						echo " Error: f_path1 : " . $f_path1 . " Failed to create directory. ";
+						m_("kapp_project_ajax.php Error: f_path1 : " . $f_path1 );
+						$run_pg = 'kapp_project.php';
+						echo "<meta http-equiv='refresh' content=0;url='".$run_pg."'>";
+					}
+				}
 
 		$g_code =$_POST['project_cd']; 
 		$g_name =$_POST['project_nm']; 
