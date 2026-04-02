@@ -2,6 +2,17 @@
     box-sizing: border-box;
 }
 
+.HeadTitle03AX{  
+	display:inline-block;  
+	margin:0 1px;  
+	height:35px;  
+	line-height:35px;  
+	padding:0 20px;  
+	font-size:25px;  
+	background:#d01c27;  
+	color:#ffffff;  
+	border-radius:5px;  
+}  
 .header2A {
     width: 100%;
     height: 50px;
@@ -345,17 +356,36 @@ radio1A {
 	background:#d01d27;
 	margin-right: 10px;
 }
+.kapp_btn_bo03 {
+	width:120px;
+	height:33px;
+	display:inline-block;
+	line-height:33px;
+	text-align:center;
+	color:#fff;
+	font-size:14px;
+	background:#d01d27;
+	margin-right: 10px;
+}
 
 .viewHeaderT{width:100%;height:auto;overflow:hidden;position:relative;text-align:left;} /* right*/
 .viewHeaderT span{left:0;top:1px;font-size:14px;color:#686868;} /*position:absolute; top:12 */
 .boardViewT{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}
 .boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}
 
+/*
 .listTableT{width:100%px;text-decoration: none;}
+
 .listTableT th{height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}
+*/
+/*
+.listTableT th{word-break:break-all;height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}  
 .listTableT td{height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}
 .listTableT .cell01{width:60px;text-align:center;text-decoration: none;}
-.listTableT .cell03{text-align:center;text-decoration: none;}
+*/
+/*.listTableT .cell03{text-align:center;text-decoration: none;}*/
+/*
+.listTableT .cell03{font-size:18px;text-align:center;text-decoration: none;font-weight:bold;}  
 .listTableT .cell05{width:70px;text-align:center;}
 .listTableT .cell02{width:80px;text-align:center;}
 .listTableT .cell04{width:200px;text-align:center;}
@@ -366,6 +396,21 @@ radio1A {
 .listTableT .cate.t03{background:#d01c27;}
 .listTableT td a span{font-size:14px;color:#69604f;text-decoration: none;}
 .listTableT td a .t01{font-size:14px;color:#d01c27;text-decoration: none;}
+*/
+
+.listTableT{width:100%px;text-decoration: none;}  
+.listTableT th{word-break:break-all;height:42px;border-top:3px solid #d01c27;font-size:14px;color:#69604f;font-weight:normal;background:#fafafa;border-bottom:1px solid #dedede;}  
+.listTableT td{word-break:break-all;height:30px;border-bottom:1px solid #dedede;font-size:14px;color:#69604f;font-weight:normal;}  
+.listTableT td a span{font-size:14px;color:#69604f;}  
+.listTableT td a .t01{font-size:14px;color:#d01c27;}  
+.listTableT span{font-size:18px;color:#171512; vertical-align:baseline; }  
+.listTableT .cell01{width:60px;text-align:center;text-decoration: none;}  
+.listTableT .cell03{font-size:18px;text-align:center;text-decoration: none;font-weight:bold;}  
+.listTableT .cell03X{}  
+.listTableT .cell05{width:70px;text-align:center;}  
+.listTableT .cell02{width:80px;text-align:center;}  
+.listTableT .cell04{width:200px;text-align:center;}  
+.listTableT .cell06{width:50px;text-align:center;}  
 
 .btn_bo01T{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#494949;font-size:14px;background:#dedcdf;}
 .btn_bo02T{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;font-size:14px;background:#d01d27; margin-right: 10px;text-decoration: none;}
