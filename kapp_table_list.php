@@ -2,6 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 		kapp_table_list.php - table-{$tkher['table10_table']}
+		: column 속성을 변경시에는 반드시 kapp_table30m_A.php을 확인 --- 중요!
 		: call - table_design_update.php 
 	*/
 	$ip = $_SERVER['REMOTE_ADDR'];
@@ -521,6 +522,7 @@ if( $mode != 'Search') {
 	$item_list = $item_list . " `seqno` int(11) auto_increment not null, ";
 	$item_list = $item_list . ' `kapp_userid`  VARCHAR(50),';
 	$item_list = $item_list . ' `kapp_pg_code` VARCHAR(50),';
+	$item_list = $item_list . ' `kapp_memo` blob,';
     $line=0;
 	$i=1;
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
@@ -565,19 +567,24 @@ if( $mode != 'Search') {
 				$fld_type = $rs['fld_type'];
 				$fld_len		= $rs['fld_len'];
 				if( $fld_type =='INT' )					$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
-				else if( $fld_type =='BIGINT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-				else if( $fld_type =='TINYINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-				else if( $fld_type =='SMALLINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-				else if( $fld_type =='DECIMAL' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-				else if( $fld_type =='FLOAT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
-				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0 , ';
+				else if( $fld_type =='BIGINT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='TINYINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='SMALLINT' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='MEDIUMINT' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='FLOAT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='DOUBLE' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
+				else if( $fld_type =='DECIMAL' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' default 0, ';
 				else if( $fld_type =='CHAR' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='VARCHAR' )		$item_list = $item_list . $fld_enm . ' ' .  $fld_type. '(' . $fld_len . '),';
 				else if( $fld_type =='TEXT' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='LONGBLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='BLOB' )   $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATE' )			$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='DATETIME' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='TIME' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
 				else if( $fld_type =='TIMESTAMP' )	$item_list = $item_list . $fld_enm . ' ' .  $fld_type . ' , ';
+				else if( $fld_type =='YEAR' )       $item_list = $item_list . $fld_enm . ' ' .  $fld_type . '(' . $fld_len . '),';
+				else if( $fld_type =='MONTH' )      $item_list = $item_list . $fld_enm . ' ' .  ' VARCHAR (' . $fld_len . '),';
 			}
 		}
 		if( $mode != 'Search' && isset($H_ID) && $H_ID !='' ){
@@ -606,7 +613,7 @@ if( $mode != 'Search') {
 		echo "<input type='button' value='Data Insert' onclick=\"program_run_funcList('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data Write of $tab_hnm' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."', '".$group_code."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data List of $tab_hnm' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $tab_hnm.' >&nbsp;&nbsp; ";
-		echo "<input type='button' value='Create table only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
+		echo "<input type='button' value='Create table+program only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
 	} else {
 		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
 		$last_page = $first_page+($page_num-1);

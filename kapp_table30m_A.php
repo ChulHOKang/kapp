@@ -2,6 +2,7 @@
 	include_once('./tkher_start_necessary.php');
 	/*
 	 * kapp_table30m_A.php : table30m_Create.php copy 2023-08-25 - kan
+	   column 속성을 추가또는 변경시에는 kapp_table_list.php를 수전해야함. --- 중요.
 	   2024-01-04   : TIME fld type add. $view_set=1 add
 	   2024-01-03   : $item_list = $item_list . " primary key(seqno) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"; 보완.
 	   2023-10-12   : 컬럼명 또는 컬럼 타이들을 변경 했을 때 관련 프로그램(table10_pg의 item_array)도 변경한다 중요.
@@ -875,8 +876,8 @@ jQuery(document).ready(function ($) {
 				$seqno		=	$_POST["seqno"][$ARR];
 				$fld_enm	=	$_POST["fld_enm"][$ARR];
 				$fld_type	=	$_POST["fld_type"][$ARR];
+				$fld_len	=	$_POST["fld_len"][$ARR];
 				if( $fld_type == 'CHAR' || $fld_type == 'VARCHAR' && $fld_len=='') $fld_len=15;
-				else $fld_len	=	$_POST["fld_len"][$ARR];
 				$memo		=	$_POST["memo"][$ARR];
 				$if_lineA	=	$_POST["Aif_line"][$ARR];
 				$if_typeA	=	$_POST["Aif_type"][$ARR];

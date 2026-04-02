@@ -39,7 +39,7 @@
 	else $pg_name = "";
 	set_session('pg_name',  $pg_name);
 	set_session('pg_code',  $pg_code); 
-	if( isset($_POST['item_array']) ) $item = $_POST['item_array'];
+	if( isset($_POST['table_item_array']) ) $item = $_POST['table_item_array'];
 	else $item = "";
 	if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt'];
 	else $item_cnt = "";
@@ -129,8 +129,19 @@
 	$rdata = array();
 	$rt = array();
 	/*
-	dao_1766822184:ABC_AAA:|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@$fld_1:fld1|=|fld_1:상품:VARCHAR$fld_2:fld2|=|fld_2:원산지:VARCHAR$fld_3:fld3|=|fld_3:단위:VARCHAR$fld_4:수량|=|fld_4:수량:INT$fld_5:단가|=|fld_5:단가:INT$fld_6:금액|=|fld_6:금액:INT$fld_7:날짜|=|fld_7:날짜:DATE
-	^dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@$fld_1:fld1|=|fld_5:product:VARCHAR$fld_7:날짜|=|fld_1:날짜:DATE$fld_4:수량|+|fld_6:total_count:INT$fld_6:금액|+|fld_7:tottal_price:BIGINT
+	dao_1766822184:ABC_AAA:|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
+	$fld_1:fld1|=|fld_1:상품:VARCHAR
+	$fld_2:fld2|=|fld_2:원산지:VARCHAR
+	$fld_3:fld3|=|fld_3:단위:VARCHAR
+	$fld_4:수량|=|fld_4:수량:INT
+	$fld_5:단가|=|fld_5:단가:INT
+	$fld_6:금액|=|fld_6:금액:INT
+	$fld_7:날짜|=|fld_7:날짜:DATE
+	^dao_1766735120:ABCYY:|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
+	$fld_1:fld1|=|fld_5:product:VARCHAR
+	$fld_7:날짜|=|fld_1:날짜:DATE
+	$fld_4:수량|+|fld_6:total_count:INT
+	$fld_6:금액|+|fld_7:tottal_price:BIGINT
 	^dao_1773304478:ABC_년도별_판매실적:|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@$fld_7:날짜|=|fld_1:년도:YEAR$fld_1:fld1|=|fld_2:상품:VARCHAR$fld_4:수량|+|fld_3:수량:INT$fld_6:금액|+|fld_4:금액:INT$fld_2:fld2|=|fld_5:메모:TEXT
 
 		Insert:fld_1:상품:VARCHAR|
@@ -150,7 +161,7 @@
 			$rdata = explode("^", $relation_data);
 			$rtype = explode("^", $relation_type);
 			$rt = explode("@", $rtype[0]);
-			$data_cnt = count( $rdata);	//m_(" data_cnt: " . $data_cnt );
+			$data_cnt = count( $rdata);	m_(" data_cnt: " . $data_cnt );
 			for( $i=0; $i < $data_cnt && isset($rdata[$i]) && $rdata[$i] !=""; $i++ ){
 				if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
 					relation_func( $rdata[$i], $pg_code, $rt[$i] );

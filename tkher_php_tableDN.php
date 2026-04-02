@@ -97,56 +97,8 @@
 	fwrite($fsi,"	$"."Xheight='100%';  \r\n");
 	fwrite($fsi,"	$"."searchNameA = '".KAPP_URL_T_."';  \r\n");
 	fwrite($fsi,"?>                                 \r\n");
-	//----------------- style --------------------------------------------
-	//fwrite($fsi,"   <link rel='stylesheet' href='".KAPP_URL_T_."/include/css/kapp_basic.css' type='text/css' />  \r\n");
+
 	fwrite($fsi,"   <link rel='stylesheet' href='kapp_basic.css' type='text/css' />  \r\n");
-
-	/*
-	fwrite($fsi,"<style>  \r\n");
-	fwrite($fsi,"* {  box-sizing: border-box;}  \r\n");
-	fwrite($fsi,".header2A {width:100%;  height:50px;  float: left;  border: 0px solid red;  padding: 0px;}  \r\n");
-	fwrite($fsi,".menu1Area{width:100%;  height:60px;  float: left;  padding: 0px;  border: 0px solid #DEDEDE;  background-color:#FAFAFA;}  \r\n");
-	fwrite($fsi,".menu2T{padding-top:3px; width:25%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FAFAFA;}  \r\n");
-	fwrite($fsi,".menu2A {width:25%; height:30px; float:left; padding:0px; border:0px solid #DEDEDE; background-color:#FAFAFA;} \r\n");
-	fwrite($fsi,".data2A {width:25%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".input1A { padding:0px;}  \r\n");
-	fwrite($fsi,".mainA {width:100%;  float: left; padding:15px; border:1px solid red;}  \r\n");
-	fwrite($fsi,".menu1T {padding-top:0px; width:<?=$"."menu1TWPer?>%; height:30px; float:left; padding:6px; border:1px solid #DEDEDE;background-color:#FAFAFA;}  \r\n");
-	fwrite($fsi,".menu1A {width:<?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 0px;}  \r\n");
-	fwrite($fsi,".data1A {width:<?=$"."menu1AWPer?>%; height:30px; float:left;padding:6px;border:1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,"radio1A {width:<?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 6px;  border: 1px solid #DEDEDE;background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".ListBox1A {width: <?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 2px;  border: 1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-
-	fwrite($fsi,".File1A {  width: <?=$"."menu1AWPer?>%;  height:30px;  float: left;  padding: 2px;  border: 1px solid #DEDEDE;background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".menu4T {padding-top:3px; width:10%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE;background-color:#FAFAFA;}  \r\n");
-	fwrite($fsi,".input4A {width:15%;  height:30px;  float:left;  padding:0px; border:1px solid #DEDEDE;  background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".menu4B {width: 15%; height:30px; float:left; padding:0px; border:0px solid #DEDEDE;  background-color:#FAFAFA;}  \r\n");
-	fwrite($fsi,".data4A {width:15%; height:30px; float:left; padding:4px; border:1px solid #DEDEDE; background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".main4A {width:100%;  float: left;  padding: 15px;  border: 1px solid #DEDEDE;}  \r\n");
-	fwrite($fsi,".blankA {border-top:0px;	width: 100%;    float: left;	height: 1px;	padding: 0px;	border: 1px solid #FFFFFF;background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".blankB {width:100%;  height: 1px;  padding: 1px;  float: left;  border: 1px solid #FFFFFF;  background-color:#FFFFFF;}  \r\n");
-	fwrite($fsi,".viewSubjX{margin-top:1px;	width:100%;height:35px;	line-height:32px;border-top:3px solid #d01c27;	text-align:center;background:#fafafa;border-bottom:1px solid #dedede;overflow:hidden;font-size:18px;color:#69604f;}  \r\n");
-	fwrite($fsi,".viewSubjX span{font-size:22px;color:#171512; vertical-align:baseline; }  \r\n");
-	fwrite($fsi,".HeadTitle02AX{display:inline-block;	margin:0 1px;	height:35px;	line-height:35px;	padding:0 20px;	font-size:25px;	background:#d01c27;	color:#ffffff;	border-radius:5px;}  \r\n");
-	fwrite($fsi,".HeadTitle01AX{display:inline-block;margin:0 1px;height:40px;line-height:0px;padding:0 20px;font-size:22px;background:#d01c27;color:#fff;border-radius:5px;}  \r\n");
-	fwrite($fsi,".HeadTitle01AX a.on{background:#d01c27;color:#fff;}  \r\n");
-	fwrite($fsi,".HeadTitle01A{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  \r\n");
-	fwrite($fsi,".HeadTitle02A a{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  \r\n");
-	fwrite($fsi,".HeadTitle01A a{display:inline-block;margin:0 1px;height:35px;line-height:35px;padding:0 20px;	font-size:22px;background:#dedcdf;color:#000;border-radius:5px;}  \r\n");
-	fwrite($fsi,".HeadTitle01A a.on{background:#d01c27;color:#fff;}  \r\n");
-	fwrite($fsi,".Btn_List01A{width:64px;height:33px;display:inline-block;line-height:33px;	text-align:center;color:#fff;font-size:14px;background:#d01d27;	margin-right: 10px;	}  \r\n");
-	fwrite($fsi,".Btn_List02A{width:64px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  \r\n");
-
-	fwrite($fsi,".Btn_List03A{width:104px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  \r\n");
-
-	fwrite($fsi,".Btn_List04A{width:114px;height:33px;display:inline-block;line-height:33px;text-align:center;color:#fff;	font-size:14px;	background:#d01d27;	margin-right:10px;	}  \r\n");
-
-	fwrite($fsi,".viewHeader{width:100%;height:auto;overflow:hidden;position:relative;text-align:right;}  \r\n");
-	fwrite($fsi,".viewHeader span{position:absolute;left:0;top:12px;font-size:14px;color:#686868;}  \r\n");
-	fwrite($fsi,".boardView{width:1168px;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-	fwrite($fsi,".boardViewX{width:99%;height:auto;overflow:hidden;margin:0 auto 50px auto;}  \r\n");
-	fwrite($fsi,"</style>  \r\n"); */
-
 	fwrite($fsi,"<script language='JavaScript'>   \r\n"); 
 	fwrite($fsi,"	function table_data_list($"."pg_code) {   \r\n");
 	fwrite($fsi,"		document.form_view.action=$"."pg_code;   \r\n");
@@ -213,11 +165,11 @@
 	fwrite($fsi,"</div>   \r\n");
 
 	fwrite($fsi,"			<form name='form_view' action='' method='post' enctype='multipart/form-data' >	\r\n");
-	fwrite($fsi,"				<input type=hidden name='mode'			value='' />							\r\n");
-	fwrite($fsi,"				<input type=hidden name='tab_enm'	value='".$tab_enm."' />					\r\n");
-	fwrite($fsi,"				<input type=hidden name='tab_hnm'	value='".$tab_hnm."' />					\r\n");
-	fwrite($fsi,"				<input type=hidden name='pg_code'	value='".$tab_enm."' />					\r\n");
-	fwrite($fsi,"				<input type=hidden name='sqltable'		value='".$sqltable."' />			\r\n");
+	fwrite($fsi,"				<input type=hidden name='mode'		value='' />							\r\n");
+	fwrite($fsi,"				<input type=hidden name='tab_enm'	value='".$tab_enm."' />				\r\n");
+	fwrite($fsi,"				<input type=hidden name='tab_hnm'	value='".$tab_hnm."' />				\r\n");
+	fwrite($fsi,"				<input type=hidden name='pg_code'	value='".$tab_enm."' />				\r\n");
+	fwrite($fsi,"				<input type=hidden name='sqltable'	value='".$sqltable."' />			\r\n");
 
 	fwrite($fsi,"	<div class='boardViewX'>   \r\n");
 	fwrite($fsi,"		<div class='viewHeader'>   \r\n");
@@ -478,7 +430,7 @@ fclose($fsi);
 	$create	= $zipfile -> create($data, PCLZIP_OPT_REMOVE_ALL_PATH);	
 ?> 
 
-<b>Created OK!  
+<b><?=$tab_hnm?> : Created OK!  
 <br>여기서 생성한 소스는 사용자 서버에서 실행 해야할 프로그램 입니다.
 <br>The source code generated here is the program that needs to be run on the user's server.
 <br>Zip File:<?=$zf?><br>Table Creation File:<?=$table_run?></b>
