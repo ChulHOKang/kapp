@@ -497,9 +497,9 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 		}
 		return true;
 	}
-	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata) {
+	function item_array_func( $item , $iftype, $ifdata, $popdata, $relationdata, $relationtype) {
 		// use - program_list)ai.php, kapp_program_list_adm_ai.php
-		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_mvfld, $relation_db, $gita;
+		global $formula_, $poptable_, $column_all, $pop_fld, $pop_mvfld, $rel_t, $rel_mvfld, $relation_db, $gita;
 				$list	= explode("@", $item);
 				$iftype = explode("|", $iftype);
 				$ifdata = explode("|", $ifdata);
@@ -549,7 +549,20 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$mvfld2 = explode(":", $fld2);
 			$pop_mvfld = $pop_mvfld . $mvfld1[1] . "=" . $mvfld2[1] . ", ";
 		}
-			$relationdata = explode("$", $relationdata);
+/*
+dao_1773817303:매입일별상품별거래처별현황:|kdate|일자|DATE|10@|Product|상품|VARCHAR|15@|Supplier|거래처|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|kdate:일자:DATE:10$fld_4:상품:VARCHAR:50|=|Product:상품:VARCHAR:15$fld_2:거래처:VARCHAR:15|=|Supplier:거래처:VARCHAR:15$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12
+^dao_1774320560:매입년도별상품별거래처현황:|kyear|년도|YEAR|4@|Product|상품|VARCHAR|15@|Supplier|거래처|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|kyear:년도:YEAR:4$fld_4:상품:VARCHAR:50|=|Product:상품:VARCHAR:15$fld_2:거래처:VARCHAR:15|=|Supplier:거래처:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255
+^dao_1774320290:매입월별상품별거래처별현황:|kyear_mm|년월|MONTH|7@|Product|상품|VARCHAR|15@|Supplier|거래처|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|kyear_mm:년월:MONTH:7$fld_4:상품:VARCHAR:50|=|Product:상품:VARCHAR:15$fld_2:거래처:VARCHAR:15|=|Supplier:거래처:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255
+^dao_1774319787:매입년도별거래처별집계현황:|kyear|년도|YEAR|4@|Supplier|거래처|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|kyear:년도:YEAR:4$fld_2:거래처:VARCHAR:15|=|Supplier:거래처:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255
+^dao_1774319572:매입월별거래처별집계현황:|kyear_mm|년월|MONTH|7@|Supplier|거래처|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|kyear_mm:년월:MONTH:7$fld_2:거래처:VARCHAR:15|=|Supplier:거래처:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255
+^dao_1774319475:매입일별거래처별집계현황:|kdate|일자|DATE|10@|Supplier|거래처|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|kdate:일자:DATE:10$fld_2:거래처:VARCHAR:15|=|Supplier:거래처:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255
+^dao_1773803140:매입연도별상품집계현황:|kyear|년도|YEAR|4@|Product|상품|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|매모|TEXT|255@$fld_1:일자:DATETIME:20|=|kyear:년도:YEAR:4$fld_4:상품:VARCHAR:50|=|Product:상품:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:매모:TEXT:255
+^dao_1774319246:매입월별상품집계현황:|year_mm|년월|MONTH|7@|Product|상품|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@$fld_1:일자:DATETIME:20|=|year_mm:년월:MONTH:7$fld_4:상품:VARCHAR:50|=|Product:상품:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255
+^dao_1773881431:매입일별상품집계현황:|date|일자|DATE|10@|Product|상품|VARCHAR|15@|Quantity|수량|INT|12@|Amount|금액|INT|12@|memo|메모|TEXT|255@
+$fld_1:일자:DATETIME:20|=|date:일자:DATE:10$fld_4:상품:VARCHAR:50|=|Product:상품:VARCHAR:15$fld_6:수량:INT:12|+|Quantity:수량:INT:12$fld_8:금액:INT:12|+|Amount:금액:INT:12$fld_11:메모:TEXT:255|=|memo:메모:TEXT:255^
+*/
+//			$relationdata = explode("$", $relationdata);
+			$relationdata = explode("^", $relationdata);
 			$rel_db = $relationdata[0];
 			$reldb = explode(":", $rel_db);
 			if( isset($reldb[1]) ) $relation_db = $reldb[1];
@@ -557,13 +570,19 @@ if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 			$rel_mvfld = "";
 		for ( $i=0,$j=1; isset($relationdata[$j]) && $relationdata[$j] != ""; $i++, $j++ ){
 			$reldata = $relationdata[$j];
-			$rel = explode("|", $reldata );
+/*			$rel = explode("|", $reldata );
 			$fld1 = $rel[0];
 			$sik = $rel[1];
 			$fld2 = $rel[2];
 			$rmvfld1 = explode(":", $fld1);
 			$rmvfld2 = explode(":", $fld2);
-			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , ";
+			$rel_mvfld = $rel_mvfld . $rmvfld1[1] . $sik . $rmvfld2[1] . " , "; */
+			$rel_mvfld = $rel_mvfld . $reldata . "\n ";
+		}
+		$relationtype = explode("@", $relationtype);
+		for ( $i=0; isset($relationtype[$i]) && $relationtype[$i] != ""; $i++ ){
+			$reltype = $relationtype[$i];
+			$rel_t = $rel_t . $reltype . "\n ";
 		}
 	}
 	// use - kapp_table30m_A.php
