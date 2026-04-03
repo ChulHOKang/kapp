@@ -15,6 +15,7 @@
 	$pop_mvfld		= "";
 	$relation_db	= "";
 	$rel_mvfld		= "";
+	$rel_t		= "";
 	$gita				= "";
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
@@ -36,14 +37,14 @@
 <!-- 
 textarea {
 	  width: 200px;
-	  height: 150px;
+	  height: 80px;
 	  padding: 0px;
 	  border: 2px solid #ccc;
 	  border-radius: 0px;
 	  background-color: #000000;
 	  font-family: Arial, sans-serif;
 	  font-size: 12px;
-	  color: #fff;
+	  color: yellow;
 	  /*resize: vertical;  Allows vertical resizing only */
 	}
 	textarea:focus {
@@ -333,7 +334,8 @@ View Line:
 	<th>formula</th>
 	<th>Pop-up table</th>
 	<th>Pop-up column</th>
-	<th>Relationship</th>
+	<th>Relation data</th>
+	<th>Relation type</th>
 	<th>Column</th>
 	<th>Cnt</th>
 	<th>Memo</th>
@@ -350,7 +352,7 @@ View Line:
 		$bgcolor = "#eeeeee";
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data'];
-		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
+		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'], $rs['relation_type'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
 		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
@@ -366,16 +368,17 @@ View Line:
 	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
 	<td><?=$rs['upday']?></td>
 
-	<td><textarea id='item_array' name='item_array' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['item_array']?></textarea></td>
-	<td><textarea id='if_type' name='if_type' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['if_type']?></textarea></td>
-	<td><textarea id='if_data' name='if_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$if_data?></textarea></td>
-	<td><textarea id='formula_d' name='formula_d' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$formula_?></textarea></td>
-	<td><textarea id='pop_data' name='pop_data' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$poptable_?>:<?=$pop_data?></textarea></td>
-	<td><textarea id='pop_mvfld' name='pop_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
-	<td><textarea id='rel_mvfld' name='rel_mvfld' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
-	<td><textarea id='column_all' name='column_all' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$column_all?></textarea></td>
+	<td><textarea id='item_array' name='item_array' readonly><?=$rs['item_array']?></textarea></td>
+	<td><textarea id='if_type' name='if_type' readonly><?=$rs['if_type']?></textarea></td>
+	<td><textarea id='if_data' name='if_data' readonly><?=$if_data?></textarea></td>
+	<td><textarea id='formula_d' name='formula_d' readonly><?=$formula_?></textarea></td>
+	<td><textarea id='pop_data' name='pop_data' readonly><?=$poptable_?>:<?=$pop_data?></textarea></td>
+	<td><textarea id='pop_mvfld' name='pop_mvfld' readonly><?php echo $pop_fld;?>:<?php echo $pop_mvfld;?></textarea></td>
+	<td><textarea id='rel_mvfld' name='rel_mvfld' readonly><?=$relation_db?>:<?=$rel_mvfld?></textarea></td>
+	<td><textarea id='rel_type' name='rel_type' readonly><?=$rel_t?></textarea></td>
+	<td><textarea id='column_all' name='column_all' readonly><?=$column_all?></textarea></td>
 	<td width='8px'><?=$rs['item_cnt']?></td>
-	<td><textarea id='memo' name='memo' style="border-style:;background-color:black;color:yellow;height:60px;width:10%px;" readonly><?=$rs['memo']?></textarea></td>
+	<td><textarea id='memo' name='memo' readonly><?=$rs['memo']?></textarea></td>
 </TR>
 <?php
 		$i++;
