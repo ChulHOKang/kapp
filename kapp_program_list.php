@@ -413,7 +413,7 @@ View Line:
 		else $bcolor='';
 		$if_data = $rs['if_data'];
 		$pop_data = $rs['pop_data'];
-		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'] );
+		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'], $rs['relation_type'] );
 		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
 		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
 		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
