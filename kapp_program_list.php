@@ -50,14 +50,11 @@
 </head>
 <style>
 table { border-collapse: collapse; }
-/*th { background: #cdefff; height: 32px; } */
 th { background: #666fff; color: white; height: 32px; }
 th, td { border: 1px solid silver; padding:5px; }
 	.container {
 		background-color: skyblue;
 		display :flex;									/* flex, inline-flex */
-		/*flex-direction: row;*/							/* row, row-reverse, column, column-reverse */
-		/*flex-wrap: nowrap;*/							/* nowrap, wrap, wrap-reverse */
 		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
 		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
 		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
@@ -301,11 +298,11 @@ $(function () {
 		$last = $line_cnt;
 		if( $total < $last) $last = $total;
 		$limit = " limit $first, $last ";
-		if( $page == 1){
+		/*if( $page == 1){
 			$no = $total;
 		} else {
 			$no = $total - ($page - 1) * $line_cnt;
-		}
+		}*/
 	} else {
 		$total = 0;
 	}
@@ -325,7 +322,6 @@ $(function () {
 			<input type="hidden" name="pj_code" value="<?=$pj_code?>" >
 			<input type="hidden" name="pj_code_check" value="<?=$pj_code_check?>" >
 			<input type="hidden" name="data" >
-			<input type="hidden" name="seqno" >
 			<input type="hidden" name="seqno" >
 			<input type="hidden" name="userid" >
 			<input type='hidden' name='group_name' >
@@ -443,7 +439,6 @@ View Line:
 	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gw?></td>
 	<TD <?=$bcolor?> width='3%'><?=substr($rs['upday'], 0,10)?></td>
 	<TD <?=$bcolor?> width='5%' align='center'>
-	<!-- <input type='button' onclick="program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>')"  value='DataList' style='height:22px;width:66px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  <?php echo "title=' Data List of ".$rs['pg_name']."' ";?>> -->
 <?php if( $H_ID == $rs['userid'] ) { ?>
 	<input type='button' onclick="program_del_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>', '<?=$H_ID?>', '<?=$rs['userid']?>')" value='Delete' style='height:22px;width:60px;background-color:red;color:white;border-radius:20px;border:1 solid black'  <?php echo "title=' Delete of ".$rs['pg_name']."' ";?>>
 	&nbsp;

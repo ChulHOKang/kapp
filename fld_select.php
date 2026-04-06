@@ -8,44 +8,80 @@
 		echo "<script>window.open( '$rungo' , '_top', ''); </script>";
 		exit;
 	}
-	if( isset($_POST['mode']) && $_POST['mode']!='' ) $mode = $_POST['mode'];
-	else $mode = ''; //tab_hnmS
-	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) $group_code = $_POST['group_code'];
-	else $group_code = '';
-
-	if( isset($_POST['tab_hnmS']) && $_POST['tab_hnmS'] !='' ) {
-		$tab_hnmS =$_POST['tab_hnmS'];
-		$tab_R = explode(":", $tab_hnmS);
-		$tab_enm = $tab_R[0];
-		$tab_hnm = $tab_R[1];
-	} else {
-		$tab_hnmS = '';
-		$tab_enm = '';
-		$tab_hnm = '';
-	}
-
-
-	if( isset($_POST['param']) && $_POST['param']!='' ) $param = $_POST['param'];
-	else $param = '';
-	if( isset($_POST['sel']) && $_POST['sel']!='' ) $sel = $_POST['sel'];
-	else $sel = '';
-	if( isset($_POST['search_data']) && $_POST['search_data']!='' ) $search_data = $_POST['search_data'];
-	else $search_data = '';
-	if( isset($_POST['g_name']) && $_POST['g_name']!='' ) $g_name = $_POST['g_name'];
-	else $g_name = '';
-	//$no = $_REQUEST['no'];
-	if( isset($_POST['no']) && $_POST['no']!='' ) $no = $_POST['no'];
-	else if( isset($_REQUEST['no']) && $_REQUEST['no']!='' ) $no = $_REQUEST['no'];
-	else $no = '';
-	//m_("no:$no");
-	/* 
-	   ----------------------------------------------------------
-	   관리자용 : pg_list_select_admin.php이 있다. 등록과 같이할 수 있다.
-	   -------------------------------------------------------------
-	*/
 ?>
-<script	language="JavaScript">
+<style>
+table { border-collapse: collapse; }
+th { background: #666fff; color: white; height: 32px; }
+th, td { border: 1px solid silver; padding:5px; }
+	.container {
+		background-color: skyblue;
+		display :flex;									/* flex, inline-flex */
+		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
+		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
+		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
+		height:25px;
+
+	}
+	.item {
+		background-color: gold;
+		boarder: 1px solid gray;
+	}
+</style>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script>
 <!--
+	$(function () {
+		let timer;
+		document.getElementById('tit_et').addEventListener('click', function(e) {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				switch(e.target.innerText){
+					case 'Project'    : title_func('group_name'); break;
+					case 'Table'      : title_func('tab_hnm'); break;
+					case 'Field'      : title_func('fld_hnm'); break;
+					case 'Type'       : title_func('fld_type'); break;
+					default           : title_func(''); break;
+				}
+			}, 250);
+		});
+		document.getElementById('tit_et').addEventListener('dblclick', function(e) {
+			clearTimeout(timer);
+			switch(e.target.innerText){
+					case 'Project'    : title_wfunc('group_name'); break;
+					case 'Table'      : title_wfunc('tab_hnm'); break;
+					case 'Field'      : title_wfunc('fld_hnm'); break;
+					case 'Type'       : title_wfunc('fld_type'); break;
+					default           : title_wfunc(''); break;
+			}
+		});
+
+		$('table.floating-thead').each(function() {
+			if( $(this).css('border-collapse') == 'collapse') {
+			  $(this).css('border-collapse','separate').css('border-spacing',0);
+			}
+			$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
+		});
+		$(window).scroll(function() {
+			var scrollTop = $(window).scrollTop(),
+			scrollLeft = $(window).scrollLeft();
+			$('table.floating-thead').each(function(i) {
+				var thead = $(this).find('thead:last'),
+				clone = $(this).find('thead:first'),
+				top = $(this).offset().top,
+				bottom = top + $(this).height() - thead.height();
+				if( scrollTop < top || scrollTop > bottom ) {
+					clone.hide();
+					return true;
+				}
+				if( clone.is('visible') ) return true;
+				clone.find('th').each(function(i) {
+					$(this).width( thead.find('th').eq(i).width() );
+				});
+				clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
+			});
+		});
+	});
+
 	function call_pg_select( hnm, type, len, no, memo ) {
 		eval ( "parent.window.opener.document.insert['fld_hnm[" + no + "]'].value=hnm");
 		eval ( "parent.window.opener.document.insert['fld_type[" + no + "]'].value=type");
@@ -53,18 +89,7 @@
 		eval ( "parent.window.opener.document.insert['memo[" + no + "]'].value=memo");
 			window.close();
 	}
-	function doSubmit()
-	{
-		document.xpg_select.submit();
-	}
-	function change_g_name_func(g_name) {
-		if(g_name == 'Board') document.xpg_select.type.value='A';
-		else if(g_name == 'Note') document.xpg_select.type.value='D';
-		else if(g_name == 'PROGRAM') document.xpg_select.type.value='P';
-		else if(g_name == 'linktree') document.xpg_select.type.value='T';
-		else document.xpg_select.type.value='';
-
-		document.xpg_select.g_name.value = g_name;
+	function doSubmit(){
 		document.xpg_select.submit();
 	}
 	function group_code_change_func(cd){
@@ -82,36 +107,105 @@
 		document.xpg_select.action="fld_select.php";
 		document.xpg_select.submit();
 	}
+	function page_func( page, data ){
+		document.xpg_select.mode.value		='';
+		document.xpg_select.search_data.value		=data;
+		document.xpg_select.page.value		=page;
+		document.xpg_select.action		="fld_select.php";
+		document.xpg_select.target='_self';
+		document.xpg_select.submit();
+	}
+	function Change_line_cnt( $line){
+		document.xpg_select.page.value = 1;
+		document.xpg_select.line_cnt.value = $line;
+		document.xpg_select.action='fld_select.php';
+		document.xpg_select.target='_self';
+		document.xpg_select.submit();
+	}
+	function title_wfunc(fld_code){       
+		document.xpg_select.page.value = 1;
+		document.xpg_select.fld_code.value= fld_code;
+		document.xpg_select.fld_code_asc.value= 'desc';
+		document.xpg_select.mode.value='title_wfunc';
+		document.xpg_select.target='_self';
+		document.xpg_select.action='fld_select.php';
+		document.xpg_select.submit();                         
+	} 
+	function title_func(fld_code){       
+		document.xpg_select.page.value = 1;                
+		document.xpg_select.fld_code.value= fld_code;           
+		document.xpg_select.fld_code_asc.value= 'asc';
+		document.xpg_select.mode.value='title_func';           
+		document.xpg_select.target='_self';
+		document.xpg_select.action='fld_select.php';
+		document.xpg_select.submit();                         
+	} 
 -->
 </script>
+
+
+<?php
+	if( isset($_POST['mode']) && $_POST['mode']!='' ) $mode = $_POST['mode'];
+	else $mode = '';
+	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) $group_code = $_POST['group_code'];
+	else $group_code = '';
+
+	if( isset($_POST['tab_hnmS']) && $_POST['tab_hnmS'] !='' ) {
+		$tab_hnmS =$_POST['tab_hnmS'];
+		$tab_R = explode(":", $tab_hnmS);
+		$tab_enm = $tab_R[0];
+		$tab_hnm = $tab_R[1];
+	} else {
+		$tab_hnmS = '';
+		$tab_enm = '';
+		$tab_hnm = '';
+	}
+	if( isset($_POST['param']) && $_POST['param']!='' ) $param = $_POST['param'];
+	else $param = '';
+	if( isset($_POST['sel']) && $_POST['sel']!='' ) $sel = $_POST['sel'];
+	else $sel = '';
+	if( isset($_POST['search_data']) && $_POST['search_data']!='' ) $search_data = $_POST['search_data'];
+	else $search_data = '';
+
+	if( isset($_POST['no']) && $_POST['no']!='' ) $no = $_POST['no'];
+	else if( isset($_REQUEST['no']) && $_REQUEST['no']!='' ) $no = $_REQUEST['no'];
+	else $no = '';
+
+	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
+		$line_cnt	= $_POST['line_cnt'];
+	} else  $line_cnt	= 10;
+	$page_num = 10;
+	if( isset($_POST['page']) ) $page = $_POST['page'];
+	else $page = 1;
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
+?>
 <html> 
-<head> 
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-App. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=$logo25a?>">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="kapp,k-app,appgenerator, app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="kapp,k-app,appgenerator,app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+<head>
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
+
 <body marginwidth='0' marginheight='0' leftmargin='0' topmargin='0' bgcolor='black'>
-<table width="710" border="0" cellspacing="0" cellpadding="0">
+<table width="700" border="0" cellspacing="0" cellpadding="0">
 <tr>
   <td width="600" colspan='3'>
-	<form method="post" action="fld_select.php" name="xpg_select">	
+	<form name="xpg_select" method="post" action="fld_select.php">	
 		<input type="hidden" name="no" value='<?=$no?>' >
 		<input type="hidden" name="type" value='' >
-		<input type='hidden' name='g_name'>
+		<!-- <input type='hidden' name='g_name'> -->
 		<input type='hidden' name='group_name'>
 		<input type='hidden' name='mode'>
-		
-		
-		<!-- <table width="100%" border="0" cellspacing="0" cellpadding="0" height="25"><tr>
-				<td rowspan="2" width="330" align="right" height="25" valign='center'>
-				<font color='yellow'>Search:<input type="text" name="search_data" size="20" maxlength="20" value='<?=$search_data?>'></td>
-				<td align="left" width="230" valign='center'>
-				<input type='button' value='Confirm' onclick='doSubmit()'>
-			  </td></tr></table> -->
+		<input type='hidden' name='page'    value="<?=$page?>">
+		<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
+		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 <center>
 		<div>
 		<span>
@@ -155,41 +249,6 @@
 
 
 
-		<div>
-			<select name="param" style="background-color:gray;color:white;height:24;">
-<?php
-if( $param !='') {
-	//if( $param == 'group_name') echo "<option value='$param' >Project Name</option>";
-	//else if( $param == 'tab_enm') echo "<option value='$param' >Table Name</option>";
-	//else if( $param == 'fld_hnm') echo "<option value='$param' >Column Name</option>";
-	echo "<option value='$param' >Column Name</option>";
-} else echo "<option value='fld_hnm' selected >Column Name</option>";
-?>
-				<!-- <option value="group_name" style="background-color:gray;color:white;">Project Name</option>
-				<option value="tab_hnm"    style="background-color:gray;color:white;">Table Name</option> -->
-				<option value="fld_hnm"    style="background-color:gray;color:white;">Column Name</option>
-			</select>
-			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
-				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
-			</select>
-			<input type="text" name="search_data" size="20" maxlength="20" value='<?=$search_data?>'>
-			<input type='button' value='Search' onclick="javascript:doSubmit();" >
-		</div>
-
-
-	</form>
-  </td>
-</tr>
-</table>
-<table width="100%" border="1" cellspacing="0" cellpadding="0">
-<tr align='center' style='color:yellow;'>
-   <td>Project</td>
-   <td>table</td>
-   <td>field</td> 
-   <td>type</td>
-   <td>length</td>
-</tr>
 <?php
 	$ls = "SELECT * FROM {$tkher['table10_table']} ";
 	$Where = " where fld_enm!='seqno' ";
@@ -202,18 +261,93 @@ if( $param !='') {
 	$Order = " order by fld_hnm, upday desc ";
 	$ls = $ls . $Where . $Order;
 
-	/*if ( !$g_name && !$search_data ) {
-		 $ls = $ls . $Where . $Order;
-	} else if ( !$search_data ) {
-		 $ls = $ls . $Where . $Order;
-	} else if ( $search_data ) {
-		$ls = $ls . $Where . $Order;
+	$resultT	= sql_query( $ls );
+	$total = sql_num_rows( $resultT );
+	$total_page = intval(($total-1) / $line_cnt)+1;
+	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
+	else $first =0;
+	$last = $line_cnt;
+	if( $total < $last) $last = $total;
+	$limit = " limit $first, $last ";
+	/*if( $page == 1){
+		$tno = $total;
 	} else {
-		 $ls = $ls . $Where . $Order;
+		if( $page>1) $tno = $total - ($page - 1) * $line_cnt;
+		else $tno = $total;
 	}*/
+
+
+	//if( $search_data !='')
+	//		echo "<option value='$param' >Column Name</option>";
+	//else	echo "<option value='fld_hnm' selected >Column Name</option>";
+?>
+		<div>
+			<select name="param" style="background-color:gray;color:white;height:24;">
+				<option value="fld_hnm"    style="background-color:gray;color:white;">Column Name</option>
+			</select>
+			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
+				<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
+				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
+			</select>
+			<input type="text" name="search_data" size="20" maxlength="20" value='<?=$search_data?>'>
+			<input type='button' value='Search' onclick="javascript:doSubmit();" >
+		</div>
+
+
+	<!-- </form> -->
+  </td>
+</tr>
+</table>
+
+
+<span style='color:white;'>
+View Line: 
+	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
+		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
+		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
+		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
+		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total?>
+</span>
+
+<table class='floating-thead' width='700'>
+<thead id='tit_et' width='100%'>
+	<tr align='center'>
+		<TH>no</TH>
+
+<?php
+	echo " <th title='project Sort click or doubleclick' >Project</th> ";
+	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
+	echo " <th title='Field Sort click or doubleclick' >Field</th> ";
+	echo " <th title='Type Sort click or doubleclick' >Type</th> ";
+?>
+   <!-- <td>Project</td>
+   <td>table</td>
+   <td>field</td> 
+   <td>type</td> -->
+   <TH>length</YH>
+	</tr>
+</thead>
+<tbody width="100%">
+<?php
+	$ls = "SELECT * FROM {$tkher['table10_table']} ";
+	$Where = " where fld_enm!='seqno' ";
+	if( $group_code !='') $Where = $Where . " and group_code='$group_code' ";
+	if( $tab_hnm !='') $Where = $Where . " and tab_hnm='$tab_hnm' ";
+	if( $search_data !='') {
+		if( $sel == '=') $Where = $Where . " and fld_hnm='$search_data' ";
+		else if( $sel == 'like') $Where = $Where . " and fld_hnm like '%".$search_data."%' ";
+	}
+	if( $fld_code!='' ) $Order = " order by $fld_code $fld_code_asc ";    
+	else $Order	= " order by fld_hnm, upday desc "; //" ORDER BY upday desc ";
+	$ls = $ls . $Where . $Order;
+	$ls = $ls . $limit;
 	$result = sql_query(  $ls );
-	while ( $rs = sql_fetch_array( $result ) ) {
-            if($rs['fld_hnm']=='seqno') continue;
+	$line=0;
+	$i=1;
+	while( $rs = sql_fetch_array( $result ) ) {
+		$line=$line_cnt*$page + $i - $line_cnt;
+            if( $rs['fld_hnm']=='seqno') continue;
 			$project_name	= $rs['group_name'];
 			$tab_hnm	= $rs['tab_hnm'];
 			$fld_hnm	= $rs['fld_hnm'];
@@ -225,6 +359,7 @@ if( $param !='') {
 			$memo		= $rs['memo'];
 ?>
 		<tr style='color:white;fontsize:32px;'>
+		  <TD><?=$line?></td>
 		  <td><?=$project_name?></td>
 		  <td><?=$tab_hnm?></td>
 		  <td title='if_data:<?=$if_data?>'>
@@ -233,6 +368,7 @@ if( $param !='') {
 		  <td><?=$fld_len?></td>
 		</tr>
 <?php
+	$i++;
 	}
 ?>
   </td>
@@ -242,6 +378,35 @@ if( $param !='') {
    <a href="javascript:self.close()">
     <font color='cyan' size='3'>[ * CLOSE * ]</a></td>
 </tr>
+<!-- </table> -->
+
+
+</form>
+</tbody>
 </table>
+
+<table width="100%" bgcolor="#CCCCCC">
+  <tr>
+    <td align="center" bgcolor="f4f4f4">
+<?php
+	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	$last_page = $first_page+($page_num-1);
+	if( $last_page > $total_page) $last_page = $total_page;
+	$prev = $first_page-1;
+	if( $page > $page_num)
+		echo"<a href='#' title='page:$page, prev:$prev, data:$search_data' onclick=\"page_func('".$prev."','".$search_data."')\" style='font-size:18px;'>[Prev]</a>";
+	for( $i = $first_page; $i <= $last_page; $i++){
+		if($page == $i) echo" <b>".$i."</b> ";
+		else
+			echo"<a href='#' title='page:$page, i:$i, data:$search_data' onclick=\"page_func('".$i."','".$search_data."')\" style='font-size:18px;'>[".$i."]</a>";
+	}
+	$next = $last_page+1;
+	if($next <= $total_page)
+		echo"<a href='#' title='page:$page, next:$next, data:$search_data' onclick=\"page_func('".$next."','".$search_data."')\" style='font-size:18px;'>[Next]</a>";
+?>
+	</td>
+  </tr>
+</table>
+
 </body>
 </html>

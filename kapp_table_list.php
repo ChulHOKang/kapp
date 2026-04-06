@@ -35,14 +35,11 @@
 </head>
 <style>
 table { border-collapse: collapse; }
-/*th { background: #cdefff; height: 32px; } */
 th { background: #666fff; color: white; height: 32px; }
 th, td { border: 1px solid silver; padding:5px; }
 	.container {
 		background-color: skyblue;
 		display :flex;									/* flex, inline-flex */
-		/*flex-direction: row;*/							/* row, row-reverse, column, column-reverse */
-		/*flex-wrap: nowrap;*/							/* nowrap, wrap, wrap-reverse */
 		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
 		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
 		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
@@ -220,12 +217,12 @@ $(function () {
 	$last = $line_cnt;
 	if( $total < $last) $last = $total;
 	$limit = " limit $first, $last ";
-	if( $page == 1){
+	/*if( $page == 1){
 		$no = $total;
 	} else {
 		if( $page>1) $no = $total - ($page - 1) * $line_cnt;
 		else $no = $total;
-	}
+	}*/
 	function kapp_table_check( $tab ){
 		global $table_prefix;
 		$sql = "SELECT COUNT(*) as cnt FROM Information_schema.tables
@@ -241,7 +238,6 @@ $(function () {
 			return false;
 		}
 	}
-
 ?>
 <script type="text/javascript" >
 <!--
