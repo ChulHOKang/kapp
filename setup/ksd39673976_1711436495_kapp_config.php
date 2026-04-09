@@ -112,7 +112,7 @@ function Back($pg_code) {
                         value="<?=$row['kapp_admin_email_name']?>" style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'
                         placeholder='Please enter a kapp_admin_email_name.'></div>
                 <div class='blankA'> </div>
-                <div class='menu1T' align='center'><span
+                <!-- <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_use_point</span></div>
                 <div class='menu2A'><input type='TINYINT' name='kapp_use_point' value="<?=$row['kapp_use_point']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_use_point.'>
@@ -123,7 +123,7 @@ function Back($pg_code) {
                 <div class='menu2A'><input type='INT' name='kapp_point_term' value="<?=$row['kapp_point_term']?>"
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;' placeholder='Please enter a kapp_point_term.'>
                 </div>
-                <div class='blankA'> </div>
+                <div class='blankA'> </div> -->
                 <div class='menu1T' align='center'><span
                         style='width:<?=$Xwidth?>;height:<?=$Xheight?>;'>kapp_login_point</span></div>
                 <div class='menu2A'><input type='INT' name='kapp_login_point' value="<?=$row['kapp_login_point']?>"
