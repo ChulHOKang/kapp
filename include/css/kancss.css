@@ -67,16 +67,16 @@ list-style:none;
 
 xbody {
 	font: normal .8em/1.5em Arial, Helvetica, sans-serif;
-	background: ./resources/img/web_12.jpg;	/* #ebebeb; */
-	width: 480px;  /* ȭ�� �� ���� */
-	margin: 93px auto; /* top ���� ���ݰ�*/
+	background: #ebebeb;	/* #ebebeb; , ./resources/img/web_12.jpg; */
+	width: 480px;
+	margin: 93px auto;
 	color: #666;
 }
 body {
 	font: normal .8em/1.5em Arial, Helvetica, sans-serif;
-	background: ./resources/img/web_12.jpg;	/* #ebebeb; */
-	width: 100%px;  /* ȭ�� �� ���� */
-	margin: 0px auto; /* top ���� ���ݰ�*/
+	background: #ebebeb;	/* #ebebeb; , ./resources/img/web_12.jpg;*/
+	width: 100%px; 
+	margin: 0px auto;
 	color: #666;
 }
 a {
@@ -202,7 +202,7 @@ a {
 /* level 3+ list */
 #nav ul ul {
 	z-index: 999;
-/*	left: 181px; �˾����ϴ������� ��Ÿ���� �޴� ����*/
+/*	left: 181px; */
 	left: 131px;
 	top: -3px;
 }
