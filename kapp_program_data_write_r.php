@@ -25,30 +25,34 @@
 	else $tab_mid = "";
 	if( $pg_code =='' || $tab_enm =='' || $tab_mid =='') {
 		m_("Abnormal approach. pg_code:$pg_code, tab_enm:$tab_enm, tab_mid:$tab_mid");
+		echo "<br>---Abnormal approach. pg_code:$pg_code, tab_enm:$tab_enm, tab_mid:$tab_mid";
 		$rungo = "./";
 		exit;
 	}
 	if( isset($_POST['grant_write']) ) $grant_write = $_POST['grant_write'];
 	else $grant_write = "";
+
 	if( $grant_write > $H_LEV ) {
 		m_("You need to permission.");
-		echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$pg_code."'>";
+		echo "<meta http-equiv='refresh' content=0;url='kapp_program_data_list.php?pg_code=".$pg_code."'>";
 		exit;
 	}
 	if( isset($_POST['pg_name']) ) $pg_name = $_POST['pg_name'];
 	else $pg_name = "";
-	//set_session('pg_name',  $pg_name);
-	//set_session('pg_code',  $pg_code); 
+	
 	if( isset($_POST['table_item_array']) ) $item = $_POST['table_item_array'];
 	else $item = "";
-	if( isset($_POST['item_cnt']) ) $item_cnt = $_POST['item_cnt'];
-	else $item_cnt = "";
 	if( isset($_POST['iftype']) ) $iftype = $_POST['iftype'];
 	else $iftype = "";
 	$iftype = explode("|", $iftype);
  	$list = array();
 	$ddd = "";
 	$list = explode("@", $item);	
+
+	if( isset($_POST['relation_dataPG']) ) $relation_dataPG = $_POST['relation_dataPG'];
+	else $relation_dataPG = "";
+	if( isset($_POST['relation_typePG']) ) $relation_typePG = $_POST['relation_typePG'];
+	else $relation_typePG = "";
 
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$day = date("Y-m-d H:i:s", time());
@@ -150,28 +154,22 @@
 		^|fld_1|상품|VARCHAR|15@|fld_2|원산지|VARCHAR|15@|fld_3|단위|VARCHAR|15@|fld_4|수량|INT|12@|fld_5|단가|INT|12@|fld_6|금액|INT|12@|fld_7|날짜|DATE|15@
 		^|fld_1|날짜|DATE|15@|fld_2|yyyy|CHAR|15@|fld_3|mm|CHAR|15@|fld_4|dd|CHAR|15@|fld_5|product|VARCHAR|15@|fld_6|total_count|INT|12@|fld_7|tottal_price|BIGINT|15@
 		^|fld_1|년도|YEAR|4@|fld_2|상품|VARCHAR|15@|fld_3|수량|INT|12@|fld_4|금액|INT|12@|fld_5|메모|TEXT|255@
-
 		 syntax to use near ' fld_7 = '2026-03-17 13:17:40'' 
+		 OK change --- 2
 	*/
 	$mq2 = sql_query($SQL);
 	if( $mq2 ) { 
-		//$relation_data =get_session("relation_dataPG");
-		//$relation_type =get_session("relation_typePG"); 
-		$relation_data =$_POST("relation_dataPG");
-		$relation_type =$_POST("relation_typePG"); 
-		if( $relation_data !='' ) {
-			$rdata = explode("^", $relation_data);
-			$rtype = explode("^", $relation_type);
+		if( $relation_dataPG !='' ) {
+			$rdata = explode("^", $relation_dataPG);
+			$rtype = explode("^", $relation_typePG);
 			$rt = explode("@", $rtype[0]);
-			$data_cnt = count( $rdata);	m_(" data_cnt: " . $data_cnt );
+			$data_cnt = count( $rdata);
 			for( $i=0; $i < $data_cnt && isset($rdata[$i]) && $rdata[$i] !=""; $i++ ){
 				if( isset( $rdata[$i]) && $rdata[$i] !="" && $rdata[$i] !="undefined"){
-					relation_func( $rdata[$i], $pg_code, $rt[$i] );
+					$chk = relation_func( $rdata[$i], $pg_code, $rt[$i] );
 				}
 			}
 		}
-		$rungo = "./tkher_program_data_list.php?pg_code=" . $pg_code;
-		echo "<script>window.open( '$rungo' , '_self', ''); </script>";
 	} else {
 		m_(" insert ERROR --- mode:$mode, table: " . $tab_enm . ", pg_code: " . $pg_code);	exit;
 	}

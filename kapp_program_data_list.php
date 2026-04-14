@@ -2,8 +2,10 @@
 	include_once('./tkher_start_necessary.php');
 
 	/* ----------------------------------------------------------------------
+	kapp_program_data_list.php - copy - tkher_program_data_list.php
 	tkher_program_data_list.php?pg_code=dao_1540779796  : data list   system program , popup , calc
-    tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
+    kapp_program_data_write.php - copy - tkher_program_run.php
+	tkher_program_run.php?pg_code=dao_1693896214		: data insert system program , call : table10i.php, app_pg50RC.php 에서 call
     tkher_program_data_update.php						: data update system program
 	tkher_program_data_view.php							: data view   system program
 
@@ -43,8 +45,7 @@
 		$if_type = $rsPG['if_type'];
 		$tab_enm = $rsPG['tab_enm'];
 		$tab_hnm = $rsPG['tab_hnm'];
-		$item_cnt = $rsPG['item_cnt'];
-		$fld_cnt = $rsPG['item_cnt'];
+		$item_cnt = $rsPG['item_cnt']; //$fld_cnt = $rsPG['item_cnt'];
 		$pg_name = $rsPG['pg_name']; 
 		$pg_mid= $rsPG['userid']; 
 		$tab_mid= $rsPG['tab_mid']; 
@@ -117,220 +118,28 @@ $(function () {
 });
 
 </script>
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
-<script type="text/javascript" >
-<!--
-	function title_wfunc(fld_code_pg){       
-		document.view_form.page.value = 1;
-		document.view_form.fld_code_pg.value= fld_code_pg;
-		document.view_form.fld_code_asc_pg.value= 'desc';
-		document.view_form.mode.value='title_wfunc';
-		document.view_form.target='_self';
-		document.view_form.action='tkher_program_data_list.php';
-		document.view_form.submit();                         
-	} 
-	function title_func(fld_code_pg){       
-		document.view_form.page.value = 1;                
-		document.view_form.fld_code_pg.value= fld_code_pg;           
-		document.view_form.fld_code_asc_pg.value= 'asc';
-		document.view_form.mode.value='title_func';           
-		document.view_form.target='_self';
-		document.view_form.action='tkher_program_data_list.php';
-		document.view_form.submit();                         
-	} 
-	function home_func(pg_code){
-		document.view_form.mode.value='home_func';
-		document.view_form.target="_self";
-		document.view_form.action='tkher_program_data_list.php';
-		document.view_form.submit();
-	}
-	function Change_Csel3(c_sel){
-		document.view_form.search_choice.value=c_sel;
-		document.view_form.c_sel3.value=c_sel;
-	}
-	function Change_Csel2(c_sel){
-		var obj = document.getElementById("c_sel3");
-		var c = c_sel.split("|");
-		document.view_form.search_fld.value = c[0];
-		document.view_form.mode.value = 'search';
-	}
-	function pg_record_view( seqno, data_mid ){
-		document.view_form.seqno.value=seqno;
-		document.view_form.data_mid.value=data_mid;
-		document.view_form.action='tkher_program_data_view.php'; 
-		document.view_form.target="_blank";
-		document.view_form.submit();
-	}
-    function table_record_view(enm,hnm)	{
-		document.view_form.fld_code_pg.value='';
-		document.view_form.fld_code_asc_pg.value='';
-		document.view_form.pg_code.value=enm;
-		document.view_form.pg_name.value=hnm;
-		document.view_form.action='tkher_program_data_list.php'; 
-		document.view_form.submit();
-	}
-	function table_record_write(pg_code, grant_write, h_lev){ 
-		if( grant_write > h_lev ){
-			alert("No permission. ");
-			return;
-		} else {
-			//if( h_lev > 1 && h_lev > grant_write || h_lev == grant_write){
-			document.view_form.action='tkher_program_run.php?pg_code='+pg_code; 
-			document.view_form.submit();
-		}
-	}
-	function excel_down(){
-		if( !document.view_form.id.value ) {
-			alert('Login Please!'); return false;
-		}
-		document.view_form.mode.value = 'excel_create';
-		document.view_form.action='down_excel_file.php';
-		document.view_form.submit();
-	}
-	function excel_upload_func(tab_enm, tab_hnm){
-		pg_code = document.view_form.pg_code.value;
-		document.view_form.pg_call.value="tkher_program_data_list.php?pg_code="+pg_code;
-		document.view_form.mode.value="Upload_mode_table10i";
-		document.view_form.tab_enm.value=tab_enm;
-		document.view_form.tab_hnm.value=tab_hnm;
-		document.view_form.action="excel_load.php";
-		document.view_form.submit();
-	}
-	function Change_line_cnt( $pg_code, $line){
-		
-		document.view_form.page.value = 1;
-		document.view_form.line_cnt.value = $line;
-		document.view_form.action='tkher_program_data_list.php?pg_code='+$pg_code;
-		document.view_form.submit();
-	}
-	function tkher_source_create( $coin ){ 
-		if( !document.view_form.id.value ) {
-			alert('Login Please!'); return false;
-		}
-		if( $coin < 1000 ) {
-			alert('Requires more than 1000 points. Point is low. You must do activities to accumulate points. point:'+ $coin);
-			document.view_form.action='<?=KAPP_URL_T_?>/manual/user_manual.php';
-			document.view_form.target = '_blank';
-			document.view_form.submit();
-		} else {
-			if( confirm("Are you sure you want to Create? ") ) {
-				document.view_form.mode.value = "data_list";
-				document.view_form.action='tkher_php_programDN.php';
-				document.view_form.target = '_blank';
-				document.view_form.submit();
-			} else { 
-				alert('Cancel!');
-			}
-		}
-	}
-	$(function() {
-		$('.search_btn').on('click', function() {
-			var c_sel = document.getElementById("c_sel");
-			i = c_sel.selectedIndex;
-			c_sel = c_sel.options[i].value;
-			var c_sel3 = document.getElementById("c_sel3");
-			i = c_sel3.selectedIndex;
-			c_sel3 = c_sel3.options[i].value;
-			document.view_form.mode.value = 'search';
-			document.view_form.search_fld.value = c_sel;
-			document.view_form.search_choice.value = c_sel3;
-			document.view_form.action = 'tkher_program_data_list.php';
-			document.view_form.submit();
-		});
-	});
-	
-
-	function Change_grant_view(cd, grant_view, pg_code){
-		resp = confirm("Are you sure change? Y/N ");
-		if( resp === true ) {
-			jQuery(document).ready(function ($) {
-				$.ajax({
-					header:{"Content-Type":"application/json"},
-					method: "post",
-						url: 'kapp_column_change_ajax.php',
-						data: {
-							"mode": 'grant_view_change',
-							"pg_code": pg_code,
-							"grant_view": grant_view
-								
-						},
-					success: function(data) {
-						alert("OK change --- " + grant_view);
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-						alert(" error.-- kapp_column_ajax.php");
-						console.log(jqXHR);
-						console.log(textStatus);
-						console.log(errorThrown);
-						return;
-					}
-				});
-			});
-		} else {
-			switch(cd){
-				case '0': 
-				case '1': old_cd = 0; msg='Guest'; break;
-				case '2': old_cd = 1; msg='Member'; break;
-				case '3': old_cd = 2; msg='For creators only'; break;
-				case '8': old_cd = 3; msg='Only system manager'; break;
-				default : old_cd = 0; msg='Guest'; break;
-			}
-			view_form.grant_view.selectedIndex = old_cd;
-		}
-	}	
-	function Change_grant_write(cd, grant_write, pg_code){
-		resp = confirm("Are you sure change? Y/N ");
-		if( resp === true) {
-			jQuery(document).ready(function ($) {
-				$.ajax({
-					header:{"Content-Type":"application/json"},
-					method: "post",
-						url: 'kapp_column_change_ajax.php',
-						data: {
-							"mode": 'grant_write_change',
-							"pg_code": pg_code,
-							"grant_write": grant_write
-								
-						},
-					success: function(data) {
-						alert("OK change --- " + grant_write);
-					},
-					error: function(jqXHR, textStatus, errorThrown) {
-						alert(" 올바르지 않습니다.-- kapp_column_ajax.php");
-						console.log(jqXHR);
-						console.log(textStatus);
-						console.log(errorThrown);
-						return;
-					}
-				});
-			});
-		} else {
-			switch(cd){
-				case '0': 
-				case '1': old_cd = 0; msg='Guest'; break;
-				case '2': old_cd = 1; msg='Member'; break;
-				case '3': old_cd = 2; msg='For creators only'; break;
-				case '8': old_cd = 3; msg='Only system manager'; break;
-				default : old_cd = 0; msg='Guest'; break;
-			}
-			view_form.grant_write.selectedIndex = old_cd;
-		}
-	}	
-	function group_code_change_func(cd,pg_code){
-		index = document.view_form.group_code.selectedIndex;
-		document.view_form.mode.value = "project_search";
-		document.view_form.action ="tkher_program_data_list.php";
-		document.view_form.submit();
-		return;
-	}
-	function page_move($page){
-		document.view_form.page.value = $page;
-		document.view_form.action='tkher_program_data_list.php';
-		document.view_form.submit();
-	}
-	// -->
- </script>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_data.js"></script>
+<link type="text/css" rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" />
 <body width='100%'>
+
+<script>
+	function table_record_write_listA(){
+		thisform = document.view_form;
+		var pg_code			= document.view_form.pg_code.value;
+		var grant_write		= document.view_form.grant_write.value;
+		var H_LEV			= document.view_form.H_LEV.value;
+			//alert("" + pg_code + ", " + grant_write +", "+ H_LEV);
+			//dao_1768010782, 2, 8
+			if( grant_write > H_LEV ){
+				alert("No permission. ");
+				return;
+			} else {
+				thisform.action='kapp_program_data_write.php?pg_code='+pg_code; 
+				thisform.target='_blank';
+				thisform.submit();
+			}
+	}
+</script>
 
 <?php 
 	$cur='B';
@@ -352,18 +161,18 @@ $(function () {
 	$fld_len	= array();
 	$list		= array();
 	$item		= array(); 
-	$ddd		= "";	//$in_day= date("Y-m-d H:i");
+	$item_A	= "";	//$in_day= date("Y-m-d H:i");
 	$list		= explode("@", $table_item_array);
 	for( $i=0; isset($list[$i]) && $list[$i] != ""; $i++ ){
-		$ddd				= $list[$i];
-		$item				= explode("|", $ddd);
+		$item_A		= $list[$i];
+		$item			= explode("|", $item_A);
 		$fld_enm[$i]	= $item[1];
 		$fld_hnm[$i]	= $item[2];
 		$fld_type[$i]	= $item[3];
 		$fld_len[$i]		= $item[4];
 		if( $i==0 && !$search_fld) $search_fld = $item[1];
 	}
-	$item_cnt	= $fld_cnt=$i;
+	$item_cnt=$i;
 	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
@@ -403,16 +212,18 @@ $(function () {
 ?>
 <br>
 <div>
-	<P onclick="javascript:home_func('<?=$pg_code?>')" class="HeadTitle03AX" title='table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
+	<P onclick="javascript:kapp_dataManager.list_home_func(this, '<?=$pg_code?>');" class="HeadTitle03AX" title='list - home_func - table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
 </div>
 <script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
 <FORM name='view_form' method='post' enctype="multipart/form-data" >
+<!-- <FORM onsubmit="kapp_dataManager.write_proc(this); return false;" name='view_form' method='post' enctype="multipart/form-data"> -->
+
 <div style='width:99%;'>
 	<div class="fl">
 		<tr>
 			<td align='left'>
 			<P align="left" style="margin-top: 0px" title='pg: Project List '>
-			<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
+			<SELECT id='group_code' name='group_code' onchange="group_code_change_func_list( this, this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 							<option value=''>Select Project</option>
 <?php
 			if( $H_LEV > 7) $result=sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
@@ -448,7 +259,7 @@ $(function () {
 ?>
 			<tr>
 			<td width='130' height='24' background='./icon/admin_submenu.gif'>&nbsp;<img src='./icon/left_icon.gif'>
-			<a href="javascript:table_record_view('<?=$pg_codeA?>','<?=$pg_nameA?>');" target='_self'><?=$pg_nameA?></a>
+			<a href="javascript:table_record_view_list( this, '<?=$pg_codeA?>','<?=$pg_nameA?>');" target='_self'><?=$pg_nameA?></a>
 			</td>
 			</tr>
 <?php
@@ -471,7 +282,7 @@ $(function () {
 					K-APP:<?=$pg_code?>&nbsp;&nbsp;&nbsp;&nbsp;
 					Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='View page count'>Page:<?=$page?></strong>
-						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt('<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
+						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt( this, '<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
 							<option value='10'  <?php if($line_cnt=='10')  echo " selected" ?> >10</option>
 							<option value='30'  <?php if($line_cnt=='30')  echo " selected" ?> >30</option>
 							<option value='50'  <?php if($line_cnt=='50')  echo " selected" ?> >50</option>
@@ -483,14 +294,14 @@ if( $H_ID==$pg_mid ) {
 ?>
 					<span>
 						<strong title='Click to change properties'>View: </strong>
-						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view('<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
+						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view_list( this, '<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
 							<option value='1' <?php if($grant_view=='0'||$grant_view=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_view=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_view=='3')  echo " selected"; ?> >For creators only</option>
 							<option value='8' <?php if($grant_view=='8')  echo " selected"; ?> >Only system manager</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='Click to change properties'>Write: </strong>
-						<select id='grant_write' name='grant_write' onChange="Change_grant_write('<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
+						<select id='grant_write' name='grant_write' onChange="Change_grant_write_list( this, '<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
 							<option value='1' <?php if($grant_write=='0'||$grant_write=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_write=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_write=='3')  echo " selected"; ?> >For creators only</option>
@@ -531,20 +342,14 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='search_fld'	value='<?=$search_fld?>' />
 						<input type="hidden" name='search_choice'		value='<?=$search_choice?>' />
 						<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
-<?php
-				//for( $i=0;$i<$item_cnt;$i++){
-?>
-						<!-- <input type='hidden' name="iftype[<?=$i?>]" value='<?=$iftype[$i]?>' >
-						<input type='hidden' name="if_data[<?=$i?>]" value='<?=$if_data[$i]?>' >  -->
-<?php
-				//}
-?>
+						<input type="hidden" name='H_LEV'		value='<?=$H_LEV?>' />
+
 	<table class='listTableT' width='99%'>
 		<thead id='tit_et'>
 			<tr>
 				<th style="width:30px; height: 100%px;text-align:center">No</th>
 <?php
-		for( $i=0; $i < $fld_cnt; $i++){
+		for( $i=0; $i < $item_cnt; $i++){
 			$fhnm = $fld_hnm[$i];
 			$fenm = $fld_enm[$i];
 			echo " <th title='$fenm:$fhnm Sort click or doubleclick' >$fhnm</th> ";
@@ -587,7 +392,7 @@ if( $H_ID==$pg_mid ) {
 						<td style="width:30px; height:100%px;text-align:center" title='<?=$row_seqno?>, <?=$kapp_memo?>'>
 						 <a href="javascript:pg_record_view('<?=$row_seqno?>', '<?=$data_mid?>');" ><?=$no?></a></td>
 <?php
-						for( $i=0; $i < $fld_cnt; $i++){
+						for( $i=0; $i < $item_cnt; $i++){
 							$fenm = $fld_enm[$i];
 							if( $fld_type[$i]=='INT' || $fld_type[$i]=='BIGINT' ){
 								$num = number_format( $row[$fenm] );
@@ -607,9 +412,9 @@ if( $H_ID==$pg_mid ) {
 		</tbody>
 	</table>				
 	<div class="fl">
-		<select id='c_sel' name='c_sel' onChange='Change_Csel2(this.options[this.selectedIndex].value)' style='height:30;' >
+		<select id='c_sel' name='c_sel' onChange='Change_Csel2( this, this.options[this.selectedIndex].value)' style='height:30;' >
 <?php
-		for( $i=0; $i < $fld_cnt; $i++ ){
+		for( $i=0; $i < $item_cnt; $i++ ){
 			$fff		= $fld_enm[$i];
 			$hhh		= $fld_hnm[$i];
 			$search_fld_type = $fld_type[$i];
@@ -619,7 +424,7 @@ if( $H_ID==$pg_mid ) {
 		}
 ?>
 		</select>
-		<select id='c_sel3' name='c_sel3' onChange='Change_Csel3(this.options[this.selectedIndex].value)' style='height:30;'>
+		<select id='c_sel3' name='c_sel3' onChange='Change_Csel3( this, this.options[this.selectedIndex].value)' style='height:30;'>
 				<option value='like' <?php if($search_choice=='like' ) echo " selected " ?> >like</option>
 				<option value='=' <?php if($search_choice=='=' ) echo " selected " ?> >=</option>
 				<option value='>' <?php if($search_choice=='>') echo " selected" ?> >></option>
@@ -629,15 +434,19 @@ if( $H_ID==$pg_mid ) {
 				<a href="#" class="search_btn">Search</a>
 				<br>
 					<div class="fr">
-					<input type='button' value='Write' onclick="javascript:table_record_write('<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='table_pg70_write'>
+<!-- <input type='button' value='Write' onclick="javascript:kapp_dataManager.kapp_proc( this, '<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='pg:kapp_program_data_list'> -->
 
-				<input type='button' value='Excel_Upload' onclick="excel_upload_func('<?=$tab_enm?>','<?=$tab_hnm?>')" class='kapp_btn_bo03' title='Batch upload of data to excel file'>
-				<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="kapp_btn_bo02" title=' Download data as an Excel file'>
-				<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
+<input onclick="javascript:kapp_dataManager.table_record_write_list(this);" name="btn" id="btn" value=" Write " class="kapp_btn_bo02" title='kapp_program_data_list' />
+
+<!-- <input type='button' value='Write' onclick="javascript:table_record_write_listA();" class="kapp_btn_bo02" title='pg:kapp_program_data_list'> OK -->
+
+				<input type='button' value='Excel_Upload' onclick="excel_upload_func( this, '<?=$tab_enm?>','<?=$tab_hnm?>')" class='kapp_btn_bo03' title='Batch upload of data to excel file'>
+				<input type='button' value='Excel Down' onclick="javascript:excel_down(this);" class="kapp_btn_bo02" title=' Download data as an Excel file'>
+				<input type='button' value='Source Down' onclick="javascript:tkher_source_createDN('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
 	</div> 
 </form>
 <?php
-	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
+	paging("kapp_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
 ?> 
 
 </body>
