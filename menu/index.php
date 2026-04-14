@@ -137,9 +137,10 @@
 	}
 </script>
 
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
+<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
-<link rel='stylesheet' href='../include/css/kancss.css' type='text/css'>
+ -->
+
 
 <script>
 $(function () {
@@ -204,6 +205,7 @@ $(function () {
 </script>
 
 <script type="text/javascript">
+/*
 var $grid;
 $(function(){
 	$(".visualSlide ").slick({
@@ -274,8 +276,10 @@ common = {
 			$(".header").addClass("on");
 		}
 	},
-}
+}*/
 </script>
+<body style='background-color:#000;' >
+
 <?php
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode='';
@@ -337,10 +341,13 @@ if( $total > 0 ) {
 	$result = sql_query( $query);
 } else $total = 0;
 
+	$runpage='./index.php';
+	$cur='C';
+	include "../menu_run.php";
 //( $sys_pg, $subtit, $open_mode, $mid, $sys_jong, $num, $job_addr )
 ?>
-
-<body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
+<!-- <link rel='stylesheet' href='../include/css/kancss.css' type='text/css'> -->
+<div>
 <center>
 	<FORM method='post' name='sys_form' >
 		<input type='hidden' name='Hid' value='<?=$H_ID?>' > 
@@ -358,13 +365,13 @@ if( $total > 0 ) {
 		<input type='hidden' name='job_addr' value='' > 
 		<input type='hidden' name='start_click' value='' > 
 <?php
-	$runpage='./index.php';
-	$cur='C';
-	include "../menu_run.php";
-	if( $mid) $madeid = $mid;
-	else      $madeid ='All';
-	echo "<p style='color:cyan;text-align:center;'>id:" . $H_ID .", total: " . $total . ", total-page: " . $total_page . "</p>";
+	//if( $mid) $madeid = $mid;
+	//else      $madeid ='All';
+	//echo "<p style='color:cyan;text-align:center;'>id:" . $H_ID .", total: " . $total . ", total-page: " . $total_page . "</p>";
 ?>
+
+<p style='color:cyan;text-align:center;'>id:<?=$H_ID?>, total: <?=$total?>, total-page: <?=$total_page?></p>
+
 <p style='color:cyan;text-align:center;'>
 View Line: 
 	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
@@ -451,6 +458,8 @@ if( $result ){
 } //if
 
 	echo "</tbody> </table>";
+	echo "</div>";
+
 	echo "<TABLE border='0' align='center' width='100%'>";
 	echo "<tr><td align='center' style='font-size:22px;'>";
 	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
@@ -477,5 +486,6 @@ if( $result ){
 		<input type='button' value='New Create' onclick="javascript:new_create('ailinkapp');" class='HeadTitle01AX' title='New create Menu Tree' onmouseover='big(this);' onmouseout='small(this);'>      
 		</form>
 <?php } ?>
+
 </body>
 </html>

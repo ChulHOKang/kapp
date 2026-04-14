@@ -368,7 +368,7 @@ $(function () {
 
 <body>
 <?php
-	$cur='B';
+	$cur='C';
 	include_once( KAPP_PATH_T_ . "/menu_run.php");
 
 	if( isset($_POST['g_type']) ) $g_type = $_POST['g_type'];

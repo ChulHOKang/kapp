@@ -20,6 +20,7 @@
 		$H_ID= "Guest"; 
 		$H_LEV= 1; 
 	}
+	include "../table_paging.php";
 	$up_day = date("Y-m-d H:i:s");
 	$pg_		= 'ulink_list.php';
 	if( isset($_POST['target_']) ) $target_	= $_POST['target_'];
@@ -62,9 +63,9 @@ th, td { border: 1px solid silver; padding:5px; }
 		boarder: 1px solid gray;
 	}
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="../include/js/dddropdownpanel.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 
 <script>
 $(function () {
@@ -372,6 +373,11 @@ $(function () {
 		document.insert_form.action='ulink_list.php';
 		document.insert_form.submit();
 	}
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl; //'tkher_program_data_list.php';
+		thisform.submit();
+	}
 //-->
 </script>
 
@@ -537,7 +543,7 @@ jQuery(document).ready(function ($) {
 
 <body onload="initA()">
 <?php
-		$cur='B';
+		$cur='C';
 		include_once "../menu_run.php"; 
 ?>
 <Form name='insert_form' METHOD='POST' enctype="multipart/form-data" id="insert_form">
@@ -566,6 +572,7 @@ jQuery(document).ready(function ($) {
 	<input type='hidden' name='jong'		value='' > 
 	<input type='hidden' name='aboard_no'	value='' > 
 
+<?php if( isset($H_ID) && $H_ID != "Guest") { ?>
 <div id="mypanel" class="ddpanel">
 	<div id="mypanelcontent" class="ddpanelcontent">
 	<table border='0' bgcolor='#cccccc' width='100%'>
@@ -616,7 +623,6 @@ jQuery(document).ready(function ($) {
 		<td bgcolor='#ffffff' colspan=2><font color='black'>&nbsp; 
 			<input type='button' id="upd_save_button" onclick="javascript:contents_upd_run();" value='Save Changes' style="background-color:blue;color:yellow;height:25;display:;">
 			<input type='button' id="upd_cancle" onclick="javascript:Cancle_run();" value='Cancel Change' style="background-color:red;color:yellow;height:25;display:;">
-<?php if( isset($H_ID) && $H_ID != "") { ?>
 <?php 
 			if ( $mode == 'update_link') { ?>			
 				<input id="upd_save_button" type='button'  onclick="javascript:contents_upd_run();" value='Save Changes' style="background-color:blue;color:yellow;height:25;">
@@ -624,7 +630,6 @@ jQuery(document).ready(function ($) {
 <?php		} ?>			
 				<input id="save_button" type="submit" value="Note Save" style="background-color:blue;color:yellow;height:25;" />
 				<br> User:<?=$H_ID?> - If you want to change the registered link data, you can change the data by clicking the Title.
-<?php } ?> 
 
 		</td>
 	</tr>
@@ -632,6 +637,9 @@ jQuery(document).ready(function ($) {
 </div>
 <div id="mypaneltab" class="ddpaneltab" ><span style="background-color:;color:yellow;"><a href="#" style='height:25px;color:yellow;'>&nbsp; &#9776; Note Create &nbsp;▼ &nbsp;</a></span></div>
 </div>
+<?php } ?> 
+
+
 <link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
 <?php
 		if ( $g_type=='mylist' && isset($sdata) && $sdata != ""  ) {
@@ -660,22 +668,22 @@ jQuery(document).ready(function ($) {
 			$ls = "SELECT * from {$tkher['job_link_table']} ";
 		}
 		$result = sql_query( $ls );
-		$total = sql_num_rows($result);
+		$total_count = sql_num_rows($result);
 
-		$total_page = intval(($total-1) / $line_cnt)+1; 
+		$total_page = intval(($total_count-1) / $line_cnt)+1; 
 		if( $page>1) {
 			$first = ($page-1)*$line_cnt; 
-			$no = $total - ($page - 1) * $line_cnt;
+			$no = $total_count - ($page - 1) * $line_cnt;
 		} else {
 			$first =0;
-			$no = $total;
+			$no = $total_count;
 		}
 		$last = $line_cnt; 
-		if( $total < $last) $last = $total;
+		if( $total_count < $last) $last = $total_count;
 		$limit = " limit $first,$last";
 
 		if( $sdata )  $g_nameX = "Search : " . $sdata;
-		else if( !$g_name ) $g_nameX = " page:" . $page . ", [count:" .$total. "]";
+		else if( !$g_name ) $g_nameX = " page:" . $page . ", [count:" .$total_count. "]";
 		else $g_nameX = "Group: " . $g_name;
 		if( $H_ID && $H_ID!='' && isset($member['mb_email'])) $g_nameX = $g_nameX . ", level:" . $member['mb_level'] . "," .$member['mb_email'];
 ?>
@@ -697,7 +705,7 @@ jQuery(document).ready(function ($) {
 						<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
 					</select>
 				</span>	&nbsp;&nbsp;&nbsp;&nbsp;
-				<span> total: <?=$total?></span>&nbsp;
+				<span> total: <?=$total_count?></span>&nbsp;
 				<span> , current page: <?=$page?></span>&nbsp;
 				<span> , total page: <?=$total_page?></span>
 			</p>
@@ -848,32 +856,13 @@ jQuery(document).ready(function ($) {
 		<tr align="center"></tr>
 </tbody>
 </table>
-<table width="100%"   bgcolor="#CCCCCC" >
-  <tr>
-    <td align="center" bgcolor="f4f4f4" >
+
+
 <?php
-if( isset($search) ) $search = $_REQUEST['search'];
-else  $search = "";
+	paging("ulink_list.php",$total_count,$page,$line_cnt, "document.insert_form"); 
+?> 
 
-$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-$last_page = $first_page+($page_num-1);
-if($last_page > $total_page) $last_page = $total_page;
-$prev = $first_page-1;
 
-if( $page > $page_num) 
-	echo"[<a onclick=\"javascript:page_func($prev, '$search', '$sdata', '$g_name', '$g_type');\" >Prev</a>] ";
-for( $i = $first_page; $i <= $last_page; $i++){
-	if( $page == $i) echo" <b>$i</b> "; 
-	else echo"[<input type='button' value='[$i]' style='font-size:20px;font-weight:bold;' onclick=\"javascript:page_func($i, '$search', '$sdata', '$g_name', '$g_type');\" >";
-}
-$next = $last_page+1;
-if( $next <= $total_page) 
-	echo" [<a onclick=\"javascript:page_func($next, '$search', '$sdata', '$g_name', '$g_type');\" title='page next:$next'>Next</a>]";
-
-?>
-	</td>
-  </tr>
-</table>
 </form>
 </body>
 </html>
