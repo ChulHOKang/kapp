@@ -4,7 +4,7 @@
     <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/common.js"></script>
 	<script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
     <link rel='stylesheet' href='<?=KAPP_URL_T_?>/include/css/kancss.css' type='text/css'>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+   <!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script> -->
     <script type='text/javascript'>
     <!--
     function Kout_func() {
@@ -202,6 +202,10 @@
 	$cur="";
     if( $H_ID && $H_LEV > 7 && get_cookie('add_admin_info') != 'next') Admin_info_check();
     if( $H_ID && $H_LEV > 1 && get_cookie('add_info') != 'next') Member_info_check();
+	if( isset($_POST['userObject']) ) $userObject = $_POST['userObject'];
+	else $userObject = '';
+	if( isset($_POST['authObject']) ) $authObject = $_POST['authObject'];
+	else $authObject = '';
 ?>
     <form name='kakao_form' method='post' enctype='multipart/form-data'>
         <input type='hidden' name='Login_Mode' value='' />
@@ -234,7 +238,7 @@
                         <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=3" target='_self'>33. Q&A</a></li>
                         <li align='left'><a href="<?=KAPP_URL_T_?>/menu/index_bbs.php?infor=4" target='_self'>34. Free Board</a></li>
                 <?php
-	if( $H_ID && $H_LEV > 7) {
+	if( $H_LEV > 7) {
 ?>
                 <li align='left'> <a href='<?=KAPP_URL_T_?>/adm/' target='_blank'
                         <?php echo " title='Admin Page. ' "; ?>> ### Admin ###</a></li>
@@ -248,7 +252,7 @@
             </ul>
         </li>
 <?php
-	if( $H_ID && $H_LEV > 1) $my_tit='Mypage';
+	if( $H_LEV > 1) $my_tit='Mypage';
 	else $my_tit='Login';
 ?>
         <li <?php if($cur=='B') echo "class='current'"; ?>>
@@ -257,7 +261,7 @@
             </div>
             <ul>
 <?php
-		if( !$H_ID || $H_LEV < 2 ) {
+		if( $H_LEV < 2 ) {
 ?>
                 <li align='left'>
                     <div class="lnbFooterKAN">
@@ -275,7 +279,7 @@
                             title='Homepage User Guide'>User's Manual</a>
                     </div>
                 </li>
-                <?php } else { ?>
+<?php } else { ?>
                 <li align='left'>
                     <div class="SS">
                         <a href='<?=KAPP_URL_T_?>/my/' target='_top'>My_Page(<?=$H_ID?>)</a>
@@ -305,7 +309,7 @@
                 <li align='left'><a href='<?=KAPP_URL_T_?>/accountbook/' target='_self'
                         <?php echo " title='Manage user accountbook.' "; ?>>B3.Account book</a></li>
                 <?php
-		} // if H_ID
+} // H_LEV
 ?>
             </ul>
         </li>
@@ -323,7 +327,7 @@
     </ul>
 
 <?php
-if( !$H_ID && $H_ID !=='Guest' ) {
+if( $H_LEV < 2 ) {
 ?>
     <div class="loginBox">
         <div class="rela">

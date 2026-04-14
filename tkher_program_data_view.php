@@ -93,7 +93,9 @@
 		if( document.form_view.Hid.value =='Guest') {
 			alert('Guests cannot delete!'); return false;
 		}
-		if( confirm(" A table relation has been established. \n It cannot be changed. \n table name is: "+RelTs_hnm + "\n Are you sure you want to delete? ") ) {
+		if( RelTs_hnm !='')	$msg=" A table relation has been established. \n It cannot be changed. \n table name is: "+RelTs_hnm + "\n Are you sure you want to delete? ";
+		else $msg="Are you sure you want to delete? ";
+		if( confirm( $msg ) ) {
 			document.form_view.mode.value="data_delete";
 			document.form_view.seqno.value=seqno;
 			document.form_view.action='tkher_program_data_view.php';
@@ -143,7 +145,7 @@
 		}
 	}
 </script>
-<body bgcolor='#ffffff'>
+<body style="background-color:#fff; width:100%;" >
 <center>
 <?php
 	$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";

@@ -130,7 +130,7 @@
 	}
 ?>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
-<body bgcolor='#ffffff'>
+<body style="background-color:#fff; width:100%;" >
 <center>
 <?php
 if( $H_LEV >= 7) $SQLX = " SELECT * from $tab_enm where seqno=$seqno ";

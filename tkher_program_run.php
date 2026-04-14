@@ -30,7 +30,7 @@
 <meta name="robots" content="ALL">
 </head>
 
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
+<body style="background-color:#fff; width:100%;" >
 
 <?php
 	if( isset($_POST['page']) ) $page = $_POST['page'];
