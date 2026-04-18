@@ -192,6 +192,8 @@ $sys_subtitS = 'Admin K-App';
 	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_img.php' target='run_menu'>
 	C.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='15' height='15'>Main Album Insert</a></li>
 
+	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/board_list_admin.php' target='run_menu'>
+	D.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='15' height='15'>Board List All</a></li>
 
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<li style='font-size:11;color:#fff;height:9px;line-height:1'><?=$config['kapp_visit']?><br>
