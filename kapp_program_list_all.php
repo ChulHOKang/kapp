@@ -1,23 +1,42 @@
 <?php
 	include_once('./tkher_start_necessary.php');
 	/*
-		kapp_program_list_all.php
+	  kapp_program_list_all.php - program_list3.php copy  : program list A
+	  program_pglist.php : program list B
 	*/
-	$H_ID	= get_session("ss_mb_id");
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$H_ID= get_session("ss_mb_id");
 	if( $H_ID!=''){
 		$H_LEV=$member['mb_level'];
+		$H_POINT = $member['mb_point'];
 	} else {
+		$H_ID='Guest';
 		$H_LEV=1;
+		$H_POINT = 0;
 	}
+	connect_count($host_script, $H_ID, 0, $referer);
+
 	$formula_		= "";
 	$poptable_		= "";
-	$column_all		= ""; //my_func 
-	$pop_fld= "";
+	$column_all		= "";
+	$pop_fld			= "";
 	$pop_mvfld		= "";
 	$relation_db	= "";
 	$rel_mvfld		= "";
-	$gita= "";	// 1,3,5,7,9
+	$gita				= "";
+	if( isset($_POST['mid']) ) $mid = $_POST['mid'];
+	$mid = $H_ID;
+	if( isset($_POST['page']) ) $page = $_POST['page'];
+	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else $page=1;
+	if( isset($_POST['pj_code']) && $_POST['pj_code']!='' ) $pj_code = $_POST['pj_code'];
+	else $pj_code = "";
+	if( isset($_POST['pj_name']) && $_POST['pj_name']!='' ) $pj_name = $_POST['pj_name'];
+	else $pj_name = "";
+	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
+	else $fld_code = '';
+	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
+	else $fld_code_asc = '';
 ?>
 <html>
 <head>
@@ -30,30 +49,12 @@
 <meta name="robots" content="ALL">
 </head>
 <style>
-textarea {
-	  width: 200px;
-	  height: 150px;
-	  padding: 0px;
-	  border: 2px solid #ccc;
-	  border-radius: 0px;
-	  background-color: #000000;
-	  font-family: Arial, sans-serif;
-	  font-size: 12px;
-	  color: #fff;
-	}
-	textarea:focus {
-	  border-color: #007bff; 
-	  outline: none;
-	}
 table { border-collapse: collapse; }
 th { background: #666fff; color: white; height: 32px; }
 th, td { border: 1px solid silver; padding:5px; }
-
 	.container {
 		background-color: skyblue;
 		display :flex;									/* flex, inline-flex */
-		/*flex-direction: row;*/							/* row, row-reverse, column, column-reverse */
-		/*flex-wrap: nowrap;*/							/* nowrap, wrap, wrap-reverse */
 		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
 		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
 		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
@@ -65,8 +66,9 @@ th, td { border: 1px solid silver; padding:5px; }
 		boarder: 1px solid gray;
 	}
 </style>
-
 <script src="//code.jquery.com/jquery.min.js"></script>
+<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" /> -->
+
 <script>
 $(function () {
 	let timer;
@@ -78,8 +80,6 @@ $(function () {
 				case 'User'    : title_func('userid'); break;
 				case 'Program' : title_func('pg_name'); break;
 				case 'Table'   : title_func('tab_hnm'); break;
-				case 'View'    : title_func('grant_view'); break;
-				case 'Write'   : title_func('grant_write'); break;
 				case 'Date'    : title_func('upday'); break;
 				default        : title_func(''); break;
 			}
@@ -92,8 +92,6 @@ $(function () {
 				case 'User'    : title_wfunc('userid'); break;
 				case 'Program' : title_wfunc('pg_name'); break;
 				case 'Table'   : title_wfunc('tab_hnm'); break;
-				case 'View'    : title_func('grant_view'); break;
-				case 'Write'   : title_func('grant_write'); break;
 				case 'Date'    : title_wfunc('upday'); break;
 				default        : title_wfunc(''); break;
 		}
@@ -105,7 +103,6 @@ $(function () {
 		}
 		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
 	});
-	  
 	$(window).scroll(function() {
 		var scrollTop = $(window).scrollTop(),
 		  scrollLeft = $(window).scrollLeft();
@@ -114,7 +111,6 @@ $(function () {
 			clone = $(this).find('thead:first'),
 			top = $(this).offset().top,
 			bottom = top + $(this).height() - thead.height();
-
 		  if( scrollTop < top || scrollTop > bottom ) {
 			clone.hide();
 			return true;
@@ -129,198 +125,272 @@ $(function () {
 });
 </script>
 <script type="text/javascript" >
-	function title_wfunc(fld_code){       
-		document.table_list.page.value = 1;
-		document.table_list.fld_code.value= fld_code;
-		document.table_list.fld_code_asc.value= 'desc';
-		document.table_list.mode.value='title_wfunc';
-		document.table_list.target='_self';
-		document.table_list.action='kapp_program_list_all.php';
-		document.table_list.submit();                         
-	} 
-	function title_func(fld_code){       
-		document.table_list.page.value = 1;                
-		document.table_list.fld_code.value= fld_code;           
-		document.table_list.fld_code_asc.value= 'asc';
-		document.table_list.mode.value='title_func';           
-		document.table_list.target='_self';
-		document.table_list.action='kapp_program_list_all.php';
-		document.table_list.submit();                         
-	} 
-	function group_code_change_func(cd){
-		index=document.table_list.group_code.selectedIndex;
-		nm = document.table_list.group_code.options[index].text;
-		document.table_list.mode.value='Search_Project';
-		document.table_list.group_name.value=nm;
-		document.table_list.action		="kapp_program_list_all.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
+	function program_del_funcList2( seqno, pg_name, pg_code, hid, mid ) {
+		msg = "Are you sure you want to delete the program " + pg_name +"?";
+		if ( window.confirm( msg ) ){
+			document.tkher_search.mode.value			="Delete_mode";
+			document.tkher_search.seqno.value		=seqno;
+			document.tkher_search.pg_code.value	=pg_code;
+			document.tkher_search.pg_name.value	=pg_name;
+			document.tkher_search.action				="kapp_program_list_all.php";
+			document.tkher_search.target='_self';
+			document.tkher_search.submit();
+		} else {
+			return false;
+		}
 	}
 	function program_run_funcList2( seqno, pg_name, pg_code ) {
-		document.table_list.mode.value		="";
-		document.table_list.seqno.value		=seqno;
-		document.table_list.pg_name.value	=pg_name;
-		document.table_list.pg_code.value	=pg_code;
-		document.table_list.action				="tkher_program_data_list.php";
-		document.table_list.target				="_blank";
-		document.table_list.submit();
+		document.tkher_search.mode.value		="tab_list_pg70";
+		document.tkher_search.seqno.value		=seqno;
+		document.tkher_search.pg_name.value	=pg_name;
+		document.tkher_search.pg_code.value	=pg_code;
+		document.tkher_search.action				="./tkher_program_data_list.php";
+		document.tkher_search.target				="_blank";
+		document.tkher_search.submit();
 	}
+	function program_upgrade( seqno, pg_code, userid ) {
+		document.tkher_search.mode.value		="program_upgrade";
+		document.tkher_search.seqno.value		=seqno;
+		document.tkher_search.userid.value	=userid;
+		document.tkher_search.pg_code.value	=pg_code;
+		document.tkher_search.action= "./kapp_pg_Upgrade.php";
+		document.tkher_search.target ="_blank";
+		document.tkher_search.submit();
+	}
+
 	function page_func( page, data ){
-		document.table_list.mode.value		='';
-		document.table_list.data.value		=data;
-		document.table_list.page.value		=page;
-		document.table_list.action		="kapp_program_list_all.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
+		document.tkher_search.mode.value		='';
+		document.tkher_search.data.value		=data;
+		document.tkher_search.page.value		=page;
+		document.tkher_search.action		="kapp_program_list_all.php";
+		document.tkher_search.target='_self';
+		document.tkher_search.submit();
+	}
+	function kproject_func(pj) {
+		document.tkher_search.page.value = 1;                
+		document.tkher_search.mode.value='Project_search';
+		document.tkher_search.pj_code.value=pj;
+		Prj = pj.split(':');
+		document.tkher_search.pj_code.value= Prj[0];
+		document.tkher_search.pj_name.value= Prj[1];
+		document.tkher_search.action="kapp_program_list_all.php";
+		document.tkher_search.target='_self';
+		document.tkher_search.submit();
 	}
 	function Change_line_cnt( $line){
-		document.table_list.mode.value = '';
-		document.table_list.page.value = 1;
-		document.table_list.line_cnt.value = $line;
-		document.table_list.action='kapp_program_list_all.php';
-		document.table_list.submit();
+		document.tkher_search.page.value = 1;
+		document.tkher_search.line_cnt.value = $line;
+		document.tkher_search.action='kapp_program_list_all.php';
+		document.tkher_search.target='_self';
+		document.tkher_search.submit();
+	}
+	function search_func(){
+		document.tkher_search.page.value = 1;
+		document.tkher_search.mode.value = 'Program_Search';
+		document.tkher_search.action='kapp_program_list_all.php';
+		document.tkher_search.target='_self';
+		document.tkher_search.submit();
+	}
+	function title_wfunc(fld_code){       
+		document.tkher_search.page.value = 1;
+		document.tkher_search.fld_code.value= fld_code;
+		document.tkher_search.fld_code_asc.value= 'desc';
+		document.tkher_search.mode.value='title_wfunc';
+		document.tkher_search.target='_self';
+		document.tkher_search.action='kapp_program_list_all.php';
+		document.tkher_search.submit();                         
+	} 
+	function title_func(fld_code){       
+		document.tkher_search.page.value = 1;                
+		document.tkher_search.fld_code.value= fld_code;           
+		document.tkher_search.fld_code_asc.value= 'asc';
+		document.tkher_search.mode.value='title_func';           
+		document.tkher_search.target='_self';
+		document.tkher_search.action='kapp_program_list_all.php';
+		document.tkher_search.submit();                         
+	} 
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl; //'tkher_program_data_list.php';
+		thisform.submit();
 	}
 </script>
 
-<body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
-<center>
-<?php
-	$param= '';   
-	$sel= '';   
-	$data= '';
-	$seqno= '';   
-	$pg_code= '';   
-	$pg_name= '';   
+<body style="background-color:#fff; width:100%;" >
+ <center>
+ <?php
+	if( isset($_POST["mode"]) ) $mode		= $_POST["mode"];
+	else $mode	 = "";
+	if( isset($_POST['param']) && $_POST['param'] !="" ) $param = $_POST['param'];
+	else $param = '';
+	if( isset($_POST['sel']) && $_POST['sel'] !="" ) $sel = $_POST['sel'];
+	else $sel = '';
+	if( isset($_POST['data']) && $_POST['data'] !="" ) $data = $_POST['data'];
+	else $data = '';
+	if( isset($_POST['seqno']) && $_POST['seqno'] !="" ) $seqno = $_POST['seqno'];
+	else $seqno = '';
+	if( isset($_POST['pg_code']) && $_POST['pg_code'] !="" ) $pg_code = $_POST['pg_code'];
+	else $pg_code = '';
+	if( isset($_POST['pg_name']) && $_POST['pg_name'] !="" ) $pg_name = $_POST['pg_name'];
+	else $pg_name = '';
+	if( isset($_POST['tab_hnm']) )  $tab_hnm = $_POST['tab_hnm'];
+	else $tab_hnm = "";
+	if( isset($_POST['tab_enm']) )  $tab_enm = $_POST['tab_enm'];
+	else $tab_enm = "";
 
-	if( isset($_POST['page']) && $_POST['page'] !='' ) $page = $_POST['page'];
-	else $page=1;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
-	} else  $line_cnt	= 15;
-	$page_num = 10; 
-	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];   
-	else $mode= '';
-	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
-	else $fld_code = '';
-	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
-	else $fld_code_asc = '';
+	} else  $line_cnt	= 10;
+	$page_num = 10;
 
-	if( isset($_POST['group_code']) && $_POST['group_code']!='' ) {
-		$group_code = $_POST['group_code'];   
-		$wsel = " and group_code = '$group_code' ";
+	if( isset($pj_code) &&  $pj_code != "") {
+		$lsPJ = " where group_code ='".$pj_code."' ";
+		$lsPJand = " and group_code ='".$pj_code."' ";
 	} else {
-		$group_code= '';
-		$wsel = '';
+		$lsPJ = " ";
+		$lsPJand = " ";
 	}
-	if( isset($_POST['data']) ) $data = $_POST['data'];
-	if( isset($_POST['param']) ) $param	= $_POST['param'];   
-	if( isset($_POST['sel']) )   $sel	= $_POST['sel'];   
-	if( isset($_POST['seqno']) ) $seqno	= $_POST["seqno"];   
-	if( isset($_POST['pg_code']) ) $pg_code	= $_POST["pg_code"];   
-	if( isset($_POST['pg_name']) ) $pg_name= $_POST["pg_name"];   
 	if( $mode == 'Program_Search' ) {
-		if( $sel == 'like') {
+		if($sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param like '%$data%' " . $wsel;
+			$ls = $ls . " where $param like '%$data%' ";
+			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
+			//$ls = $ls . " and userid= '".$H_ID."' ";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param $sel '$data' " . $wsel;
+			$ls = $ls . " where $param $sel '$data' ";
+			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
+			//$ls = $ls . " and userid= '".$H_ID."' ";
 		}
-	} else if( $mode == 'Search_Project' && $group_code!='') {
+	} else if( $mode=='Project_search' ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		$ls = $ls . " where group_code= '$group_code' ";
-	} else if( $data != '' ) {
+		//$ls = $ls . " where userid= '".$H_ID."'";
+		if( $pj_code !='') $ls = $ls . " where group_code= '".$pj_code."' ";
+
+	} else if( isset($data) && $data != "" ) {
 		if( $sel == 'like') {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param like '%$data%' " . $wsel;
+			$ls = $ls . " where $param like '%$data%' " ;
+			//$ls = $ls . " and userid= '".$H_ID."' ";
+			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
 		} else {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-			$ls = $ls . " where $param $sel '$data' " . $wsel;
+			$ls = $ls . " where $param $sel '$data' ";
+			//$ls = $ls . " and userid= '".$H_ID."' ";
+			if( isset($pj_code) && $pj_code !='' ) $ls = $ls . " and group_code= '".$pj_code."'";
 		}
-	} else {
+   } else {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
-		if( $group_code !='') $ls = $ls . " where group_code= '$group_code' ";
-	}
-	$resultT	= sql_query( $ls );
-	$total = sql_num_rows( $resultT );
-	$total_page = intval(($total-1) / $line_cnt)+1; 
-	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
-	else $first =0;
-	$last = $line_cnt; 
-	if( $total < $last) $last = $total;
-	$limit = " limit $first, $last ";
-	if( $page == 1){
-		$no = $total;
+		//$ls = $ls . " where userid= '".$H_ID."'";
+		if( isset($pj_code ) && $pj_code!='' ) $ls = $ls . " where group_code= '".$pj_code."'";
+   }
+	$resultT = sql_query( $ls );
+	if( $resultT ) {
+		$total_count = sql_num_rows( $resultT );
+		
+		$total_page = intval(($total_count-1) / $line_cnt)+1; 
+		if( $page>1) {
+			$first = ($page-1)*$line_cnt; 
+			$no = $total_count - ($page - 1) * $line_cnt;
+		} else {
+			$first =0;
+			$no = $total_count;
+		}
+
+		$last = $line_cnt;
+		if( $total_count < $last) $last = $total_count;
+		$limit = " limit $first, $last ";
+		/*if( $page == 1){
+			$no = $total_count;
+		} else {
+			$no = $total_count - ($page - 1) * $line_cnt;
+		}*/
 	} else {
-		if( $page>1) $no = $total - ($page - 1) * $line_cnt;
-		else $no = $total;
+		$total_count = 0;
 	}
-	$cur='B';
-	include_once "./menu_run.php"; 
-	if( isset($_POST['tab_enm']) ) $tab_enm = $_POST['tab_enm'];
-	if( isset($_POST['tab_hnm']) ) $tab_enm = $_POST['tab_hnm'];
+	$cur='C';
+	include_once( KAPP_PATH_T_ . "/menu_run.php");
+	include "./table_paging.php";
 ?>
-<h2 title='pg:kapp_program_list_all'>Program List (total:<?=$total?>)</h2>
-<FORM name="table_list" target="_self" method="post" action="kapp_program_list_all.php"  >
-		<input type='hidden' name='mode'    value='Program_Search'>
-		<input type='hidden' name='modeS'   value='Program_Search'>
-		<input type='hidden' name='page'    value="<?=$page?>">
-		<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>"> 
-		<input type="hidden" name='pg_name' value="<?=$pg_name?>"> 
-		<input type="hidden" name="pg_code" value="<?=$pg_code?>" > 
-		<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>"> 
-		<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
-		<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
-		<input type="hidden" name="seqno" > 
-		<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
-		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
-		<input type='hidden' name='group_name' >
-
-		<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
-			<option value="pg_name" <?php if($param == 'pg_name') echo " selected ";?>>Program</option>
-			<option value="tab_hnm" <?php if($param == 'tab_hnm') echo " selected ";?> >Table</option>
-			<option value="group_name" <?php if($param == 'group_name') echo " selected ";?>>Project Name</option>
-			<option value="userid" <?php if($param == 'userid') echo " selected ";?>>User</option>
-		</SELECT> 
-		<SELECT name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-			<option value="=" <?php if($sel == '=') echo " selected ";?>>=</option>
-			<option value="like" <?php if($sel == 'like') echo " selected ";?>>Like</option>
-		</SELECT>
-		<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
-		<input type="submit" value="Search">
-
-<div>
-		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
-							<option value=''>Project</option>
+<h2 title='pg:kapp_program_list'>KAPP Program List</h2>
+	<form name="tkher_search" target="_self" method="post" action="kapp_program_list_all.php"  >
+			<input type='hidden' name='mode'    value='<?=$mode?>'>
+			<input type='hidden' name='page'    value="<?=$page?>">
+			<input type="hidden" name="pg_hnmS" value="<?=$pg_code?>:<?=$pg_name?>">
+			<input type="hidden" name='pg_name' value="<?=$pg_name?>">
+			<input type="hidden" name="pg_code" value="<?=$pg_code?>" >
+			<input type="hidden" name="tab_hnmS" value="<?=$tab_enm?>:<?=$tab_hnm?>">
+			<input type='hidden' name='tab_enm' value="<?=$tab_enm?>">
+			<input type='hidden' name='tab_hnm' value="<?=$tab_hnm?>">
+			<input type='hidden' name='mid'     value="<?=$H_ID?>">
+			<input type="hidden" name='pj_name' value="<?=$pj_name?>">
+			<input type="hidden" name="pj_code" value="<?=$pj_code?>" >
+			<input type="hidden" name="pj_code_check" value="<?=$pj_code_check?>" >
+			<input type="hidden" name="data" >
+			<input type="hidden" name="seqno" >
+			<input type="hidden" name="userid" >
+			<input type='hidden' name='group_name' >
+			<input type="hidden" name='fld_code'     value='<?=$fld_code?>' />
+			<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 <?php
-					$result = sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
-					while($rs = sql_fetch_array($result)) {
-						$chk = '';
-						if( $rs['group_code']==$group_code) $chk =' selected ';
+		if( $mode == "Search" ) $T_msg = "[ KAPP Program : <b>". $pg_name . "</b> ] - code: <b>" .$pg_code . "</b>";
+		else $T_msg = "[ ".$member['mb_id']." ]";
+		if( !isset($H_ID) || $H_ID == '' || !$H_ID ) {
+			$T_msg = $T_msg . " : " . $ip;
+		} else {
+			$T_msg = $T_msg . " Point:" . number_format($H_POINT). " : Lev:" . $member['mb_level'];
+		}
 ?>
-							<option title='user:<?=$rs['userid']?>' value='<?=$rs['group_code']?>' <?php echo $chk; ?>><?=$rs['group_name']?></option>
+		<div>
+			<SELECT name="param" style="border-style:;background-color:gray;color:#ffffff;height:24;">
+				<option value="pg_name">Program</option>
+				<option value="tab_hnm" style="background-color:gray;color:white;" >Table</option>
+				<option value="group_name" style="background-color:gray;color:white;">Project Name</option>
+				<option value="userid" style="background-color:gray;color:white;">User</option>
+			</select>
+			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
+				<option value="=" <?php if($sel =='=') echo ' selected ';?> >=</option>
+				<option value="like" <?php if($sel =='like') echo ' selected ';?> >Like</option>
+			</SELECT>
+			<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
+			<input type="button" value="Search" onclick='search_func()'>
+		</div>
+<span title='data print - kapp_program_list'><strong><?=$T_msg?></strong></span>
+<br>
+<span>
+	<SELECT name="kproject" id="kproject" onChange="kproject_func(this.value)" style="background-color:cyan;color:#000;height:24;">
+		<option value="">Select Project</option>
 <?php
-					}
+	$sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$H_ID."'";
+	$ret = sql_query($sql);
+	while( $rs=sql_fetch_array($ret) ){
+		$chk='';
+		if( $pj_code == $rs['group_code'] ) $chk = ' selected ';
 ?>
-		</SELECT>
+			<option value="<?=$rs['group_code']?>:<?=$rs['group_name']?>" <?php echo $chk;?> ><?=$rs['group_name']?></option>
+<?php } ?>
+	</SELECT>
+</span>
 <span>
 View Line: 
-	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-		<option value='15'  <?php if( $line_cnt=='15')  echo " selected" ?> >15</option>
-		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
-		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
-		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+	<select id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total_count?>
 </span>
-</div>
 
-<table class='floating-thead' width="100%" >
+<table class='floating-thead' width="100%">
 <thead id='tit_et' width="100%">
 	<tr>
 	<th>NO</th>
 <?php
-	echo " <th title='project Sort click or doubleclick' >Project</th> ";
 	echo " <th title='User Sort click or doubleclick' >User</th> ";
+	echo " <th title='project Sort click or doubleclick' >Project</th> ";
 	echo " <th title='Program Sort click or doubleclick' >Program</th> ";
 	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
 	echo " <th title='Grant view Sort click or doubleclick' >View</th> ";
@@ -329,8 +399,7 @@ View Line:
 ?>
 	</tr>
 </thead>
-
-<tbody width="100%" style='background-color:black;color:white;'>
+<tbody width="100%">
  <?php
 	$line=0;
 	$i=1;
@@ -339,59 +408,55 @@ View Line:
 	$ls = $ls . $OrderBy;
 	$ls = $ls . $limit;
 	$resultT	= sql_query( $ls );
-	while ( $rs = sql_fetch_array( $resultT ) ) { 
-		$mid=$rs['userid'];
-		$group_name = $rs['group_name'];
-		$group_code = $rs['group_code'];
-		if( $page>1 ) $line=$line_cnt*$page + $i - $line_cnt;
-		else $line=$i;
-		$bgcolor = "style='background-color:black;width:100%;'";
-		if( $H_ID == $mid) $bcolor ="style='background-color:black;color:yellow;'";//style='background-color:black;color:white;'
-		else $bcolor ="style='background-color:black;color:cyan;'";
-  ?> 
-		<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR <?=$bgcolor?> >
-		<td <?=$bcolor?> width='1%' ><?=$line?></td>
-		<td <?=$bcolor?> width='5%' title=" project code:<?=$group_code?>"><?=$group_name?></td>
-		<td <?=$bcolor?> width='3%' ><?=$rs['userid']?> </td>
-		<td <?=$bcolor?> width='15%' ><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run' style='background-color:000051;color:#ffffff;'><?=$rs['pg_name']?> (<?=$rs['pg_code']?>) </a></td> 
+	while( $rs = sql_fetch_array( $resultT ) ) {
+		$line=$line_cnt*$page + $i - $line_cnt;
+		$bgcolor = "#eeeeee";
+		$mid = $rs['userid'];
+		if( $H_ID == $mid) $bcolor ="style='background-color:cyan;'";
+		else $bcolor='';
+		$if_data = $rs['if_data'];
+		$pop_data = $rs['pop_data'];
+		$item_all= item_array_func( $rs['item_array'], $rs['if_type'], $rs['if_data'], $rs['pop_data'], $rs['relation_data'], $rs['relation_type'] );
+		if( $pop_fld && $pop_mvfld )	$attr = $pop_fld . "<br>" .$pop_mvfld . "<br>" . $gita;
+		else if( $pop_fld && !$pop_mvfld )	$attr = $pop_fld . "<br>" . $gita;
+		else if( !$pop_fld && $pop_mvfld )	$attr = $pop_mvfld . "<br>" . $gita;
+		else if( !$pop_fld && !$pop_mvfld )	$attr = $gita;
+		else $attr="";
 
-		<td <?=$bcolor?> width='15%' onclick="javascript:program_run_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>','<?=$rs['pg_code']?>' );"  ><?=$rs['tab_hnm']?> (<?=$rs['tab_enm']?>)</td> 
-		<td <?=$bcolor?> width='1%'><?=$rs['grant_view']?></td>
-		<td <?=$bcolor?> width='1%'><?=$rs['grant_write']?></td>
-		<td width='5%' <?=$bcolor?> ><?=$rs['upday']?></td>
+		$grant_view = $rs['grant_view'];
+		$grant_write = $rs['grant_write'];
+		if( $grant_view=='0'||$grant_view=='1')  $gr = 'Guest';
+		else if( $grant_view=='2' ) $gr = 'Member';
+		else if( $grant_view=='3' ) $gr = 'Creators';
+		else if( $grant_view=='8' ) $gr = 'Manager';
+		if( $grant_write=='0'||$grant_write=='1')  $gw = 'Guest';
+		else if( $grant_write=='2' ) $gw = 'Member';
+		else if( $grant_write=='3' ) $gw = 'Creators';
+		else if( $grant_write=='8' ) $gw = 'Manager';
+  ?>
+	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
+	<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'  align='center'>
+	<TD <?=$bcolor?> width='1%'><?=$line?></td>
+	<TD <?=$bcolor?> width='3%'><?=$rs['userid']?> </td>
+	<TD <?=$bcolor?> width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
+	<TD <?=$bcolor?> width='5%'><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<TD <?=$bcolor?> width='5%' title='Data List program run'>
+		<a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gr?></td>
+	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gw?></td>
+	<TD <?=$bcolor?> width='3%'><?=substr($rs['upday'], 0,10)?></td>
 	</TR>
  <?php
 		$i++;
-		//$count = $count - 1;
     }
  ?>
 </tbody>
 </table>
 
-</form>
-<table width="100%"   bgcolor="#CCCCCC">
-  <tr>
-    <td align="center" bgcolor="f4f4f4">
 <?php
-		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-		$last_page = $first_page+($page_num-1);
-		if( $last_page > $total_page) $last_page = $total_page;
-		$prev = $first_page-1;
-		if($page > $page_num) 
-			echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-		for($i = $first_page; $i <= $last_page; $i++)
-		{
-			if($page == $i) echo" <b>".$i."</b> "; 
-			else 
-				echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
-		}
-		$next = $last_page+1;
-		if($next <= $total_page) 
-			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
-?>
-	</td>
-  </tr>
-</table>
+	paging("kapp_program_list_all.php",$total_count,$page,$line_cnt, "document.tkher_search"); 
+?> 
+
+</form>
 </BODY>
 </HTML>

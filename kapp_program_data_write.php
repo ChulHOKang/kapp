@@ -31,28 +31,9 @@
 <meta name="robots" content="ALL">
 </head>
 <script src="//code.jquery.com/jquery.min.js"></script>
-
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_data.js"></script>
 <link type="text/css" rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" />
-
-<script>
-	$(function() {
-		$('.search_btn').on('click', function() {
-			var c_sel = document.getElementById("c_sel");
-			i = c_sel.selectedIndex;
-			c_sel = c_sel.options[i].value;
-			var c_sel3 = document.getElementById("c_sel3");
-			i = c_sel3.selectedIndex;
-			c_sel3 = c_sel3.options[i].value;
-			document.view_form.mode.value = 'search';
-			document.view_form.search_fld.value = c_sel;
-			document.view_form.search_choice.value = c_sel3;
-			document.view_form.action = 'kapp_program_data_list.php';
-			document.view_form.submit();
-		});
-	});
-</script>
-
+<body style="background-color:#fff; width:100%;" >
 <?php
 	if( isset($_POST['page']) ) $page = $_POST['page'];
 	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
@@ -106,11 +87,11 @@
 	$cur='B';
 	include_once "./menu_run.php"; 
 ?>
-	<FORM id="makeform" name="makeform" method="post" enctype="multipart/form-data">
+<FORM id="Kapp_HtmlForm" name="Kapp_HtmlForm" method="post" enctype="multipart/form-data">
 			<input type="hidden" name='page'		value="<?=$page?>" />
 			<input type="hidden" name='line_cnt'	value="<?=$line_cnt?>" />
 	<div>
-		<P onclick="javascript:kapp_dataManager.write_home_func(this, '<?=$pg_code?>');" class="HeadTitle02AX" title='write - home_func - pg:<?=$pg_code?>, tab:<?=$tab_enm?> '><?=$pg_name?></P>
+		<P onclick="javascript:Kapp_ProgramJS.kapp_program_data_list(this.form);" class="HeadTitle02AX" title='write - home_func - pg:<?=$pg_code?>, tab:<?=$tab_enm?> '><?=$pg_name?></P>
 	</div>
 
 	<div class="boardViewX">
@@ -215,10 +196,10 @@
 							$f3 = $ff[3];
 							$f4 = $ff[4];
 							
-							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
-							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
+							$kkk0[$kkk5] = "document.Kapp_HtmlForm." . $f0 . ".value";
+							$kkk1[$kkk5] = "document.Kapp_HtmlForm." . $f2 . ".value";
 							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
-							else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
+							else $kkk2[$kkk5] = "document.Kapp_HtmlForm." . $f4 . ".value";
 							$kkk3[$kkk5] = $f3;
 
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
@@ -271,7 +252,7 @@
 						} else if( $typeX == "13" ) { // popup window
 							$_SESSION['fld_session']=$i;
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
-							echo " <div class='menu1A'><input type='text' id='$fld_enmX' name='$fld_enmX' onclick=\"javascript:kapp_dataManager.popup_call( this, $i)\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
+							echo " <div class='menu1A'><input type='text' id='$fld_enmX' name='$fld_enmX' onclick=\"javascript:Kapp_ProgramJS.popup_call( this.form, $i)\" style='width:$Xwidth;height:$Xheight;' placeholder='PopUp Window. Please enter a $fld[2].'></div> ";
 							echo " <div class='blankA'> </div> ";
 						} else {
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
@@ -303,18 +284,19 @@
 		<input type='hidden' name='tab_mid'	value='<?=$tab_mid?>'>
 		<input type="hidden" name='grant_write'		value='<?=$grant_write?>' />
 
-		<input type="button" id='SubmitSave' value="Submit" onclick="javascript:kapp_dataManager.program_run_pg(this);" class='kapp_btn_bo02' title='write submit button ' >
+		<input type="button" value="Submit" id='SubmitSave' onclick="javascript:Kapp_ProgramJS.kapp_program_data_save(this.form);" class='kapp_btn_bo02' title='write submit button ' >
 		<input type="reset" value="reset" class='kapp_btn_bo02'>
-		<input type='button' value='Source Down' onclick="javascript:tkher_source_createDNW( this, '<?=$H_POINT?>')" class="kapp_btn_bo02" 
+		<input type='button' value='Source Down' onclick="javascript:Kapp_ProgramJS.tkher_source_createDNW( this.form, '<?=$H_POINT?>')" class="kapp_btn_bo02" 
 		title='Program source creation and Download the data registration program source. You need to download the table before you can run the program. Database creation is also included there. To download a table, click Program Creation Menu->Table Search->Table Name and click the Source Download button.' title='point:<?=$H_POINT?>'>
 <?php
-		echo "<input type='button' value='Excel_Upload' onclick=\"excel_upload_func( this, '".$tab_enm."','".$tab_hnm."')\" class='kapp_btn_bo03' title='Batch upload of data to excel file'>"
+		echo "<input type='button' value='Excel_Upload' onclick=\"javascript:Kapp_ProgramJS.excel_upload_write_func( this.form, '".$tab_enm."','".$tab_hnm."');\" class='kapp_btn_bo03' title='Batch upload of data to excel file'>"
 ?>
-		<input type='button' value='List' onclick="javascript:kapp_dataManager.table_data_list(this);" class="kapp_btn_bo02" title='go: data list '>
+		<input type='button' value='List' onclick="javascript:Kapp_ProgramJS.kapp_program_data_list(this.form);" class="kapp_btn_bo02" title='go: data list '>
 </form>
 <br>
 <p>To download and run the program, you must also download the table creation source code.  To download a table, click Program Creation Menu->Table Search->Table Name and click the Source Download button.</p>
 
+</body>
 
 <?php
 	if( $kkk !="off") {

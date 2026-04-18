@@ -1,16 +1,18 @@
 <?php
 if (!defined('_KAPP_')) exit; // 개별 페이지 접근 불가
 /*
-// 	$link : 로드할 URL 주소
+kapp_data_list_paging.php
+ 	$linkurl : 로드할 URL 주소
 // 	$total : 전체 목록수
 // 	$page : 현재 페이지
-// 	$size : 한페이지에 보여줄 목록수
+// 	$line_cnt : 한페이지에 보여줄 목록수
 // 	$seek : 목록 열지정
-// 	사용예 :  본페이지에서 $size값을 선언해주고
-//		$seek=($page*$size)-$size;
+// 	사용예 :  본페이지에서 $line_cnt값을 선언해주고
+//		$seek=($page*$line_cnt)-$line_cnt;
 //		mysql_data_seek($mq,$seek); 
 //		*페이징이 들어갈 위치에서 함수를 호출해 준다.
-//		paging($link,$total,$page,$size); 
+//		paging($linkurl,$total,$page,$line_cnt); 
+//function paging($linkurl, $total, $page, $line_cnt, $line_cnt){
 */
 
 function paging( $linkurl, $total, $page, $line_cnt, $form_obj){
@@ -35,15 +37,15 @@ function paging( $linkurl, $total, $page, $line_cnt, $form_obj){
 
 	echo "<div class=paging>";
 	if( $page > $page_num ) {
-		echo "<a href=\"javascript:page_move( $form_obj, 1, '$linkurl');\">[First]</a><span>.</span>";
+		echo "<a href=\"javascript:Kapp_ProgramJS.page_move( $form_obj, 1, '$linkurl');\">[First]</a><span>.</span>";
 	} else {
 		echo "<span>[Start].</span>";
 		//echo "<img src=./include/img/btn/b_first_silver.gif border=0 height=30 title='First'>";
 	}
 	if( $page > $page_num ) {
 		$back_page = $first_page - 1;
-		//echo "<a href=\"javascript:page_move( $form_obj, $back_page, '$linkurl')\" ><img src=./include/img/btn/btn_prev.png width=30 title='previous'></a>";
-		echo "<a href=\"javascript:page_move( $form_obj,$back_page, '$linkurl')\" >[Prev]</a><span>.</span>";
+		//echo "<a href=\"javascript:Kapp_ProgramJS.page_move( $form_obj, $back_page, '$linkurl')\" ><img src=./include/img/btn/btn_prev.png width=30 title='previous'></a>";
+		echo "<a href=\"javascript:Kapp_ProgramJS.page_move( $form_obj,$back_page, '$linkurl')\" >[Prev]</a><span>.</span>";
 	} else {
 		//echo("<img src=./include/img/btn/btn_prev.png width=30 title='Previous'>");
 		//echo("<span>[Prev].</span>");
@@ -51,18 +53,18 @@ function paging( $linkurl, $total, $page, $line_cnt, $form_obj){
 	for( $i=$first_page; $i <= $last_page; $i++ ){
 		if( $i > $total_page){ break;}
 		if( $page==$i ){ echo "<a href='javascript:void(0)' class=on>$i</a><span>.</span>"; }
-		else         { echo "<a href=\"javascript:page_move( $form_obj, $i, '$linkurl')\">[$i]</a><span>.</span>"; }
+		else         { echo "<a href=\"javascript:Kapp_ProgramJS.page_move( $form_obj, $i, '$linkurl')\">$i</a><span>.</span>"; }
 	}
 	if( $last_page < $total_page){
 		$next_page=$last_page+1;
-		echo "<a href=\"javascript:page_move( $form_obj,$next_page, '$linkurl');\">[Next]</a><span>.</span>";
-		//echo "<a href=\"javascript:page_move( '$linkurl',$form_obj, $next_page);\"><img src=./include/img/btn/btn_next.png width=30 title='B Next Page'></a>");
+		echo "<a href=\"javascript:Kapp_ProgramJS.page_move( $form_obj,$next_page);\">[Next]</a><span>.</span>";
+		//echo "<a href=\"javascript:Kapp_ProgramJS.page_move( '$linkurl',$form_obj, $next_page);\"><img src=./include/img/btn/btn_next.png width=30 title='B Next Page'></a>");
 	}else { 
 		//echo("<img src=./include/img/btn/btn_next.png width=30 title='Btn Next Page'>");
 		//echo "<span>[Next].</span>";
 	}
 	if( $last_page < $total_page){
-		echo "<a href=\"javascript:page_move( $form_obj, $total_page, '$linkurl');\">[Last]</a>";
+		echo "<a href=\"javascript:Kapp_ProgramJS.page_move( $form_obj, $total_page, '$linkurl');\">[Last]</a>";
 	}else{
 		echo("<span>[End]</span>");
 		//echo "<img src=./include/img/btn/b_last_silver.gif border=0 height=30 title='Last'>";
@@ -70,11 +72,4 @@ function paging( $linkurl, $total, $page, $line_cnt, $form_obj){
 	//m_("last_page:$last_page , total_page:$total_page"); //last_page:5 , total_page:5
 	echo "</div>";
 }
-
-
-// paging 함수 내부에서 [Next] 버튼 등을 생성할 때 예시
-//echo "<a href=\"javascript:page_move(document.table_list, '$next_page');\">[Next]</a>";
-
 ?>
-
-<!-- <a href="#" onclick="page_move(document.forms['table_list']); return false;">[Next]</a> -->

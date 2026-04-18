@@ -22,6 +22,8 @@
 	connect_count($host_script, $H_ID, 0 ,$referer);
 	$day = date("Y-m-d H:i:s");
 	$pg_ = 'kapp_table_list.php';
+
+	include "./table_paging.php";
 ?>
 <html>
 <head>
@@ -52,6 +54,7 @@ th, td { border: 1px solid silver; padding:5px; }
 	}
 </style>
 <script src="//code.jquery.com/jquery.min.js"></script>
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 
 <script>
 $(function () {
@@ -210,18 +213,18 @@ $(function () {
 		if( $wsel!='') $ls = $ls . $wsel;
 	}
 	$resultT	= sql_query( $ls );
-	$total = sql_num_rows( $resultT );
-	$total_page = intval(($total-1) / $line_cnt)+1;
+	$total_count = sql_num_rows( $resultT );
+	$total_page = intval(($total_count-1) / $line_cnt)+1;
 	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
 	else $first =0;
 	$last = $line_cnt;
-	if( $total < $last) $last = $total;
+	if( $total_count < $last) $last = $total_count;
 	$limit = " limit $first, $last ";
 	/*if( $page == 1){
-		$no = $total;
+		$no = $total_count;
 	} else {
-		if( $page>1) $no = $total - ($page - 1) * $line_cnt;
-		else $no = $total;
+		if( $page>1) $no = $total_count - ($page - 1) * $line_cnt;
+		else $no = $total_count;
 	}*/
 	function kapp_table_check( $tab ){
 		global $table_prefix;
@@ -241,6 +244,11 @@ $(function () {
 ?>
 <script type="text/javascript" >
 <!--
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl; 
+		thisform.submit();
+	}
 	function title_wfunc(fld_code){       
 		document.table_list.page.value = 1;
 		document.table_list.fld_code.value= fld_code;
@@ -477,14 +485,17 @@ $(function () {
 ?>
 		</select>
 </span>
-<span>
-View Line: 
-	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
-		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
-		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
-		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total?>
+
+<span>View Line: 
+<SELECT id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
+</select>- total:<?=$total_count?>, page:<?=$page?>
 </span>
 
 <table class='floating-thead' width='100%'>
@@ -522,7 +533,7 @@ if( $mode != 'Search') {
     $line=0;
 	$i=1;
 	if( $fld_code!='' ) $OrderBy = " order by $fld_code $fld_code_asc ";    
-	else $OrderBy	= " ORDER BY disno, upday desc ";
+	else $OrderBy	= " ORDER BY upday desc ";
 	$ls = $ls . $OrderBy;
 	if( $mode != "Search") {
 		$ls = $ls . " $limit ";
@@ -610,22 +621,6 @@ if( $mode != 'Search') {
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."', '".$group_code."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Data List of $tab_hnm' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='All DownLoad' onclick=\"tkher_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title='Database and table creation source and data processing program source creation and download of $tab_hnm.' >&nbsp;&nbsp; ";
 		echo "<input type='button' value='Create table+program only' onclick=\"Table_source_create('".$tab_hnm."', '".$tab_enm."', '".$H_POINT."')\"  style='height:22px;background-color:cyan;color:black;border-radius:20px;border:1 solid black'  title=' Create and download table creation source and data processing program source of $tab_hnm.' >&nbsp;&nbsp; ";
-	} else {
-		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-		$last_page = $first_page+($page_num-1);
-		if($last_page > $total_page) $last_page = $total_page;
-		$prev = $first_page-1;
-		if($page > $page_num)
-			echo"<a href='#' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-		for($i = $first_page; $i <= $last_page; $i++)
-		{
-			if($page == $i) echo" <b>$i</b> ";
-			else
-				echo"<a href='#' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[$i]</a>";
-		}
-		$next = $last_page+1;
-		if($next <= $total_page)
-			echo"<a href='#' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
 	}
 ?>
 	</td>
@@ -633,9 +628,10 @@ if( $mode != 'Search') {
 </table>
 		<input type="hidden" name="sqltable"  value='<?=$sqltable?>' >
 		<input type="hidden" name="sql_list"  value='<?=$item_list?>' >
-</form>
 <?php
-if( $mode != 'Search') echo "If you click Table Name, Table Code, a list of columns is displayed.";
-?>
+	if( $mode != 'Search') echo "If you click Table Name, Table Code, a list of columns is displayed.";
+	paging("kapp_table_list.php",$total_count,$page,$line_cnt, "document.table_list"); 
+?> 
+</form>
 </body>
 </html>

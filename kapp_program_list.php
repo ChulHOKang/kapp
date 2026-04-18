@@ -13,6 +13,10 @@
 		exit;
 	}
 	$H_LEV=$member['mb_level'];
+	
+	//include "./kapp_data_list_paging.php";
+	include "./table_paging.php";
+
 	connect_count($host_script, $H_ID, 0, $referer);
 	if( isset($member['mb_point'])) $H_POINT = $member['mb_point'];
 	else $H_POINT = 0;
@@ -67,6 +71,8 @@ th, td { border: 1px solid silver; padding:5px; }
 	}
 </style>
 <script src="//code.jquery.com/jquery.min.js"></script>
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
+
 <script>
 $(function () {
 	let timer;
@@ -207,6 +213,11 @@ $(function () {
 		document.tkher_search.action='kapp_program_list.php';
 		document.tkher_search.submit();                         
 	} 
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl; //'tkher_program_data_list.php';
+		thisform.submit();
+	}
 </script>
 
  <BODY>
@@ -243,6 +254,7 @@ $(function () {
 		}
 		$mode='';
 	}
+
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
@@ -291,20 +303,27 @@ $(function () {
    }
 	$resultT = sql_query( $ls );
 	if( $resultT ) {
-		$total = sql_num_rows( $resultT );
-		$total_page = intval(($total-1) / $line_cnt)+1;
-		if( $page > 1) $first = ($page-1)*$line_cnt;
-		else $first = 0;
+		$total_count = sql_num_rows( $resultT );
+		
+		$total_page = intval(($total_count-1) / $line_cnt)+1; 
+		if( $page>1) {
+			$first = ($page-1)*$line_cnt; 
+			$no = $total_count - ($page - 1) * $line_cnt;
+		} else {
+			$first =0;
+			$no = $total_count;
+		}
+
 		$last = $line_cnt;
-		if( $total < $last) $last = $total;
+		if( $total_count < $last) $last = $total_count;
 		$limit = " limit $first, $last ";
 		/*if( $page == 1){
-			$no = $total;
+			$no = $total_count;
 		} else {
-			$no = $total - ($page - 1) * $line_cnt;
+			$no = $total_count - ($page - 1) * $line_cnt;
 		}*/
 	} else {
-		$total = 0;
+		$total_count = 0;
 	}
 ?>
 <h2 title='pg:kapp_program_list'>KAPP Program List</h2>
@@ -366,14 +385,16 @@ $(function () {
 <?php } ?>
 	</SELECT>
 </span>
-<span>
-View Line: 
-	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
-		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
-		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
-		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total?>
+<span>View Line: 
+<SELECT id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
+</select>- total:<?=$total_count?>, page:<?=$page?>
 </span>
 
 <table class='floating-thead' width="100%">
@@ -428,7 +449,7 @@ View Line:
 		else if( $grant_write=='8' ) $gw = 'Manager';
   ?>
 	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
-	<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'>
+	<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'  align='center'>
 	<TD <?=$bcolor?> width='1%'><?=$line?></td>
 	<TD <?=$bcolor?> width='3%'><?=$rs['userid']?> </td>
 	<TD <?=$bcolor?> width='2%' title="project_code: <?=$rs['group_code']?>"><?=$rs['group_name']?></td>
@@ -438,7 +459,7 @@ View Line:
 	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gr?></td>
 	<TD <?=$bcolor?> width='1%' title='Attribute changes are possible in datalist.'><?=$gw?></td>
 	<TD <?=$bcolor?> width='3%'><?=substr($rs['upday'], 0,10)?></td>
-	<TD <?=$bcolor?> width='5%' align='center'>
+	<TD <?=$bcolor?> width='3%'>
 <?php if( $H_ID == $rs['userid'] ) { ?>
 	<input type='button' onclick="program_del_funcList2('<?=$rs['seqno']?>','<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>', '<?=$H_ID?>', '<?=$rs['userid']?>')" value='Delete' style='height:22px;width:60px;background-color:red;color:white;border-radius:20px;border:1 solid black'  <?php echo "title=' Delete of ".$rs['pg_name']."' ";?>>
 	&nbsp;
@@ -451,30 +472,13 @@ View Line:
 		$i++;
     }
  ?>
-</form>
 </tbody>
 </table>
-<table width="100%" bgcolor="#CCCCCC">
-  <tr>
-    <td align="center" bgcolor="f4f4f4">
+
 <?php
-	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-	$last_page = $first_page+($page_num-1);
-	if( $last_page > $total_page) $last_page = $total_page;
-	$prev = $first_page-1;
-	if( $page > $page_num)
-		echo"<a href='#' title='page:$page, prev:$prev, data:$data' onclick=\"page_func('".$prev."','".$data."')\" style='font-size:18px;'>[Prev]</a>";
-	for( $i = $first_page; $i <= $last_page; $i++){
-		if($page == $i) echo" <b>".$i."</b> ";
-		else
-			echo"<a href='#' title='page:$page, i:$i, data:$data' onclick=\"page_func('".$i."','".$data."')\" style='font-size:18px;'>[".$i."]</a>";
-	}
-	$next = $last_page+1;
-	if($next <= $total_page)
-		echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
-?>
-	</td>
-  </tr>
-</table>
+	paging("kapp_program_list.php",$total_count,$page,$line_cnt, "document.tkher_search"); 
+?> 
+
+</form>
 </BODY>
 </HTML>

@@ -112,7 +112,10 @@
 <body><!-- <body onload = "re_exec()"> -->
 
     <div class="header">
-        <?php include "./menu_run.php"; ?>
+        <?php
+		$cur='B';
+		include "./menu_run.php";
+		?>
 <?php
 	echo '
 		<script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -121,20 +124,23 @@
 			 data-callback="handleCredentialResponse">
 		</div>
 	';
-	
+	$urllink_login_type = get_session("urllink_login_type");
 	if( get_session("urllink_login_type") == "" ){ 
-		if( isset($config['kapp_kakao_js_apikey']) && $config['kapp_kakao_js_apikey'] !=='') $kapp_kakao_js_apikey = $config['kapp_kakao_js_apikey'];
+		if( isset($config['kapp_kakao_js_apikey']) && $config['kapp_kakao_js_apikey'] !='') $kapp_kakao_js_apikey = $config['kapp_kakao_js_apikey'];
 		else $kapp_kakao_js_apikey = '';
-		echo "<table><tr><td><a id='kakao_ligin' href='javascript:kakao_login(\"".$kapp_kakao_js_apikey."\");'><img src='./icon/kakao.jpg' style='height:38px;' /></a>&nbsp;&nbsp;&nbsp;</td>";
-		echo '<td><div class="g_id_signin" data-type="standard"></div></td>';
+		
+		echo "<table><tr><td><a id='kakao_ligin' href='javascript:kakao_login(\"".$kapp_kakao_js_apikey."\");'><img src='./icon/kakao.jpg' style='height:38px;' title='kakao login' /></a>&nbsp;&nbsp;&nbsp;</td>";
+
+		echo '<td><div class="g_id_signin" data-type="standard" title="Google login"></div></td>';
+		
 		$n_client_id = $config['kapp_naver_client_id'];
-		$N_reurl = KAPP_URL_T_ . "/login_checkT.php?Login_Mode=N_login"; //?mode=N_login";
+		$N_reurl = KAPP_URL_T_ . "/login_checkT.php?Login_Mode=N_login";
         $redirectURI = urlencode( $N_reurl );
         $state = "kapp";
 
 		$apiURL = "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=".$n_client_id."&redirect_uri=".$redirectURI;
 
-		echo "<td><a id='naverIdLogin_loginButton' target='_top' href='".$apiURL."'><img src='./include/img/btnG_naver.png' /></a></td><tr></table>";
+		echo "<td><a id='naverIdLogin_loginButton' target='_top' href='".$apiURL."' title='Naver login'><img src='./include/img/btnG_naver.png' /></a></td><tr></table>";
 
 	} else if( get_session("urllink_login_type") == "Google_Login_K") {
         echo "<table><tr><td><button onclick='GoogleLogout()' class=''>Google_LogOut</button></td><tr></table>";
@@ -146,7 +152,7 @@
         echo "<table><tr><td><button onclick='naverLogout()' class=''>Naver_LogOut</button></td><tr></table>";
     }
     if( !$gsajin ) { 
-        if( isset($member['mb_photo']) && $member['mb_photo'] !=='' ) $gsajin = $member['mb_photo']; 
+        if( isset($member['mb_photo']) && $member['mb_photo'] !='' ) $gsajin = $member['mb_photo']; 
 		else $gsajin = KAPP_URL_T_ ."/logo/guggi.png";
     }
 ?>
@@ -292,9 +298,7 @@
 
 	function handleCredentialResponse(response) { // login ok
 		const responsePayload = parseJwt(response.credential);
-		document.kakao_form.mode.value = "Google_Login_K";
-		document.kakao_form.modeG.value = "Google";
-		document.kakao_form.modeA.value = "member_set";
+		document.kakao_form.Login_Mode.value = "Google_Login_K";
 		document.kakao_form.g_email.value = responsePayload.email;
 		document.kakao_form.g_fullname.value = responsePayload.name;
 		document.kakao_form.g_image.value = responsePayload.picture;

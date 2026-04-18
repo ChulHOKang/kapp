@@ -37,7 +37,7 @@
 <!-- 
 textarea {
 	  width: 200px;
-	  height: 80px;
+	  height: 120px;
 	  padding: 0px;
 	  border: 2px solid #ccc;
 	  border-radius: 0px;
@@ -128,69 +128,75 @@ $(function () {
 </script>
 <script type="text/javascript" >
 	function title_wfunc(fld_code){       
-		document.project_search.page.value = 1;
-		document.project_search.fld_code.value= fld_code;
-		document.project_search.fld_code_asc.value= 'desc';
-		document.project_search.mode.value='title_wfunc';
-		document.project_search.target='_self';
-		document.project_search.action='program_list_ai.php';
-		document.project_search.submit();                         
+		document.kapp_programai_Form.page.value = 1;
+		document.kapp_programai_Form.fld_code.value= fld_code;
+		document.kapp_programai_Form.fld_code_asc.value= 'desc';
+		document.kapp_programai_Form.mode.value='title_wfunc';
+		document.kapp_programai_Form.target='_self';
+		document.kapp_programai_Form.action='program_list_ai.php';
+		document.kapp_programai_Form.submit();                         
 	} 
 	function title_func(fld_code){       
-		document.project_search.page.value = 1;                
-		document.project_search.fld_code.value= fld_code;           
-		document.project_search.fld_code_asc.value= 'asc';
-		document.project_search.mode.value='title_func';           
-		document.project_search.target='_self';
-		document.project_search.action='program_list_ai.php';
-		document.project_search.submit();                         
+		document.kapp_programai_Form.page.value = 1;                
+		document.kapp_programai_Form.fld_code.value= fld_code;           
+		document.kapp_programai_Form.fld_code_asc.value= 'asc';
+		document.kapp_programai_Form.mode.value='title_func';           
+		document.kapp_programai_Form.target='_self';
+		document.kapp_programai_Form.action='program_list_ai.php';
+		document.kapp_programai_Form.submit();                         
 	} 
 	function group_code_change_func(cd){
-		document.project_search.page.value = 1;                
-		index = document.project_search.group_code.selectedIndex;
-		nm = document.project_search.group_code.options[index].text;
-		document.project_search.group_name.value=nm;
-		vv = document.project_search.group_code.options[index].value;
-		document.project_search.action ="program_list_ai.php";
-		document.project_search.target='_self';
-		document.project_search.submit();
+		document.kapp_programai_Form.page.value = 1;                
+		index = document.kapp_programai_Form.group_code.selectedIndex;
+		nm = document.kapp_programai_Form.group_code.options[index].text;
+		document.kapp_programai_Form.group_name.value=nm;
+		vv = document.kapp_programai_Form.group_code.options[index].value;
+		document.kapp_programai_Form.action ="program_list_ai.php";
+		document.kapp_programai_Form.target='_self';
+		document.kapp_programai_Form.submit();
 		return;
 	}
 	function program_run_funcList2( seqno, pg_name, pg_code ) {
-		document.project_search.mode.value		="program_list_ai";
-		document.project_search.seqno.value		=seqno;
-		document.project_search.pg_name.value	=pg_name;
-		document.project_search.pg_code.value	=pg_code;
-		document.project_search.action				= "<?=KAPP_URL_T_?>/tkher_program_data_list.php";
-		document.project_search.target				="_blank";
-		document.project_search.submit();
+		document.kapp_programai_Form.mode.value		="program_list_ai";
+		document.kapp_programai_Form.seqno.value		=seqno;
+		document.kapp_programai_Form.pg_name.value	=pg_name;
+		document.kapp_programai_Form.pg_code.value	=pg_code;
+		document.kapp_programai_Form.action				= "<?=KAPP_URL_T_?>/tkher_program_data_list.php";
+		document.kapp_programai_Form.target				="_blank";
+		document.kapp_programai_Form.submit();
 	}
 	function page_func( page, data ){
-		document.project_search.mode.value		='';
-		document.project_search.data.value		=data;
-		document.project_search.page.value		=page;
-		document.project_search.action		="program_list_ai.php";
-		document.project_search.target='_self';
-		document.project_search.submit();
+		document.kapp_programai_Form.mode.value		='';
+		document.kapp_programai_Form.data.value		=data;
+		document.kapp_programai_Form.page.value		=page;
+		document.kapp_programai_Form.action		="program_list_ai.php";
+		document.kapp_programai_Form.target='_self';
+		document.kapp_programai_Form.submit();
 	}
 	function Change_line_cnt( $line){
-		document.project_search.page.value = 1;
-		document.project_search.mode.value		='';
-		document.project_search.line_cnt.value = $line;
-		document.project_search.action='program_list_ai.php';
-		document.project_search.submit();
+		document.kapp_programai_Form.page.value = 1;
+		document.kapp_programai_Form.mode.value		='';
+		document.kapp_programai_Form.line_cnt.value = $line;
+		document.kapp_programai_Form.action='program_list_ai.php';
+		document.kapp_programai_Form.submit();
 	}
 	function Search_func(){
-		document.project_search.page.value = 1;
-		document.project_search.mode.value		='Program_Search';
-		document.project_search.action='program_list_ai.php';
-		document.project_search.submit();
+		document.kapp_programai_Form.page.value = 1;
+		document.kapp_programai_Form.mode.value		='Program_Search';
+		document.kapp_programai_Form.action='program_list_ai.php';
+		document.kapp_programai_Form.submit();
+	}
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl;
+		thisform.submit();
 	}
 </script>
 
-<BODY>
+<body style='background-color:#fff;color:#000;' >
 <center>
 <?php
+	include "./table_paging.php";
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
@@ -229,7 +235,7 @@ $(function () {
 			$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 			$ls = $ls . " where $param $sel '$data' and userid='$H_ID' " . $wsel;
 		}
-	} else if( $mode == "Project_Search" ) {
+	} else if( $mode == "kapp_programai_Form" ) {
 		$ls = " SELECT * from {$tkher['table10_pg_table']} ";
 		$ls = $ls . " where userid='$H_ID' " . $wsel;
 	} else if( isset($data) && $data != '' ) {
@@ -248,17 +254,17 @@ $(function () {
 	else $OrderBy	= " ORDER BY upday desc, pg_name asc ";
 	$ls = $ls . $OrderBy;
 	$resultT	= sql_query( $ls );
-	$total = sql_num_rows( $resultT );
-	$total_page = intval(($total-1) / $line_cnt)+1;
+	$total_count = sql_num_rows( $resultT );
+	$total_page = intval(($total_count-1) / $line_cnt)+1;
 	if( $page == 1 ) {
 		$first = 0;
-		$no = $total;
+		$no = $total_count;
 	} else {
 		$first = ($page-1)*$line_cnt;
-		$no = $total - ($page - 1) * $line_cnt;
+		$no = $total_count - ($page - 1) * $line_cnt;
 	}
 	$last = $line_cnt;
-	if( $total < $last) $last = $total;
+	if( $total_count < $last) $last = $total_count;
 	$limit = " limit $first, $last ";
 	$cur='B';
 	include_once "./menu_run.php";
@@ -269,8 +275,7 @@ $(function () {
 	if( isset($_POST['group_name']) ) $group_name = $_POST['group_name'];
 	else $group_name = '';
 ?>
-<h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total?></h2>
-<FORM name="project_search" method="post" action="program_list_ai.php" enctype="multipart/form-data" >
+<FORM name="kapp_programai_Form" method="post" action="program_list_ai.php" enctype="multipart/form-data" >
 	<input type="hidden" name="seqno" value='<?=$_POST['seqno']?>' >
 	<input type="hidden" name="group_name" >
 	<input type='hidden' name='mode'    value='<?=$mode?>'>
@@ -284,7 +289,18 @@ $(function () {
 	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
 	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
-	<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
+<h2 title='pg:program_list3A'>Program List (id:<?=$H_ID?>) - total:<?=$total_count?>&nbsp;&nbsp;&nbsp;
+View Line:<SELECT id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
+</select>
+</h2>
+	<SELECT id='group_code' name='group_code' onchange="this.form.submit()" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
 <?php
 			echo "<option value=''>Select Project</option>";
 			$result = sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
@@ -306,16 +322,6 @@ $(function () {
 	</select>
 	<input type="text" name="data" maxlength="30" size="15" value='<?=$data?>'>
 	<input type="button" id="Search" name="Search" value='Search' onclick='Search_func()';>
-<span>
-View Line: 
-	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-		<option value='10'  <?php if( $line_cnt=='10')  echo " selected" ?> >10</option>
-		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
-		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
-		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; 
-</span>
-</FORM>
 
 <table class='floating-thead' style="width:1900px; table-layout:;">
 <thead id='tit_et' width="100%">
@@ -364,8 +370,8 @@ View Line:
 	<td style='width:2%;'><?=$line?></td>
 	<td style='width:2%;'><?=$rs['userid']?></td>
 	<td style='width:2%;' title="<?=$rs['group_code']?>"><?=$rs['group_name']?></td>
-	<td style='width:120px;'><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
-	<td style='width:2%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
+	<td style='width:15%;'><img src="<?=KAPP_URL_T_?>/icon/default.gif"><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" title='program run'><?=$rs['pg_name']?></a></td>
+	<td style='width:15%;'><a href="javascript:program_run_funcList2( '<?=$rs['seqno']?>', '<?=$rs['pg_name']?>', '<?=$rs['pg_code']?>' );" ><?=$rs['tab_hnm']?></a></td>
 	<td><?=$rs['upday']?></td>
 
 	<td><textarea id='item_array' name='item_array' readonly><?=$rs['item_array']?></textarea></td>
@@ -397,6 +403,7 @@ View Line:
 		echo "<input type='button' value='Back Return' onclick=\"javascript:run_backX('".$mode."', '".$data."', '".$page."');\" style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' List of Program'>&nbsp;&nbsp;";
 		echo "<input type='button' value='Data List' onclick=\"program_run_funcListT('".$tab_hnm."', '".$tab_enm."')\"  style='height:22px;background-color:cyan;color:black;border:1 solid black'  title=' Data List of ".$tab_hnm."' >&nbsp;&nbsp; ";
 	} else {
+		/*
 		$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
 		$last_page = $first_page+($page_num-1);
 		if($last_page > $total_page) $last_page = $total_page;
@@ -410,8 +417,12 @@ View Line:
 		}
 		$next = $last_page+1;
 		if( $next <= $total_page)
-			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";
+			echo"<a href='#' title='page:$page, next:$next, data:$data' onclick=\"page_func('".$next."','".$data."')\" style='font-size:18px;'>[Next]</a>";*/
 	}
 ?>
+<?php
+	paging("program_list_ai.php",$total_count,$page,$line_cnt, "document.kapp_programai_Form"); 
+?> 
+</FORM>
 </BODY>
 </HTML>

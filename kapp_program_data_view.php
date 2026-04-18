@@ -14,6 +14,10 @@
 	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_data.js"></script>
+<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
+
 <?php
 	$H_ID= get_session("ss_mb_id");   
 	if( $H_ID != '' ){
@@ -61,7 +65,7 @@
 	if( $H_LEV >= $grant_view || $H_ID == $pg_mid || $H_ID == $data_mid) {
 	} else {
 		m_("You need to view level: $H_LEV, grant: $grant_view ");
-		echo "<script>table_data_listV( this, '$pg_code'); </script>";
+		echo "<script>Kapp_ProgramJS.kapp_program_data_list( this.form ); </script>";
 		exit;
 	}
 	if( isset($_POST['mode']) ) $mode		= $_POST['mode'];
@@ -70,10 +74,7 @@
 	if( isset($_POST['line_cnt']) ) $line_cnt	= $_POST['line_cnt'];
 ?>
 
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_data.js"></script>
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
-
-<body bgcolor='#ffffff'>
+<body style="background-color:#fff; width:100%;" >
 <center>
 <?php
 	$SQLX = " SELECT * from $tab_enm where seqno=$seqno ";
@@ -88,10 +89,7 @@
 		$cur='B';
 		include_once "./menu_run.php"; 
 ?>
-		<div>
-			<P onclick="javascript:tab_pg_viewV()" class="HeadTitle03AX" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>' align='center'><?=$pg_name?></P>
-		</div>
-<FORM name='form_view' method='post' enctype="multipart/form-data" >
+<FORM id='Kapp_HtmlForm' name='Kapp_HtmlForm' method='post' enctype="multipart/form-data" >
 		<input type="hidden" name='mode'		value='' />
 		<input type="hidden" name='Hid'			value='<?=$H_ID?>' />
 		<input type="hidden" name='pg_mid'			value='<?=$pg_mid?>' />
@@ -109,6 +107,9 @@
 		<input type="hidden" name='if_type' value='<?=$if_typeR?>' />
 		<input type="hidden" name='if_data' value='<?=$if_dataR?>' />
 
+	<div>
+		<P onclick="javascript:Kapp_ProgramJS.kapp_program_data_list(this.form);" class="HeadTitle03AX" title='table code:<?=$tab_enm?> , program name:<?=$pg_name?>' align='center'><?=$pg_name?></P>
+	</div>
 	<div class="boardViewX">
 		<div class="viewHeader">
 			<span title='tkher_program_data_view'>pg:<?=$pg_code?>(<?=$pg_name?>) &nbsp;&nbsp;&nbsp; Date : <?=date("Y-m-d H:i:s" ); ?></span>
@@ -142,6 +143,7 @@
 		if(( $result = sql_query( $SQL ) )==false ){
 			echo "table: $tab_enm - delete  Invalid query! SQL: ". $SQL; exit;
 		} else {
+			m_("table: $tab_enm, record delete ok!");
 			$relation_data =$relation_dataPG;
 			$relation_type =$relation_typePG; 
 			if( $relation_data !='' ) {
@@ -171,7 +173,7 @@
 				}
 			}
 			$rungo = "kapp_program_data_list.php";
-			echo "<script>table_data_listV( this, '$pg_code'); </script>";
+			echo "<script>Kapp_ProgramJS.kapp_program_data_list( this.form ); </script>"; // ok
 		}
 	}
 	$list = array();
@@ -297,7 +299,7 @@
 				$im = "./file/" . $tab_mid. "/" . $tab_enm . "/". $row[$fldenm];
 				if( strtolower($ifile[1]) == 'jpg' || strtolower($ifile[1]) == 'png' || strtolower($ifile[1]) == 'gif' ) {
 					echo"<p>$fldhnm</p>";
-					echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimageV( this, '$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='400' height='300' border=0></a> </div>";
+					echo"<div class='viewWriteBox' ><a href='#' onClick=\"popimageV( this.form, '$im',$image_size[0],$image_size[1]);return false\" onfocus='this.blur()'><img src='$im'  width='400' height='300' border=0></a> </div>";
 					echo " <div class='menu1T' align=center><span style='width:$Xwidth;height:$Xheight;'>$fldhnm</span></div> ";
 					echo " <div class='File1A'>";
 					echo " <input type='FILE' name='$fldenm' value='$row[$fldenm]' placeholder='Please enter a $fld[2].' style='width:$Xwidth;height:$Xheight;' readonly> ";
@@ -375,11 +377,11 @@
 <?php
 		if( $H_ID == $pg_mid || $H_ID == $data_mid || $H_LEV >= $H_LEV ){
 ?>
-			<input type='button' value='Modify' onclick="javascript:record_updateView( this, '<?=$H_ID?>','<?=$relationT?>');" class="btn_bo02" title="grant write:<?=$grant_write?>:<?=$H_LEV?>">
-			<input type='button' value='Delete' onclick="javascript:data_deleteView( this, '<?=$H_ID?>', <?=$row['seqno']?>,'<?=$relationT?>');" class="btn_bo02">
+			<input type='button' value='Modify' onclick="javascript:Kapp_ProgramJS.kapp_program_data_ChangeView( this.form, '<?=$H_ID?>','<?=$relationT?>');" class="btn_bo02" title="grant write:<?=$grant_write?>:<?=$H_LEV?>">
+			<input type='button' value='Delete' onclick="javascript:Kapp_ProgramJS.data_deleteView( this.form, '<?=$H_ID?>', <?=$row['seqno']?>,'<?=$relationT?>');" class="btn_bo02">
 <?php	} ?>
-			<input type='button' value='List' onclick="javascript:tab_pg_viewView( this );" class="btn_bo02">
-			<input type='button' value='Source Down' onclick="javascript:tkher_source_createDNV( this, '<?=$H_POINT?>', '<?=$seqno?>')" class="kapp_btn_bo02" title='Download the source.'>
+			<input type='button' value='List' onclick="javascript:Kapp_ProgramJS.kapp_program_data_list(this.form);" id="btn" class="kapp_btn_bo02" title='<?=$pg_code?>:<?=$pg_name?>'>
+			<input type='button' value='Source Down' onclick="javascript:Kapp_ProgramJS.tkher_source_createDNV( this.form, '<?=$H_POINT?>', '<?=$seqno?>')" class="kapp_btn_bo02" title='Download the source.'>
 					</div>
 				</div>
 			</div>

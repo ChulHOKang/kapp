@@ -14,7 +14,7 @@
 		- call : program_list3.php 
 		https://tkher.com/t/t_login.php?pg_code=dao_1537317833
 	---------------------------------------------------------------------- */
-	include "./table_paging.php";
+	include "./kapp_data_list_paging.php";
 	$H_ID  = get_session("ss_mb_id"); 
 	if( isset($H_ID) && $H_ID !='' ) {
 		$H_LEV = $member['mb_level']; 
@@ -23,9 +23,16 @@
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
-	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
-	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
-	else $pg_code = '';
+	if( isset( $_GET['pg_code']) ){
+		$pg_code= $_GET['pg_code'];
+	} else if( isset( $_REQUEST['pg_code']) ){
+		$pg_code= $_REQUEST['pg_code'];
+	} else if( isset( $_POST['pg_code']) ){
+		$pg_code= $_POST['pg_code'];
+	} else {
+		$pg_code = ''; 
+		m_("ERROR - pg_code is NULL"); exit;
+	}
 	if( isset( $_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
 	else if( isset( $_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode = '';
@@ -37,6 +44,17 @@
 	else if( isset( $_POST['group_code']) ) $group_code= $_POST['group_code'];
 	else $group_code = '';
 	$pg_mid= ''; $tab_mid= ''; 
+
+	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld']; // c_sel
+	else if( isset($_POST['search_fld']) ) $search_fld= $_POST['search_fld'];
+	else  $search_fld = "";
+	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice']; //c_sel3
+	else if( isset($_POST['search_choice']) ) $search_choice= $_POST['search_choice'];
+	else  $search_choice = "";
+	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
+	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
+	else  $searchT = "";
+
 	$sqlPG ="SELECT * from {$tkher['table10_pg_table']} where pg_code='$pg_code' ";
 	$rsPG =sql_fetch($sqlPG);
 	if( isset($rsPG['item_array']) && $rsPG['item_array'] !=''){
@@ -72,12 +90,13 @@
 <script>
 $(function () {
 	let timer;
+	thisform = document.Kapp_HtmlForm;
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
 			$hnm = e.target.innerText;
 			$enm = document.getElementById($hnm).value;
-			title_func($enm);
+			Kapp_ProgramJS.title_func(thisform,$enm);
 		}, 250); // Executes after waiting about 250ms - 약 250ms 대기 후 실행
 	  
 	});
@@ -85,17 +104,17 @@ $(function () {
 		clearTimeout(timer); // Remove last click timer - 마지막 클릭 타이머를 제거
 		$hnm = e.target.innerText;
 		$enm = document.getElementById($hnm).value;
-		title_wfunc($enm);
+		Kapp_ProgramJS.title_wfunc(thisform,$enm);
 	});
 
-	  $('table.listTableT').each(function() {
+	$('table.listTableT').each(function() {
 		if( $(this).css('border-collapse') == 'collapse') {
-		  $(this).css('border-collapse','separate').css('border-spacing',0);
+			$(this).css('border-collapse','separate').css('border-spacing',0);
 		}
 		$(this).prepend( $(this).find('thead:first').clone().hide().css('top',0).css('position','fixed') );
-	  });
+	});
 	  
-	  $(window).scroll(function() {
+	$(window).scroll(function() {
 		var scrollTop = $(window).scrollTop(),
 		  scrollLeft = $(window).scrollLeft();
 		$('table.listTableT').each(function(i) {
@@ -114,46 +133,30 @@ $(function () {
 		  });
 		  clone.css("margin-left", -scrollLeft ).width( thead.width() ).show();
 		});
-	  });
+	});
+	$('.search_btn').on('click', function() {
+		var search_fld = document.getElementById("search_fld");
+		i = search_fld.selectedIndex;
+		search_fld = search_fld.options[i].value;
+		var search_choice = document.getElementById("search_choice");
+		i = search_choice.selectedIndex;
+		search_choice = search_choice.options[i].value;
+		document.view_form.mode.value = 'search';
+		document.view_form.search_fld.value = search_fld;
+		document.view_form.search_choice.value = search_choice;
+		document.view_form.action = 'kapp_program_data_list.php';
+		document.view_form.submit();
+	});
 });
-
 </script>
+
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_data.js"></script>
-<link type="text/css" rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" />
-<body width='100%'>
+<!-- <link type="text/css" rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" /> -->
+<body style="background-color:#fff; width:100%;" >
 
-<script>
-	function table_record_write_listA(){
-		thisform = document.view_form;
-		var pg_code			= document.view_form.pg_code.value;
-		var grant_write		= document.view_form.grant_write.value;
-		var H_LEV			= document.view_form.H_LEV.value;
-			//alert("" + pg_code + ", " + grant_write +", "+ H_LEV);
-			//dao_1768010782, 2, 8
-			if( grant_write > H_LEV ){
-				alert("No permission. ");
-				return;
-			} else {
-				thisform.action='kapp_program_data_write.php?pg_code='+pg_code; 
-				thisform.target='_blank';
-				thisform.submit();
-			}
-	}
-</script>
-
-<?php 
+<?php
 	$cur='B';
 	include "./menu_run.php";
-
-	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld']; // c_sel
-	else if( isset($_POST['search_fld']) ) $search_fld= $_POST['search_fld'];
-	else  $search_fld = "";
-	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice'];
-	else if( isset($_POST['search_choice']) ) $search_choice= $_POST['search_choice'];
-	else  $search_choice = "";
-	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
-	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
-	else  $searchT = "";
 
 	$fld_enm= array();
 	$fld_hnm= array();
@@ -190,8 +193,7 @@ $(function () {
 				else $SQL1 = $SQL1 . " where `$search_fld` $search_choice '$searchT' ";
 			} 
 			if( ($result = sql_query( $SQL1 ) )==false ){
-				printf("Invalid query: %s\n", $SQL1);
-				echo "SQL:" . $SQL1; m_(" 4 Select Error ");
+				echo "Invalid query: " . $SQL1;
 				$total_count = 0; exit;
 			} else {
 				$total_count = $result->num_rows;
@@ -210,21 +212,20 @@ $(function () {
 		$view_msg ='You do not have permission to view this material. <br>The only level of permissions that can be viewed is that of the creator or higher. grant_view:'.$grant_view;
 	}
 ?>
+<FORM id='Kapp_HtmlForm' name='Kapp_HtmlForm' method='post' enctype="multipart/form-data" >
 <br>
 <div>
-	<P onclick="javascript:kapp_dataManager.list_home_func(this, '<?=$pg_code?>');" class="HeadTitle03AX" title='list - home_func - table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
+	<P onclick="javascript:Kapp_ProgramJS.kapp_program_data_list_home_func(this.form);" class="HeadTitle03AX" title='list - home_func - table:<?=$tab_enm?> , pg code:<?=$pg_code?>'><?=$pg_name?></P>
 </div>
 <script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
-<FORM name='view_form' method='post' enctype="multipart/form-data" >
-<!-- <FORM onsubmit="kapp_dataManager.write_proc(this); return false;" name='view_form' method='post' enctype="multipart/form-data"> -->
 
 <div style='width:99%;'>
 	<div class="fl">
 		<tr>
 			<td align='left'>
 			<P align="left" style="margin-top: 0px" title='pg: Project List '>
-			<SELECT id='group_code' name='group_code' onchange="group_code_change_func_list( this, this.value, '<?=$pg_code?>');" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
-							<option value=''>Select Project</option>
+			<SELECT id='group_code' name='group_code' onchange="this.form.submit()" style='height:25px;background-color:#FFDF6E;border:1 solid black'>
+					<option value=''>Select Project</option>
 <?php
 			if( $H_LEV > 7) $result=sql_query( "SELECT * from {$tkher['table10_group_table']} order by group_name " );
 			else $result=sql_query( "SELECT * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name " );
@@ -243,8 +244,8 @@ $(function () {
 	if( isset($H_ID) ) echo "id:$H_ID, lev:$H_LEV"; 
 ?> 
 			</P>
-				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
-				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
+				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 270px; height: 100%px; padding: 4px;z-index:1000">
+				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='240'>
 <?php
 	if( $H_LEV > 7) $sqlA = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
 	else			$sqlA = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
@@ -256,52 +257,53 @@ $(function () {
 	while( $rs = sql_fetch_array( $result )  ) {
 		$pg_codeA = $rs['pg_code'];
 		$pg_nameA = $rs['pg_name'];
+		$tab_enmA = $rs['tab_enm'];
 ?>
-			<tr>
-			<td width='130' height='24' background='./icon/admin_submenu.gif'>&nbsp;<img src='./icon/left_icon.gif'>
-			<a href="javascript:table_record_view_list( this, '<?=$pg_codeA?>','<?=$pg_nameA?>');" target='_self'><?=$pg_nameA?></a>
-			</td>
-			</tr>
+		<tr>
+		<td width='270' height='24' background='./icon/admin_submenu.gif'>
+			<a href="javascript:Kapp_ProgramJS.kapp_program_listAll(this.form, '<?=$pg_codeA?>', '<?=$tab_enmA?>');" title='<?=$pg_codeA?>:<?=$tab_enmA?>'><img src='./icon/left_icon.gif'><?=$pg_nameA?></a>
+		</td>
+		</tr>
 <?php
 	}
 ?>
-				</TABLE>
-							<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
-							</DIV>
-								<script type="text/javascript">
-									dropdowncontent.init("searchlink", "left-bottom", 300, "mouseover")
-									dropdowncontent.init("contentlink", "right-bottom", 300, "click")
-								</script>
-							</div>
-						</td>
-					</tr>
-				</DIV> 
+			</TABLE>
+				<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
+					</DIV>
+						<script type="text/javascript">
+							dropdowncontent.init("searchlink", "left-bottom", 300, "mouseover")
+							dropdowncontent.init("contentlink", "right-bottom", 300, "click")
+						</script>
+					</div>
+				</td>
+			</tr>
+		</DIV> 
 
 				<div class="viewHeaderT">
 					<span title='pg_mid:<?=$pg_mid?>, view level:<?=$grant_view?>'>&nbsp;&nbsp;
 					K-APP:<?=$pg_code?>&nbsp;&nbsp;&nbsp;&nbsp;
 					Total:<?=$total_count?>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='View page count'>Page:<?=$page?></strong>
-						<select id='line_cntS' name='line_cntS' onChange="Change_line_cnt( this, '<?=$pg_code?>', this.options[selectedIndex].value)" style='height:20;'>
-							<option value='10'  <?php if($line_cnt=='10')  echo " selected" ?> >10</option>
-							<option value='30'  <?php if($line_cnt=='30')  echo " selected" ?> >30</option>
-							<option value='50'  <?php if($line_cnt=='50')  echo " selected" ?> >50</option>
-							<option value='100' <?php if($line_cnt=='100') echo " selected" ?> >100</option>
-						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
+		<SELECT name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+					<option value='10'  <?php if($line_cnt=='10')  echo " selected" ?> >10</option>
+					<option value='30'  <?php if($line_cnt=='30')  echo " selected" ?> >30</option>
+					<option value='50'  <?php if($line_cnt=='50')  echo " selected" ?> >50</option>
+					<option value='100' <?php if($line_cnt=='100') echo " selected" ?> >100</option>
+		</SELECT>&nbsp;&nbsp;&nbsp;&nbsp; 
 					</span>
 <?php
 if( $H_ID==$pg_mid ) {
 ?>
 					<span>
 						<strong title='Click to change properties'>View: </strong>
-						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Change_grant_view_list( this, '<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
+						<select class="grant_view_func" id='grant_view' name='grant_view' onChange="Kapp_ProgramJS.Change_grant_view_list( this.form, '<?=$grant_view?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
 							<option value='1' <?php if($grant_view=='0'||$grant_view=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_view=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_view=='3')  echo " selected"; ?> >For creators only</option>
 							<option value='8' <?php if($grant_view=='8')  echo " selected"; ?> >Only system manager</option>
 						</select>&nbsp;&nbsp;&nbsp;&nbsp; 
 						<strong title='Click to change properties'>Write: </strong>
-						<select id='grant_write' name='grant_write' onChange="Change_grant_write_list( this, '<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
+						<select id='grant_write' name='grant_write' onChange="Kapp_ProgramJS.Change_grant_write_list( this.form, '<?=$grant_write?>', this.options[selectedIndex].value, '<?=$pg_code?>')" style='height:25;' title='Click to change properties'>
 							<option value='1' <?php if($grant_write=='0'||$grant_write=='1')  echo " selected"; ?> >Guest</option>
 							<option value='2' <?php if($grant_write=='2')  echo " selected"; ?> >Member</option>
 							<option value='3' <?php if($grant_write=='3')  echo " selected"; ?> >For creators only</option>
@@ -326,8 +328,6 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='seqno'			value='' />
 						<input type="hidden" name='no'				value='' />
 						<input type="hidden" name='id'				value='<?=$H_ID?>' />
-						<input type="hidden" name='c_sel'			value='<?=$c_sel?>' />
-						<input type="hidden" name='c_sel3'			value='<?=$c_sel3?>' />
 						<input type="hidden" name='target_'		value='<?=$target_?>' />
 						<input type="hidden" name='pg_mid'		value='<?=$pg_mid?>' />
 						<input type="hidden" name='tab_mid'		value='<?=$tab_mid?>' />
@@ -339,9 +339,10 @@ if( $H_ID==$pg_mid ) {
 						<input type="hidden" name='fld_hnm'		value='<?=$fld_hnm?>' />
 						<input type="hidden" name='fld_type'		value='<?=$fld_type?>' />
 						<input type="hidden" name='fld_len'			value='<?=$fld_len?>' />
+
 						<input type="hidden" name='search_fld'	value='<?=$search_fld?>' />
 						<input type="hidden" name='search_choice'		value='<?=$search_choice?>' />
-						<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
+
 						<input type="hidden" name='H_LEV'		value='<?=$H_LEV?>' />
 
 	<table class='listTableT' width='99%'>
@@ -384,23 +385,23 @@ if( $H_ID==$pg_mid ) {
 				while( $row = sql_fetch_array($result)  ) {
 					$no++;
 					$row_seqno = $row['seqno'];
-					$kapp_memo = $row['kapp_memo'];
+					if( isset($row['kapp_memo']) ) $kapp_memo = $row['kapp_memo'];
+					else $kapp_memo ='';
 					if( isset($row['kapp_userid']) ) $data_mid = $row['kapp_userid'];
 					else $data_mid = '';//$H_ID;
 ?>
 					<tr>
-						<td style="width:30px; height:100%px;text-align:center" title='<?=$row_seqno?>, <?=$kapp_memo?>'>
-						 <a href="javascript:pg_record_view('<?=$row_seqno?>', '<?=$data_mid?>');" ><?=$no?></a></td>
+						<td style="width:30px; height:100%px;text-align:center" title='<?=$row_seqno?>, <?=$kapp_memo?>'><?=$no?></td>
 <?php
 						for( $i=0; $i < $item_cnt; $i++){
 							$fenm = $fld_enm[$i];
 							if( $fld_type[$i]=='INT' || $fld_type[$i]=='BIGINT' ){
 								$num = number_format( $row[$fenm] );
-								echo " <td class='cell03' title='$row_seqno, $kapp_memo'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >$num</a></td> ";
+echo " <td class='cell03' title='$row_seqno, $kapp_memo'><a href=\"javascript:Kapp_ProgramJS.kapp_program_data_view(this.form, ".$row['seqno'].", '". $data_mid."');\" >$num</a></td> ";
 							} else if( $fld_type[$i]=='TEXT' ){
 								echo " <td class='cell04' title='$row_seqno, $kapp_memo'>$row[$fenm]</td> ";
 							} else
-								echo " <td class='cell03' title='$row_seqno, $kapp_memo'><a href=\"javascript:pg_record_view('".$row['seqno']."', '". $data_mid."');\" >".$row[$fenm]."</a></td> ";
+								echo " <td class='cell03' title='$row_seqno, $kapp_memo'><a href=\"javascript:Kapp_ProgramJS.kapp_program_data_view(this.form, ".$row['seqno'].", '". $data_mid."');\" >".$row[$fenm]."</a></td> ";
 						}
 ?>
 					</tr>
@@ -412,7 +413,7 @@ if( $H_ID==$pg_mid ) {
 		</tbody>
 	</table>				
 	<div class="fl">
-		<select id='c_sel' name='c_sel' onChange='Change_Csel2( this, this.options[this.selectedIndex].value)' style='height:30;' >
+		<SELECT id='search_fld' name='search_fld' style='height:30;'>
 <?php
 		for( $i=0; $i < $item_cnt; $i++ ){
 			$fff		= $fld_enm[$i];
@@ -424,30 +425,27 @@ if( $H_ID==$pg_mid ) {
 		}
 ?>
 		</select>
-		<select id='c_sel3' name='c_sel3' onChange='Change_Csel3( this, this.options[this.selectedIndex].value)' style='height:30;'>
-				<option value='like' <?php if($search_choice=='like' ) echo " selected " ?> >like</option>
+		<SELECT id='search_choice' name='search_choice' style='height:30;'>
+				<option value='=' >=</option>
 				<option value='=' <?php if($search_choice=='=' ) echo " selected " ?> >=</option>
 				<option value='>' <?php if($search_choice=='>') echo " selected" ?> >></option>
 				<option value='<' <?php if($search_choice=='<') echo " selected" ?> ><</option>
+				<option value='like' <?php if($search_choice=='like' ) echo " selected " ?> >like</option>
 		</select>
-				<input type="text" name='searchT' id='searchT'  value='<?=$searchT?>' style='height:30;' />
-				<a href="#" class="search_btn">Search</a>
+		<input type="text" name='searchT' id='searchT' value='<?=$searchT?>' style='height:30;' />
+		<a href="#" class="search_btn">Search</a>
 				<br>
 					<div class="fr">
-<!-- <input type='button' value='Write' onclick="javascript:kapp_dataManager.kapp_proc( this, '<?=$pg_code?>','<?=$grant_write?>','<?=$H_LEV?>');" class="kapp_btn_bo02" title='pg:kapp_program_data_list'> -->
+<input type='button' onclick="javascript:Kapp_ProgramJS.table_record_write_list(this.form, '<?=$H_LEV?>', '<?=$grant_write?>');" value=" Write " class="kapp_btn_bo02" title='kapp_program_data_list' />
 
-<input onclick="javascript:kapp_dataManager.table_record_write_list(this);" name="btn" id="btn" value=" Write " class="kapp_btn_bo02" title='kapp_program_data_list' />
-
-<!-- <input type='button' value='Write' onclick="javascript:table_record_write_listA();" class="kapp_btn_bo02" title='pg:kapp_program_data_list'> OK -->
-
-				<input type='button' value='Excel_Upload' onclick="excel_upload_func( this, '<?=$tab_enm?>','<?=$tab_hnm?>')" class='kapp_btn_bo03' title='Batch upload of data to excel file'>
-				<input type='button' value='Excel Down' onclick="javascript:excel_down(this);" class="kapp_btn_bo02" title=' Download data as an Excel file'>
-				<input type='button' value='Source Down' onclick="javascript:tkher_source_createDN('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
+				<input type='button' value='Excel_Upload' onclick="havascript:Kapp_ProgramJS.excel_upload_list_func( this.form, '<?=$tab_enm?>','<?=$tab_hnm?>');" class='kapp_btn_bo03' title='Batch upload of data to excel file'>
+				<input type='button' value='Excel Down' onclick="javascript:Kapp_ProgramJS.excel_down(this.form, '<?=$H_ID?>');" class="kapp_btn_bo02" title=' Download data as an Excel file'>
+				<input type='button' value='Source Down' onclick="javascript:Kapp_ProgramJS.tkher_source_createDN(this.form,'<?=$H_POINT?>');" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
 	</div> 
-</form>
 <?php
-	paging("kapp_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
+	paging("kapp_program_data_list.php?pg_code=$pg_code",$total_count,$page,$line_cnt, "document.Kapp_HtmlForm"); 
 ?> 
 
+</form>
 </body>
 </html>

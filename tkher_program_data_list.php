@@ -21,10 +21,10 @@
 		$H_LEV = 1; 
 		$H_POINT= 0; 
 	}
-	if( isset( $_REQUEST['pg_code']) ) $pg_code= $_REQUEST['pg_code'];
+	if( isset( $_GET['pg_code']) ) $pg_code= $_GET['pg_code'];
 	else if( isset( $_POST['pg_code']) ) $pg_code= $_POST['pg_code'];
 	else $pg_code = '';
-	if( isset( $_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+	if( isset( $_GET['mode']) ) $mode= $_GET['mode'];
 	else if( isset( $_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode = '';
 	if( isset( $_POST['fld_code_pg']) ) $fld_code_pg= $_POST['fld_code_pg'];
@@ -117,9 +117,14 @@ $(function () {
 });
 
 </script>
-<link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
+<!-- <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" /> -->
 <script type="text/javascript" >
 <!--
+	function page_move(thisform, page, linkurl){
+		thisform.page.value = page;
+		thisform.action= linkurl; //'tkher_program_data_list.php';
+		thisform.submit();
+	}
 	function title_wfunc(fld_code_pg){       
 		document.view_form.page.value = 1;
 		document.view_form.fld_code_pg.value= fld_code_pg;
@@ -323,26 +328,21 @@ $(function () {
 		document.view_form.submit();
 		return;
 	}
-	function page_move($page){
-		document.view_form.page.value = $page;
-		document.view_form.action='tkher_program_data_list.php';
-		document.view_form.submit();
-	}
 	// -->
  </script>
-<body width='100%'>
+<body style="background-color:#fff; width:100%;" >
 
 <?php 
 	$cur='B';
 	include "./menu_run.php";
 
-	if( isset($_REQUEST['search_fld']) ) $search_fld= $_REQUEST['search_fld']; // c_sel
+	if( isset($_GET['search_fld']) ) $search_fld= $_GET['search_fld']; // c_sel
 	else if( isset($_POST['search_fld']) ) $search_fld= $_POST['search_fld'];
 	else  $search_fld = "";
-	if( isset($_REQUEST['search_choice']) ) $search_choice= $_REQUEST['search_choice'];
+	if( isset($_GET['search_choice']) ) $search_choice= $_GET['search_choice'];
 	else if( isset($_POST['search_choice']) ) $search_choice= $_POST['search_choice'];
 	else  $search_choice = "";
-	if( isset($_REQUEST['searchT']) ) $searchT= $_REQUEST['searchT'];
+	if( isset($_GET['searchT']) ) $searchT= $_GET['searchT'];
 	else if( isset($_POST['searchT']) ) $searchT= $_POST['searchT'];
 	else  $searchT = "";
 
@@ -364,9 +364,9 @@ $(function () {
 		if( $i==0 && !$search_fld) $search_fld = $item[1];
 	}
 	$item_cnt	= $fld_cnt=$i;
-	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	if( isset($_GET['page']) ) $page = $_GET['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
-	else $page = 1;
+	else (INT)$page = 1;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!="" ){
 		$line_cnt	= $_POST['line_cnt'];
 	} else  $line_cnt	= 10;
@@ -392,7 +392,7 @@ $(function () {
 					$page = 1;
 					$start = 0;
 				} else {
-					$start = ($page - 1) * $line_cnt;
+					$start = ((INT)$page - 1) * $line_cnt;
 				}
 				$last = $line_cnt;
 				if( $total_count < $last) $last = $total_count;
@@ -408,7 +408,7 @@ $(function () {
 <script type="text/javascript" src="./include/js/dropdowncontent.js"></script>
 <FORM name='view_form' method='post' enctype="multipart/form-data" >
 <div style='width:99%;'>
-	<div class="fl">
+	<div>
 		<tr>
 			<td align='left'>
 			<P align="left" style="margin-top: 0px" title='pg: Project List '>
@@ -433,7 +433,7 @@ $(function () {
 ?> 
 			</P>
 				<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 300px; height: 100%px; padding: 4px;z-index:1000">
-				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='150'>
+				<TABLE border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='280'>
 <?php
 	if( $H_LEV > 7) $sqlA = "SELECT * from {$tkher['table10_pg_table']} where `group_code` ='" . $group_code . "' order by upday desc ";
 	else			$sqlA = "SELECT * from {$tkher['table10_pg_table']} where `userid`='$H_ID' and `group_code`='" . $group_code . "' order by upday desc ";
@@ -572,14 +572,15 @@ if( $H_ID==$pg_mid ) {
 			$SQL = $SQL . $OrderBy;
 			$SQL = $SQL . $SQL_limit;
 			if( ($result = sql_query( $SQL ) )==false )	{
-				printf("Record 0 : query: %s\n", $SQL); exit;
+				echo "query:" . $SQL; exit;
 			} else {
 				if( $page > 1 ) $no=($page -1) * $line_cnt;
 				else $no=0;
 				while( $row = sql_fetch_array($result)  ) {
 					$no++;
 					$row_seqno = $row['seqno'];
-					$kapp_memo = $row['kapp_memo'];
+					if( isset($row['kapp_memo']) ) $kapp_memo = $row['kapp_memo'];
+					else $kapp_memo ='';
 					if( isset($row['kapp_userid']) ) $data_mid = $row['kapp_userid'];
 					else $data_mid = '';//$H_ID;
 ?>
@@ -635,10 +636,10 @@ if( $H_ID==$pg_mid ) {
 				<input type='button' value='Excel Down' onclick="javascript:excel_down();" class="kapp_btn_bo02" title=' Download data as an Excel file'>
 				<input type='button' value='Source Down' onclick="javascript:tkher_source_create('<?=$H_POINT?>')" class="kapp_btn_bo02" title='Program source creation and Download the source. point:<?=$H_ID?>=<?=$H_POINT?>'>
 	</div> 
-</form>
 <?php
-	paging("tkher_program_data_list.php?pg_code=$pg_code&pg_name=$pg_name&search_choice=$search_choice&searchT=$searchT&id=$H_ID",$total_count,$page,$line_cnt); 
+	paging("tkher_program_data_list.php?pg_code=$pg_code", $total_count, $page, $line_cnt, "document.view_form" ); 
 ?> 
+</form>
 
 </body>
 </html>
