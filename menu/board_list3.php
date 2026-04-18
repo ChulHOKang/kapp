@@ -126,34 +126,34 @@ $(function () {
 <script language='javascript'>
 <!--
 	function fnclist_onclick(v) {
-		var seli = document.makeform.fnclist.selectedIndex;
-		var t = document.makeform.fnclist.options[seli].text;
-		document.makeform.board_type_name.value = t;
-		document.makeform.sellist_index.value   = v;
+		var seli = document.kapp_aboard_Formfnclist.selectedIndex;
+		var t = document.kapp_aboard_Formfnclist.options[seli].text;
+		document.kapp_aboard_Formboard_type_name.value = t;
+		document.kapp_aboard_Formsellist_index.value   = v;
 	}
 	function chkDescription(){
-		document.makeform.chkByte.value = (document.makeform.mncontents.value).length;
+		document.kapp_aboard_FormchkByte.value = (document.kapp_aboard_Formmncontents.value).length;
 	}
 	function Update_title(){
-		var seli = document.makeform.sellist.selectedIndex;
+		var seli = document.kapp_aboard_Formsellist.selectedIndex;
 		if( seli < 0 ) {
 			alert('Please select a bulletin board to change!'); return false;
 		}
-		var tnm = document.makeform.chgname.value;
+		var tnm = document.kapp_aboard_Formchgname.value;
 		if( !tnm ) {
 			alert(' Please enter your board name! '); return false;
 		}
-		var v = document.makeform.sellist.options[seli].value;
+		var v = document.kapp_aboard_Formsellist.options[seli].value;
 		var sel_v  = v.split("|");
-		document.makeform.board_no.value = sel_v[0];
-		document.makeform.board_gubun_value.value = sel_v[1];
-		document.makeform.board_nm.value = sel_v[2];
+		document.kapp_aboard_Formboard_no.value = sel_v[0];
+		document.kapp_aboard_Formboard_gubun_value.value = sel_v[1];
+		document.kapp_aboard_Formboard_nm.value = sel_v[2];
 
-		var t = document.makeform.sellist.options[seli].text;
-		var c = document.makeform.chgname.value;
-		document.makeform.mode.value ='Update_nm_change';
-		document.makeform.action='query_ok_new.php';
-		document.makeform.submit();
+		var t = document.kapp_aboard_Formsellist.options[seli].text;
+		var c = document.kapp_aboard_Formchgname.value;
+		document.kapp_aboard_Formmode.value ='Update_nm_change';
+		document.kapp_aboard_Formaction='query_ok_new.php';
+		document.kapp_aboard_Formsubmit();
 	}
 	function CheckKey1(){
 		if (event.keyCode == 13) {btncfm_onclick();return false}
@@ -164,24 +164,24 @@ $(function () {
 	function btncfm_onclick() {
 		var i,j,k
 		var optStr
-		var selStr = makeform.sellist
-		var chgStr = makeform.chgname.value
-		if (makeform.sellist.selectedIndex < 0) return
+		var selStr = document.kapp_aboard_Formsellist
+		var chgStr = document.kapp_aboard_Formchgname.value
+		if (document.kapp_aboard_Formsellist.selectedIndex < 0) return
 		if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0)	{
 			alert('You used a special character.\nPlease re-enter it.');
 			return false;
 		}
-		for ( j=0; j < makeform.sellist.options.length; j++ )	{
-			if ( makeform.sellist.options[j].selected == true ) {
-				var chkname = makeform.sellist.options[j].value
+		for ( j=0; j < document.kapp_aboard_Formsellist.options.length; j++ )	{
+			if ( document.kapp_aboard_Formsellist.options[j].selected == true ) {
+				var chkname = document.kapp_aboard_Formsellist.options[j].value
 				var chkObjid = getObjid(chkname)
-					makeform.sellist.options[j].text = chgStr
-					if (document.makeform.mnhide.checked){
-					  makeform.sellist.options[j].text = makeform.sellist.options[j].text + "<HIDDEN>"
-						makeform.funchelp.value += getObjid(makeform.sellist.options[j].value) + "!:" + getObjseq(makeform.sellist.options[j].value) + "!:" + getfname(makeform.sellist.options[j].text) + "!:" + document.makeform.mncontents.value + "!#";
+					document.kapp_aboard_Formsellist.options[j].text = chgStr
+					if (document.kapp_aboard_Formmnhide.checked){
+					  document.kapp_aboard_Formsellist.options[j].text = document.kapp_aboard_Formsellist.options[j].text + "<HIDDEN>"
+						document.kapp_aboard_Formfunchelp.value += getObjid(document.kapp_aboard_Formsellist.options[j].value) + "!:" + getObjseq(document.kapp_aboard_Formsellist.options[j].value) + "!:" + getfname(document.kapp_aboard_Formsellist.options[j].text) + "!:" + document.kapp_aboard_Formmncontents.value + "!#";
 					} else{
-						document.makeform.mnhide.checked = false
-						makeform.funchelp.value += getObjid(makeform.sellist.options[j].value) + "!:" + getObjseq(makeform.sellist.options[j].value) + "!:" + getfname(makeform.sellist.options[j].text) + "!:" + document.makeform.mncontents.value + "!#";
+						document.kapp_aboard_Formmnhide.checked = false
+						document.kapp_aboard_Formfunchelp.value += getObjid(document.kapp_aboard_Formsellist.options[j].value) + "!:" + getObjseq(document.kapp_aboard_Formsellist.options[j].value) + "!:" + getfname(document.kapp_aboard_Formsellist.options[j].text) + "!:" + document.kapp_aboard_Formmncontents.value + "!#";
 					}
 				isEdited = true
 				return true
@@ -190,19 +190,19 @@ $(function () {
 	}
 	function New_Create() {
 
-		var seli = makeform.fnclist.selectedIndex;
+		var seli = document.kapp_aboard_Formfnclist.selectedIndex;
 		if( seli < 0 ){
 			alert("Select Board Type! board type seli: " + seli );
 			return false;
 		} else {
-			var t = makeform.fnclist.options[seli].text;
-			var v = makeform.fnclist.options[seli].value;
-			makeform.board_type_name.value = t;
-			makeform.sellist_index.value   = v;
+			var t = document.kapp_aboard_Formfnclist.options[seli].text;
+			var v = document.kapp_aboard_Formfnclist.options[seli].value;
+			document.kapp_aboard_Formboard_type_name.value = t;
+			document.kapp_aboard_Formsellist_index.value   = v;
 		}
-	   if ( makeform.aboard_name.value === ""){
+	   if ( document.kapp_aboard_Formaboard_name.value === ""){
 			alert (" Please enter your board name! ");
-			makeform.aboard_name.focus();
+			document.kapp_aboard_Formaboard_name.focus();
 			return;
 		}
 		if( v !=='3' && v !=='4' && v !=='5')
@@ -211,35 +211,35 @@ $(function () {
 			return false;
 		}
 
-		board_type_name = makeform.board_type_name.value;
-		sellist_index = makeform.sellist_index.value;
+		board_type_name = document.kapp_aboard_Formboard_type_name.value;
+		sellist_index = document.kapp_aboard_Formsellist_index.value;
 	   var optStr, newOpt, tstr, newOpt2
-	   if ( makeform.aboard_name.value==""){
+	   if ( document.kapp_aboard_Formaboard_name.value==""){
 			alert (" Please enter your board name! ");
-			makeform.aboard_name.focus();
+			document.kapp_aboard_Formaboard_name.focus();
 			return;
 		} else {
-			var chgStr = makeform.aboard_name.value;
+			var chgStr = document.kapp_aboard_Formaboard_name.value;
 			if (chgStr.indexOf('"')>=0 || chgStr.indexOf("'")>=0 || chgStr.indexOf("!#")>=0 || chgStr.indexOf("!%")>=0 || chgStr.indexOf("!:")>=0 || chgStr.indexOf("!,")>=0 || chgStr.indexOf("[")>=0 || chgStr.indexOf("]")>=0 || chgStr.indexOf("<")>=0 || chgStr.indexOf(">")>=0){
 				alert('You used a special character that is not allowed. ');
 				return ;
 			}
-			sellist_i = makeform.sellist.options.length;
-			for (i=0;i<makeform.sellist.options.length; i++){
-				bnm = makeform.sellist.options[i].text;
+			sellist_i = document.kapp_aboard_Formsellist.options.length;
+			for (i=0;i<document.kapp_aboard_Formsellist.options.length; i++){
+				bnm = document.kapp_aboard_Formsellist.options[i].text;
 				if ( chgStr == bnm ){
 					alert("It is an existing name. "+"\n"+ " Please change your name."); 
-					makeform.aboard_name.focus();
+					document.kapp_aboard_Formaboard_name.focus();
 					return false;
 				}
 			}
 		}
 		if ( !confirm("Create a bulletin board? " + chgStr)) return
-		v = makeform.fnclist.options[seli].value;
-		t = makeform.fnclist.options[seli].text;
-		document.makeform.mode.value = "ADD_create_board_list3";
-		document.makeform.action = "query_ok_new.php";
-		makeform.submit();
+		v = document.kapp_aboard_Formfnclist.options[seli].value;
+		t = document.kapp_aboard_Formfnclist.options[seli].text;
+		document.kapp_aboard_Formmode.value = "ADD_create_board_list3";
+		document.kapp_aboard_Formaction = "query_ok_new.php";
+		document.kapp_aboard_Formsubmit();
 	}
 	function getObjid(str) {
 		return str.substring(0,str.indexOf("!:"))
@@ -259,22 +259,22 @@ $(function () {
 		return str
 	}
 	function sellist_onclick() {
-		var selind = makeform.sellist.selectedIndex
-		var strAx = makeform.sellist.options[selind].value
+		var selind = document.kapp_aboard_Formsellist.selectedIndex
+		var strAx = document.kapp_aboard_Formsellist.options[selind].value
 		var strA  = strAx.split("|");
-		makeform.infor.value = strA[0];
-		makeform.board_no.value = strA[0];
-		makeform.board_gubun_value.value = strA[1];
+		document.kapp_aboard_Forminfor.value = strA[0];
+		document.kapp_aboard_Formboard_no.value = strA[0];
+		document.kapp_aboard_Formboard_gubun_value.value = strA[1];
 		var funcind = "funchelp" + selind;
 		var category = "D02"
-		if( selind >= 0 && makeform.sellist.options[selind].text != ""){
+		if( selind >= 0 && document.kapp_aboard_Formsellist.options[selind].text != ""){
 			var grpname = strA[1];
 			if (( grpname == "group") || (grpname == "groupend") ||  (getObjid(grpname) == "GSTR") || (getObjid(grpname) == "GEND")) {
-				makeform.chgname.value = chkGroup(makeform.sellist.options[selind].text)
-				document.makeform.mncontents.value = ""
-				document.makeform.chkByte.value = "0";
+				document.kapp_aboard_Formchgname.value = chkGroup(document.kapp_aboard_Formsellist.options[selind].text)
+				document.kapp_aboard_Formmncontents.value = ""
+				document.kapp_aboard_FormchkByte.value = "0";
 			} else {
-				makeform.chgname.value = getfname( makeform.sellist.options[selind].text )
+				document.kapp_aboard_Formchgname.value = getfname( document.kapp_aboard_Formsellist.options[selind].text )
 				var valname = strA[1];
 				if (valname.length>0) {
 					var valnameA = valname.split("!:")
@@ -282,140 +282,148 @@ $(function () {
 					strA += valnameA[0] + valnameA[1]
 				}
 				if( (valnameA[1] != 0) && (category != "V02")){ 
-					var chkobjid = eval("document.makeform." + strA + ".value")
-					document.makeform.mncontents.value = eval("document.makeform." + strA + ".value")
+					var chkobjid = eval("document.kapp_aboard_Form" + strA + ".value")
+					document.kapp_aboard_Formmncontents.value = eval("document.kapp_aboard_Form" + strA + ".value")
 				}
-				var strChgnm = makeform.chgname.value
+				var strChgnm = document.kapp_aboard_Formchgname.value
 				if( strChgnm.substring( strChgnm.indexOf("<")+1, strChgnm.indexOf(">")) == "HIDDEN"){
-					document.makeform.mnhide.checked = true
-					makeform.chgname.value = strChgnm.substring(0, strChgnm.indexOf("<"))
+					document.kapp_aboard_Formmnhide.checked = true
+					document.kapp_aboard_Formchgname.value = strChgnm.substring(0, strChgnm.indexOf("<"))
 				} else{
-					document.makeform.mnhide.checked = false
-					makeform.chgname.value = getfname(makeform.sellist.options[selind].text)
+					document.kapp_aboard_Formmnhide.checked = false
+					document.kapp_aboard_Formchgname.value = getfname(document.kapp_aboard_Formsellist.options[selind].text)
 				}
 			}
 			chkDescription()
 			return true
 		} else {
-			document.makeform.chgname.value = ""
-			document.makeform.mncontents.value = ""
-			document.makeform.chkByte.value = "";
-			document.makeform.sellist.selectedIndex=-1
+			document.kapp_aboard_Formchgname.value = ""
+			document.kapp_aboard_Formmncontents.value = ""
+			document.kapp_aboard_FormchkByte.value = "";
+			document.kapp_aboard_Formsellist.selectedIndex=-1
 			return false
 		}
 	}
 	function Update_func(no, num){
-			document.Board_List_Form.mode.value = "Update_func_run";
-			document.Board_List_Form.no.value = no;
-			document.Board_List_Form.infor.value = no;
-			document.Board_List_Form.page.value = document.makeform.page.value;
-			var sel_r = eval( "document.Board_List_Form.grant_read_"+num+".value");
-			var sel_w = eval( "document.Board_List_Form.grant_write_"+num+".value");
-			var sel_m = eval( "document.Board_List_Form.grant_memo_"+num+".value");
-			var sel_s = eval( "document.Board_List_Form.skin_type_"+num+".value");
-			document.Board_List_Form.xread.value  = sel_r;
-			document.Board_List_Form.xwrite.value = sel_w;
-			document.Board_List_Form.xmemo.value  = sel_m;
-			document.Board_List_Form.xskin.value  = sel_s;
-			document.Board_List_Form.xfile_size.value  = eval( "document.Board_List_Form.file_size_"+num+".value");
-			document.Board_List_Form.action='query_ok_new.php';
+			document.kapp_aboard_Formmode.value = "Update_func_run";
+			document.kapp_aboard_Formno.value = no;
+			document.kapp_aboard_Forminfor.value = no;
+			document.kapp_aboard_Formpage.value = document.kapp_aboard_Formpage.value;
+			var sel_r = eval( "document.kapp_aboard_Formgrant_read_"+num+".value");
+			var sel_w = eval( "document.kapp_aboard_Formgrant_write_"+num+".value");
+			var sel_m = eval( "document.kapp_aboard_Formgrant_memo_"+num+".value");
+			var sel_s = eval( "document.kapp_aboard_Formskin_type_"+num+".value");
+			var list_size_ = eval( "document.kapp_aboard_Formlist_size_"+num+".value");
+			document.kapp_aboard_Formlist_size_.value  = list_size_;
+			document.kapp_aboard_Formxread.value  = sel_r;
+			document.kapp_aboard_Formxwrite.value = sel_w;
+			document.kapp_aboard_Formxmemo.value  = sel_m;
+			document.kapp_aboard_Formxskin.value  = sel_s;
+			document.kapp_aboard_Formxfile_size.value  = eval( "document.kapp_aboard_Formfile_size_"+num+".value");
+			document.kapp_aboard_Formaction='query_ok_new.php';
 			var res = confirm(" Are you sure you want to change the bulletin board properties? ");
-			if (res) { document.Board_List_Form.submit(); }
+			if (res) { document.kapp_aboard_Formsubmit(); }
 	}
 	function Set_func(no, num){
-			makeform.infor.value = no;
-			makeform.no.value = no;
-			makeform.action='board_list3_update.php'; 
-			makeform.target='_blank';
-			makeform.submit();
-	}
-	function page_move($page){
-		document.makeform.page.value = $page;
-		document.makeform.action='board_list3.php';
-		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
-		document.makeform.submit();
+			document.kapp_aboard_Forminfor.value = no;
+			document.kapp_aboard_Formno.value = no;
+			document.kapp_aboard_Formaction='board_list3_update.php'; 
+			document.kapp_aboard_Formtarget='_blank';
+			document.kapp_aboard_Formsubmit();
 	}
 	function Change_line_cnt( $line ){
-		document.makeform.page.value = 1;
-		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
-		document.makeform.action='board_list3.php';
-		document.makeform.submit();
+		document.kapp_aboard_Formpage.value = 1;
+		document.kapp_aboard_Formline_cnt.value = $line;
+		document.kapp_aboard_Formaction='board_list3.php';
+		document.kapp_aboard_Formsubmit();
 	}
 	function title_func(fld_code){       
-		document.makeform.page.value = 1;                
-		document.makeform.line_cnt.value = document.Board_List_Form.line_cnt.value;
-		document.makeform.fld_code.value= fld_code;           
-		document.makeform.fld_code_asc.value= 'asc';
-		document.makeform.mode.value='title_func';           
-		document.makeform.target='_self';
-		document.makeform.action='board_list3.php';
-		document.makeform.submit();                         
+		document.kapp_aboard_Formpage.value = 1;                
+		document.kapp_aboard_Formline_cnt.value = document.kapp_aboard_Formline_cnt.value;
+		document.kapp_aboard_Formfld_code.value= fld_code;           
+		document.kapp_aboard_Formfld_code_asc.value= 'asc';
+		document.kapp_aboard_Formmode.value='title_func';           
+		document.kapp_aboard_Formtarget='_self';
+		document.kapp_aboard_Formaction='board_list3.php';
+		document.kapp_aboard_Formsubmit();                         
 	} 
 	function title_wfunc(fld_code){       
-		document.makeform.page.value = 1;
-		document.makeform.fld_code.value= fld_code;
-		document.makeform.fld_code_asc.value= 'desc';
-		document.makeform.mode.value='title_wfunc';
-		document.makeform.target='_self';
-		document.makeform.action='board_list3.php';
-		document.makeform.submit();                         
+		document.kapp_aboard_Formpage.value = 1;
+		document.kapp_aboard_Formfld_code.value= fld_code;
+		document.kapp_aboard_Formfld_code_asc.value= 'desc';
+		document.kapp_aboard_Formmode.value='title_wfunc';
+		document.kapp_aboard_Formtarget='_self';
+		document.kapp_aboard_Formaction='board_list3.php';
+		document.kapp_aboard_Formsubmit();                         
 	} 
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl;
+		thisform.submit();
+	}
 //-->
 </script>
 
 <link rel="stylesheet" type="text/css" href="<?=KAPP_URL_T_?>/include/css/dddropdownpanel.css" />
 <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/dddropdownpanel.js"></script>
 
-<body>
+<body style='background-color:#fff;color:#000;' >
 <?php
+	include "../table_paging.php";
 	$cur='C';
 	include_once( KAPP_PATH_T_ . "/menu_run.php");
 
 	if( isset($_POST['g_type']) ) $g_type = $_POST['g_type'];
-	else if( isset($_REQUEST['g_type']) ) $g_type = $_REQUEST['g_type'];
+	else if( isset($_GET['g_type']) ) $g_type = $_GET['g_type'];
 	else $g_type= '';
 	if( isset($_POST["sel_num"]) ) $sel_num= $_POST["sel_num"];
-	else if( isset($_REQUEST["sel_num"]) ) $sel_num= $_REQUEST["sel_num"];
+	else if( isset($_GET["sel_num"]) ) $sel_num= $_GET["sel_num"];
 	else $sel_num ='';
 	if( isset($_POST["memo"]) ) $memo = $_POST["memo"];
-	else if( isset($_REQUEST["memo"]) ) $memo = $_REQUEST["memo"];
+	else if( isset($_GET["memo"]) ) $memo = $_GET["memo"];
 	else $memo ='';
 	if( isset($_POST["mode"]) ) $mode = $_POST["mode"];
-	else if( isset($_REQUEST["mode"]) ) $mode = $_REQUEST["mode"];
+	else if( isset($_GET["mode"]) ) $mode = $_GET["mode"];
 	else $mode ='';
 	if( isset($_POST["sdata"]) ) $sdata = $_POST["sdata"];
-	else if( isset($_REQUEST["sdata"]) ) $sdata = $_REQUEST["sdata"];
+	else if( isset($_GET["sdata"]) ) $sdata = $_GET["sdata"];
 	else $sdata = '';
 	if( isset($_POST['page']) ) $page= $_POST['page'];
-	else if( isset($_REQUEST['page']) )   $page= $_REQUEST['page'];
+	else if( isset($_GET['page']) )   $page= $_GET['page'];
 	else $page = 1;
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ) $line_cnt = $_POST['line_cnt'];
-	else if( isset($_REQUEST['line_cnt']) && $_REQUEST['line_cnt']!='' ) $line_cnt = $_REQUEST['line_cnt'];
+	else if( isset($_GET['line_cnt']) && $_GET['line_cnt']!='' ) $line_cnt = $_GET['line_cnt'];
 	else $line_cnt	= 10;
 	if( isset( $_POST['fld_code']) ) $fld_code= $_POST['fld_code'];
 	else $fld_code = '';
 	if( isset( $_POST['fld_code_asc']) ) $fld_code_asc= $_POST['fld_code_asc'];
 	else $fld_code_asc = '';
 ?>
-<form name="makeform" method="post" action="query_ok_new.php">
-			<input type="hidden" name="run_pg"      value="<?=KAPP_URL_T_?>/menu/board_list3.php" >
-			<input type="hidden" name="infor"       value="" >
-			<input type="hidden" name="no" 	        value="" >
-			<input type="hidden" name="new_insert" 	value="" >
-			<input type="hidden" name="insert" 		value="" >
-			<input type="hidden" name="club_menu" 	value="" >
-			<input type="hidden" name="funchelp" 	value="">
-			<input type="hidden" name="mode" 		value="">
-			<input type='hidden' name='board_type_name'    value=''>
-			<input type='hidden' name='board_gubun_value'  value=''>
-			<input type='hidden' name='sellist_index' >
-			<input type='hidden' name='board_no' value=''>
-			<input type='hidden' name='board_nm' value=''>
-			<input type='hidden' name='multy_menu_sel' >
-			<input type='hidden' name='page' value="<?=$page?>" >
-			<input type='hidden' name='line_cnt' value='' >
-		<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
-		<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+<Form name='Aboard_List_Form' METHOD='POST' enctype="multipart/form-data" id="insert_form">
+	<input type='hidden' name='xread' >
+	<input type='hidden' name='xwrite' >
+	<input type='hidden' name='xmemo' >
+	<input type='hidden' name='xskin' >
+	<input type='hidden' name='xfile_size' >
+	<input type='hidden' name='list_size_' >
+
+	<input type="hidden" name="run_pg"      value="<?=KAPP_URL_T_?>/menu/board_list3.php" >
+	<input type="hidden" name="infor"       value="" >
+	<input type="hidden" name="no" 	        value="" >
+	<input type="hidden" name="new_insert" 	value="" >
+	<input type="hidden" name="insert" 		value="" >
+	<input type="hidden" name="club_menu" 	value="" >
+	<input type="hidden" name="funchelp" 	value="">
+	<input type="hidden" name="mode" 		value="">
+	<input type='hidden' name='board_type_name'    value=''>
+	<input type='hidden' name='board_gubun_value'  value=''>
+	<input type='hidden' name='sellist_index' >
+	<input type='hidden' name='board_no' value=''>
+	<input type='hidden' name='board_nm' value=''>
+	<input type='hidden' name='multy_menu_sel' >
+	<input type='hidden' name='page' value="<?=$page?>" >
+	<input type='hidden' name='fld_code' value='<?=$fld_code?>' > 
+	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
 
 <?php if( $H_ID && $H_LEV > 1 ) { ?>
 		<div id="mypanel" class="ddpanel">
@@ -464,7 +472,7 @@ $(function () {
 									  <tr>
 										 <td valign="top">
 
-								 <select id="sellist" style="WIDTH: 200px" onChange="sellist_onclick()" name="sellist" size='10'>
+								 <SELECT id="sellist" style="WIDTH: 200px" onChange="sellist_onclick()" name="sellist" size='10'>
 
 	<?php
 		$ls = "SELECT * from {$tkher['aboard_infor_table']} ";
@@ -477,10 +485,8 @@ $(function () {
 			$table_name =$rs['table_name'];
 	?>
 			<option value="<?=$rsno?>|<?=$home_url?>|<?=$table_name?>"><?=$rs['name']?></option>
-	<?php
-		} // while
-	?>
-								   </select>
+	<?php }	?>
+								   </SELECT>
 										</td>
 									  </tr>
 									  <tr>
@@ -509,8 +515,7 @@ $(function () {
 
 <?php } // H_ID check ?>
 
-</form>
-<link rel="stylesheet" href="../include/css/kancss.css" type="text/css">
+<!-- <link rel="stylesheet" href="../include/css/kancss.css" type="text/css"> -->
 <table border='0' cellpadding='2' cellspacing='1' bgcolor='#cccccc' width='100%'>
 	<tr>
 		<td align='left' colspan='9'>
@@ -520,7 +525,7 @@ $(function () {
 					<font color='black' ><b>&#9776; Board Type [▼]</b></font>
 				</a>
 			</p>
-			<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 600px; height: 100%px; padding: 4px;z-index:1000">
+		<DIV id="subcontent2" style="position:absolute; visibility: hidden; border: 9px solid black; background-color: lightyellow; width: 210px; height: 100%px; padding: 4px;z-index:1000">
 			<table border='0' cellpadding='1' cellspacing='0' bgcolor='#cccccc' width='209'>
 <?php
 	if( $H_LEV > 1 ){
@@ -552,7 +557,7 @@ $(function () {
 		<a href="board_list3.php?g_type=I" target='iframe_url'>Image type</a>
 		</td>
 		</tr>
-	</TABLE>
+		</TABLE>
 		<div align="right"><a href="javascript:dropdowncontent.hidediv('subcontent2')">Hide </a></div>
 	</DIV>
 		<script type="text/javascript">
@@ -610,27 +615,20 @@ $(function () {
 	}
 	if( $total_count < $last) $last = $total_count;
 	$SQL_limit	= "  limit " . $start . ", " . $last;
-	$P_count = " page:" . $page . ", [count:" .$total_count. "]";
+	$P_count = " page:" . $page . ", [total:" .$total_count. "]";
 	if( $H_ID ) $P_count = $P_count . ", level:" . $H_LEV . "," .$member['mb_email'];
 	else  $P_count = $P_count . ", Guest:";
 ?>
-<Form name='Board_List_Form' method='post' >
-	<input type='hidden' name='mode' >
-	<input type='hidden' name='page' value=<?=$page?>>
-	<input type='hidden' name='no' >
-	<input type='hidden' name='infor' >
-	<input type='hidden' name='xread' >
-	<input type='hidden' name='xwrite' >
-	<input type='hidden' name='xmemo' >
-	<input type='hidden' name='xskin' >
-	<input type='hidden' name='xfile_size' >
 		<tr>
-			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$P_count?>
-			&nbsp;&nbsp;&nbsp; Page line:<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[this.selectedIndex].value);" style='height:20;'>
-				<option value='10'  <?php if( $line_cnt=='10' )  echo " selected " ?> >10</option>
-				<option value='30'  <?php if( $line_cnt=='30' )  echo " selected " ?> >30</option>
-				<option value='50'  <?php if( $line_cnt=='50')   echo " selected" ?>  >50</option>
-				<option value='100' <?php if( $line_cnt=='100')  echo " selected" ?>  >100</option>
+			<td bgcolor='#f4f4f4'  align='center' colspan=7><font color='black'>&nbsp;<?=$P_count?>&nbsp;&nbsp;&nbsp; Page line:
+			<SELECT id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
 			</select>
 			</td>
 		</tr>
@@ -651,6 +649,7 @@ $(function () {
 			<TH title="data read level">read</TH>
 			<TH title="data write level">write</TH>
 			<TH>memo</TH>
+			<TH title='view line count'>line cnt</TH>
 			<TH>CTL</TH>
 		</tr>
  </thead>
@@ -669,6 +668,7 @@ $(function () {
 	$i=1;
 	while( $rs = sql_fetch_array( $result ) ) {
 		$rsno = $rs['no'];
+		$list_size = $rs['list_size'];
 		$dateR = date('Y-m-d', $rs['in_date']);
 		if ( $rs['grant_view'] == "1" ) $levR='Guest';
 		else if ( $rs['grant_view'] == "2" ) $levR='Member';
@@ -741,6 +741,9 @@ $(function () {
 			<td style='color:white;text-align:center;'>
 				<textarea name="grant_memo_<?=$line_no?>" style="border-style:;background-color:black;color:yellow;height:40px;width:15%px;"
 				><?=$rs['memo']?></textarea></td>
+			<td style='background-color:black;color:white;text-align:center;'>
+				<input type='text' name='list_size_<?=$line_no?>' value='<?=$list_size?>' title='Change view line count' size='1'>
+			</td>
 		<?php
 if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		?>
@@ -767,54 +770,10 @@ if( $H_LEV > 7 || isset($H_ID) && $rs['make_id']==$H_ID){
 		<tr align="center"></tr>
 </tbody>
 </table>
-<table width="100%"   bgcolor="#CCCCCC">
-  <tr>
-    <td align="center" bgcolor="f4f4f4">
-<?php
-		paging("board_list3.php?id=$H_ID",$total_count,$page,$line_cnt);
-?>
-	</td>
-  </tr>
-</table>
-</form>
 
+<?php
+	paging("board_list3.php",$total_count,$page,$line_cnt, "document.Aboard_List_Form"); 
+?> 
+</form>
 </body>
 </html>
-<?php
-function paging($link, $total, $page, $size){
-	$page_num = 10;
-	if( !$total ) { return; }
-	$total_page	= ceil($total/$size);
-	if( $page>1 ) $first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
-	else $first_page = 1;
-	$last_page  = $first_page+($page_num-1);
-	if( $last_page > $total_page) $last_page = $total_page;
-
-	echo "<div class=paging>";
-	if( $page > $page_num ) {
-		echo("<a href='javascript:page_move(1)'>[First]</a><span>&nbsp;</span>");
-	} else {
-		echo("<span>[Start]&nbsp;</span>");
-	}
-	if( $page > $page_num ) {
-		$back_page = $first_page - 1;
-		echo("<a href='javascript:page_move($back_page)' >[Prev]</a><span>&nbsp;</span>");
-	}
-	for( $i=$first_page; $i <= $last_page; $i++ ){
-		if( $i > $total_page){ break;}
-		if( $page==$i ){ echo("<a href='javascript:void(0)' class=on>$i</a><span>&nbsp;</span>"); }
-		else { echo("<a href='javascript:page_move($i)' title='page:$i'>[$i]</a><span>&nbsp;</span>"); }
-	}
-	if( $last_page < $total_page){
-		$next_page=$last_page+1;
-		echo("<a href='javascript:page_move($next_page)'>[Next]</a><span>&nbsp;</span>");
-	}
-	if( $last_page < $total_page){
-		echo("<a href='javascript:page_move($total_page)'>[Last]</a>");
-	}else{
-		echo("<span>[End]</span>");
-	}
-	echo "</div>";
-}
-
-?>

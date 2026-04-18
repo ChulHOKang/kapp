@@ -48,99 +48,99 @@
 		}
 	}
 	function tree_func(mid, sys_pg, run_mode ){
-		document.sys_form.mid.value     = mid;
-		document.sys_form.sys_pg.value  = sys_pg;
-		document.sys_form.run_mode.value= "cratree_book_remake";
-		document.sys_form.action='./treebom_remake_all_menu.php';
-		document.sys_form.target  = "_blank";
-		document.sys_form.submit();
+		document.kapp_treemenu_form.mid.value     = mid;
+		document.kapp_treemenu_form.sys_pg.value  = sys_pg;
+		document.kapp_treemenu_form.run_mode.value= "cratree_book_remake";
+		document.kapp_treemenu_form.action='./treebom_remake_all_menu.php';
+		document.kapp_treemenu_form.target  = "_blank";
+		document.kapp_treemenu_form.submit();
 	}
 	function popup_func(mid, sys_pg, run_mode ){
-		document.sys_form.mid.value     = mid;
-		document.sys_form.sys_pg.value  = sys_pg;
-		document.sys_form.run_mode.value= run_mode;
-		document.sys_form.action='./treebom_dropdown_menu_create.php';
-		document.sys_form.submit();
+		document.kapp_treemenu_form.mid.value     = mid;
+		document.kapp_treemenu_form.sys_pg.value  = sys_pg;
+		document.kapp_treemenu_form.run_mode.value= run_mode;
+		document.kapp_treemenu_form.action='./treebom_dropdown_menu_create.php';
+		document.kapp_treemenu_form.submit();
 	}
 	function treeDN_func( mid, sys_pg, run_mode, point ){
-		if( !document.sys_form.Hid.value ) {
+		if( !document.kapp_treemenu_form.Hid.value ) {
 			alert('Login please!'); return false;
 		}
 		if( point < 1000){
 			alert("There are not enough points. point:" + point);
 			return  false;
 		}
-		document.sys_form.mid.value     = mid;
-		document.sys_form.sys_pg.value  = sys_pg;
-		document.sys_form.run_mode.value= 'tree_menu_createDN';
-		document.sys_form.action='./treebom_tree_menu_createDN.php';
-		document.sys_form.target  = "_blank";
-		document.sys_form.submit();
+		document.kapp_treemenu_form.mid.value     = mid;
+		document.kapp_treemenu_form.sys_pg.value  = sys_pg;
+		document.kapp_treemenu_form.run_mode.value= 'tree_menu_createDN';
+		document.kapp_treemenu_form.action='./treebom_tree_menu_createDN.php';
+		document.kapp_treemenu_form.target  = "_blank";
+		document.kapp_treemenu_form.submit();
 	}
 	function popupDN_func(mid, sys_pg, run_mode, point ){
-		if( !document.sys_form.Hid.value ) {
+		if( !document.kapp_treemenu_form.Hid.value ) {
 			alert('Login please!'); return false;
 		}
 		if( point < 1000){
 			alert("There are not enough points. point:" + point);
 			return  false;
 		}
-		document.sys_form.mid.value     = mid;
-		document.sys_form.sys_pg.value  = sys_pg;
-		document.sys_form.run_mode.value= 'dropdown_menu_createDN';
-		document.sys_form.action='./treebom_dropdown_menu_createDN.php';
-		document.sys_form.target  = "_blank";
-		document.sys_form.submit();
+		document.kapp_treemenu_form.mid.value     = mid;
+		document.kapp_treemenu_form.sys_pg.value  = sys_pg;
+		document.kapp_treemenu_form.run_mode.value= 'dropdown_menu_createDN';
+		document.kapp_treemenu_form.action='./treebom_dropdown_menu_createDN.php';
+		document.kapp_treemenu_form.target  = "_blank";
+		document.kapp_treemenu_form.submit();
 	}
 	function Change_line_cnt( $line){
-		document.sys_form.page.value = 1;
-		document.sys_form.action='index.php';
-		document.sys_form.submit();
+		document.kapp_treemenu_form.page.value = 1;
+		document.kapp_treemenu_form.action='index.php';
+		document.kapp_treemenu_form.submit();
 	}
 	function page_func( $page){
-		document.sys_form.page.value = $page;
-		document.sys_form.target  = "_self";
-		document.sys_form.action='index.php';
-		document.sys_form.submit();
+		document.kapp_treemenu_form.page.value = $page;
+		document.kapp_treemenu_form.target  = "_self";
+		document.kapp_treemenu_form.action='index.php';
+		document.kapp_treemenu_form.submit();
 	}
 	function title_wfunc(fld_code){       
-		document.sys_form.page.value = 1;
-		document.sys_form.fld_code.value= fld_code;
-		document.sys_form.fld_code_asc.value= 'desc';
-		document.sys_form.mode.value='title_wfunc';
-		document.sys_form.target='_self';
-		document.sys_form.action='index.php';
-		document.sys_form.submit();                         
+		document.kapp_treemenu_form.page.value = 1;
+		document.kapp_treemenu_form.fld_code.value= fld_code;
+		document.kapp_treemenu_form.fld_code_asc.value= 'desc';
+		document.kapp_treemenu_form.mode.value='title_wfunc';
+		document.kapp_treemenu_form.target='_self';
+		document.kapp_treemenu_form.action='index.php';
+		document.kapp_treemenu_form.submit();                         
 	} 
 	function title_func(fld_code){
-		document.sys_form.page.value = 1;
-		document.sys_form.fld_code.value= fld_code;
-		document.sys_form.fld_code_asc.value= 'asc';
-		document.sys_form.mode.value='title_func';
-		document.sys_form.target='_self';
-		document.sys_form.action='index.php';
-		document.sys_form.submit();
+		document.kapp_treemenu_form.page.value = 1;
+		document.kapp_treemenu_form.fld_code.value= fld_code;
+		document.kapp_treemenu_form.fld_code_asc.value= 'asc';
+		document.kapp_treemenu_form.mode.value='title_func';
+		document.kapp_treemenu_form.target='_self';
+		document.kapp_treemenu_form.action='index.php';
+		document.kapp_treemenu_form.submit();
 	} 
 	function list_click_run_func( $sys_pg, $subtit, $open_mode, $mid, $sys_jong, $num, $job_addr ){
-		document.sys_form.sys_pg.value  = $sys_pg;
-		document.sys_form.subtit.value  = $subtit;
-		document.sys_form.open_mode.value = $open_mode;
-		document.sys_form.mid.value		= $mid;
-		document.sys_form.sys_jong.value = $sys_jong;
-		document.sys_form.num.value = $num;
-		document.sys_form.job_addr.value = $job_addr;
-		document.sys_form.start_click.value = 'on';
+		document.kapp_treemenu_form.sys_pg.value  = $sys_pg;
+		document.kapp_treemenu_form.subtit.value  = $subtit;
+		document.kapp_treemenu_form.open_mode.value = $open_mode;
+		document.kapp_treemenu_form.mid.value		= $mid;
+		document.kapp_treemenu_form.sys_jong.value = $sys_jong;
+		document.kapp_treemenu_form.num.value = $num;
+		document.kapp_treemenu_form.job_addr.value = $job_addr;
+		document.kapp_treemenu_form.start_click.value = 'on';
 
-		document.sys_form.action='./tree_run.php';
-		document.sys_form.target  = "_blank";
-		document.sys_form.submit();
+		document.kapp_treemenu_form.action='./tree_run.php';
+		document.kapp_treemenu_form.target  = "_blank";
+		document.kapp_treemenu_form.submit();
+	}
+	function page_move(thisform, $page, linkurl){
+		thisform.page.value = $page;
+		thisform.action= linkurl;
+		thisform.submit();
 	}
 </script>
-
-<!-- <link rel="stylesheet" href="../include/css/common.css" type="text/css" />
-<script type="text/javascript" src="../include/js/ui.js"></script>
- -->
-
 
 <script>
 $(function () {
@@ -148,7 +148,6 @@ $(function () {
 	document.getElementById('tit_et').addEventListener('click', function(e) {
 		clearTimeout(timer);
 		timer = setTimeout(() => {
-			//alert(e.target.innerText + ' 순수하게 한 번만 클릭됨'); //Project 순수하게 한 번만 클릭됨
 			switch(e.target.innerText){
 				case 'User'    : title_func('sys_userid'); break;
 				case 'Title'   : title_func('sys_subtit'); break;
@@ -157,13 +156,10 @@ $(function () {
 				case 'Date'    : title_func('up_day'); break;
 				default        : title_func(''); break;
 			}
-		}, 250); // 약 300ms 대기 후 실행
-	  
+		}, 250); // 250ms 대기 후 실행
 	});
-
 	document.getElementById('tit_et').addEventListener('dblclick', function(e) {
 		clearTimeout(timer); // 마지막 클릭 타이머를 제거
-		//alert('더블 클릭되었습니다!');
 		switch(e.target.innerText){
 				case 'User'    : title_wfunc('sys_userid'); break;
 				case 'Title'   : title_wfunc('sys_subtit'); break;
@@ -204,83 +200,9 @@ $(function () {
 });
 </script>
 
-<script type="text/javascript">
-/*
-var $grid;
-$(function(){
-	$(".visualSlide ").slick({
-		dots: false, slidesToShow: 1,slidesToScroll: 1, autoplay:true ,autoplaySpeed:<?=$slide_time?>,pauseOnHover : false
-	});
-	if($(".grid").length){
-		$grid = $('.grid').isotope({
-			itemSelector: '.element-item',
-			layoutMode: 'fitRows'
-		});
-	}
-	$("body").on("click",".listTabs a",function(){
-		var filterValue = $( this ).attr('data-filter');
-	    $grid.isotope({ filter: filterValue });
-		$(".listTabs a").removeClass("on");
-		$(this).addClass("on");
-	});
-	$("body").on("click",".listTabs01 a",function(){
-		$(".listTabs01 a").removeClass("on");
-		$(this).addClass("on");
-	});
-	$(window).on("scroll", common.headerFixed);
-	$("body").on("click",".btnService",function(){
-		var ck = $(this).hasClass("on");
-		if(ck){
-			$(this).removeClass("on");
-			$(".serviceLayer").hide();
-		}else{
-			$(this).addClass("on");
-			$(".serviceLayer").show();
-		}
-	});
-	$("body").on("click",".project_request .close",function(){
-		$(".project_area").stop().animate({"right":"-1000px"}, 200, 'easeOutQuad');
-	});
-	$("body").on("click",".lnbFooter a.lnbIcon03",function(){
-		$(".project_area").stop().animate({"right":"-20px"}, 200, 'easeOutQuad');
-		$(".loginBox").stop().animate({"right":"-1000px"}, 200, 'easeOutQuad');
-	});
-	$("body").on("click",".lnbFooter a.lnbIcon01",function(){
-		$(".loginBox").stop().animate({"right":"0"}, 200, 'easeOutQuad');
-		$(".project_area").stop().animate({"right":"-1000px"}, 200, 'easeOutQuad');
-	});
-});
-function visualHeight(){
-	var h = window.innerHeight;
-	$(".visualSlide .item, #videoBg").css("height", h+"px");
-}
-common = {
-	etcEvt:function(){
-		$("body").on("click",".btnService",function(){
-			var ck = $(this).hasClass("on");
-			if(ck){
-				$(this).removeClass("on");
-				$(".serviceLayer").hide();
-			}else{
-				$(this).addClass("on");
-				$(".serviceLayer").show();
-			}
-		});
-	},
-	headerFixed:function(){
-		var h = window.innerHeight;
-		var st = $(window).scrollTop();
-		if (st < h){
-			$(".header").removeClass("on");
-		}else{
-			$(".header").addClass("on");
-		}
-	},
-}*/
-</script>
 <body style='background-color:#000;' >
-
 <?php
+	include "../table_paging.php";
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode='';
 	if( isset($_REQUEST['mid']) ) $mid  = $_REQUEST['mid'];
@@ -299,7 +221,7 @@ common = {
 	} else  $line_cnt	= 15;
 
 	$page_num	= 10;
-	$total  = 0;
+	$total_count  = 0;
 	$limit = "";
 	$no = 0;
 	$sdata  = '';
@@ -316,22 +238,22 @@ common = {
 		$query = $query . "where sys_level='mroot' and sys_subtit != 'main' ";
 	}
 	$result = sql_query( $query);
-	$total  = sql_num_rows( $result );
+	$total_count  = sql_num_rows( $result );
 	
 	$total_page = 0;
 	$first = 1;
 	$last = 1;
-if( $total > 0 ) {
-	$total_page = intval(($total-1) / $line_cnt)+1;
+if( $total_count > 0 ) {
+	$total_page = intval(($total_count-1) / $line_cnt)+1;
 	if( $page > 1) $first = ($page-1)*$line_cnt;
 	else $first = 0;
 	$last = $line_cnt;
-	if( $total < $last) $last = $total;
+	if( $total_count < $last) $last = $total_count;
 	$limit = " limit $first, $last ";
 	if( $page == 1)
-		$no = $total;
+		$no = $total_count;
 	else {
-		$no = $total - ($page - 1) * $line_cnt;
+		$no = $total_count - ($page - 1) * $line_cnt;
 	}
 	if( $fld_code!='' ) {
 		$OrderBy = " order by $fld_code $fld_code_asc ";
@@ -339,7 +261,7 @@ if( $total > 0 ) {
 	$query = $query . $OrderBy;
 	$query = $query . $limit;
 	$result = sql_query( $query);
-} else $total = 0;
+} else $total_count = 0;
 
 	$runpage='./index.php';
 	$cur='C';
@@ -349,7 +271,7 @@ if( $total > 0 ) {
 <!-- <link rel='stylesheet' href='../include/css/kancss.css' type='text/css'> -->
 <div>
 <center>
-	<FORM method='post' name='sys_form' >
+<FORM name='kapp_treemenu_form' METHOD='POST' enctype="multipart/form-data" id="kapp_treemenu_form">
 		<input type='hidden' name='Hid' value='<?=$H_ID?>' > 
 		<input type='hidden' name='run_mode' value='' > 
 		<input type='hidden' name='page' value='<?=$page?>' > 
@@ -364,21 +286,19 @@ if( $total > 0 ) {
 		<input type='hidden' name='num' value='' > 
 		<input type='hidden' name='job_addr' value='' > 
 		<input type='hidden' name='start_click' value='' > 
-<?php
-	//if( $mid) $madeid = $mid;
-	//else      $madeid ='All';
-	//echo "<p style='color:cyan;text-align:center;'>id:" . $H_ID .", total: " . $total . ", total-page: " . $total_page . "</p>";
-?>
 
-<p style='color:cyan;text-align:center;'>id:<?=$H_ID?>, total: <?=$total?>, total-page: <?=$total_page?></p>
+<p style='color:cyan;text-align:center;'>id:<?=$H_ID?>, total: <?=$total_count?>, page: <?=$page?></p>
 
 <p style='color:cyan;text-align:center;'>
 View Line: 
-	<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-		<option value='15'  <?php if( $line_cnt=='15')  echo " selected" ?> >15</option>
-		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
-		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
-		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
+	<select id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
 	</select>
 </p>
 	</form>
@@ -459,7 +379,7 @@ if( $result ){
 
 	echo "</tbody> </table>";
 	echo "</div>";
-
+/*
 	echo "<TABLE border='0' align='center' width='100%'>";
 	echo "<tr><td align='center' style='font-size:22px;'>";
 	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
@@ -474,18 +394,20 @@ if( $result ){
 	$next = $last_page+1;
 	if( $next <= $total_page) echo"[<a onclick='page_func($next)' style='color:cyan;font-size:22px;' title='page:$next'>Next</a>]";
 	echo "</td></tr></table>";
+	*/
 ?>
-</td>
+<!-- </td>
 <td align='right'>
 </td>
 </tr></table>
+ -->
 <?php if( $H_ID !='' ){ ?>
-		<form name='form_view' method='post' enctype='multipart/form-data' >
-			<input type='hidden' name='mode' value='<?=$mode?>' />						
-			<input type='hidden' name='Hid'  value='<?=$H_ID?>' />						
 		<input type='button' value='New Create' onclick="javascript:new_create('ailinkapp');" class='HeadTitle01AX' title='New create Menu Tree' onmouseover='big(this);' onmouseout='small(this);'>      
-		</form>
 <?php } ?>
 
+<?php
+	paging("index.php",$total_count,$page,$line_cnt, "document.kapp_treemenu_form"); 
+?> 
+</form>
 </body>
 </html>

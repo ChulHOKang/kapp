@@ -6,22 +6,21 @@
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>Board App Generator System. Made in Kang Chul Ho : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
+</head>
+<link rel="stylesheet" href="../include/css/default.css" type="text/css" />
 <script type="text/javascript" src="../include/js/common.js"></script>
 <SCRIPT src="../include/js/contents_resize.js" type='text/javascript'></SCRIPT>
 <?php
-	//if( $infor ) $_SESSION['infor'] = $infor;
 	include "./infor.php";
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
-
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$H_ID = get_session("ss_mb_id");
 	if( $H_ID && $H_ID !='') {
@@ -36,7 +35,6 @@
 		$H_ID	= 'Guest';  
 		$H_EMAIL= ''; 
 	}
-
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else $mode = '';
 	if( isset($_POST['page']) ) $page = $_POST['page'];
@@ -45,7 +43,6 @@
 	else $menu_mode = '';
 	$in_day = date("Y-m-d H:i");
 	$grant_write=$mf_array['grant_write'];
-		
 	switch( $mf_infor[47] ){ // 47=grant_write
 		case '0': break;
 		case '1': break;
@@ -103,7 +100,6 @@
 		if (value == 1) document.form.contents.cols += 5;
 		if (value == 2) document.form.contents.rows += 5;
 	}
-
 	function email_check( email ) {
 		alert(' email ' + email);
 
@@ -113,9 +109,7 @@
 	  return $return;
 	}
 </script>
-
-</head>
-<body width='100%'>
+<body style='background-color:#fff;color:#000;' >
 <?php 
 	$cur='A';
 	if( $menu_mode != 'off') include_once "../menu_run.php";
@@ -187,7 +181,6 @@ if( $H_ID && $H_ID == 'Guest' ){
 						</span>
 					</li>
 <?php } ?>
-
 			</ul>
 <?php 
 	$_SESSION['infor'] = $infor;
@@ -195,7 +188,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 ?>
 				<div class="viewFooter">
 					<ul class="viewForm_2">
-<?php if($mf_infor[3]){ ?>
+<?php if( $mf_infor[3]){ ?>
 						<li>
 							<span class="t01">Attachments</span>
 							<span class="t02 select_file">
@@ -256,17 +249,13 @@ if( $H_ID && $H_ID == 'Guest' ){
 			contentWidth: 1500
 		}
 	};
-
 	EditorJSLoader.ready(function(Editor) {
 		var editor = new Editor(config);
 	});
-	
 </script>
 
 <script type="text/javascript">
-
 	function saveContent(x, xauto, id) {
-
 		x = document.tx_editor_form;
 		if(x.nameA.value==''){
 			alert('Please enter a name! '); //Please enter a title! 
@@ -332,9 +321,7 @@ if( $H_ID && $H_ID == 'Guest' ){
 		Editor.save();
 		//formA.submit();
 		return true;
-
 	}
-
 	/**
 	 * A callback function called to check if the data is valid when Editor.save() is called.
 	 * Modify and use according to the situation.
@@ -352,7 +339,6 @@ if( $H_ID && $H_ID == 'Guest' ){
 		}
 		return true;
 	}
-
 	/**
 	 * After calling Editor.save(), the validForm callback is executed.
 	 * A callback function that is called to create and change form fields for actual form submission.
@@ -369,7 +355,6 @@ if( $H_ID && $H_ID == 'Guest' ){
         textarea.name = 'content';
         textarea.value = content;
         form.createField(textarea);
-
         var images = editor.getAttachments('image');
         for (i = 0; i < images.length; i++) {
             if (images[i].existStage) {
@@ -382,14 +367,11 @@ if( $H_ID && $H_ID == 'Guest' ){
         }
         return true;
 	}
-
-function youTubeImplant() {
-    var popUrl = "./youtube.html";
-    var popOption = "./youtube.html";
-    window.open(popUrl, "", popOption);
-}
-
+	function youTubeImplant() {
+		var popUrl = "./youtube.html";
+		var popOption = "./youtube.html";
+		window.open(popUrl, "", popOption);
+	}
 </script>
-
 </body>
 </html>

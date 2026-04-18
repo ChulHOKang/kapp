@@ -1,8 +1,7 @@
 <?php
 	include_once('../tkher_start_necessary.php');
 	/*
-	updateD.php : general board
-
+	updateD.php : general board 
 	email is incorrect! email:solpakan59@gmail.com
 	*/
 ?>
@@ -27,7 +26,7 @@
 		$H_LEV	= $member['mb_level'];  
 		$H_NAME	= $member['mb_name'];  
 		$H_NICK	= $member['mb_nick'];  
-		$H_EMAIL = $member['mb_email'] ;//get_session("ss_mb_email"); 
+		$H_EMAIL = $member['mb_email'] ;
 	} else {
 		$email	= '';  
 		if( $grant_write > 1 ){
@@ -42,12 +41,12 @@
 		}
 	}
 	if( isset($_POST['mode']) ) $mode    = $_POST['mode'];
-	else if( isset($_REQUEST['mode']) ) $mode= $_REQUEST['mode'];
+	else if( isset($_GET['mode']) ) $mode= $_GET['mode'];
 	else $mode  = "";
-	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
+	if( isset($_GET['list_no']) ) $list_no = $_GET['list_no'];
 	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 
-	if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	if( isset($_GET['page']) ) $page = $_GET['page'];
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	if( $mode != 'updateTT' || !$infor ) {
 		m_("mode:".$mode." , You do not have permission to reply. infor:".$infor); 
@@ -56,21 +55,19 @@
 	$in_day = date("Y-m-d H:i");
 	$query="select * from `aboard_" . $mf_infor[2] . "` where no=".$list_no;
 	$mf = sql_fetch( $query );
-	$content = $mf['context'];	//$content = htmlspecialchars( $mf['context'] );
+	$content = $mf['context'];
 	$email = $mf['email'];
 	if( $mf_infor[47]== 1 && $H_ID == 'Guest' ){
 		$H_NAME = $mf['name'];
 		$H_EMAIL = $mf['email'];
 		$H_ID = $mf['id'];
 	}
-
 	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53] && $mf['email']!==$H_EMAIL){
 		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
 		echo "<meta http-equiv='refresh' content=0;url='listD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		exit;
 	}
 ?>
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <link rel="stylesheet" href="../include/css/default.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
 <script type="text/javascript" src="../include/js/common.js"></script>
@@ -187,7 +184,7 @@
 </script>
 
 </head>
-<body>
+<body style='background-color:#fff;color:#000;' >
 <?php 
 		$cur='B';
 		include_once "../menu_run.php"; 
@@ -204,7 +201,7 @@
 			<input type='hidden' name='fileup_yn' 		value='<?=$mf_infor[3]?>'>
 			<input type='hidden' name='html_yn' 		value='<?=$mf_infor[7]?>'>
 			<input type='hidden' name='file_ext' 		value=''>
-			<input type="hidden" name='previous'		value='<?=$_REQUEST["previous"]?>' />
+			<input type="hidden" name='previous'		value='<?=$_GET["previous"]?>' />
 			<input type='hidden' name='mode'			value=''>
 			<input type='hidden' name='target'			value='<?=$mf['target']?>'>
 			<input type='hidden' name='step'			value='<?=$mf['step']?>'>
@@ -234,7 +231,7 @@
 					</li>
 					<li>
 						<span class="t01">E-Mail</span>
-						<span class="t02"><input type="text" name="email" align=center itemname="E-Mail" type="text" placeholder="Please enter a E-Mail " required="required" id='email' value='<?=$H_EMAIL?>'></span>
+						<span class="t02"><input type="text" name="email" id='email' value='<?=$H_EMAIL?>' placeholder="Please enter a E-Mail " required="required"> </span>
 					</li>
 					<li class="pw_char">
 						<span class="t01">password</span>
@@ -254,7 +251,7 @@
 ?>
 				<div class="viewFooter">
 					<ul class="viewForm_2">
-<?php if($mf_infor[3]){ ?><!-- 첨부화일. -->
+<?php if($mf_infor[3]){ ?><!-- add file. -->
 						<li>
 							<span class="t01">Attachments</span>
 							<span class="t02 select_file">
@@ -290,7 +287,7 @@
 <script type="text/javascript">
   function saveContent( xauto, no, email_id,h_lev) {
 		var formA = document.tx_editor_form;
-		var H_EMAIL = formA.H_EMAIL.value; //alert( h_lev+ ", H_EMAIL: " + H_EMAIL + ", e_id:" +email_id );
+		var H_EMAIL = formA.H_EMAIL.value;
 		if( h_lev > 1 && H_EMAIL !==email_id ) {
 			alert("no use update "); return false;
 		}
@@ -337,16 +334,7 @@
 		return false;
   }
  
-  /**
-   * Editor.save()를 호출한 경우 데이터가 유효한지 검사하기 위해 부르는 콜백함수로
-   * 상황에 맞게 수정하여 사용한다.
-   * 모든 데이터가 유효할 경우에 true를 리턴한다.
-   * @function
-   * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
-   * @returns {Boolean} 모든 데이터가 유효할 경우에 true
-   */
   function validForm(editor) {
-    // Place your validation logic here
     var validator = new Trex.Validator();
     var content = editor.getContent();
     if (!validator.exists(content)) {
@@ -355,20 +343,10 @@
     }
     return true;
   }
- 
-  /**
-   * After calling Editor.save(), the validForm callback is executed.
-   * A callback function that is called to create and change form fields for actual form submission.
-   * Use it appropriately according to each situation.
-   * @function
-   * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
-   * @returns {Boolean} 정상적인 경우에 true
-   */
   function setForm(editor) { // save here
         var i, input;
         var form = editor.getForm();
         var content = editor.getContent();
-
         /* The part where the body content creates a field and assigns a value */
         var textarea = document.createElement('textarea');
         textarea.name = 'content';

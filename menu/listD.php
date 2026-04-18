@@ -2,9 +2,9 @@
 	include_once('../tkher_start_necessary.php');
 
 	include "./infor.php";  
-	include "./paging.php";	  // 
-	include "./string.php";   // function Shorten_String($String, $MaxLen, $ShortenStr)
-	include "./memo_cnt.php"; // function memo_count($board,$no)
+	//include "./paging.php";	  // 
+	//include "./string.php";   // function Shorten_String($String, $MaxLen, $ShortenStr)
+	//include "./memo_cnt.php"; // function memo_count($board,$no)
 	/*
 		listD.php :
 	   call : insertD.php, detailD.php, board_list_admin.php
@@ -36,29 +36,32 @@
 		$H_EMAIL= ''; 
 	}
 
-	if( isset($_REQUEST['mode'])) $mode = $_REQUEST['mode'];
+	if( isset($_GET['mode'])) $mode = $_GET['mode'];
 	else if( isset($_POST['mode'])) $mode = $_POST['mode'];
 	else $mode = '';
-	if( isset($_REQUEST['search_text'])) $search_text = $_REQUEST['search_text'];
+	if( isset($_GET['search_text'])) $search_text = $_GET['search_text'];
 	else $search_text = '';
-	if( isset($_REQUEST['page'])) $page = $_REQUEST['page'];
+	if( isset($_GET['page'])) $page = $_GET['page'];
 	else if( isset($_POST['page'])) $page = $_POST['page'];
 	else $page = 1;
-	if( isset($_REQUEST['target_'])) $target_ = $_REQUEST['target_'];
-	else if( isset($_POST['target_'])) $target_ = $_POST['target_'];
-	else $target_='_top';
-	if( isset($_REQUEST['menu_mode'])) $menu_mode =$_REQUEST['menu_mode'];
+	//if( isset($_GET['target_'])) $target_ = $_GET['target_'];
+	//else if( isset($_POST['target_'])) $target_ = $_POST['target_'];
+	//else $target_='_top';
+	if( isset($_GET['menu_mode'])) $menu_mode =$_GET['menu_mode'];
 	else $menu_mode = '';
 ?>
 <html>
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/board_new.png">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
+</head>
+<link rel="stylesheet" href="../include/css/default.css" type="text/css" />
+
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
 	$(function () {
@@ -90,38 +93,53 @@
 		});
 	  });
 	});
-
 </script>
-
 <script>
 	function Change_line_cnt( $line ){
-		document.view_form.page.value = 1;
-		document.view_form.line_cnt.value = $line;
-		document.view_form.action='listD.php';
-		document.view_form.submit();
+		document.Aboar_view_form.page.value = 1;
+		document.Aboar_view_form.line_cnt.value = $line;
+		document.Aboar_view_form.action='listD.php';
+		document.Aboar_view_form.submit();
 	}
 </script>
-
-</head>
-<body>
+<script type="text/javascript" src="../include/js/dropdowncontent.js"></script>
+<body style='background-color:#fff;color:#000;' >
 <?php
 		$cur='A';
 		if( $menu_mode != 'off') include_once "../menu_run.php";
 		else { 
 ?>
-			<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <?php  } ?>
 <?php
 	$tit			= $mf_infor[1];
 	$bbs_lev		= $mf_infor[47];	// 47:grant_write
 
-	if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
-	else if( isset($_POST['line_cnt']) ) $line_cnt = $_POST['line_cnt'];
-	else if( isset($mf_infor[16]) ) $line_cnt = $mf_infor[16];
-	else $line_cnt = 15;
+	if( isset($_GET['line_cnt']) ){
+		$line_cnt = $_GET['line_cnt'];
+	} else if( isset($_POST['line_cnt']) ) {
+		$line_cnt = $_POST['line_cnt'];
+	} else if( isset($mf_infor[16]) ) {
+		$line_cnt = $mf_infor[16]; // board manager set price
+	} else {
+		$line_cnt = 10;
+	}
 	$page_cnt	= 10;
 ?>
-		
+<FORM name='Aboar_view_form' method='post' enctype="multipart/form-data" >
+	<input type="hidden" name='page'	value='<?=$page?>' />
+	<input type="hidden" name='mode'			value='<?=$mode?>' />
+	<input type="hidden" name='board'			value='<?=$infor?>' />
+	<input type="hidden" name='board_name'	value='<?=$tit?>' />
+	<input type="hidden" name='list_no'			value='' />
+	<input type="hidden" name='old_no'			value='' />
+	<input type="hidden" name='bbs_lev'		value='<?=$bbs_lev?>' />
+	<input type="hidden" name='target_'		value='<?=$target_?>' />
+	<input type="hidden" name='infor'			value='<?=$infor?>' />
+	<input type="hidden" name='security'		value='' />
+	<input type="hidden" name='search_text'		value='<?=$search_text?>' />
+	<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
+	<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
+
 		<div id="write_page" class="mainProject">
 			<div class="listTabs01">
 				<a href="./listD.php?infor=<?=$infor?>&menu_mode=<?=$menu_mode?>" class="on" title="infor:<?=$infor?>, table:aboard_<?=$mf_infor[2]?>"><?=$tit?></a>
@@ -137,20 +155,12 @@
 ?>
 			<div class="boardView">
 				<div class="boardNorBox">
-
-					<form name='c_sel' action='listD.php#customer' method=post enctype="multipart/form-data" >
-						<input type="hidden" name='page'	value='<?=$page?>' />
-						<input type="hidden" name='board'	value='<?=$board?>' />
-
 					<div class="fl">
 						<tr>
 							<td align=left>
-
-			<script type="text/javascript" src="../include/js/dropdowncontent.js"></script>
-			<p align="left" style="margin-top: 0px">
-				<a href="#" id="contentlink" rel="subcontent2">
-					<font color='black' ><b>&#9776; Board List [▼]</b></font>
-				</a><?php if($H_ID) echo "id:$H_ID, user_lev:$H_LEV"; ?>
+			<p align="left" style="margin-top:0px;color:#000;">
+				<a href="#" id="contentlink" rel="subcontent2" style="color:#000;"><b>&#9776; Board List [▼]</b></a>
+				<?php if($H_ID) echo "id:$H_ID, user_lev:$H_LEV"; ?>
 			</p>
 
 
@@ -172,11 +182,11 @@
 						}
 ?>
 <?php if( $H_ID && $H_LEV > 7) { ?>
-					<tr>
+					<!-- <tr>
 					<td width='130' height='24' >
 					<a href="./board_list_admin.php" target='_blank' title='board write level:<?=$bbs_lev?>'><img src='../icon/admin.gif' width='27' height='27' title='super manager mode'>User:<?=$mf_array['make_id']?>:<?=$mf_array['grant_write']?></a>
 					</td>
-					</tr>
+					</tr> -->
 <?php }
 
 			$j=0;
@@ -185,7 +195,7 @@
 ?>
 					<tr>
 					<td width='130' height='24' background='./images/admin_submenu.gif'>&nbsp;<img src='./images/left_icon.gif'>
-					<a href="index_bbs.php?infor=<?=$rs['no']?>&menu_mode=<?=$menu_mode?>" target='_top'><?=$rs['name']?></a>
+					<a href="index_bbs.php?infor=<?=$rs['no']?>&menu_mode=<?=$menu_mode?>" target='_blank'><?=$rs['name']?></a>
 					</td>
 					</tr>
 <?php
@@ -204,26 +214,20 @@
 						</tr>
 					</div>
 					<div>
-						<span>Total: <strong><?=$total_count?></strong> , Latest: <strong><?=$total_new?></strong>
-							&nbsp;, line : <select id='line_cntS' name='line_cntS' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='height:20;'>
-							<?php
-if( $line_cnt == '10') echo "<option value='10' selected >$line_cnt</option>";
-else if( $line_cnt == '30') echo "<option value='30' selected >$line_cnt</option>";
-else if( $line_cnt == '50') echo "<option value='50' selected >$line_cnt</option>";
-else if( $line_cnt == '100') echo "<option value='100' selected >$line_cnt</option>";
-else echo "<option value='$line_cnt' selected >$line_cnt</option>";
-
-							?>
-								<option value='10'  <?php if($line_cnt=='10' )  echo " selected " ?> >10</option>
-								<option value='30'  <?php if($line_cnt=='30' )  echo " selected " ?> >30</option>
-								<option value='50'  <?php if($line_cnt=='50')   echo " selected " ?> >50</option>
-								<option value='100' <?php if($line_cnt=='100')  echo " selected " ?> >100</option>
+						<span>Total: <strong><?=$total_count?></strong> , page: <strong><?=$page?></strong>
+							&nbsp;, line :
+					<select id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
 							</select>
 						</span>
 					</div>
-
-
-					</form>
+		<!-- </form> -->
 				</div><!-- boardNorBox -->
 <?php
 
@@ -250,7 +254,7 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 			if( $total_count < $last) $last = $total_count;
 		}
 ?>
-				<form name='view_form' action='detailD.php' method=post enctype="multipart/form-data" >
+<!-- 				<form name='view_form' action='detailD.php' method=post enctype="multipart/form-data" >
 					<input type="hidden" name='mode'			value='<?=$mode?>' />
 					<input type="hidden" name='page'			value='<?=$page?>' />
 					<input type="hidden" name='board'			value='<?=$infor?>' />
@@ -263,17 +267,17 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 					<input type="hidden" name='security'		value='' />
 					<input type="hidden" name='search_text'		value='<?=$search_text?>' />
 					<input type="hidden" name='line_cnt'		value='<?=$line_cnt?>' />
-					<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
+					<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' /> -->
 
-	<table class='listTable' width='99%'><!-- listTableT -->
+	<table class='listTableX' width='99%'><!-- listTableT -->
 		<thead>
 					<tr>
-						<th style='width:5%'>No</th>
-						<th style='width:5%'><img src='../icon/subject.gif' title='Attached file'></th>
-						<th style='width:50%'>Subject</th>
-						<th style='width:15%'>Author</th>
-						<th style='width:15%'>Date</th>
-						<th style='width:10%'>View</th>
+						<th>No</th>
+						<th style='text-align:left;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<img src='../icon/subject.gif' title='Attached file'>&nbsp;Subject</th>
+						<th>Author</th>
+						<th>Date</th>
+						<th>View</th>
 					</tr>
 		</thead>
 		<tbody width='100%'>
@@ -305,9 +309,6 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 				}
 				$infor38 = $mf_infor[38];
 ?>
-				<tr>
-					<td class="cell01" title='today:<?=$today?>:<?=$infor38?>:<?=$ck?>'><?=$row['no']?></td>
-					<td class="cell02">
 <?php
 						$dep=""; $memo_cnt=""; $file="";
 						$memo_ = $mf_infor[5];
@@ -319,9 +320,8 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 							$memo_cnt= memo_count( $mf_infor[2], $row['no']);
 
 						}
-						if( $row['file_name'] ){
-							echo "<img src='../icon/subject.gif' title='Attached file'>";
-						}
+						if( $row['file_name'] )	$file_ ="<img src='../icon/subject.gif' title='Attached file'>";
+						else $file_ ='';
 						if( $H_ID == $row['id']) $security_my = '1';
 						else $security_my = '';
 						$msg_ = iconv_substr( $row['context'], 0, 80, 'utf-8') . "...";
@@ -332,7 +332,9 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 						if( $step_==1 ) $step_=0;
 						else if( $step_>1) $step_ = $step_ - 1;
 ?>
-					</td>
+				<tr>
+					<td class="cell01" title='today:<?=$today?>:<?=$infor38?>:<?=$ck?>'><?=$row['no']?></td>
+					<!-- <td class="cell02"><?=$file_?></td> -->
 <?php
 						if( $dep ){
 							$msg_ = iconv_substr($row['subject'], 0, 50, 'utf-8') . "..."  . "[" . $step_ . "] - ";
@@ -344,18 +346,18 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 							$msg_t = iconv_substr($con, 0, 200, 'utf-8') . "...";
 						}
 ?>
-					<td class="cell03" title='no:<?=$row['no']?>:<?=$msg_t?>' style="text-align:left;">
+					<td class="cell03" title='no:<?=$row['no']?>:<?=$msg_t?>'>
 <?php
 				$rno = $row['no'];
 				if($dep){ echo $dep; }
 ?>
 					<a href="javascript:board_view('<?=$infor?>','<?=$grant_read?>','<?=$rno?>', '<?=$page?>', '<?=$security_my?>', '<?=$H_ID?>', '<?=$menu_mode?>' );" >
 
-					<span><?=$msg_?><?=$memo_cnt?><?php echo $new; ?></span></a>
+					<span><?=$file_?><?=$msg_?><?=$memo_cnt?><?php echo $new; ?></span></a>
 					</td>
-					<td class="cell04"><?=$row['name']?></td>
-					<td class="cell05" style='width:15%;'><?=$dt?></td>
-					<td class="cell06"><?=$row['cnt']?></td>
+					<td class="cell04" style='text-align:center;'><?=$row['name']?></td>
+					<td class="cell05" style='text-align:center;'><?=$dt?></td>
+					<td class="cell06" style='text-align:center;'><?=$row['cnt']?></td>
 				</tr>
 <?php
 			}	// while
@@ -363,75 +365,149 @@ else echo "<option value='$line_cnt' selected >$line_cnt</option>";
 ?>
 					</tbody>
 				</table>
-				</form>
+	<!-- </form> -->
+<?php
+	paging("listD.php?infor=$infor",$total_count,$page,$line_cnt,$page_cnt);
+?>
 				<div class="boardNorBox mt10">
 					<div class="fl">
-						<form name='c_sel2' action='listD.php' method='post' enctype="multipart/form-data" >
+<!-- 						<form name='c_sel2' action='listD.php' method='post' enctype="multipart/form-data" >
 							<input type="hidden" name='page'	value='<?=$page?>' />
 							<input type="hidden" name='board'	value='<?=$infor?>' />
 							<input type="hidden" name='target_'	value='<?=$target_?>' />
 							<input type="hidden" name='mode'	value='SR' />
 							<input type="hidden" name='infor'	value='<?=$infor?>' />
-							<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' />
+							<input type="hidden" name='menu_mode'	value='<?=$menu_mode?>' /> -->
 							<table>
 								<tr>
 								<td align='left'><input type="text" name='search_text' /></td>
 								<td align='left'><div class="sr"><a href="javascript:search_data('<?=$menu_mode?>')" class="btn_bo02">Search</a></div></td>
-								<td align='right'><div class="fr">
-								<a href="javascript:board_write('<?=$infor?>','<?=$H_LEV?>','<?=$page?>','<?=$grant_write?>');" class="btn_bo02">Write</a></div></td>
+								<td align='right'><div class="fr"><a href="javascript:board_write('<?=$infor?>','<?=$H_LEV?>','<?=$page?>','<?=$grant_write?>');" class="btn_bo02">Write</a></div></td>
 								</tr>
 							</table>
-						</form>
+						<!-- </form> -->
 					</div>
-<?php
-					paging("listD.php?infor=$infor&search_text=$search_text&menu_mode=$menu_mode",$total_count,$page,$line_cnt,$page_cnt);
-?>
 				</div><!-- boardNorBox mt10 -->
+
 			</div><!-- boardView -->
 		</DIV><!-- mainProject -->
+</FORM>
 
 <script type="text/javascript" >
 
 	function board_view(infor, grant_view, no, page, security_my, id, menu_mode){
 		if( security_my == '1' ) {
-				document.view_form.list_no.value = no;
-				document.view_form.security.value =grant_view;
-				document.view_form.action ='detailD.php?infor='+infor+'&list_no='+no+'&menu_mode='+menu_mode;
-				document.view_form.submit();
+				document.Aboar_view_form.list_no.value = no;
+				document.Aboar_view_form.security.value =grant_view;
+				document.Aboar_view_form.action ='detailD.php?infor='+infor+'&list_no='+no+'&menu_mode='+menu_mode;
+				document.Aboar_view_form.submit();
 		} else if( security_my == '' ) { 
 			if( grant_view > 2 ){ 
 				alert("my only! view"); return false;
 			} else {
-				document.view_form.list_no.value = no;
-				document.view_form.security.value =grant_view;
-				document.view_form.action ='detailD.php?infor='+infor+'&list_no='+no+'&menu_mode='+menu_mode;
-				document.view_form.submit();
+				document.Aboar_view_form.list_no.value = no;
+				document.Aboar_view_form.security.value =grant_view;
+				document.Aboar_view_form.action ='detailD.php?infor='+infor+'&list_no='+no+'&menu_mode='+menu_mode;
+				document.Aboar_view_form.submit();
 			}
 		}
 	}
 
 	function search_data(menu_mode){
-		document.c_sel2.mode.value='SR';
-		document.c_sel2.action='listD.php?menu_mode=' + menu_mode;
-		document.c_sel2.submit();
+		document.Aboar_view_form.mode.value='SR';
+		document.Aboar_view_form.action='listD.php?menu_mode=' + menu_mode;
+		document.Aboar_view_form.submit();
 	}
 	function board_write( infor, user_lev, page, grant_write ){
 		if( user_lev < grant_write ) {
 			alert('Please! you login lev:' +user_lev );
 			return false;
 		}
-		document.view_form.mode.value='bbs_writeTT';
-		document.view_form.board.value=infor;
-		document.view_form.infor.value=infor;
-		document.view_form.action='insertD.php';
-		document.view_form.submit();
+		document.Aboar_view_form.mode.value='bbs_writeTT';
+		document.Aboar_view_form.board.value=infor;
+		document.Aboar_view_form.infor.value=infor;
+		document.Aboar_view_form.action='insertD.php';
+		document.Aboar_view_form.submit();
 	}
 	function page_move($page){
-		document.view_form.page.value = $page;
-		document.view_form.action='listD.php';
-		document.view_form.submit();
+		document.Aboar_view_form.page.value = $page;
+		document.Aboar_view_form.action='listD.php';
+		document.Aboar_view_form.submit();
 	}
-
  </script>
 </body>
 </html>
+<?php
+function memo_count($board,$no){
+	global $tkher;
+	$board_name ="aboard_" . $board;
+	$query      ="select no from {$tkher['aboard_memo_table']} where board_name='$board_name' and list_no=".$no;
+	$mq =sql_query($query);
+	$mn =sql_num_rows($mq);
+	$memo_cnt="";
+	if($mn){ $memo_cnt="($mn)";}
+	else { $memo_cnt="(0)";}
+	return $memo_cnt;
+}
+function Shorten_String($String, $MaxLen, $ShortenStr)  { 
+	$StringLen = strlen($String);  
+	for( $i = 0, $count = 0, $tag = 0; $i <= $StringLen && $count < $MaxLen; $i++ ) { 
+        $LastStr = substr($String, $i, 1); 
+		if ($LastStr == '<') $tag = 1; 
+		if ($tag && $LastStr == '>') { $tag = 0; continue; } 
+		if ($tag) continue; 
+		if ( ord($LastStr) > 127 ) { $count++; $i++; } 
+		$count++; 
+	} 
+	$gubun=substr($String,0,2);
+	$RetStr = substr($String, 0, $i); 
+	if ($count<$MaxLen) return $RetStr; 
+	else return $RetStr .= $ShortenStr; 
+          
+} 
+function paging($link, $total, $page, $line_cnt, $page_num){
+	if( !$total ) { return; }
+	$total_page	= ceil($total/$line_cnt);
+
+	$first_page = intval(($page-1)/$page_num+1)*$page_num-($page_num-1);
+	// 6을 구하는식
+	$last_page = $first_page+($page_num-1);
+	if( $last_page > $total_page) $last_page = $total_page;
+
+	echo "<div class='paging'>";
+	//처음페이지
+	if( $page > $page_num ) {
+		echo("<a href='javascript:page_move(1)'>First</a>");
+	} else {
+		echo "<img src='". KAPP_URL_T_ ."/include/img/btn/b_first_silver.gif' border='0' height='20' title='first'>";
+	}
+	if( $page > $page_num ) {
+		$back_page = $first_page - 1;
+		echo "<a href='javascript:page_move($back_page)' ><img src='". KAPP_URL_T_ ."/include/img/btn/btn_prev.png' width='20' title='previous'></a>";
+	} else {
+		echo "<img src='". KAPP_URL_T_ ."/include/img/btn/btn_prev.png' width='20' title='Previous'>";
+	}
+	//페이지 출력
+	echo("&nbsp;");
+	for( $i=$first_page; $i <= $last_page; $i++ ){
+		if( $i > $total_page){ break;}
+		if( $page==$i ){ echo("&nbsp;<font size=3>$i</font><span>&nbsp;.&nbsp;</span>"); }
+		else         { echo("&nbsp;<a href='javascript:page_move($i)'>[$i]</a><span>&nbsp;.&nbsp;</span>"); }
+	}
+	//다음페이지
+	if( $last_page < $total_page){
+		$next_page=$last_page+1;
+		echo("<a href='javascript:page_move($next_page)'><img src='../include/img/btn/btn_next.png' width='20' title='B Next Page'></a>");
+	}else { 
+		echo "<img src='". KAPP_URL_T_ ."/include/img/btn/btn_next.png' width='20' title='Btn Next Page'>";
+	}
+	//마지막 페이지	
+	if( $last_page < $total_page){
+		echo "<a href='javascript:page_move($total_page)'>Last</a>";
+	}else{
+		echo "<img src='". KAPP_URL_T_ ."/include/img/btn/b_last_silver.gif' border='0' height='20' title='Next Page'>";
+	}
+	echo "</div>";
+}
+
+?>

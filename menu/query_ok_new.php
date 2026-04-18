@@ -432,11 +432,12 @@
 		$grant_write = $_POST['xwrite'];
 		$grant_memo  = $_POST['xmemo'];
 		$skin        = $_POST['xskin'];
+		$list_size_  = $_POST['list_size_'];
 		$xno = $_POST['no'];
 		$page = $_POST['page'];
 		$line_cnt = $_POST['line_cnt'];
 		$xfile_size = $_POST['xfile_size'];
-		$query = "update {$tkher['aboard_infor_table']} set fileup = '$xfile_size', movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo' where no=$xno";
+		$query = "update {$tkher['aboard_infor_table']} set fileup = '$xfile_size', movie = '$skin', grant_view=$grant_read, grant_write=$grant_write, memo='$grant_memo', list_size=$list_size_ where no=$xno";
 		$mq = sql_query($query);
 		if( $mq ) { echo("<script>alert('Board property has been changed. ')</script>");}
 		else {

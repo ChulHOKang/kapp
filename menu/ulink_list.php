@@ -579,7 +579,7 @@ jQuery(document).ready(function ($) {
 	<tr>
 		<td bgcolor='#f4f4f4' height='30'><font color='black'>&nbsp; Project</td>
 		<td bgcolor='#ffffff'>&nbsp; 
-			<select name='sel_g_name' onchange="change_g_name_func(this.value);" title="select Project">
+			<select name='sel_g_name' onchange="this.form.submit()" title="select Project">
 				<option value=''>Project select</option>
 <?php
 				$result = sql_query( "select * from {$tkher['table10_group_table']} where userid='$H_ID' order by group_name asc" );
@@ -699,10 +699,13 @@ jQuery(document).ready(function ($) {
 				<span style='color:black;text-align:center;font-size:21px;'>
 				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;View Line: 
 					<select id='line_cnt' name='line_cnt' onChange="Change_line_cnt(this.options[selectedIndex].value)" style='color:black;text-align:center;font-size:18px;height:27;'>
-						<option value='15'  <?php if( $line_cnt=='15')  echo " selected" ?> >15</option>
-						<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
-						<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
-						<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
+<?php echo "<option value='$line_cnt' selected >$line_cnt</option>"; ?>
+								<option value='5'>5</option>
+								<option value='10'>10</option>
+								<option value='15'>15</option>
+								<option value='30'>30</option>
+								<option value='50'>50</option>
+								<option value='100'>100</option>
 					</select>
 				</span>	&nbsp;&nbsp;&nbsp;&nbsp;
 				<span> total: <?=$total_count?></span>&nbsp;

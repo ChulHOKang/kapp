@@ -1,6 +1,5 @@
 <?php
 	include_once('../tkher_start_necessary.php');
-
 	/*
 		replyD.php : general board
 	*/
@@ -24,20 +23,16 @@
 		$mode = $_POST['mode'];
 	} else $mode =''; 
 	if( $mode !== 'replyTT' ) {
-		m_("mode:$mode , You do not have permission to reply. no:$list_no"); 
-		//echo "<script>history.back(-1);</script>"; exit;
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		exit;
 	}
 	if( isset($_REQUEST['infor']) ) $infor = $_REQUEST['infor'];
 	else if( isset($_POST['infor']) ) $infor = $_POST['infor'];
 	else { 
-		//echo "<script>history.back(-1);</script>"; exit; 
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		exit;
 	}
 	$_SESSION['infor'] = $infor;
-	
 	if( isset($_REQUEST['list_no']) ) $list_no = $_REQUEST['list_no'];
 	else if( isset($_POST['list_no']) ) $list_no = $_POST['list_no'];
 	else echo "<script>history.back(-1);</script>";
@@ -45,7 +40,6 @@
 	else if( isset($_POST['page']) ) $page = $_POST['page'];
 	else $page = 1;
 	$in_day = date("Y-m-d H:i");
-
 	include "./infor.php";
 	$grant_read	= $mf_infor[46];
 	$grant_write= $mf_infor[47];
@@ -70,13 +64,10 @@
 	}
 
 	if( $H_LEV < $mf_infor[47] && $H_ID !== $mf_infor[53]){
-		m_("$H_ID, member permission to read. $mf_infor[47] - $mf_infor[53]"); 
-		//echo "<script>window.open('listD.php?infor=$infor','_self','')</script>";
 		echo "<meta http-equiv='refresh' content=0;url='detailD.php?infor=$infor&list_no=$list_no&page=$page'>";
 		exit;
 	}
 ?>
-<link rel="stylesheet" href="../include/css/common.css" type="text/css" />
 <link rel="stylesheet" href="../include/css/default.css" type="text/css" />
 <script type="text/javascript" src="../include/js/ui.js"></script>
 <script type="text/javascript" src="../include/js/common.js"></script>
@@ -154,7 +145,7 @@
 				}
 			}
 		}
-		if( fileup > 0 ){	// 첨부화일 가능시에.
+		if( fileup > 0 ){	// add file
 			ff= x.file.value;
 			if (x.file.value != ""){
 				idx_path = x.file.value.lastIndexOf("."); 
@@ -172,52 +163,9 @@
 				x.file_ext.value=temp;
 			}
 		}
-		//location.href="customer_write.php?uid="+uid;
 		x.mode.value='insert_formTT'; 
 		x.action='replyD_check.php'; 
 		x.submit();
-	}
-	function reply_func(xauto){ // No use
-		var form = document.tx_editor_form; //tx_editor_form
-		if(form.auto_check.value==''){
-			alert('Please enter an auto-prevention character! ');
-			form.auto_check.focus();
-			return false;
-		}
-		xx = form.auto_check.value;
-		if(xx == xauto){
-		} else {
-			alert('Auto-typing prevention characters are incorrect ' + xauto + ' : ' + xx );
-			return false;
-		}
-		if( form.nameA.value==''){
-			alert('Please enter your name.');
-			form.nameA.focus();
-			return false;
-		}
-		if( form.subject.value==''){
-			alert('Please enter a title. ');
-			form.subject.focus();
-			return false;
-		}
-		ff= form.file.value;
-		if (form.file.value != ""){
-			idx_path = form.file.value.lastIndexOf("."); 
-			if ( idx_path < 0 ) {
-				idx_colon = form.file.value.lastIndexOf(".");
-			 if ( idx_colon >= 0 )
-				temp = form.file.value.substring(idx_colon);
-			} else {
-				temp = form.file.value.substring(idx_path);
-			}
-			if( temp != ".jpg" && temp != ".gif" &&temp != ".png" &&temp != ".zip" && temp != ".csv" && temp != ".xls" && temp != ".hwp" && temp != ".pdf" && temp != ".txt" && temp != ".pem" && temp != ".ppk" && temp != ".alz" && temp != ".rar" &&temp != "pptx" && temp != "xlsx"){
-				alert(" jpg,gif,png,zip,csv,xls,hwp,pdf,txt,pem,ppk,alz,rar,pptx,xlsx Format Please!.");
-				return;
-			}
-			form.file_ext.value=temp;
-		}
-		form.mode.value='reply_funcTT'
-		form.submit();
 	}
 	function email_check( email ) {
 	  if (ereg("(^[a-zA-Z0-9]{1}([_0-9a-zA-Z-]+)@[^\.@]+(\.[0-9a-zA-Z-]{2,})*(\.([a-zA-Z]{2,})$))",email)){
@@ -225,7 +173,7 @@
 		else {$return = false;}
 	  return $return;
 	}
-	 function back_go(infor,list_no, page) {
+	 function back_go( infor,list_no, page) {
  		x = document.tx_editor_form;
 		x.infor.value=infor;
 		x.list_no.value=list_no;
@@ -236,7 +184,7 @@
 </script>
 </head>
 
-<body>
+<body style='background-color:#fff;color:#000;' >
 <?php 
 	$cur='B';
 	include_once "../menu_run.php"; 
@@ -256,7 +204,6 @@
 <div class="wrapper">
 		<div id="write_page" class="mainProject">
 <form name="tx_editor_form" id="tx_editor_form" action="replyD_check.php" method="post" enctype="multipart/form-data" accept-charset="utf-8">
-
 		<input type="hidden" name='auto_char'	value='<?=$auto_char?>' /><!-- my_func -->
 			<input type='hidden' name='mode'	value='reply_funcTT'>
 			<input type='hidden' name='infor'   value='<?=$infor?>' > 
@@ -413,12 +360,10 @@
  
 <!-- Sample: Saving Contents -->
 <script type="text/javascript">
-  /* 예제용 함수 */
   function saveContent( xauto, no, id) {
-
 		var form = document.tx_editor_form;
 		if( id == 'Guest' ) {
-			if(form.password.value==''){
+			if( form.password.value==''){
 				alert('Please enter a password! ');
 				form.password.focus();
 				return false;
@@ -434,116 +379,71 @@
 			form.nameA.focus();
 			return false;
 		}
-
-		/*if( form.tx_canvas_text.value==''){
-			alert('Please enter your content');
-			form.tx_canvas_text.focus();
-			return false;
-		}*/
-
-		if(form.auto_check.value==''){
+		if( form.auto_check.value==''){
 			alert('Please enter an auto-prevention character! ');
 			form.auto_check.focus();
 			return false;
 		}
-
 		xx = form.auto_check.value;
-		if(xx == xauto){
-
+		if( xx == xauto){
 		} else {
 			alert('Auto-typing prevention characters are incorrect ' + xauto + ' : ' + xx );
 			form.auto_check.focus();
 			return false;
 		}
-		
 		if( form.subject.value==''){
 			alert('Please enter a title. ');
 			form.subject.focus();
 			return false;
 		}
-
-		ff= form.fileA.value;		//alert('ff:'+ff);	//ff:C:\fakepath\aboard_tkher58.sql
-		if (form.fileA.value != ""){
+		ff= form.fileA.value;
+		if( form.fileA.value != ""){
 			idx_path = form.fileA.value.lastIndexOf("."); 
-			if ( idx_path < 0 ) {
+			if( idx_path < 0 ) {
 				idx_colon = form.fileA.value.lastIndexOf(".");
 				if ( idx_colon >= 0 ) temp = form.fileA.value.substring(idx_colon);
 			} else {
 				temp = form.fileA.value.substring(idx_path);
 			}
-
-			//alert(' temp:'+temp);	return false;	// temp:.html
 			if( temp != ".jpg" && temp != ".gif" &&temp != ".png" &&temp != ".zip" && temp != ".csv" && temp != ".xls" && temp != ".hwp" && temp != ".pdf" && temp != ".txt" && temp != ".pem" && temp != ".ppt" && temp != ".alz" && temp != ".rar" &&temp != "pptx" && temp != "xlsx"){
 				alert(" jpg,gif,png,zip,csv,xls,hwp,pdf,txt,pem,ppt,alz,rar,pptx,xlsx Format Please!");
 				return;
 			}
 			form.file_ext.value=temp;
 		}
-
 		form.mode.value='reply_funcTT'
-
-
-    Editor.save(); // 이 함수를 호출하여 글을 등록하면 된다.
+    Editor.save(); // data save
   }
  
-  /**
-   * Editor.save()를 호출한 경우 데이터가 유효한지 검사하기 위해 부르는 콜백함수로
-   * 상황에 맞게 수정하여 사용한다.
-   * 모든 데이터가 유효할 경우에 true를 리턴한다.
-   * @function
-   * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
-   * @returns {Boolean} 모든 데이터가 유효할 경우에 true
-   */
   function validForm(editor) {
-	  //alert('validForm ----------- '); //저장할때 여기를 탄다.
-    // Place your validation logic here : 여기에 유효성 검사 논리를 배치하십시오.
- 
-    // sample : validate that content exists
     var validator = new Trex.Validator();
     var content = editor.getContent();
     if (!validator.exists(content)) {
-      alert('내용을 입력하세요');
+      alert('data enter!');
       return false;
     }
  
     return true;
   }
  
-  /**
-   * Editor.save()를 호출한 경우 validForm callback 이 수행된 이후
-   * 실제 form submit을 위해 form 필드를 생성, 변경하기 위해 부르는 콜백함수로
-   * 각자 상황에 맞게 적절히 응용하여 사용한다.
-   * @function
-   * @param {Object} editor - 에디터에서 넘겨주는 editor 객체
-   * @returns {Boolean} 정상적인 경우에 true
-   */
-  function setForm(editor) { // 저장할때 여기를 탄다.
+  function setForm(editor) { // save routine
         var i, input;
         var form = editor.getForm();
-        var content = editor.getContent();         // alert('content: ' + content); 
-        // 본문 내용을 필드를 생성하여 값을 할당하는 부분
+        var content = editor.getContent();
         var textarea = document.createElement('textarea');
         textarea.name = 'content';
         textarea.value = content;
         form.createField(textarea);
- 
-        /* 아래의 코드는 첨부된 데이터를 필드를 생성하여 값을 할당하는 부분으로 상황에 맞게 수정하여 사용한다.
-         첨부된 데이터 중에 주어진 종류(image,file..)에 해당하는 것만 배열로 넘겨준다. */
-        var images = editor.getAttachments('image');
+         var images = editor.getAttachments('image');
         for (i = 0; i < images.length; i++) {
-            // existStage는 현재 본문에 존재하는지 여부
             if (images[i].existStage) {
-                // data는 팝업에서 execAttach 등을 통해 넘긴 데이터
-                //alert('attachment information - image[' + i + '] \r\n' + JSON.stringify(images[i].data));
-				// 수정 저장할때 여기를 탄다.
                 input = document.createElement('input');
                 input.type = 'hidden';
                 input.name = 'attach_image';
-                input.value = images[i].data.imageurl;  // 예에서는 이미지경로만 받아서 사용
+                input.value = images[i].data.imageurl;
                 form.createField(input);
             }
         }
- 
         var files = editor.getAttachments('file');
         for (i = 0; i < files.length; i++) {
             input = document.createElement('input');
@@ -554,12 +454,11 @@
         }
         return true;
   }
-function youTubeImplant() {
-
-    var popUrl    = "./youtube.html";
-    var popOption = "./youtube.html";
-    window.open(popUrl, "", popOption);
-}
+	function youTubeImplant() {
+		var popUrl    = "./youtube.html";
+		var popOption = "./youtube.html";
+		window.open(popUrl, "", popOption);
+	}
 </script>
 
 

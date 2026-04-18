@@ -17,27 +17,25 @@
 
 	//$skin_type = $_REQUEST['skin_type'];
 	if( !$H_ID || $H_LEV < 8 ) {
-		m_("Admin Page!  :$H_LEV");
+		m_("Admin Page! : $H_LEV");
 			$url = KAPP_URL_T_;	//$PHP_SELF;
 			echo("<meta http-equiv='refresh' content='0; URL=$url'>");
 			exit;
 	}
-
 ?>
 <html>
 <head>
-
 	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="../icon/logo25a.jpg">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-	<meta name="keywords" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3, ">
-	<meta name="description" content="app generator, web app, web, homepage, development, php, generator, source code, open source, tkher, tool, soho, html, html5, css3 ">
-	<meta name="robots" content="ALL">
-	<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/logo/project_.png">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE>
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+<meta name="robots" content="ALL">
+</head>
 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script>
-
 	$(function () {
 	  $('table.floating-thead').each(function() {
 		if( $(this).css('border-collapse') == 'collapse') {
@@ -185,8 +183,7 @@ $doc=$H_ID . time();
 			$query	= "SELECT * from {$tkher['aboard_infor_table']} " . $where_a . " order by no desc";
 		}
 		$mq		= sql_query($query);
-		$tot		= sql_num_rows($mq);
-	m_("cranim_lev: " . $cranim_lev . ", tot: " . $tot);
+		$tot		= sql_num_rows($mq);	//m_("cranim_lev: " . $cranim_lev . ", tot: " . $tot); //cranim_lev: 8, tot: 29
 	?>
     <tr>
       <td width="100%" height="55" bgcolor="#FFFFFF">
@@ -212,7 +209,7 @@ $doc=$H_ID . time();
 <?php
 		$cnt=0; $i=0;
 		while( $mf = sql_fetch_array($mq)){
-			m_("table_name: " . $mf['table_name']);
+			//m_("table_name: " . $mf['table_name']);
 			$tab_nm = "aboard_". $mf['table_name'];
 			$i++;
 			if(!$cnt){$cnt=1;}
