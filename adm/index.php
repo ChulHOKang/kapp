@@ -157,43 +157,30 @@ $sys_subtitS = 'Admin K-App';
 		<a href='<?=$_url?>' target='_top'><img src="<?=KAPP_URL_T_?>/icon/logo.png" title='K-App - home'></a>
 	<?php
 		$run_target='run_menu';
-		$img_v="<img src='".KAPP_URL_T_."/icon/pizza.png' width='15' height='15'>";
+		$img_v="<img src='".KAPP_URL_T_."/icon/pizza.png' style=\"width:20px;height:20px;\">";
 	?>
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<div style="color:cyan; background-color:black; height:33px; border:none"><a href="index_adm.php" target='_BLANK' title="Admin Control Setup Page">K-App Admin<br>[ <?=$H_ID?> ]</a></div>
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_history.php' target='run_menu' title='Job History'>
-	1.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Job History</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_member.php' target='run_menu' title='Kapp Member'>
-	2.<img src='<?=KAPP_URL_T_?>/icon/berry.png' width='15' height='15'>Kapp Member</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='point_list_adm.php' target='run_menu' title='Point history'>
-	3.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='kapp_history.php' target='run_menu' title='Job History'><img src='<?=KAPP_URL_T_?>/icon/pizza.png' style="width:20px;height:20px;">. Job History</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='kapp_member.php' target='run_menu' title='Kapp Member'><img src='<?=KAPP_URL_T_?>/icon/berry.png' style="width:20px;height:20px;">. Kapp Member</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='point_list_adm.php' target='run_menu' title='Point history'><img src='<?=KAPP_URL_T_?>/icon/ship.png' style="width:20px;height:20px;">. Point history</a></li>
 	
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_permission_adm.php' target='run_menu' title='Program read/write permission'>
-	4.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>APP Permission</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='kapp_permission_adm.php' target='run_menu' title='Program read/write permission'><img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' style="width:20px;height:20px;">. Program Permission</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_program_list_adm_ai.php' target='run_menu' title='Program List detail'>
-	5.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>Program List AI</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='program_pglist_adm.php' target='run_menu'>
-	6.<img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' width='15' height='15'>Program List B</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='kapp_program_list_adm_ai.php' target='run_menu' title='Program List detail'><img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' style="width:20px;height:20px;">. Program List AI</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='program_pglist_adm.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/appmaker.jpg' style="width:20px;height:20px;">. Program List B</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='kapp_table_list_adm.php' target='run_menu'>
-	7.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>Table List</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='kapp_table_list_adm.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/seed.png' style="width:20px;height:20px;">. Table List</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/setup/ksd39673976_1711436495_kapp_config.php' target='run_menu'>
-	8.<img src='<?=KAPP_URL_T_?>/icon/_board_.png' width='15' height='15'>System Config Set</a></li>
-	<li style='font-size:18;color:cyan;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php' target='run_menu' title='Setup Table of KAPP System'>
-	9.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>System Table List</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/setup/ksd39673976_1711436495_kapp_config.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/_board_.png' style="width:20px;height:20px;">. System Config Set</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/setup/DB_Table_CreateA.php' target='run_menu' title='Setup Table of KAPP System'><img src='<?=KAPP_URL_T_?>/icon/leaf.png' style="width:20px;height:20px;">. System Table List</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/album_view_db_adm.php' target='run_menu'>
-	A.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='15' height='15'>Album All List</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_image_list.php' target='run_menu'>
-	B.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='15' height='15'>Main Album List</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_img.php' target='run_menu'>
-	C.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='15' height='15'>Main Album Insert</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/my/album_view_db_adm.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' style="width:20px;height:20px;">. Album All List</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_image_list.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' style="width:20px;height:20px;">. Main Album List</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/main_img.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' style="width:20px;height:20px;">. Main Album Insert</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/board_list_admin.php' target='run_menu'>
-	D.<img src='<?=KAPP_URL_T_?>/icon/project_.png' width='15' height='15'>Board List All</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/board_list_admin.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/project_.png' style="width:20px;height:20px;">. Board List All</a></li>
 
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<li style='font-size:11;color:#fff;height:9px;line-height:1'><?=$config['kapp_visit']?><br>
