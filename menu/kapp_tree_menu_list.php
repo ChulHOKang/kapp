@@ -317,7 +317,7 @@ if( $total > 0 ) {
 } else $total = 0;
 ?>
 
-<body bgcolor="#000000" text="#FFFFFF" topmargin="0" leftmargin="0" >
+<body style='background-color:#000;color:#fff;' >
 <center>
 	<FORM method='post' name='sys_form' >
 		<input type='hidden' name='Hid' value='<?=$H_ID?>' > 
