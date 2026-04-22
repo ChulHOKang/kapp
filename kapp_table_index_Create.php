@@ -17,29 +17,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<TITLE>K-APP. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
-<link rel="shortcut icon" href="<?=KAPP_URL_T_?>/icon/logo25a.jpg">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-<meta name="keywords" content="app generator,web app,web,homepage,php,no coding system,php source generator">
-<meta name="description" content="app generator,web app,web,homepage,php,no coding system,php source generator">
-<!-- <meta name="robots" content="ALL"> -->
+	<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+	<TITLE>K-APP. Create Apps with No Code. Chul Ho, Kang : solpakan89@gmail.com</TITLE> 
+	<link rel="shortcut icon" href="./icon/logo25a.jpg">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	<meta name="keywords" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
+<meta name="robots" content="ALL">
+</head>
 <style>
 table {}
 th, td { padding: 8px; text-align: center; border-bottom: 1px solid #DDD; }
 tr:hover {background-color: #D6EEEE;}
 </style>
-
 <script src="//code.jquery.com/jquery.min.js"></script>
-</head>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_table.js"></script>
 
 <?php
 	$key_msg='';
-
 	if( isset($_POST['mode']) ) $mode= $_POST['mode'];
 	else $mode = '';	
-	
-	if( $mode=='Project_Search' ) { //|| isset( $_SESSION['project_nmS'])
+	if( isset($_POST['tab_hnmS']) ) $tab_hnmS= $_POST['tab_hnmS'];
+	else $tab_hnmS = '';	
+
+	if( $mode=='Project_Search' ) { 
 		$project_nmS = $_POST['project_nmS'];
 		$pcd_nm = explode(":", $project_nmS );
 		$project_code	= $pcd_nm[0];
@@ -79,278 +80,7 @@ tr:hover {background-color: #D6EEEE;}
 ?>
 <body leftmargin="0" topmargin="0">
  
-<script language="JavaScript"> 
-<!--
- 	var frealname	= ''
-	var isEdited    = false
-	var delList		= ''
-	var smode		= false
-	var start, end, grpStr
-	function indexlist_onclick(keyval) {
-		if( keyval == 'seqno') {
-			alert("Primary key is not delete : " + keyval);
-			document.kapp_makeform.index_name.value='';
-		} else {//alert("key is delete : " + keyval);
-			document.kapp_makeform.index_name.value=keyval;
-		}
-	}
-	function getfname(str) {
-		if (str.indexOf("]") > 0) {
-			frealname = str.substring(0, str.indexOf("]")+1)
-			str = str.substr(str.indexOf("]")+2)
-		}
-		return str
-	}
-	function k_func_ok( r, j ){
-		//alert("k_func_ok - r: " + r + ", j: " + j);
-		return;
-	}
-	function r_func(r,qna){
-		qna1 = qna.split('^');
-		len = qna1.length;
-		ss="";
-		for(i=0;i<len;i++){
-			rr = qna1[i].split('|');
-			lenj = rr.length-2;
-			ok = rr.length-1;
-			ss+=" &#160; <p><form><div>"+(i+1)+". "+rr[0]+"</div> ";
-			//ss+=" &#160; <p><div>"+(i+1)+". "+rr[0]+"</div> ";
-			for(k=0,j=1; k < lenj; k++, j++){
-				//ss+=" &#160; <label><span><input type='radio' name='qna' onclick=\"k_func_ok('"+ rr[j] +"', "+j+", "+rr[ok]+")\" value='"+ rr[j] +"' >" +j+'. ' + rr[j]+" &#160; </span></label><br>";
-				ss+=" &#160; <label><span><input type='radio' name='qna' onclick=\"k_func_ok('"+ rr[j] +"', "+j+")\" value='"+ rr[j] +"' >" +j+'. ' + rr[j]+" &#160; </span></label><br>";
-			}
-		}
-		//ss+="</p>";
-		ss+="</form></p>";
-		here.innerHTML=ss;
-	}
-	function Print_item_func( ss, qna ){
-		if(!ss) r_func('A', qna);
-		else here.innerHTML = ss;
-	}
-	let A_click=0;
-	function column_list_onclickAA( j ){
-		if( A_click == 1){
-			A_click=0;
-		} else if( A_click == 0){
-			if( document.getElementById('column_list'+j).checked === false ){
-				document.getElementById('column_list'+j).checked = true;
-			}else{
-				document.getElementById('column_list'+j).checked = false;
-			}
-		}
-	}
-	function column_list_onclickA( ss, j ){
-		A_click = 1;//alert("A, j: "+j +", ss: " + ss);//A, j: 7, ss: |tran_reportdate|tran_reportdate|DATETIME|
-	}
-
-	function sendDataToPHP( projectnmS, pnmdataS ) {
-		fetch('<?=KAPP_URL_T_?>/kapp_save_session.php', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({ projectnmS: projectnmS, pnmdataS: pnmdataS }),
-		})
-		.then(response => response.json())
-		.then(data => {
-			console.log('Success:', data);
-		})
-		.catch((error) => {
-			console.error('Error:', error);
-		});
-	}
-	function change_project_funcX(pnmS){
-		var p_selind = document.kapp_makeform.project_nmS.selectedIndex; 
-		var p_val    = document.kapp_makeform.project_nmS.options[p_selind].value;
-		var p_nm     = document.kapp_makeform.project_nmS.options[p_selind].text;
-		sendDataToPHP('project_nmS', pnmS);  //my_func
-	}
-	function change_project_func(pnmS){
-		if( pnmS == '') {
-			alert('Select Project!');
-			return false;
-		}
-		//sendDataToPHP('project_nmS', pnmS);
-		document.getElementById('mode').value = 'Project_Search';
-		document.kapp_makeform.action="kapp_table_index_Create.php";
-		document.kapp_makeform.submit();
-	}
-
-	function change_table_funcX(tab) {
-		tab = document.kapp_makeform.tab_hnmS.value;
-		document.kapp_makeform.mode.value='SearchTAB';
-		document.kapp_makeform.action="kapp_table_index_Create.php";
-		document.kapp_makeform.submit();
-	}
-	function change_table_func(pnmS){
-		//sendDataToPHP('tab_hnmS', pnmS);
-		document.kapp_makeform.mode.value='SearchTAB';
-		document.kapp_makeform.action="kapp_table_index_Create.php";
-		document.kapp_makeform.submit();
-	}
-
-	function index_Create_button( pg) {
-		var idx_name = document.getElementById('idx_name').value;		//alert( "idx_name: " + idx_name);
-		if( idx_name == '' ){
-			document.kapp_makeform.idx_name.focus();
-			alert("enter index name"); return false;
-		}
-		if( !confirm('Do you want to Create! '+idx_name + ', tab: <?=$tab_hnmS?>' ) ) return;
-		var key_array = document.getElementById('key_array').value;
-		//key_array: |em_tran_1|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@
-
-		var p_selind = kapp_makeform.project_nmS.selectedIndex; 
-		var p_val    = kapp_makeform.project_nmS.options[p_selind].value;
-		var p_nm      = kapp_makeform.project_nmS.options[p_selind].text;
-		if( p_nm =='1.Select Project' || p_nm =='' ){
-			alert( " Please select a project! p_selind: " + p_selind);
-			document.kapp_makeform.project_nmS.focus();
-			return false;
-		}
-		var tab_selind = kapp_makeform.tab_hnmS.selectedIndex; 
-		var tab_val    = kapp_makeform.tab_hnmS.options[tab_selind].value;
-		var tabnm      = kapp_makeform.tab_hnmS.options[tab_selind].text;
-		if( !tab_selind || !tabnm) {
-			alert( tab_selind+" :  Please select a table! ");
-			document.kapp_makeform.tab_hnmS.focus();
-			return false;
-		}
-		const checkbox = document.getElementById('idxdup_confirm');
-		if( checkbox.checked === false){
-			alert("Please check for duplicate index names.");
-			return false;
-		} else{
-			Index_name_Dup_Check(); // Check if the index name has been changed after checking for duplication. 중복 체크후 인덱스명을 변경한 경우를 확인 한다.
-		}
-		var colnm = document.getElementsByName('column_list'); // name은 첨자가없다.
-		var item_cnt = colnm.length;
-		str_array = '';
-		icnt= 0;
-		var index_data = '|' + idx_name + '|';
-		for( i = 0; i < item_cnt; i++) {
-			if( document.getElementById('column_list'+i).checked === true ){
-				colnm_value = colnm[i].value; //colnm_value: |tran_status|tran_status|CHAR|1
-				fldA = colnm_value.split('|');
-				icnt++;
-				if(icnt == 1) index_data = index_data + fldA[1];
-				else if(icnt > 1) index_data = index_data  + '|' + fldA[1];
-			}
-		} 
-		if( icnt == 0){
-			alert("Select one or more columns"); return false;
-		}
-		key_array = key_array + index_data+ '@' ;
-
-		if( pg == "kapp_index_Create") {
-jQuery(document).ready(function ($) {
-		var tab_enm= $("#tab_enm").val();
-		$.ajax({
-			header:{"Content-Type":"application/json"},
-			method: "post",
-				data: {
-					"mode": 'kapp_table_index_add',
-					"tab_enm": JSON.stringify(tab_enm),
-					"key_array": JSON.stringify(key_array),
-					"index_data": JSON.stringify(index_data),
-					"index_name": JSON.stringify(idx_name)
-				},
-			url: "./kapp_table_index_ajax.php",
-			success: function(data) {
-				alert(data); //console.log(data);
-				location.href='kapp_table_index_Create.php?mode=SearchTAB&tab_hnmS=<?=$tab_hnmS?>';
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert("data: ");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-				return;
-			}
-		});
-
-});
-		}
-	}
-	function Index_name_Dup_Check(){
-		const checkbox = document.getElementById('idxdup_confirm');
-		var idx_name = document.getElementById('idx_name').value;
-		if( idx_name == '' ){
-			document.kapp_makeform.idx_name.focus();
-			alert("enter index name"); return false;
-		}
-		var key_array = document.getElementById('key_array').value;
-		if( key_array == '') {
-			checkbox.checked = true;
-			return true;
-		} else{
-			keyA = key_array.split('@');
-			for( i=0; i<keyA.length; i++){
-				ikey = keyA[i].split('|');
-				if( ikey[1] == idx_name ) {
-					alert("Please check for duplicate index names.");
-					checkbox.checked = false;
-					return false;
-				}
-			}
-		}
-		checkbox.checked = true;
-		return true;
-	}
-//-->
-</script>
-
-<script>
-/*
-SQLKapp_em_tran, index_name: em_tran_4, |em_tran_1|tran_date@|em_tran_2|tran_id|tran_rslt@|em_tran_4|tran_refkey@|em_tran_5|tran_status|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@@@
-alert( "keyB: " + keyB);//keyB: |em_tran_1|tran_date@|em_tran_2|tran_id|tran_rslt@|em_tran_5|tran_status|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@
-*/
-
-jQuery(document).ready(function ($) {
-
-	$('#Delete_idx').on('click', function() {		//alert('버튼 클릭됨');
-		var tab_enm= $("#tab_enm").val();
-		var index_name= $("#index_name").val();
-		var key_array= $("#key_array").val();
-		if( !confirm('Do you want to delete! '+index_name ) ) return;
-		keyA = key_array.split('@');
-		keyB = '';
-		for(i=0;i<keyA.length && keyA[i] !==''; i++){
-			keyfld = keyA[i].split('|');
-			if( keyfld[1] !== index_name) {
-				keyB = keyB + keyA[i] + '@';
-			}
-		}
-		$.ajax({
-			header:{"Content-Type":"application/json"},
-			method: "post",
-				data: {
-					"mode": 'kapp_table_index_delete',
-					"tab_enm": JSON.stringify(tab_enm),
-					"key_array": JSON.stringify(keyB),
-					"index_name": JSON.stringify(index_name)
-				},
-			url: "./kapp_table_index_ajax.php",
-			success: function(data) {
-				alert(data); //console.log(data);
-				location.href='kapp_table_index_Create.php?mode=SearchTAB&tab_hnmS=<?=$tab_hnmS?>';
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-				alert("data: ");
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
-				return;
-			}
-		});
-
-	});
-
-});
-</script>
-
 <?php
-//m_("--- tab_hnmS: $tab_hnmS");
 	if( $mode == 'SearchTAB' || isset($_POST['tab_nmS']) ){
 		$aa				= explode(':', $tab_hnmS);
 		$tab_enm		= $aa[0];
@@ -360,12 +90,8 @@ jQuery(document).ready(function ($) {
 		$key_msg		= $rsTAB['key_msg'];
 		$item_array		= $rsTAB['memo'];
 		$key_array		= $rsTAB['relation_data'];
-		//$project_code	    = $rsTAB['group_code'];  
-		//$project_name	    = $rsTAB['group_name'];  
-		//$project_nmS	= $project_code.":".$project_name;
 		$itX = explode("@",$item_array);
 		$item_cnt		= count($itX) -1;
-		//m_("$item_cnt");
 	}
 ?>
 <center>
@@ -382,7 +108,7 @@ jQuery(document).ready(function ($) {
 
 <tr><td colspan='2' align="center" <?php echo" title='Create index of Table \n 1:Select Project and Table \n 2:Enter program name \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;">
 		Creation Index of Table (<?=$H_ID?>)<br>
-			Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;" >
+			Project:<SELECT id='project_nmS' name='project_nmS' onchange="change_project_Index_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;" >
 
 			<option value=''>1.Select Project</option>
 <?php 
@@ -400,7 +126,7 @@ jQuery(document).ready(function ($) {
 <tr><td colspan='2' <?php echo" title='New Index creation order \n 1:Enter index name \n 2:Select columns \n 3:Click Create button.'  "; ?> style="border-style:;background-color:#666666;color:cyan;width:100%; height:20px;text-align:center;">
 			Table:&nbsp;
 
-			<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;">
+<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_Index_func(this.value);" style="border-style:;background-color:#666666;color:yellow;width:50%; height:30px;">
 					<option value=''>2.Select table</option>
 <?php 
 				if( $mode=='SearchTAB' || isset($_POST['tab_nmS'])) echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
@@ -413,7 +139,7 @@ jQuery(document).ready(function ($) {
 <?php
 				}
 ?>
-			</SELECT>
+</SELECT>
 </td></tr>
 
 <tr><td colspan='2' style="text-align:left;background-color:#666666;color:cyan;" >
@@ -435,7 +161,7 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 			$it = explode("|",$itX[$i]);
 			$column_ = $column_ . "<label id='columnRX".$j."' onclick='column_list_onclickAA(" .$j. " )'><input type='checkbox' id='column_list".$j."' name='column_list' onclick='column_list_onclickA(this.value, " .$j. ")' value='".$itX[$i]."'><label id='columnR".$j."'>".$it[2]."</label></label><br>";
 		}
-		echo "<script> Print_item_func(\"".$column_."\", \"".$qna."\");</script> "; // 
+		echo "<script> Print_item_func(\"".$column_."\", \"".$qna."\");</script> "; 
 	} else {
 		$column_ = "";
 	}
@@ -443,8 +169,6 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 	</table>
 	</div>
 	</td>
-
-
 	<td valign="top" style='text-align:center;'>
 	<div id="here">
 	<table border="1">
@@ -463,7 +187,7 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 				$key_i = explode("|", $keyA[$i]);
 				$key_cnt = count($key_i);
 				$key_flds = ''; 
-				$key_flds = $key_i[2];//|em_tran_1|tran_date@|em_tran_6|tran_status|tran_rslt@|em_tran_7|tran_net@em_tran_2|tran_id|tran_rslt|@
+				$key_flds = $key_i[2];
 				for( $k=3; $k < $key_cnt; $k++) $key_flds = $key_flds . " + " . $key_i[$k];
 				$k_m = $key_i[1] . ":" . $keyA[$i];
 				echo "<option value='".$key_i[1]."' title='".$k_m."'>".$key_i[1]." KEY (".$key_flds.") </option>";
@@ -485,15 +209,8 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 	</div>
 	</td>
 </tr>
-
 <tr><td colspan='2' bgcolor="#666666" height="27">
-	<?php
-	//$key_msg = str_replace('KEY', '<br>KEY', $key_msg);
-	//$mkey="PRIMARY KEY (`seqno`), ";
-	//echo "index list: ". $mkey . $key_msg; 
-	?>
 </td></tr>
-
 <tr><td colspan='2' height="24" title='Enter the column name and click the button! ' >
 </td></tr>
 		<input type='hidden' id='column_index' name='column_index' >
@@ -504,9 +221,6 @@ Index name:<input type='text' id='idx_name' name='idx_name' value='<?=$idx_name?
 		<input type='hidden' name='item_cnt' value='<?=$item_cnt?>' >
 		<input type='hidden' name='item_array' value='<?=$item_array?>' >
 </form>
-
-
-
 </table>
 </div>
 </body>

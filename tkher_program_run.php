@@ -16,7 +16,7 @@
 		$H_POINT= 0;
 		$H_ID='Guest';
 		//m_("You need to login. ");
-		//echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_REQUEST['pg_code']."'>";exit;
+		//echo "<meta http-equiv='refresh' content=0;url='tkher_program_data_list.php?pg_code=".$_GET['pg_code']."'>";exit;
 	}
 ?>
 <html>
@@ -30,17 +30,19 @@
 <meta name="robots" content="ALL">
 </head>
 
+<script src="//code.jquery.com/jquery.min.js"></script>
+<link type="text/css" rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" />
 <body style="background-color:#fff; width:100%;" >
 
 <?php
 	if( isset($_POST['page']) ) $page = $_POST['page'];
-	else if( isset($_REQUEST['page']) ) $page = $_REQUEST['page'];
+	else if( isset($_GET['page']) ) $page = $_GET['page'];
 	else $page = 1;
 	if( isset($_POST['line_cnt']) ) $line_cnt = $_POST['line_cnt'];
-	else if( isset($_REQUEST['line_cnt']) ) $line_cnt = $_REQUEST['line_cnt'];
+	else if( isset($_GET['line_cnt']) ) $line_cnt = $_GET['line_cnt'];
 	else $line_cnt = 1;
 	if( isset($_POST['pg_code']) ) $pg_code = $_POST['pg_code'];
-	else if( isset($_REQUEST['pg_code']) ) $pg_code = $_REQUEST['pg_code'];
+	else if( isset($_GET['pg_code']) ) $pg_code = $_GET['pg_code'];
 	else $pg_code = '';
 	if( !$pg_code  || $pg_code =='') {
 			m_(" Abnormal approach. $mode, $pg_code "); exit;
@@ -95,7 +97,7 @@
 		</div>
 		<div class="viewSubjX"><span title='(<?=$pg_code?>:<?=$tab_hnm?>)'><?=$pg_name?></span> </div>
 		<div class='blankA'> </div>
-		<form name="makeform" method = "post" action="" enctype="multipart/form-data">
+		<form name="Kapp_HtmlForm" method = "post" action="" enctype="multipart/form-data">
 			<input type="hidden" name='page'		value="<?=$page?>" />
 			<input type="hidden" name='line_cnt'	value="<?=$line_cnt?>" />
 <?php
@@ -192,10 +194,10 @@
 							$f3 = $ff[3];
 							$f4 = $ff[4];
 							
-							$kkk0[$kkk5] = "document.makeform." . $f0 . ".value";
-							$kkk1[$kkk5] = "document.makeform." . $f2 . ".value";
+							$kkk0[$kkk5] = "document.Kapp_HtmlForm." . $f0 . ".value";
+							$kkk1[$kkk5] = "document.Kapp_HtmlForm." . $f2 . ".value";
 							if( is_numeric($f4) ) $kkk2[$kkk5] = $f4;
-							else $kkk2[$kkk5] = "document.makeform." . $f4 . ".value";
+							else $kkk2[$kkk5] = "document.Kapp_HtmlForm." . $f4 . ".value";
 							$kkk3[$kkk5] = $f3;
 
 							echo " <div class='menu1T' ><span style='width:$Xwidth;height:$Xheight;'>$fld[2]</span></div> ";
@@ -294,12 +296,12 @@
 <script language="JavaScript"> 
 <!--
 	function home_func(pg_code){
-		document.makeform.mode='home_func';
-		document.makeform.action='tkher_program_data_list.php?pg_code='+pg_code;
-		document.makeform.submit();
+		document.Kapp_HtmlForm.mode='home_func';
+		document.Kapp_HtmlForm.action='tkher_program_data_list.php?pg_code='+pg_code;
+		document.Kapp_HtmlForm.submit();
 	}
 	function tkher_source_create($coin){
-		if( !document.makeform.H_ID.value ) {
+		if( !document.Kapp_HtmlForm.H_ID.value ) {
 			alert('Login Please!'); return false;
 		}
 		if( $coin < 1000 ) {
@@ -307,17 +309,18 @@
 			return false;
 		} else {
 			if( confirm("Are you sure you want to Create? ") ) {
-				document.makeform.mode.value = 'write_r';
-				document.makeform.action='tkher_php_programDNW.php';
-				document.makeform.target = '_blank';
-				document.makeform.submit();
+				document.Kapp_HtmlForm.mode.value = 'write_r';
+				document.Kapp_HtmlForm.action='tkher_php_programDNW.php';
+				document.Kapp_HtmlForm.target = '_blank';
+				document.Kapp_HtmlForm.submit();
 			} else {
 				alert('Cancel!');
 			}
 		}
 	}
 	function popup_call(if_dataPG, pop_dataPG, i ) {
-		document.makeform.column_cnt.value = i;
+		document.Kapp_HtmlForm.column_cnt.value = i;
+		//window.open("popup_call_old.php?fld_session="+i,"","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
 		window.open("popup_call.php?fld_session="+i,"","alwaysLowered=no,resizable=no,width=700,height=700,left=50,top=50,dependent=yes,z-lock=yes");
 		return true;  
 	}
@@ -326,31 +329,31 @@
 		return true; // no check
 	}
 	function program_run_pg( item_cnt,iftype) {
-		if( !document.makeform.H_ID.value ) {
+		if( !document.Kapp_HtmlForm.H_ID.value ) {
 			alert('Login Please!'); return false;
 		}
 		if( !input_check(item_cnt,iftype) ) {
 			alert('Please check the input of the column. ');
 			return false;
 		}
-		document.makeform.mode.value='table_pg70_write';
-		document.makeform.action='tkher_program_run_r.php';
-		document.makeform.target='_self';
-		document.makeform.submit();
+		document.Kapp_HtmlForm.mode.value='table_pg70_write';
+		document.Kapp_HtmlForm.action='tkher_program_run_r.php';
+		document.Kapp_HtmlForm.target='_self';
+		document.Kapp_HtmlForm.submit();
 	}
 	function excel_upload_func(tab_enm, tab_hnm){
-		pg_code = document.makeform.pg_code.value;
-		document.makeform.pg_call.value="tkher_program_data_list.php?pg_code="+pg_code;
-		document.makeform.mode.value="Upload_mode_table10i";
-		document.makeform.tab_enm.value=tab_enm;
-		document.makeform.tab_hnm.value=tab_hnm;
-		document.makeform.action="excel_load.php";
-		document.makeform.submit();
+		pg_code = document.Kapp_HtmlForm.pg_code.value;
+		document.Kapp_HtmlForm.pg_call.value="tkher_program_data_list.php?pg_code="+pg_code;
+		document.Kapp_HtmlForm.mode.value="Upload_mode_table10i";
+		document.Kapp_HtmlForm.tab_enm.value=tab_enm;
+		document.Kapp_HtmlForm.tab_hnm.value=tab_hnm;
+		document.Kapp_HtmlForm.action="excel_load.php";
+		document.Kapp_HtmlForm.submit();
 	}
 	function table_data_list(pg_code) {
-		document.makeform.target="_top";
-		document.makeform.action="tkher_program_data_list.php?pg_code=" + pg_code;
-		document.makeform.submit();
+		document.Kapp_HtmlForm.target="_top";
+		document.Kapp_HtmlForm.action="tkher_program_data_list.php?pg_code=" + pg_code;
+		document.Kapp_HtmlForm.submit();
 	}
 
 //-->

@@ -13,37 +13,37 @@
 	*		table_item_run.php, table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
 	------------------------------------------------------------------------------------------ */
 	// 컬럼 순서를 조정해도 이상없이 작동한다.  table_pg_write.php , table_item_run70.php에서 리턴. : 중요! --- 2018-10-24
-	if( isset($_POST['sel_g_name']) ) $sel_g_name = $_POST['sel_g_name'];
-	else	$sel_g_name	= "";
-	if( isset($_POST['search_data']) ) $search_data	= $_POST['search_data'];
-	else	$search_data	= "";
-/*
+	if( isset($_POST['sel_g_name']) ) $sf = $_POST['sel_g_name'];
+	else	$sf	= "";
+	if( isset($_POST['search_data']) ) $sd	= $_POST['search_data'];
+	else	$sd	= "";
+
 	if( isset($_REQUEST['if_typePG']) ) $iftype_db = $_REQUEST['if_typePG'];
 	else $iftype_db = "";
+
 	if( isset($_REQUEST['if_dataPG']) ) $ifdata_db = $_REQUEST['if_dataPG'];
 	else $ifdata_db = "";
+
 	if( isset($_POST['if_dataPG']) ) $if_dataPG = $_POST['if_dataPG'];
 	else $if_dataPG = "";
+
 	if( isset($_REQUEST['_POST']) ) $pop_dataPG = $_POST['pop_dataPG'];
 	else $pop_dataPG = "";
-*/
-//	if( !$iftype_db || $iftype_db == '') {
+
+//	if( !$iftype_db ) {
+	if( !$iftype_db || $iftype_db == '') {
 		$iftype_db		= $_SESSION["iftype_db"];
 		$ifdata_db		= $_SESSION["ifdata_db"];
 		$if_dataPG		= $_SESSION["if_dataPG"];	//iftype_db X
 		$pop_dataPG		= $_SESSION["pop_dataPG"];  //$_SESSION['pop_dataPG']= $pop_dataPG;
-		//m_("iftype_db : $iftype_db, ifdata_db:$ifdata_db, pop_dataPG:$pop_dataPG");
-		//iftype_db : ||13|13||||11|1|, ifdata_db:||crakan59_gmail_1762739990:거래처테이블|crakan59_gmail_1762740284:성품테이블||||fld_7 = fld_4 * fld_6:금액 = 수량 * 단가|현금:외상:어음:수표|, pop_dataPG:^^$fld_1:거래처명|fld_2:거래처@fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@^$fld_1:상품명|fld_3:상품명$fld_2:가격|fld_6:단가$fld_3:단위|fld_5:단위@fld_1:상품명@fld_2:가격@fld_3:단위@^^^^^^
-		//iftype_db : ||13|13||||11|1|, pop_dataPG:^^$fld_1:거래처명|fld_2:거래처@fld_1:거래처명@fld_2:대표자명@fld_3:연락처@fld_4:담당자@fld_5:주요상품@fld_6:주소@^$fld_1:상품명|fld_3:상품명$fld_2:가격|fld_6:단가$fld_3:단위|fld_5:단위@fld_1:상품명@fld_2:가격@fld_3:단위@^^^^^^
+		//m_("iftype_db : $iftype_db, pop_dataPG:$pop_dataPG");
 		//iftype_db : |13|1|5|||, pop_dataPG:^$fld_1:fld1|fld_1:fld1$fld_4:fld4|fld_4:fld4$fld_5:fld5|fld_5:fld5@fld_1:fld1@fld_2:fld2@fld_3:fld3@fld_4:fld4@fld_5:fld5@^^^^^
-//	}
+	}
 	if( isset($_POST['fld_session']) ){
 		$fld_session = $_POST['fld_session'];
 	} else if( isset($_REQUEST['fld_session']) ){
 		$fld_session= $_REQUEST["fld_session"];	
 	} else $fld_session= "";
-	//$fld_session= $_SESSION["fld_session"];
-	//m_("fld_session:$fld_session");
 
 	$idata		= explode("|", $ifdata_db);
 	$itype		= explode("|", $iftype_db);
@@ -54,12 +54,11 @@
 	$tdata		= explode(":", $pop_db);
 	$tab_enm	= $tdata[0];
 	$tab_hnm	= $tdata[1];
-
 	$pdata		= explode("@", $pdataA[$it]);
 	$mpxcol		= array();
 	$mwxcol		= array();
 	$movecol	= explode("$", $pdata[0]);
-	for( $i=0, $j=1; isset($movecol[$j]) && $movecol[$j] != ""; $i++ , $j++) {
+	for( $i=0, $j=1; $movecol[$j] != ""; $i++ , $j++) {
 		$mmcol	= explode("|", $movecol[$j]);	 // j=1부터 데이터가있다. 중요.
 		$mp0		= $mmcol[0];
 		$mpcol	= explode(":", $mp0 );
@@ -78,9 +77,6 @@
 			$fh=$pxcol[$i][1];
 	}
 ?>
-<script src="//code.jquery.com/jquery.min.js"></script>
-<!-- <script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_data.js"></script> -->
-
 <script	language="JavaScript">
 <!--
 	function call_pg_select( pp, pw, pd) {
@@ -95,7 +91,7 @@
 			$pg0	= pg[0];
 			$pg1	= pg[1];
 			$dd0	= p3[i];
-			eval( "parent.window.opener.document.Kapp_HtmlForm."+$pg0+".value = $dd0" );
+			eval ( "parent.window.opener.document.makeform."+$pg0+".value = $dd0" );
 		}
 		window.close(); // 팝업창이 닫히지않는것은 컬럼속성이 checkbox로 설정되어 있었기때문이다. 컬럼 이동식이에는 속성을 정의 하지 마라.
 		return;
@@ -139,24 +135,24 @@
 		<input type='hidden'  name='g_name'>
 		<input type='hidden' name='fld_session' value='<?=$fld_session?>'>
 		<table width="750" border="0" cellspacing="0" cellpadding="0" height="25">
-		<tr>
-			<td rowspan="1" width="330" align="right" height="25" valign='center'><font color='yellow'>
-				&nbsp; Column :
+			<tr>
+					<td  rowspan="1" width="330" align="right" height="25" valign=center><font color=yellow>&nbsp; Column :
 						<select name='sel_g_name' onchange="change_g_name_func(this.value);" style="HEIGHT: 20px" title='change name '>
 <?php
-			for( $i=0; isset($pxcol[$i][0]) && $pxcol[$i][0] != ""; $i++ ) {
-						$fpe=$pxcol[$i][0];	
-						$fph=$pxcol[$i][1];
-?>						<option value='<?=$fpe?>' <?php if( $fpe ==$sel_g_name) echo "selected"; ?> ><?=$fph?></option>
+							for( $i=0; $pxcol[$i][0] != ""; $i++ ) {
+									$fpe=$pxcol[$i][0];	
+									$fph=$pxcol[$i][1];
+?>
+										<option value='<?=$fpe?>' <?php if( $fpe ==$sf) echo "selected"; ?> ><?=$fph?></option>
 <?php
-			}
+							}
 ?>
 						</select>
 					</td>
-					<td rowspan="2" align="left" height="30"><font color='yellow'>
-						<input type="text" name="search_data" size="20" maxlength="50" value='<?=$search_data?>'>
+					<td rowspan="2"  align="left" height="30">
+						<font color='yellow'><input type="text" name="search_data" size="20" maxlength="50" value='<?=$search_data?>'>
 						<input type='button' value='Confirm' onclick='doSubmit()'>
-					</td>
+						</td>
 			</tr>
 		</table>
 	</form>
@@ -176,14 +172,14 @@
 				<td><font color='yellow'>Select</td>
 	</tr>
 <?php
-	if ( $sel_g_name != "" && $search_data != "") {
-		//$sel_g_name	= $_POST['sel_g_name'];
-		//$search_data	= $_POST['search_data'];
-		$w		= " WHERE ( ".$sel_g_name." like '%".$search_data."%' ) ";
+	if ( $sf != "" && $sd != "") {
+		//$sf	= $_POST['sel_g_name'];
+		//$sd	= $_POST['search_data'];
+		$w		= " WHERE ( ".$sf." like '%".$sd."%' ) ";
 		$ls		= "SELECT * FROM ". $tab_enm . $w;
 	}
 	else $ls	= "SELECT * FROM ". $tab_enm . " ";
-	//echo "sql:".$ls;//sql:SELECT * FROM dao_1656036131, SELECT * FROM WHERE ( fld_4 like '%정보%' )
+	echo "sql:".$ls;//sql:SELECT * FROM dao_1656036131, SELECT * FROM WHERE ( fld_4 like '%정보%' )
 	$result	= sql_query(  $ls );
 	while ( $rs = sql_fetch_array( $result ) ) {
 ?>

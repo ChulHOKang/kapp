@@ -54,6 +54,7 @@ th, td { border: 1px solid silver; padding:5px; }
 	}
 </style>
 <script src="//code.jquery.com/jquery.min.js"></script>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_table.js"></script>
 <link rel="stylesheet" href="<?=KAPP_URL_T_?>/include/css/kapp_basic.css" type="text/css" />
 
 <script>
@@ -242,195 +243,9 @@ $(function () {
 		}
 	}
 ?>
-<script type="text/javascript" >
-<!--
-	function page_move(thisform, $page, linkurl){
-		thisform.page.value = $page;
-		thisform.action= linkurl; 
-		thisform.submit();
-	}
-	function title_wfunc(fld_code){       
-		document.table_list.page.value = 1;
-		document.table_list.fld_code.value= fld_code;
-		document.table_list.fld_code_asc.value= 'desc';
-		document.table_list.mode.value='title_wfunc';
-		document.table_list.target='_self';
-		document.table_list.action='kapp_table_list.php';
-		document.table_list.submit();                         
-	} 
-	function title_func(fld_code){       
-		document.table_list.page.value = 1;                
-		document.table_list.fld_code.value= fld_code;           
-		document.table_list.fld_code_asc.value= 'asc';
-		document.table_list.mode.value='title_func';           
-		document.table_list.target='_self';
-		document.table_list.action='kapp_table_list.php';
-		document.table_list.submit();                         
-	} 
-	function check_enter() { if (event.keyCode == 13) { search_func(); } }
-	function Cancle_run() {
-		window.open('/','_top','');
-	}
-	function excel_upload_func(tab_enm, tab_hnm){
-		document.table_list.pg_call.value ="kapp_table_list.php";
-		document.table_list.mode.value		="Upload_mode_table10i";
-		document.table_list.tab_enm.value	=tab_enm;
-		document.table_list.tab_hnm.value	=tab_hnm;
-		document.table_list.action			="excel_load.php";
-		document.table_list.submit();
-	}
-	function excel_down_func(tab_enm, tab_hnm){
-		Lid = document.table_list.login_id.value;
-		if( !Lid ) {
-			alert("member page "); return false;
-		} else {
-			document.table_list.mode.value		="Excel_mode_table10i";
-			document.table_list.tab_enm.value	=tab_enm;
-			document.table_list.tab_hnm.value	=tab_hnm;
-			document.table_list.action			="down_excel_file.php";
-			document.table_list.submit();
-		}
-	}
-	function table_update_func(tab_enm, tab_hnm, group_code , mid) {
-		msg = "table are also update. \n Do you want to update the " + tab_hnm + " table? ";
-		if ( window.confirm( msg ) ){
-			document.table_list.mode.value ="Search";
-			document.table_list.mid.value	=mid;
-			document.table_list.tab_enm.value	=tab_enm;
-			document.table_list.tab_hnm.value	=tab_hnm;
-			document.table_list.tab_hnmS.value	=tab_enm + ":"+tab_hnm;
-			document.table_list.group_code.value	=group_code;
-			document.table_list.action ="table_design_update.php";
-			document.table_list.submit();
-		} else {
-			return false;
-		}
-	}
-	function delete_table_func(tab_enm, tab_hnm ) {
-		msg = "When you delete a table, all the programs that used the table are also deleted. \n Data can not be recovered.\n Do you want to delete the " + tab_hnm + " table? ";
-		if ( window.confirm( msg ) ){
-			document.table_list.mode.value ="Delete_mode";
-			document.table_list.tab_enm.value	=tab_enm;
-			document.table_list.tab_hnm.value	=tab_hnm;
-			document.table_list.action ="kapp_table_list.php";
-			document.table_list.submit();
-		} else {
-			return false;
-		}
-	}
-	function table_sel_func(enm, hnm, data, page) {
-		document.table_list.data.value = data;
-		document.table_list.page.value = page;
-		document.table_list.tab_hnmS.value = enm + ":" + hnm;
-		document.table_list.tab_enm.value=enm;
-		document.table_list.tab_hnm.value=hnm;
-		document.table_list.mode.value='Search';
-		document.table_list.action="kapp_table_list.php";
-		document.table_list.target='_self'; // .htm
-		document.table_list.submit();
-	}
-	function program_run_funcList( pg_name, pg_code ) {
-		document.table_list.mode.value		="tab_list_pg70";
-		document.table_list.pg_name.value	=pg_name;
-		document.table_list.pg_code.value	=pg_code;
-		document.table_list.action				="tkher_program_run.php";
-		document.table_list.target='_blank';
-		document.table_list.submit();
-	}
-	function program_run_funcListT( pg_name, pg_code, group_code ) {
-		document.table_list.mode.value		="tab_list_pg70";
-		document.table_list.pg_name.value	=pg_name;
-		document.table_list.pg_code.value	=pg_code;
-		document.table_list.group_code.value=group_code;
-		document.table_list.page.value	=1;
-		document.table_list.action ="tkher_program_data_list.php";
-		document.table_list.target='_blank';
-		document.table_list.submit();
-	}
-	function tkher_source_create(hnm, enm, $coin){
-		if( $coin < 1000 ) {
-			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);
-			return false;
-		} else {
-			if( confirm("Are you sure you want to Create? ") ) {
-				document.table_list.mode.value = "DN_sqltable";
-				document.table_list.action = 'tkher_php_tableDN.php';
-				document.table_list.target = '_blank';
-				document.table_list.submit();
-			} else {
-				alert('Cancel!');
-			}
-		}
-	}
-	function Table_source_create(hnm, enm, $coin){
-		if( $coin < 1000 ) {
-			alert('Point is low. You must do activities to accumulate points. point:'+ $coin);
-			return false;
-		} else {
-			if( confirm("Are you sure you want to Create? ") ) {
-				document.table_list.mode.value	= "sqltable_only";
-				document.table_list.action		= 'tkher_php_tableDN.php';
-				document.table_list.target		= '_blank';
-				document.table_list.submit();
-			} else {
-				alert('Cancel!');
-			}
-		}
-	}
-	function table_search(){
-		var tab_hnm = document.table_list.data.value;
-		var tab = document.table_list.tab_hnmS.value;
-		document.table_list.page.value =1;
-		document.table_list.mode.value='Table_Search';
-		document.table_list.action="kapp_table_list.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
-	}
-	function run_back( mode, data, page){
-		//document.table_list.group_code.value='';
-		document.table_list.mode.value		='';
-		document.table_list.data.value		=data;
-		document.table_list.page.value		=page;
-		document.table_list.action		="kapp_table_list.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
-	}
-	function page_func( page, data ){
-		document.table_list.mode.value		='';
-		document.table_list.data.value		=data;
-		document.table_list.page.value		=page;
-		document.table_list.action		="kapp_table_list.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
 
-	}
-	function my_data(){
-		document.table_list.mode.value='My_List';
-		document.table_list.action		="kapp_table_list.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
-	}
-	function Change_line_cnt( $line){
-		document.table_list.page.value = 1;
-		document.table_list.line_cnt.value = $line;
-		document.table_list.action='kapp_table_list.php';
-		document.table_list.submit();
-	}
-	function group_code_change_func(cd){
-		index=document.table_list.group_code.selectedIndex;
-		nm = document.table_list.group_code.options[index].text;
-		document.table_list.mode.value='Search_Project';
-		document.table_list.group_name.value=nm;
-		document.table_list.action		="kapp_table_list.php";
-		document.table_list.target='_self';
-		document.table_list.submit();
-	}
-//-->
-</script>
 <body>
 <center>
-<h2 title='pg:kapp_table_list'>KAPP Table List</h2>
-
 <FORM name="table_list" Method='post'  enctype="multipart/form-data" >
 	<input type="hidden" name="login_id" value="<?=$H_ID?>">
 	<input type="hidden" name="pg_call"  value="">
@@ -445,32 +260,19 @@ $(function () {
 	<input type='hidden' name='group_name' >
 	<input type="hidden" name='fld_code' value='<?=$fld_code?>' />
 	<input type="hidden" name='fld_code_asc' value='<?=$fld_code_asc?>' />
+
+<h2 title='pg:kapp_table_list'>KAPP Table List</h2>
+<span title='my data print - kapp_table_list.php'><strong><?=$member['mb_nick']?> , Point:<?=number_format($H_POINT)?> - Lev:<?= $member['mb_level']?></strong></span>
 <?php
-		if( $mode == "Search" ) $T_msg = "[ KAPP Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
+		/*if( $mode == "Search" ) $T_msg = "[ KAPP Table : <b>". $tab_hnm . "</b> ] - code: <b>" .$tab_enm . "</b>";
 		else $T_msg = "[ ".$member['mb_id']." ]";
 		if( !isset($H_ID) || $H_ID == '' || !$H_ID ) {
 			$T_msg = $T_msg . " , " . $ip;
 		} else {
 			$T_msg = $T_msg . " Point:" . number_format($H_POINT). " : Lev:" . $member['mb_level'];
-		}
+		}*/
 ?>
-		<div><center>
-			<select name="param" style="border-style:;background-color:gray;color:white;height:24;">
-				<option value="tab_hnm" style="background-color:gray;color:white;" >Table</option>
-				<option value="group_name" style="background-color:gray;color:white;">Project Name</option>
-				<option value="userid" style="background-color:gray;color:white;">User</option>
-			</select>
-			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
-				<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
-				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
-			</select>
-			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
-			<input type='button' value='Search' onclick="javascript:table_search();" >
-		</div>
-
-<span title='my data print - kapp_table_list.php'><strong><?=$T_msg?></strong></span>
-<br>
-<span>
+		<div>
 		<SELECT id='group_code' name='group_code' onchange="group_code_change_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Select the classification of the table to be registered.' "; ?> >
 			<option value=''>Project</option>
 <?php
@@ -484,7 +286,16 @@ $(function () {
 			}
 ?>
 		</select>
-</span>
+			<select name="param" style="border-style:;background-color:gray;color:white;height:24;">
+				<option value="tab_hnm" style="background-color:gray;color:white;" >Table</option>
+				<option value="userid" style="background-color:gray;color:white;">User</option>
+			</select>
+			<select name="sel" style="border-style:;background-color:cyan;color:#000000;height:24;">
+				<option value="=" <?php if( $sel=='=') echo " selected ";?> >=</option>
+				<option value="like" <?php if( $sel=='like') echo " selected ";?> >Like</option>
+			</select>
+			<input type="text" name="data" value='<?=$data?>' maxlength="30" size="15">
+			<input type='button' value='Search' onclick="javascript:table_search();" >
 
 <span>View Line: 
 <SELECT id='line_cnt' name='line_cnt' onChange="this.form.submit()" style='height:20;'>
@@ -497,6 +308,8 @@ $(function () {
 								<option value='100'>100</option>
 </select>- total:<?=$total_count?>, page:<?=$page?>
 </span>
+		</div>
+
 
 <table class='floating-thead' width='100%'>
 <thead id='tit_et' width='100%'>
