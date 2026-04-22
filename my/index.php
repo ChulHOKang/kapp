@@ -205,37 +205,28 @@ body {
 		<a href='<?=KAPP_URL_T_?>' target='_top' title='go home:<?=KAPP_URL_T_?>'><img src="<?=KAPP_URL_T_?>/icon/logo.png" title='<?=KAPP_HOST_?>:<?=KAPP_URL_T_?> - home'></a>
 	<?php
 		$run_target='run_menu'; // $run_target='url_link_tree_solpa_user_r';
-		$img_v="<img src='".KAPP_URL_T_."/icon/pizza.png' width='15' height='15'>";
+		$img_v="<img src='".KAPP_URL_T_."/icon/pizza.png' width='20' height='20'>";
 	?>
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<div style="color:cyan; background-color:black; height:33px; border:none">K-App My Page<br>[ <?=$H_ID?> ]</div>
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='kapp_member_my.php' target='run_menu' title='table design'>
-	A.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>My Info</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_slide_my.php' target='run_menu' title='Album Slide'>
-	B.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album Slide</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_view_db_my.php' target='run_menu' title='Album List'>
-	C.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album List</a></li>
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='album_insert_my.php' target='run_menu' title='Album Insert'>
-	D.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Album Insert</a></li>
+	<li style='text-align:left' ><a onclick="run_on();" href='kapp_member_my.php' target='run_menu' title='table design'><img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='20' height='20'>. My Info</a></li>
+	<li style='text-align:left' ><a onclick="run_on();" href='album_slide_my.php' target='run_menu' title='Album Slide'><img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='20' height='20'>. Album Slide</a></li>
+	<li style='text-align:left' ><a onclick="run_on();" href='album_view_db_my.php' target='run_menu' title='Album List'><img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='20' height='20'>. Album List</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='album_insert_my.php' target='run_menu' title='Album Insert'><img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='20' height='20'>. Album Insert</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='bbs_history_myjob.php' target='run_menu' title='table design'>
-	E.<img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='15' height='15'>Job History</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='bbs_history_myjob.php' target='run_menu' title='table design'><img src='<?=KAPP_URL_T_?>/icon/pizza.png' width='20' height='20'>. Job History</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='./point_list_my.php' target='run_menu' title='table design'>
-	F.<img src='<?=KAPP_URL_T_?>/icon/ship.png' width='15' height='15'>Point history</a></li>
+	<li style=' text-align:left' ><a onclick="run_on();" href='./point_list_my.php' target='run_menu' title='table design'><img src='<?=KAPP_URL_T_?>/icon/ship.png' width='20' height='20'>. Point history</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_tree_menu_list.php' target='run_menu'>
-	G.<img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='15' height='15'>Tree Menu List</a></li>
+	<li style=' text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_tree_menu_list.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/leaf.png' width='20' height='20'>. Tree Menu List</a></li>
 
-	<li style='font-size:18;color:#666666; height:21px; line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_board_list.php' target='run_menu' title='table design'>
-	H.<img src='<?=KAPP_URL_T_?>/icon/seedX.png' width='15' height='15'>Board List</a></li>
+	<li style='text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_board_list.php' target='run_menu' title='table design'><img src='<?=KAPP_URL_T_?>/icon/seedX.png' width='20' height='20'>. Board List</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_ulink_list.php' target='run_menu'>
-	I.<img src='<?=KAPP_URL_T_?>/icon/berry.png' width='15' height='15'>Link List</a></li>
+	<li style='text-align:left'><a onclick="run_on();" href='<?=KAPP_URL_T_?>/menu/kapp_ulink_list.php' target='run_menu'><img src='<?=KAPP_URL_T_?>/icon/berry.png' width='20' height='20'>. Link List</a></li>
 
-	<li style='font-size:18;color:#666666;height:21px;line-height:1; text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/logoutT.php' target='run_menu' title='table design'>Z.<img src='<?=KAPP_URL_T_?>/icon/seed.png' width='15' height='15'>LogOut</a></li>
+	<li style='text-align:left' ><a onclick="run_on();" href='<?=KAPP_URL_T_?>/logoutT.php' target='run_menu' title='table design'><img src='<?=KAPP_URL_T_?>/icon/seed.png' width='20' height='20'>. LogOut</a></li>
 	
 	<HR width="100%" align="center" style="color:yellow; background-color:yellow; height:2px; border:none" />
 	<li style='font-size:9;color:#fff666;height:9px;line-height:1'>
