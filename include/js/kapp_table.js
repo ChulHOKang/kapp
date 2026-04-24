@@ -1,11 +1,11 @@
 	function column_modify_mode_func( no,  table_yn, colunm_cnt ) {
-		fld_hnm = document.kapp_table_Form["fld_hnm[" + no + "]"].value;
+		fld_hnm = document.getElementById('fld_hnm['+no+']').value;
 		if( fld_hnm == "seqno"){
 			alert(' Can not use column name seqno.');
 			return false;
 		}
 		for( var k=1; k < colunm_cnt; k++ ){
-				knm = document.kapp_table_Form["fld_hnm[" + k + "]"].value;
+				knm = document.getElementById("fld_hnm[" + k + "]").value;
 				if( fld_hnm == knm) {
 					if( k != no ) {
 						alert(' Column name '+ fld_hnm +' can not be used as a duplicate.');
@@ -18,31 +18,31 @@
 			document.kapp_table_Form.del_mode.value		="column_modify_mode";
 			document.kapp_table_Form.mode.value			="SearchTAB";
 			document.kapp_table_Form.table_yn.value = table_yn;
-			document.kapp_table_Form.add_column_hnm.value = document.kapp_table_Form["fld_hnm[" + no + "]"].value;
-			document.kapp_table_Form.add_column_enm.value = document.kapp_table_Form["fld_enm[" + no + "]"].value;
-			document.kapp_table_Form.add_column_type.value = document.kapp_table_Form["fld_type[" + no + "]"].value;
-			document.kapp_table_Form.add_column_len.value = document.kapp_table_Form["fld_len[" + no + "]"].value;
-			document.kapp_table_Form.add_column_memo.value = document.kapp_table_Form["memo[" + no + "]"].value;
-			document.kapp_table_Form.del_seqno.value = document.kapp_table_Form["seqno[" + no + "]"].value;
+			document.kapp_table_Form.add_column_hnm.value = document.getElementById('fld_hnm['+no+']').value;
+			document.kapp_table_Form.add_column_enm.value = document.getElementById('fld_enm['+no+']').value;
+			document.kapp_table_Form.add_column_type.value = document.getElementById('fld_type['+no+']').value;
+			document.kapp_table_Form.add_column_len.value = document.getElementById('fld_len['+no+']').value;
+			document.kapp_table_Form.add_column_memo.value = document.getElementById('memo['+no+']').value;
+			document.kapp_table_Form.del_seqno.value = document.getElementById('seqno['+no+']').value;
 			document.kapp_table_Form.action="kapp_table30m_A.php";
 			document.kapp_table_Form.submit();
 		}
 	}
 	function column_add_mode_func( no,  table_yn, column_cnt) {
-		if( document.kapp_table_Form["fld_enm[" + no + "]"].value == '' ) {
+		if( document.getElementById('fld_enm['+no+']').value == '' ) {
 			alert(" Define columns! "); 
 			document.kapp_table_Form["fld_enm[" + no + "]"].focus();
 			return false;
-		} else if ( document.kapp_table_Form["fld_hnm[" + no + "]"].value == ''){
+		} else if ( document.getElementById('fld_hnm['+no+']').value == ''){
 			alert(" Define column name!");
 			document.kapp_table_Form["fld_hnm[" + no + "]"].focus();
 			return false;
-		} else if ( document.kapp_table_Form["fld_len[" + no + "]"].value == ''){
+		} else if ( document.getElementById('fld_len['+no+']').value == ''){
 			alert(" Define the column length!");
 			document.kapp_table_Form["fld_len[" + no + "]"].focus();
 			return false;
 		}
-		fld_hnm = document.kapp_table_Form["fld_hnm[" + no + "]"].value;
+		fld_hnm = document.getElementById('fld_hnm['+no+']').value;
 		if( fld_hnm == 'seqno'){
 			alert(' Can not use column name seqno.');
 			return false;
@@ -52,11 +52,11 @@
 			document.kapp_table_Form.del_mode.value		="column_add_mode";
 			document.kapp_table_Form.mode.value			="SearchTAB";
 			document.kapp_table_Form.table_yn.value = table_yn;
-			document.kapp_table_Form.add_column_hnm.value = document.kapp_table_Form["fld_hnm[" + no + "]"].value;
-			document.kapp_table_Form.add_column_enm.value = document.kapp_table_Form["fld_enm[" + no + "]"].value;
-			document.kapp_table_Form.add_column_type.value = document.kapp_table_Form["fld_type[" + no + "]"].value;
-			document.kapp_table_Form.add_column_len.value = document.kapp_table_Form["fld_len[" + no + "]"].value;
-			document.kapp_table_Form.add_column_memo.value = document.kapp_table_Form["memo[" + no + "]"].value;
+			document.kapp_table_Form.add_column_hnm.value = document.getElementById('fld_hnm['+no+']').value;
+			document.kapp_table_Form.add_column_enm.value = document.getElementById('fld_enm['+no+']').value;
+			document.kapp_table_Form.add_column_type.value = document.getElementById('fld_type['+no+']').value;
+			document.kapp_table_Form.add_column_len.value = document.getElementById('fld_len['+no+']').value;
+			document.kapp_table_Form.add_column_memo.value = document.getElementById('memo['+no+']').value;
 			document.kapp_table_Form.action					="kapp_table30m_A.php";
 			document.kapp_table_Form.submit();
 		}
@@ -93,28 +93,29 @@
 	function type_set_func(i, v) {
 		if( i==0 ) {
 			alert('Can not be changed because it is a key.' );
-			document.kapp_table_Form["fld_type[0]"].value = 'INT';
+			document.getElementById("fld_type[0]").value = 'INT';
 			return false;
 		}
-		if( document.kapp_table_Form["fld_type["+i+"]"].value == "INT") document.kapp_table_Form["fld_len["+i+"]"].value = '12';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TINYINT")   document.kapp_table_Form["fld_len["+i+"]"].value = '3';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "SMALLINT")  document.kapp_table_Form["fld_len["+i+"]"].value = '5';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "MEDIUMINT") document.kapp_table_Form["fld_len["+i+"]"].value = '8';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "BIGINT")    document.kapp_table_Form["fld_len["+i+"]"].value = '15';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DECIMAL")   document.kapp_table_Form["fld_len["+i+"]"].value = '6';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "FLOAT")     document.kapp_table_Form["fld_len["+i+"]"].value = '8.3';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DOUBLE")    document.kapp_table_Form["fld_len["+i+"]"].value = '12.3';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "CHAR")      document.kapp_table_Form["fld_len["+i+"]"].value = '5';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "VARCHAR")   document.kapp_table_Form["fld_len["+i+"]"].value = '15';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TEXT")      document.kapp_table_Form["fld_len["+i+"]"].value = '255';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "LONGBLOB")  document.kapp_table_Form["fld_len["+i+"]"].value = '255';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "BLOB")  document.kapp_table_Form["fld_len["+i+"]"].value = '255';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DATE")      document.kapp_table_Form["fld_len["+i+"]"].value = '10';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DATETIME")  document.kapp_table_Form["fld_len["+i+"]"].value = '19';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TIMESTAMP")  document.kapp_table_Form["fld_len["+i+"]"].value = '19';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TIME")      document.kapp_table_Form["fld_len["+i+"]"].value = '8';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "YEAR")      document.kapp_table_Form["fld_len["+i+"]"].value = '4';
-		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "MONTH")     document.kapp_table_Form["fld_len["+i+"]"].value = '7';
+		if( document.kapp_table_Form["fld_type["+i+"]"].value == "INT") document.getElementById('fld_len['+i+']').value = '12';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TINYINT")   document.getElementById('fld_len['+i+']').value = '3';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "SMALLINT")  document.getElementById('fld_len['+i+']').value = '5';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "MEDIUMINT") document.getElementById('fld_len['+i+']').value = '8';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "BIGINT")    document.getElementById('fld_len['+i+']').value = '15';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DECIMAL")   document.getElementById('fld_len['+i+']').value = '6';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "FLOAT")     document.getElementById('fld_len['+i+']').value = '8.3';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DOUBLE")    document.getElementById('fld_len['+i+']').value = '12.3';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "CHAR")      document.getElementById('fld_len['+i+']').value = '5';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "VARCHAR")   document.getElementById('fld_len['+i+']').value = '15';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TEXT")      document.getElementById('fld_len['+i+']').value = '255';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "LONGBLOB")  document.getElementById('fld_len['+i+']').value = '255';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "BLOB")      document.getElementById('fld_len['+i+']').value = '255';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DATE")      document.getElementById('fld_len['+i+']').value = '10';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "DATETIME")  document.getElementById('fld_len['+i+']').value= '19';
+		
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TIMESTAMP")  document.getElementById('fld_len['+i+']').value = '19';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "TIME")      document.getElementById('fld_len['+i+']').value = '8';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "YEAR")      document.getElementById('fld_len['+i+']').value = '4';
+		else if( document.kapp_table_Form["fld_type["+i+"]"].value == "MONTH")     document.getElementById('fld_len['+i+']').value = '7';
 	}
 	function line_set_func(cnt) { // 2026-03-19 hh:ii:ss
 			document.kapp_table_Form.mode.value='line_set';
@@ -123,7 +124,7 @@
 			document.kapp_table_Form.submit();
 	}
 	function sendCon(form){
-		f_nm = document.kapp_table_Form["fld_enm[0]"].value;
+		f_nm = document.getElementById("fld_enm[0]").value;
 		if( f_nm == "" ) {
 			window.alert("An unentered field remains.");
 		} else {
@@ -143,8 +144,8 @@
 			return false;
 		}
 		for(var i=0;i<line; i++){
-			len = document.kapp_table_Form["fld_len[" + i + "]"].value;
-			fnm = document.kapp_table_Form["fld_hnm[" + i + "]"].value;
+			len = document.getElementById('fld_len['+i+']').value;
+			fnm = document.getElementById('fld_hnm['+i+']').value;
 			if( !len) {
 				if( fnm ) {
 					alert('Check the column length input! ');
@@ -213,8 +214,8 @@
 			return false;
 		}
 		for(var i=0;i<line; i++){
-			len = document.kapp_table_Form["fld_len[" + i + "]"].value;
-			fnm = document.kapp_table_Form["fld_hnm[" + i + "]"].value;
+			len = document.getElementById('fld_len['+i+']').value;
+			fnm = document.getElementById('fld_hnm['+i+']').value;
 			if( !len) {
 				if( fnm ) {
 					alert('Check the column length input! ' + fnm);
@@ -266,54 +267,53 @@ jQuery(document).ready(function ($) {
 		document.kapp_table_Form.action="kapp_table30m_A.php";
 		document.kapp_table_Form.submit();
 	}
-	function ref_func( no ) {
-		document.kapp_table_Form.no.value=no;
-		fld_hnm = document.kapp_table_Form["fld_hnm[" + no + "]"].value;
+	function ref_func( no, PGthisform ) {
+		fld_hnm = document.getElementById('fld_hnm['+no+']').value;
 		if( fld_hnm == "seqno"){
 			alert(' Can not use column name seqno.');
 			return false;
 		}
-		window.open('./fld_select.php?no='+no,'','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');
+		window.open('./fld_select.php?no='+no+'&thisform='+PGthisform,'','width=700,height=700, toolbar=no,scrollbars=yes,resizable=no');
 	}
 	var	fld_enmV, fld_hnmV, fld_typeV, fld_lenV, memoV,	seqnoV, Aif_lineV, Aif_typeV, Aif_dataV, Arelation_dataV;
 
 	function up_bakup(j){
-		fld_enmV  = document.kapp_table_Form["fld_enm[" + j + "]"].value;
-		fld_hnmV  = document.kapp_table_Form["fld_hnm[" + j + "]"].value;
-		fld_typeV = document.kapp_table_Form["fld_type[" + j + "]"].value;
-		fld_lenV  = document.kapp_table_Form["fld_len[" + j + "]"].value;
-		memoV     = document.kapp_table_Form["memo[" + j + "]"].value;
-		seqnoV    = document.kapp_table_Form["seqno[" + j + "]"].value;
-		Aif_lineV = document.kapp_table_Form["Aif_line[" + j + "]"].value;
-		Aif_typeV = document.kapp_table_Form["Aif_type[" + j + "]"].value;
-		Aif_dataV = document.kapp_table_Form["Aif_data[" + j + "]"].value;
-		Arelation_dataV  = document.kapp_table_Form["Arelation_data[" + j + "]"].value;
+		fld_enmV  = document.getElementById('fld_enm['+j+']').value;
+		fld_hnmV  = document.getElementById("fld_hnm[" + j + "]").value;
+		fld_typeV = document.getElementById("fld_type[" + j + "]").value;
+		fld_lenV  = document.getElementById("fld_len[" + j + "]").value;
+		memoV     = document.getElementById("memo[" + j + "]").value;
+		seqnoV    = document.getElementById("seqno[" + j + "]").value;
+		Aif_lineV = document.getElementById("Aif_line[" + j + "]").value;
+		Aif_typeV = document.getElementById("Aif_type[" + j + "]").value;
+		Aif_dataV = document.getElementById("Aif_data[" + j + "]").value;
+		Arelation_dataV  = document.getElementById("Arelation_data[" + j + "]").value;
 	}
     function up_move(i, j){
-		document.kapp_table_Form["fld_enm[" + j + "]"].value  = document.kapp_table_Form["fld_enm[" + i + "]"].value;
-		document.kapp_table_Form["fld_hnm[" + j + "]"].value  = document.kapp_table_Form["fld_hnm[" + i + "]"].value;
-		document.kapp_table_Form["fld_type[" + j + "]"].value  = document.kapp_table_Form["fld_type[" + i + "]"].value;
-		document.kapp_table_Form["fld_len[" + j + "]"].value  = document.kapp_table_Form["fld_len[" + i + "]"].value;
-		document.kapp_table_Form["memo[" + j + "]"].value  = document.kapp_table_Form["memo[" + i + "]"].value;
-		document.kapp_table_Form["seqno[" + j + "]"].value  = document.kapp_table_Form["seqno[" + i + "]"].value;
-		document.kapp_table_Form["Aif_line[" + j + "]"].value  = document.kapp_table_Form["Aif_line[" + i + "]"].value;
-		document.kapp_table_Form["Aif_type[" + j + "]"].value  = document.kapp_table_Form["Aif_type[" + i + "]"].value;
-		document.kapp_table_Form["Aif_data[" + j + "]"].value  = document.kapp_table_Form["Aif_data[" + i + "]"].value;
-		document.kapp_table_Form["Arelation_data[" + j + "]"].value  = document.kapp_table_Form["Arelation_data[" + i + "]"].value;
+		document.getElementById('fld_enm['+j+']').value  = document.getElementById("fld_enm[" + i + "]").value;
+		document.getElementById("fld_hnm[" + j + "]").value  = document.getElementById('fld_hnm['+i+']').value;
+		document.getElementById("fld_type[" + j + "]").value  = document.getElementById("fld_type[" + i + "]").value;
+		document.getElementById("fld_len[" + j + "]").value  = document.getElementById('fld_len['+i+']').value;
+		document.getElementById("memo[" + j + "]").value  = document.getElementById("memo[" + i + "]").value;
+		document.getElementById("seqno[" + j + "]").value  = document.getElementById("seqno[" + i + "]").value;
+		document.getElementById("Aif_line[" + j + "]").value  = document.getElementById("Aif_line[" + i + "]").value;
+		document.getElementById("Aif_type[" + j + "]").value  = document.getElementById("Aif_type[" + i + "]").value;
+		document.getElementById("Aif_data[" + j + "]").value  = document.getElementById("Aif_data[" + i + "]").value;
+		document.getElementById("Arelation_data[" + j + "]").value  = document.getElementById("Arelation_data[" + i + "]").value;
 	}
     function up_recover(i){
-		fld_enmI = document.kapp_table_Form["fld_enm[" + i + "]"].value;
-		fld_hnmI = document.kapp_table_Form["fld_hnm[" + i + "]"].value;
-		document.kapp_table_Form["fld_enm[" + i + "]"].value  = fld_enmV;
-		document.kapp_table_Form["fld_hnm[" + i + "]"].value  = fld_hnmV;
-		document.kapp_table_Form["fld_type[" + i + "]"].value = fld_typeV;
-		document.kapp_table_Form["fld_len[" + i + "]"].value  = fld_lenV;
-		document.kapp_table_Form["memo[" + i + "]"].value     = memoV;
-		document.kapp_table_Form["seqno[" + i + "]"].value    = seqnoV;
-		document.kapp_table_Form["Aif_line[" + i + "]"].value = Aif_lineV;
-		document.kapp_table_Form["Aif_type[" + i + "]"].value = Aif_typeV;
-		document.kapp_table_Form["Aif_data[" + i + "]"].value = Aif_dataV;
-		document.kapp_table_Form["Arelation_data[" + i + "]"].value = Arelation_dataV;
+		fld_enmI = document.getElementById("fld_enm[" + i + "]").value;
+		fld_hnmI = document.getElementById('fld_hnm['+i+']').value;
+		document.getElementById("fld_enm[" + i + "]").value  = fld_enmV;
+		document.getElementById('fld_hnm['+i+']').value  = fld_hnmV;
+		document.getElementById("fld_type[" + i + "]").value = fld_typeV;
+		document.getElementById('fld_len['+i+']').value  = fld_lenV;
+		document.getElementById("memo[" + i + "]").value     = memoV;
+		document.getElementById("seqno[" + i + "]").value    = seqnoV;
+		document.getElementById("Aif_line[" + i + "]").value = Aif_lineV;
+		document.getElementById("Aif_type[" + i + "]").value = Aif_typeV;
+		document.getElementById("Aif_data[" + i + "]").value = Aif_dataV;
+		document.getElementById("Arelation_data[" + i + "]").value = Arelation_dataV;
 	}
     function up_func(){
 		var i = document.kapp_table_Form.line_index.value;
@@ -335,8 +335,8 @@ jQuery(document).ready(function ($) {
 		var i = document.kapp_table_Form.line_index.value;
 		var j = i*1 +1;
 
-		fld_enmV  = document.kapp_table_Form["fld_enm[" + j + "]"].value;
-		fld_hnmV  = document.kapp_table_Form["fld_hnm[" + j + "]"].value;
+		fld_enmV  = document.getElementById('fld_enm['+j+']').value;
+		fld_hnmV  = document.getElementById("fld_hnm[" + j + "]").value;
 		if( fld_enmV == '' || fld_hnmV == '' ){
 			alert('move column none');
 			return;
@@ -1000,7 +1000,7 @@ jQuery(document).ready(function ($) {
 		return;
 	}
 
-	function type_set_func( i, v) {
+	function type_set_SQL_func( i, v) {
 		if( i==0 ) {
 			alert('Can not be changed because it is a key.' );
 			document.kapp_SQL_Form["fld_type[0]"].value = 'INT';
@@ -1076,7 +1076,7 @@ jQuery(document).ready(function ($) {
 		window.open( 'kapp_Sql_to_Table.php' , '_self', '');
 		return;
 	}
-	function ref_func( no ) {
+	function ref_func_SQL( no ) {
 		document.kapp_SQL_Form.no.value=no;
 		fld_hnm = document.kapp_SQL_Form["fld_hnm[" + no + "]"].value;
 		if( fld_hnm == "seqno"){
