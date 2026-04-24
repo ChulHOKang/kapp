@@ -84,12 +84,19 @@
 	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
-	<style>
+<style>
 	body, td, tr { font-size:10pt}
 	a:link, a:visited, a:active {text-decoration:none; font-size:10pt; color:black}
 	a:hover {text-decoration:yes; font-size:10pt; color:eeeeee}
-	</style>
+	p { font-size:24px; text-align:left; height:25px; margin-left:33px; padding: 3px; }
+
+	table {}
+	th, td { padding: 1px; text-align:center; border-bottom:0px solid #DDD; }
+	tr:hover {background-color: #A6EEEE;}
+</style>
+
 <script src="//code.jquery.com/jquery.min.js"></script>
+<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_table.js"></script>
 <script>
 	$(function () {
 	  $('table.floating-thead').each(function() {
@@ -120,8 +127,6 @@
 	  });
 	});
 </script>
-
-<script type="text/javascript" src="<?=KAPP_URL_T_?>/include/js/kapp_table.js"></script>
 <body style="background-color:#fff; width:100%;" >
 <center>
 <?php
@@ -334,7 +339,8 @@
 		<input type="hidden" name="project_code" id="project_code" value='<?=$project_code?>'>
 		<input type="hidden" name="project_name" id="project_name" value='<?=$project_name?>'>
 		<input type="hidden" name="line_index" >
-		<input type="hidden" name="no" >
+		<input type="hidden" name="no" ><!-- use fld_select.php -->
+		<input type="hidden" name="thisform" value='document.kapp_table_Form'><!-- use fld_select.php -->
 		<input type="hidden" name="pg_mode" >
 		<input type="hidden" name="del_mode" >
 		<input type="hidden" name="del_seqno" >
@@ -353,10 +359,10 @@
 		<h2><font fce="Arial">Table Design High Level<?php if( $mode=='SearchTAB' ) echo "( Change )"; ?></font></h2>
 
 <div>
-	<ul>
+	<ul><!-- onchange="change_project_func(this.value)" -->
 		<span bgcolor='#f4f4f4' <?php echo "title='You can change or add the group name of the table.' "; ?>><font color='black'>Project</span>
 		<span bgcolor='#ffffff'><!-- this.form.submit() , change_project_func(this.value);-->
-			<SELECT id='project_nmS' name='project_nmS' onchange="change_project_func(this.value)" style="width:250px;height:30px;background-color:#FFDF6E;border:1 solid black" title='Select the classification of the table to be registered. <?=$project_nmS?> , <?=$project_name?>'>
+			<SELECT id='project_nmS' name='project_nmS' onchange="this.form.submit()" style="width:250px;height:30px;background-color:#FFDF6E;border:1 solid black" title='Select the classification of the table to be registered. <?=$project_nmS?> , <?=$project_name?>'>
 <?php 
 		echo "<option value=''>1.Select Project</option>";
 		if( isset( $project_nmS) && $project_nmS !=''  ) echo "<option value='$project_nmS' selected >$project_name</option>";
@@ -391,8 +397,8 @@
 </div>
 
 <div>
-	  New Table Code:<?=$tab_enm?>, Column Count :
-	  <SELECT type='text' name="line_set" onchange="javascript:line_set_func(this.value);" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>>
+	  New Table Code:<?=$tab_enm?>, Column Count : <!-- javascript:line_set_func(this.value) -->
+	  <SELECT type='text' name="line_set" onchange="this.form.submit()" style='height:25px;background-color:#FFDF6E;border:1 solid black' <?php echo "title='Set the number of lines to be registered.' "; ?>>
 		<option value="<?php echo $line_set ?>" selected ><?php if($mode=='SearchTAB') echo $record_cnt; else echo $line_set; ?> </option>
 		  <option value="10" >10</option>
 		  <option value="15" >15 </option>
@@ -412,7 +418,7 @@
 		<TR align='center' style='background-color:eeeeee;'>
 		 <TH><b>NO</b></TH>
 		 <TH><b>Ref</b></TH>
-		 <TH><b>column</b></TH>
+		 <TH title="Column names must not contain spaces."><b>column name</b></TH>
 		 <TH><b>column title</b></TH>
 		 <TH><b>data type</b></TH>
 		 <TH><b>size</b></TH>
@@ -512,8 +518,8 @@
 		}
 ?>
 <TBODY width='100%'>
-	<TR valign='middle' bgcolor='#FFFFFF' bordercolor='#999999'>
-		<td><B><?=$i?></B></font></TD><!-- No -->
+	<TR bgcolor='#000' bordercolor='#999999'>
+		<td style="color:#fff;" ><?=$i?></TD><!-- No -->
 			<input type="hidden" name="seq[<?=$i?>]" >
 			<input type="hidden" name="seqno[<?=$i?>]" value='<?=$seqno?>'>
 			<input type="hidden" name="fld_enm_old[<?=$i?>]" value='<?=$fld_enm?>'>
@@ -531,18 +537,18 @@
 			<input type="hidden" name="Arelation_data[<?=$i?>]" value='<?=$relation_dataA?>'>
 
 		<td>
-			<input type='button' name="fld_ref[<?=$i?>]" size='5' maxlength='10' value='Ref' onclick="ref_func('<?=$i?>')"
-			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='You can select an existing field by finding the material.'> </td><!-- 기존의 필드를 자료를 찾아서 선택 할 수 있습니다. -->
-		<td align='left'>
-			<input type='text' name="fld_enm[<?=$i?>]" size='10' maxlength='30' onclick="line_getA(<?=$i?>);"
-			<?php if ( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_enm ){ echo " value='$fld_enm' ";} ?>
-			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'> </td>
-		<td align='left'>
-			<input type='text' name="fld_hnm[<?=$i?>]" size='20' maxlength='30' onclick="line_getA(<?=$i?>);"
-			<?php if ( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_hnm ){ echo " value='$fld_hnm' ";} ?>
+			<input type='button' id="fld_ref[<?=$i?>]" name="fld_ref[<?=$i?>]" value='Ref' onclick="ref_func('<?=$i?>', 'document.kapp_table_Form')"
+			style='width:25px;height:22px;background-color:black;color:yellow; border:1 solid black' title='You can select an existing field by finding the material.'> </td><!-- 기존의 필드를 자료를 찾아서 선택 할 수 있습니다. -->
+		<td>
+			<input type='text' id="fld_enm[<?=$i?>]" name="fld_enm[<?=$i?>]" title="Column names must not contain spaces." onclick="line_getA(<?=$i?>);"
+			<?php if( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_enm ){ echo " value='$fld_enm' ";} ?>
+			style='width:120px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'> </td>
+		<td>
+			<input type='text' id="fld_hnm[<?=$i?>]" name="fld_hnm[<?=$i?>]" onclick="line_getA(<?=$i?>);"
+			<?php if( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_hnm ){ echo " value='$fld_hnm' ";} ?>
 			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title="column:<?=$fld_enm?>"> </td>
-		<td align='left'>
-		<SELECT type='text' name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
+		<td>
+		<SELECT type='text' id="fld_type[<?=$i?>]" name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
 			<option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> 
 			value="CHAR" <?php if($fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
 			<option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> 
@@ -583,13 +589,13 @@
 			<!-- 데이터 최대크기 4GiB -->
 		</SELECT>
 		</td>
-		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
+		<td><input type='text' id="fld_len[<?=$i?>]" name="fld_len[<?=$i?>]"  style='width:30px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 <?php
 				if( $fld_enm=='seqno' or $i==0) { echo "value='13' readonly"; } else { echo " value='$fld_len' ";}
 ?>  >
 		</td>
-		<td align='left'>
-			<input type='text' name="memo[<?=$i?>]"  style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
+		<td>
+			<input type='text' id="memo[<?=$i?>]" name="memo[<?=$i?>]"  style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 			<?php
 				if( $fld_enm=='seqno' or $i==0) {
 					echo " value='AUTO_INCREMENT , Key : Can not change' title='Can not change' readonly";
@@ -601,7 +607,7 @@
 <?php
 		if( $mode=='SearchTAB') {
 ?>
-			<td align='left'>
+			<td>
 <?php
 			if ( $i > 0 ) {
 				if ($m_line) {
@@ -654,8 +660,14 @@
       </td>
     </tr>
 	</TBODY>
-
   </TABLE>
+
 </Form>
+<P>- 컬럼명은 공백이 없어야 함.</P>
+<p>- 테이블 생성작업은 데이터 CRUD 프로그램을 동시에 생성함.</P>
+<p>- CRUD는 Create, Read, Update, Delete 의미.</P>
+<p>- 테이블을 생성, 변경, 복사 등 작업 가능.</P>
+<P>- 변경 작업은 생성한 테이블의 데이터와 테이블을 삭제하고 다시 생성 합니다.</P>
+<P>- 테이블 복사는 테이블 정보를 복사하여 새로운 테이블을 생성 합니다.</P>
 </body>
 </html>

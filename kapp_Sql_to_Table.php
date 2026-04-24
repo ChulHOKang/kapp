@@ -29,7 +29,7 @@
 	if( isset($_POST['tab_hnmS']) ) $tab_hnmS	= $_POST["tab_hnmS"];
 	else $tab_hnmS = '';
 	if( isset($_POST['line_set']) ) $line_set = $_POST['line_set'];
-	else $line_set = 30;
+	else $line_set = 10;
 	if( isset($_POST['mode']) ) $mode = $_POST['mode'];
 	else if( isset($_REQUEST['mode']) ) $mode = $_REQUEST['mode'];
 	else $mode = '';
@@ -62,16 +62,21 @@
 	<meta name="description" content="Create Apps with No Code, web app generator, no coding source code generator, CRUD, web tool, Best no code app builder, No code app creation ">
 <meta name="robots" content="ALL">
 </head>
-	<style>
+
+<style>
+<!--
 	body, td, tr { font-size:10pt}
 	a:link, a:visited, a:active {text-decoration:none; font-size:10pt; color:black}
 	a:hover {text-decoration:yes; font-size:10pt; color:eeeeee}
-	</style>
-<style type="text/css">
-<!--
+	p { font-size:24px;text-align:left;height:25px;margin-left:33px; }
+
+	table {}
+	th, td { padding: 1px; text-align:center; border-bottom:0px solid #DDD; }
+	tr:hover {background-color: #A6EEEE;}
+
 	textarea {
-	  width: 50%;
-	  height: 250px;
+	  width: 60%;
+	  height: 100px;
 	  padding: 12px;
 	  border: 2px solid #ccc;
 	  border-radius: 4px;
@@ -145,7 +150,7 @@
 	});
 </script>
 
-<body>
+<body style="background-color:#fff; width:100%;" >
 <center>
 <?php
 		$cur='B';
@@ -180,6 +185,7 @@
 	<Form METHOD='POST' name='kapp_SQL_Form' enctype="multipart/form-data">
 		<input type="hidden" name="line_index" >
 		<input type="hidden" name="no" >
+		<input type="hidden" name="thisform" value='document.kapp_SQL_Form'><!-- use fld_select.php -->
 		<input type="hidden" name="mode" >
 		<input type="hidden" name="pg_mode" >
 		<input type="hidden" name="del_mode" >
@@ -252,9 +258,11 @@ $sql_memoA = str_replace('\\', '', $sql_memo);
 $sql_table = str_replace('\\', '', $sql_table);
 ?>
 <div>
-	<span bgcolor='#f4f4f4' title='Enter SQL here'><textarea title='Enter SQL here' id="sql_memo" name="sql_memo" cols="100%" ><?=$sql_memoA?></textarea></span>
-	<span bgcolor='#f4f4f4'><textarea id="sql_table" name="sql_table" cols="100%" style='color:yellow;display:none;' ><?=$sql_table?></textarea></span>
-	<p bgcolor='#f4f4f4'><input type='button' onclick="javascript:SQL_check();" value=' Sql to Table ' style='height:30px;width:150;background-color:black;color:white;border-radius:20px;border:1 solid black;' title='sql to table' ></p>
+	<span bgcolor='#f4f4f4' title='Enter SQL here'>
+		<textarea title='Enter SQL here' id="sql_memo" name="sql_memo" cols="100%" ><?=$sql_memoA?></textarea>
+	</span>
+	<span bgcolor='#f4f4f4'><textarea id="sql_table" name="sql_table" style='color:yellow;display:none;' ><?=$sql_table?></textarea></span>
+	<br><input type='button' onclick="javascript:SQL_check();" value=' Sql to Table ' style='height:30px;width:150;background-color:black;color:white;border-radius:20px;border:1 solid black;' title='sql to table' >
 </div>
 <?php if( $mode=='SQL_Search') $line_set = $record_cnt; else $line_set=$line_set; ?>
 <div>
@@ -278,7 +286,7 @@ $sql_table = str_replace('\\', '', $sql_table);
 			<TR align='center' style='background-color:eeeeee;'>
 			 <TH><b>NO</b></TH>
 			 <TH><b>Ref</b></TH>
-			 <TH><b>column</b></TH>
+			 <TH><b>column name</b></TH>
 			 <TH><b>column title</b></TH>
 			 <TH><b>data type</b></TH>
 			 <TH><b>size</b></TH>
@@ -320,32 +328,32 @@ $sql_table = str_replace('\\', '', $sql_table);
 				}
 ?>
 <TBODY width='100%'>
-	<TR valign='middle' bgcolor='#FFFFFF' bordercolor='#999999'>
+	<TR bgcolor='#000' bordercolor='#999999'>
 		<td><B><?=$i?></B></font></TD><!-- No -->
-			<input type="hidden" name="seq[<?=$i?>]" >
+			<!-- <input type="hidden" name="seq[<?=$i?>]" > -->
 			<input type="hidden" name="seqno[<?=$i?>]" value='<?=$seqno?>'>
-			<input type="hidden" name="fld_enm_old[<?=$i?>]" value='<?=$fld_enm?>'>
+			<!-- <input type="hidden" name="fld_enm_old[<?=$i?>]" value='<?=$fld_enm?>'> -->
 <?php if( $mode=="SQL_Search"){	?>
 			<input type="hidden" name="Afld_enm[<?=$i?>]" value='<?=$fld_enm?>'>
 			<input type="hidden" name="Afld_hnm[<?=$i?>]" value='<?=$fld_hnm?>'>
 			<input type="hidden" name="Afld_type[<?=$i?>]" value='<?=$fld_type?>'>
 			<input type="hidden" name="Afld_len[<?=$i?>]" value='<?=$fld_len?>'>
-			<input type="hidden" name="Afld_memo[<?=$i?>]" value='<?=$memo?>'>
+			<!-- <input type="hidden" name="Afld_memo[<?=$i?>]" value='<?=$memo?>'> -->
 <?php }	?>
 
 		<td>
-			<input type='button' name="fld_ref[<?=$i?>]" size='5' maxlength='10' value='Ref' onclick="ref_func('<?=$i?>')"
-			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='You can select an existing field by finding the material.'> </td>
-		<td align='left'>
-			<input type='text' name="fld_enm[<?=$i?>]" size='10' maxlength='30' onclick="line_getA(<?=$i?>);"
+			<input type='button' id="fld_ref[<?=$i?>]" name="fld_ref[<?=$i?>]" value='Ref' onclick="ref_func('<?=$i?>', 'document.kapp_SQL_Form')"
+			style='width:25px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='You can select an existing field by finding the material.'> </td> 
+		<td>
+			<input type='text' id="fld_enm[<?=$i?>]" name="fld_enm[<?=$i?>]" onclick="line_getA(<?=$i?>);"
 			<?php if ( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_enm ){ echo " value='$fld_enm' ";} ?>
-			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'> </td>
-		<td align='left'>
-			<input type='text' name="fld_hnm[<?=$i?>]" size='20' maxlength='30' onclick="line_getA(<?=$i?>);"
+			style='width:120px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'> </td>
+		<td>
+			<input type='text' id="fld_hnm[<?=$i?>]" name="fld_hnm[<?=$i?>]" onclick="line_getA(<?=$i?>);"
 			<?php if ( $fld_enm=='seqno' or $i==0) { echo "value='seqno' readonly ";  } else if ( $fld_hnm ){ echo " value='$fld_hnm' ";} ?>
 			style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title="column:<?=$fld_enm?>"> </td>
-		<td align='left'>
-<SELECT type='text' name="fld_type[<?=$i?>]" onchange="javascript:type_set_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
+		<td>
+<SELECT type='text' id="fld_type[<?=$i?>]" name="fld_type[<?=$i?>]" onchange="javascript:type_set_SQL_func('<?=$i?>', this.value);" style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' title='MYSQL basic '>
 <option <?php echo "title='CHAR A fixed-length (0-255, default 1) string that fills the right with blanks to the specified length at all times when saved.' "; ?> value="CHAR" <?php if( $fld_type == 'CHAR') echo " selected ";  ?> >CHAR</option>
 <option <?php echo "title='VARCHAR Variable-length (0-65,535) string.' "; ?> value="VARCHAR" <?php if($fld_type == 'VARCHAR') echo " selected ";  ?> >VARCHAR</option>
 <option <?php echo "title='TEXT Text column with a maximum length of 65535 (2 ^ 16-1) characters.' "; ?> value="TEXT" <?php if($fld_type == 'TEXT') echo " selected ";?>>TEXT</option>
@@ -368,19 +376,19 @@ $sql_table = str_replace('\\', '', $sql_table);
 <option <?php echo "title='LONGBLOB Length Maximum data size: 4GiB' "; ?> value="LONGBLOB" <?php if( $fld_type=='LONGBLOB') echo " selected ";?> >LONGBLOB</option> <!-- LONGBLOB data size 4GiB -->
 </SELECT>
 		</td>
-		<td align='left'>  <input type='text' name="fld_len[<?=$i?>]" size='3' maxlength='3' style='height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
+		<td>  <input type='text' id="fld_len[<?=$i?>]" name="fld_len[<?=$i?>]" style='width:30px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black'
 <?php
 				if ( $fld_enm=='seqno' or $i==0) { echo "value='11' readonly >"; } else { echo " value='$fld_len' >";}
 				$memo = str_replace('\\', '', $memo);
 ?> 
 		</td>
-		<td align='left'>
-			<input type='text' name="memo[<?=$i?>]" value="<?=$memo?>" style='width:300px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' >
+		<td>
+			<input type='text' id="memo[<?=$i?>]" name="memo[<?=$i?>]" value="<?=$memo?>" style='width:300px;height:22px;background-color:<?=$bcolor?>;color:<?=$fcolor?>; border:1 solid black' >
 	   </td>
 	<?php
 		if( $mode=='SQL_Search') {
 	?>
-			<td align='left'>
+			<td>
 			</td>
 <?php  } ?>
 		</tr>
@@ -401,9 +409,9 @@ $sql_table = str_replace('\\', '', $sql_table);
 		} else if( $mode=="line_set" || $mode=="" || $mode == "table_create") {
 ?>
 			<span><input <?php echo "title='Register and create the created table.' "; ?> type='button' name='ins' onclick="javascript:table_create_func('<?=$line_set?>');"
-			value="Create Table" style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'></span>
+			value="  Create Table  " style='height:30px;background-color:black;color:yellow;border-radius:20px;border:1 solid white'></span>
 			<span><input <?php echo "title='Change to the table registration screen.' "; ?> type='button' name='reset' onclick="javascript:resetgo();"
-			value=" Reset " style='height:30px;background-color:black;color:white;border-radius:20px;border:1 solid white'></span>
+			value="  Reset  " style='height:30px;background-color:black;color:yellow;border-radius:20px;border:1 solid white'></span>
 <?php
 		}
 ?>
@@ -415,6 +423,16 @@ $sql_table = str_replace('\\', '', $sql_table);
 
   </TABLE>
 </Form>
+
+<div>
+<P>- SQL to Table </P>
+<p>- 기존에 사용하던 테이블의 SQL 문장으로 테이블을 생성 한다.</P>
+<P>- Project를 선택하고 SQL문장을 복사하여 붙여넣기 한다.</P>
+<P>- Sql to Table 버턴을 클릭하면, SQL을 분석하여 컬럼을 출력 한다.</P>
+<p>- Duplicate check 버턴을 클릭하여 테이블명 중복 여부를 확인 한다.</P>
+<p>- Create Table 버턴을 클릭하여 테이블을 생성 한다.</P>
+</div>
+
 </body>
 </html>
 <?php

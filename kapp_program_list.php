@@ -216,7 +216,6 @@ $(function () {
 	$resultT = sql_query( $ls );
 	if( $resultT ) {
 		$total_count = sql_num_rows( $resultT );
-		
 		$total_page = intval(($total_count-1) / $line_cnt)+1; 
 		if( $page>1) {
 			$first = ($page-1)*$line_cnt; 
@@ -225,15 +224,9 @@ $(function () {
 			$first =0;
 			$no = $total_count;
 		}
-
 		$last = $line_cnt;
 		if( $total_count < $last) $last = $total_count;
 		$limit = " limit $first, $last ";
-		/*if( $page == 1){
-			$no = $total_count;
-		} else {
-			$no = $total_count - ($page - 1) * $line_cnt;
-		}*/
 	} else {
 		$total_count = 0;
 	}
@@ -272,8 +265,6 @@ $(function () {
 	$sql ="SELECT * from {$tkher['table10_group_table']} where userid ='".$H_ID."'";
 	$ret = sql_query($sql);
 	while( $rs=sql_fetch_array($ret) ){
-		//$chk='';
-		//if( $project_code == $rs['group_code'] ) $chk = ' selected ';
 ?>
 			<option value="<?=$rs['group_code']?>:<?=$rs['group_name']?>" ><?=$rs['group_name']?></option>
 <?php } ?>
@@ -351,7 +342,6 @@ $(function () {
 		else if( $grant_write=='3' ) $gw = 'Creators';
 		else if( $grant_write=='8' ) $gw = 'Manager';
   ?>
-	<input type="hidden" name="pg_codeX[<?=$i?>]" value="<?=$rs['pg_code']?>">
 	<TR VALIGN='TOP' bgcolor='<?=$bgcolor?>'  align='center'>
 	<TD <?=$bcolor?> width='1%'><?=$line?></td>
 	<TD <?=$bcolor?> width='3%'><?=$rs['userid']?> </td>
@@ -377,11 +367,7 @@ $(function () {
  ?>
 </tbody>
 </table>
-
-<?php
-	paging("kapp_program_list.php",$total_count,$page,$line_cnt, "document.kapp_program_list_Form"); 
-?> 
-
+<?php paging("kapp_program_list.php", $total_count, $page, $line_cnt, "document.kapp_program_list_Form"); ?> 
 </form>
 </BODY>
 </HTML>

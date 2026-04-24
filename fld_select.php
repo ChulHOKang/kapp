@@ -12,14 +12,14 @@
 <style>
 table { border-collapse: collapse; }
 th { background: #666fff; color: white; height: 32px; }
-th, td { border: 1px solid silver; padding:5px; }
+th, td { border: 1px solid silver; padding:3px; }
 	.container {
-		background-color: skyblue;
+		background-color: yellow;
 		display :flex;									/* flex, inline-flex */
 		justify-content: space-between;		/* flex-start, flex-end, center, space-between, space-around */
 		align-content: center;				/* flex-start, flex-end, center, space-between, space-around 줄넘김 처리시 사용. */
 		align-items: center;							/* flex-start, flex-end, center, baseline, stretch */
-		height:25px;
+		height:21px;
 
 	}
 	.item {
@@ -38,7 +38,8 @@ th, td { border: 1px solid silver; padding:5px; }
 				switch(e.target.innerText){
 					case 'Project'    : title_func('group_name'); break;
 					case 'Table'      : title_func('tab_hnm'); break;
-					case 'Field'      : title_func('fld_hnm'); break;
+					case 'Column'      : title_func('fld_enm'); break;
+					case 'Title'      : title_func('fld_hnm'); break;
 					case 'Type'       : title_func('fld_type'); break;
 					default           : title_func(''); break;
 				}
@@ -49,7 +50,8 @@ th, td { border: 1px solid silver; padding:5px; }
 			switch(e.target.innerText){
 					case 'Project'    : title_wfunc('group_name'); break;
 					case 'Table'      : title_wfunc('tab_hnm'); break;
-					case 'Field'      : title_wfunc('fld_hnm'); break;
+					case 'Column'      : title_wfunc('fld_hnm'); break;
+					case 'Title'      : title_func('fld_hnm'); break;
 					case 'Type'       : title_wfunc('fld_type'); break;
 					default           : title_wfunc(''); break;
 			}
@@ -82,12 +84,13 @@ th, td { border: 1px solid silver; padding:5px; }
 		});
 	});
 
-	function call_pg_select( hnm, type, len, no, memo ) {
-		eval ( "parent.window.opener.document.insert['fld_hnm[" + no + "]'].value=hnm");
-		eval ( "parent.window.opener.document.insert['fld_type[" + no + "]'].value=type");
-		eval ( "parent.window.opener.document.insert['fld_len[" + no + "]'].value=len");
-		eval ( "parent.window.opener.document.insert['memo[" + no + "]'].value=memo");
-			window.close();
+	function call_pg_select( enm, hnm, type, len, no, memo, thisform ) {
+		eval ( "parent.window.opener." +thisform+ "['fld_enm[" + no + "]'].value=enm");
+		eval ( "parent.window.opener." +thisform+ "['fld_hnm[" + no + "]'].value=hnm");
+		eval ( "parent.window.opener." +thisform+ "['fld_type[" + no + "]'].value=type");
+		eval ( "parent.window.opener." +thisform+ "['fld_len[" + no + "]'].value=len");
+		eval ( "parent.window.opener." +thisform+ "['memo[" + no + "]'].value=memo");
+		window.close();
 	}
 	function doSubmit(){
 		document.xpg_select.submit();
@@ -168,8 +171,11 @@ th, td { border: 1px solid silver; padding:5px; }
 	else $search_data = '';
 
 	if( isset($_POST['no']) && $_POST['no']!='' ) $no = $_POST['no'];
-	else if( isset($_REQUEST['no']) && $_REQUEST['no']!='' ) $no = $_REQUEST['no'];
+	else if( isset($_GET['no']) && $_GET['no']!='' ) $no = $_GET['no'];
 	else $no = '';
+	if( isset($_POST['thisform']) && $_POST['thisform']!='' ) $thisform = $_POST['thisform'];
+	else if( isset($_GET['thisform']) && $_GET['thisform']!='' ) $thisform = $_GET['thisform'];
+	else $thisform = '';
 
 	if( isset($_POST['line_cnt']) && $_POST['line_cnt']!='' ){
 		$line_cnt	= $_POST['line_cnt'];
@@ -193,14 +199,14 @@ th, td { border: 1px solid silver; padding:5px; }
 <meta name="robots" content="ALL">
 </head>
 
-<body marginwidth='0' marginheight='0' leftmargin='0' topmargin='0' bgcolor='black'>
-<table width="700" border="0" cellspacing="0" cellpadding="0">
+<body style="background-color:#000; width:700;" >
+<table style="background-color:#000; width:700;" >
 <tr>
   <td width="600" colspan='3'>
 	<form name="xpg_select" method="post" action="fld_select.php">	
 		<input type="hidden" name="no" value='<?=$no?>' >
+		<input type="hidden" name="thisform" value='<?=$thisform?>' >
 		<input type="hidden" name="type" value='' >
-		<!-- <input type='hidden' name='g_name'> -->
 		<input type='hidden' name='group_name'>
 		<input type='hidden' name='mode'>
 		<input type='hidden' name='page'    value="<?=$page?>">
@@ -225,10 +231,10 @@ th, td { border: 1px solid silver; padding:5px; }
 		</span>
 
 		<span bgcolor='#ffffff'>
-		<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='width:250px;height:30px;background-color:#FFDF6E;border:1 solid black' >
+		<SELECT id='tab_hnmS' name='tab_hnmS' onchange="change_table_func(this.value);" style='width:250px;height:25px;background-color:#FFDF6E;border:1 solid black' >
 <?php
 		if( $mode =='SearchTAB') echo "<option value='$tab_hnmS' selected >$tab_hnm</option>";
-		else echo "<option value=''>2.Select Table</option>";
+		else echo "<option value=''>Select Table</option>";
 		$sql = "SELECT * from {$tkher['table10_table']} ";
 		if( $group_code !='' ) {
 			$sql = $sql . " where group_code='$group_code' and userid='$H_ID' and fld_enm='seqno' order by upday desc";
@@ -262,18 +268,18 @@ th, td { border: 1px solid silver; padding:5px; }
 	$ls = $ls . $Where . $Order;
 
 	$resultT	= sql_query( $ls );
-	$total = sql_num_rows( $resultT );
-	$total_page = intval(($total-1) / $line_cnt)+1;
+	$total_count = sql_num_rows( $resultT );
+	$total_page = intval(($total_count-1) / $line_cnt)+1;
 	if( $page>1) $first = ($page-1) * (INT)$line_cnt; 
 	else $first =0;
 	$last = $line_cnt;
-	if( $total < $last) $last = $total;
+	if( $total_count < $last) $last = $total_count;
 	$limit = " limit $first, $last ";
 	/*if( $page == 1){
-		$tno = $total;
+		$tno = $total_count;
 	} else {
-		if( $page>1) $tno = $total - ($page - 1) * $line_cnt;
-		else $tno = $total;
+		if( $page>1) $tno = $total_count - ($page - 1) * $line_cnt;
+		else $tno = $total_count;
 	}*/
 
 
@@ -307,7 +313,7 @@ View Line:
 		<option value='30'  <?php if( $line_cnt=='30')  echo " selected" ?> >30</option>
 		<option value='50'  <?php if( $line_cnt=='50')  echo " selected" ?> >50</option>
 		<option value='100' <?php if( $line_cnt=='100') echo " selected" ?> >100</option>
-	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total?>
+	</select>&nbsp;&nbsp;&nbsp;&nbsp; - total:<?=$total_count?>
 </span>
 
 <table class='floating-thead' width='700'>
@@ -318,13 +324,10 @@ View Line:
 <?php
 	echo " <th title='project Sort click or doubleclick' >Project</th> ";
 	echo " <th title='Table Sort click or doubleclick' >Table</th> ";
-	echo " <th title='Field Sort click or doubleclick' >Field</th> ";
+	echo " <th title='Field Sort click or doubleclick' >Column</th> ";
+	echo " <th title='Title Sort click or doubleclick' >Title</th> ";
 	echo " <th title='Type Sort click or doubleclick' >Type</th> ";
 ?>
-   <!-- <td>Project</td>
-   <td>table</td>
-   <td>field</td> 
-   <td>type</td> -->
    <TH>length</YH>
 	</tr>
 </thead>
@@ -350,6 +353,7 @@ View Line:
             if( $rs['fld_hnm']=='seqno') continue;
 			$project_name	= $rs['group_name'];
 			$tab_hnm	= $rs['tab_hnm'];
+			$fld_enm	= $rs['fld_enm'];
 			$fld_hnm	= $rs['fld_hnm'];
 			$fld_type	= $rs['fld_type'];
 			$fld_len	= $rs['fld_len'];
@@ -358,12 +362,14 @@ View Line:
 			$relation_data= $rs['relation_data']; 
 			$memo		= $rs['memo'];
 ?>
-		<tr style='color:white;fontsize:32px;'>
+		<tr style='color:white;fontsize:15px;'>
 		  <TD><?=$line?></td>
 		  <td><?=$project_name?></td>
 		  <td><?=$tab_hnm?></td>
 		  <td title='if_data:<?=$if_data?>'>
-			   <a href="javascript:call_pg_select('<?=$fld_hnm?>','<?=$fld_type?>', '<?=$fld_len?>', '<?=$no?>', '<?=$memo?>' )"><font color='yellow' size='3'><?=$fld_hnm?></a> </td>
+			   <a href="javascript:call_pg_select('<?=$fld_enm?>','<?=$fld_hnm?>','<?=$fld_type?>','<?=$fld_len?>','<?=$no?>','<?=$memo?>','<?=$thisform?>' )" style='color:yellow;'><?=$fld_enm?></a> </td>
+		  <td title='if_data:<?=$if_data?>'>
+			   <a href="javascript:call_pg_select('<?=$fld_enm?>','<?=$fld_hnm?>','<?=$fld_type?>','<?=$fld_len?>','<?=$no?>','<?=$memo?>','<?=$thisform?>' )" style='color:yellow;'><?=$fld_hnm?></a> </td>
 		  <td><?=$fld_type?></td>
 		  <td><?=$fld_len?></td>
 		</tr>
